@@ -1,5 +1,5 @@
 import { ArrowUpRight } from 'lucide-react';
-import { PORTFOLIO_URL, REPO_URL } from '../lib/client.js';
+import { REPO_URL } from '../lib/client.js';
 
 const STEPS: Array<[string, string]> = [
   ['소스를 MCP로 연결', 'GitHub, Gmail, Google Calendar가 각각 독립된 MCP 서버로 붙습니다. 에이전트는 서버가 공개한 도구 목록만 봅니다.'],
@@ -23,11 +23,8 @@ export function HowItWorks() {
           </li>
         ))}
       </ol>
-      <div className="mt-6 flex flex-wrap gap-x-5 gap-y-2 text-sm">
-        {PORTFOLIO_URL && <a href={`${PORTFOLIO_URL}/#architecture`} className="inline-flex items-center gap-1 text-text-2 hover:text-text">아키텍처 보기 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden /></a>}
-        {PORTFOLIO_URL && <a href={`${PORTFOLIO_URL}/#mcp`} className="inline-flex items-center gap-1 text-text-2 hover:text-text">MCP 도구 둘러보기 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden /></a>}
-        {PORTFOLIO_URL && <a href={PORTFOLIO_URL} className="inline-flex items-center gap-1 text-text-2 hover:text-text">포트폴리오 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden /></a>}
-        <a href={REPO_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-text-2 hover:text-text">소스 코드 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden /></a>
+      <div className="mt-6 text-sm">
+        <a href={REPO_URL} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-text-2 hover:text-text">구현 코드 보기 <ArrowUpRight className="h-3.5 w-3.5" aria-hidden /></a>
       </div>
     </section>
   );

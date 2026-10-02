@@ -1,12 +1,12 @@
-import { PORTFOLIO_URL, REPO_URL, type Status } from '../lib/client.js';
+import { REPO_URL, type Status } from '../lib/client.js';
 import { ModeBadge } from './ModeBadge.js';
 
 const LINKS = [
   { href: '#ask', label: '데모' },
   { href: '#report', label: '리포트' },
   { href: '#how', label: '작동 방식' },
-  ...(PORTFOLIO_URL ? [{ href: `${PORTFOLIO_URL}/#architecture`, label: '아키텍처' }, { href: PORTFOLIO_URL, label: '포트폴리오' }] : []),
-  { href: REPO_URL, label: 'GitHub', external: true },
+  { href: '#connections', label: '연결' },
+  { href: REPO_URL, label: '소스 코드', external: true },
 ];
 
 export function TopNav({ status }: { status: Status | null }) {

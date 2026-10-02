@@ -8,7 +8,6 @@ export { DEMO_EXAMPLES, DEMO_RECORDED_AT, getRecordedRun } from './demo-client.j
 /** `vite build --mode demo` (or VITE_DEMO_MODE=true) ships the browser-only replay; otherwise the API client. */
 export const IS_DEMO_BUILD = String(import.meta.env['VITE_DEMO_MODE'] ?? 'false') === 'true';
 
-export const PORTFOLIO_URL = (import.meta.env['VITE_PORTFOLIO_URL'] as string | undefined) || null;
 export const REPO_URL = 'https://github.com/djkdb/mawa';
 
 let instance: AgentClient | null = null;

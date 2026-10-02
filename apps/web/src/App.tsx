@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from 'react';
-import { PROJECT } from '@mawa/shared';
 import { ActivityTimeline } from './components/ActivityTimeline.js';
 import { HowItWorks } from './components/HowItWorks.js';
 import { McpConnections } from './components/McpConnections.js';
@@ -76,8 +75,8 @@ export default function App() {
         <HowItWorks />
 
         <footer className="mt-auto flex flex-wrap items-center justify-between gap-2 border-t border-line pt-4 text-[13px] text-text-3">
-          <span>{PROJECT.name} · AI × MCP × AX · {PROJECT.author.name}의 개인 학습 프로젝트</span>
-          <a href={PROJECT.author.instagram.url} target="_blank" rel="noreferrer" className="hover:text-text">{PROJECT.author.instagram.handle}</a>
+          <span>My AI Work Agent</span>
+          <span>{IS_DEMO_BUILD ? '데모 워크스페이스 · 샘플 데이터' : '읽기 전용 API 사용 · 토큰은 서버에서만 보관'}</span>
         </footer>
       </main>
     </div>

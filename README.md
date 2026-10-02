@@ -208,8 +208,9 @@ Build command:      npm ci && npm run build -w @mawa/shared && npm run build:dem
 Build output:       apps/web/dist-demo
 Environment:        NODE_VERSION=22
                     VITE_PUBLIC_URL=https://<your-demo-domain>      (absolute og:image / og:url)
-                    VITE_PORTFOLIO_URL=https://<your-portfolio-domain>
 ```
+
+The agent demo is a standalone product surface: it does not link to the portfolio. The portfolio links to the demo (`VITE_LIVE_APP_URL`).
 
 **Cloudflare Pages — portfolio**
 
