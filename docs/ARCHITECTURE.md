@@ -2,7 +2,7 @@
 
 > Connect work. Understand context. Execute with AI.
 >
-> Status: **Phase 1 complete — workspace + shared schemas.** This document is the design contract for the
+> Status: **v0.1 — all layers implemented.** Column "Status" below is kept accurate per package. This document is the design contract for the
 > project. Every section marks what is *implemented*, *planned*, or *demo-only*
 > so the documentation never claims more than the code does.
 
@@ -25,16 +25,16 @@ The project is a monorepo (npm workspaces):
 
 | Path | Role | Status |
 | --- | --- | --- |
-| `apps/api` | Node/TypeScript HTTP server. Hosts the agent, the MCP client, OAuth callbacks. Streams agent activity to the web app. | planned |
-| `apps/web` | React + Vite + Tailwind agent UI (prompt → activity timeline → report). | planned |
-| `mcp-servers/github` | MCP server exposing GitHub tools. Runs standalone over stdio. | planned |
-| `mcp-servers/gmail` | MCP server exposing Gmail tools. | planned |
-| `mcp-servers/calendar` | MCP server exposing Google Calendar tools. | planned |
+| `apps/api` | Hono HTTP server. Hosts the agent, spawns MCP servers per run, OAuth callbacks, encrypted token store. Streams agent events over SSE. | **implemented** |
+| `apps/web` | React + Vite + Tailwind agent UI (prompt → activity timeline → report, integrations panel). | **implemented** |
+| `mcp-servers/github` | MCP server exposing GitHub tools. Runs standalone over stdio; demo and real providers. | **implemented** |
+| `mcp-servers/gmail` | MCP server exposing Gmail tools; demo and real providers. | **implemented** |
+| `mcp-servers/calendar` | MCP server exposing Google Calendar tools; demo and real providers. | **implemented** |
 | `packages/shared` | Types shared across apps: tool schemas (zod), report schema, agent events, project metadata. | **implemented** |
-| `packages/agent-core` | Provider-agnostic agent loop, LLM provider abstraction, context aggregation, report generation. No HTTP, no UI. | planned |
-| `portfolio` | Interactive 3D portfolio (React Three Fiber) with presentation mode. | planned |
-| `motion` | Remotion composition for the 30–45 s motion graphic. | planned |
-| `docs` | Architecture, decision log and What/Why/How notes. | in progress |
+| `packages/agent-core` | Provider-agnostic agent loop, LLM provider abstraction, MCP client, context aggregation, report validation. No HTTP, no UI. | **implemented** |
+| `portfolio` | Interactive 3D portfolio (React Three Fiber) with presentation mode; data generated from the servers. | **implemented** |
+| `motion` | Remotion composition, 45 s, 1080p. | **implemented** |
+| `docs` | Architecture, decision log, What/Why/How notes, setup guide. | **implemented** |
 
 `packages/ui` and `apps/agent` from the original proposal are intentionally
 omitted (see `docs/DECISIONS.md`, ADR-001): the agent lives in a library package
@@ -62,10 +62,11 @@ hidden chain-of-thought; it is a state machine whose transitions are emitted as
 Key pieces:
 
 - **LLM provider abstraction.** `LLMProvider` is an interface with one method,
-  `complete({ messages, tools, responseFormat })`, returning text and/or tool
-  calls. Concrete providers: `AnthropicProvider`, `OpenAIProvider`,
-  `OpenAICompatibleProvider` (any base URL, e.g. Ollama/vLLM), and
-  `ScriptedProvider` used in Demo Mode and tests. Selected by `LLM_PROVIDER`.
+  `complete({ system, messages, tools, responseFormat })`, returning text and/or
+  tool calls. Concrete providers: `AnthropicProvider` (default),
+  `OpenAIProvider`, `OpenAICompatibleProvider` (any base URL, e.g. Ollama/vLLM),
+  and `ScriptedProvider` used in Demo Mode and tests (ADR-009). Selected by
+  `LLM_PROVIDER`; falls back to scripted when no key is set.
 - **Tool selection.** The agent does not hard-code which MCP tools to call. It
   lists tools from every connected MCP server (`tools/list`), hands the
   JSON-schema tool definitions to the LLM, and executes whatever tool calls the
@@ -126,8 +127,9 @@ Design rules:
 5. The validated report plus the activity log is stored in memory (and
    optionally SQLite, see §8) and returned to the UI.
 
-Nothing is persisted by default. A run lives in process memory and is gone on
-restart; this keeps the first version free of a database (ADR-004).
+Nothing is persisted by default. A run lives in process memory (`MemoryRunStore`,
+last 50 runs) and is gone on restart; this keeps the first version free of a
+database (ADR-004). In Real Mode only connected servers are spawned (ADR-011).
 
 ## 5. Authentication Flow
 
@@ -184,7 +186,7 @@ frontend can never show demo output without the badge.
   the model to treat them as data. Output is schema-validated, so injected
   instructions cannot produce arbitrary actions (there are no write tools).
 - `.gitignore` excludes `.env`, `.env.*` (except `.env.example`), token stores,
-  and build output. A `secretlint`/gitleaks-style pre-commit hook is planned.
+  and build output. CI runs gitleaks on every push (`.github/workflows/ci.yml`).
 
 ## 8. Future Expansion
 

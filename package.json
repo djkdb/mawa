@@ -25,7 +25,8 @@
     "typecheck": "tsc -b && npm run typecheck -w apps/web -w portfolio -w motion",
     "clean": "rimraf --glob \"**/dist\" \"**/*.tsbuildinfo\" --no-glob-ignore node_modules",
     "pretest": "tsc -b",
-    "export:portfolio-data": "node scripts/export-portfolio-data.mjs"
+    "export:portfolio-data": "node scripts/export-portfolio-data.mjs",
+    "test:e2e": "playwright test"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

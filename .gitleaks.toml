@@ -1,0 +1,6 @@
+title = "my-ai-work-agent"
+[extend]
+useDefault = true
+[allowlist]
+description = "Synthetic fixtures and documented placeholders"
+paths = ['''mcp-servers/.*/fixtures/.*\.json''', '''portfolio/src/data/.*\.json''', '''\.env\.example''']

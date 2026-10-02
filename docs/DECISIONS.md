@@ -125,3 +125,41 @@ schema, so an invalid report cannot even be emitted as an event.
 UI, tests, future CLI) gets the same guarantee, and the agent cannot bypass it
 by constructing the report by hand. `mode` is likewise required on every event
 and on the report (ADR-006) so the DEMO MODE badge is data-driven.
+
+---
+
+## ADR-009 — ScriptedProvider is a labelled stand-in, never presented as a model
+
+**Decision.** `ScriptedProvider` (id `scripted`) returns a fixed tool plan and
+builds the report with heuristics from the aggregated context. `/api/status`
+exposes `llm.isModel: false`, the UI prints "scripted (no API key)", and the
+portfolio's demo replay states the provider.
+
+**Why.** Demo Mode must run on a fresh clone with no key, and the brief
+forbids presenting unimplemented capability as implemented. A visible,
+deterministic stand-in is more honest than a hidden canned response.
+
+---
+
+## ADR-010 — Portfolio data is generated from the running servers
+
+**Decision.** `scripts/export-portfolio-data.mjs` spawns the three MCP servers,
+records `tools/list` plus a sample `tools/call` per tool, runs the full agent in
+demo mode, and writes both snapshots into `portfolio/src/data/`. The slides
+display the generation date and say they are snapshots.
+
+**Why.** Hand-written tool descriptions would drift from the code. Generating
+them keeps the portfolio's technical claims identical to the implementation,
+and makes the "Live demo" slide an honest replay rather than a mock-up.
+
+---
+
+## ADR-011 — Real Mode only spawns connected servers
+
+**Decision.** A `real` run includes an MCP server only when its OAuth
+connection exists; others are skipped and listed in the run's warnings. A run
+with nothing connected is refused.
+
+**Why.** Mixing demo fixtures into a report labelled `real` would be exactly
+the kind of fake claim the project rules out. Partial real data, clearly
+scoped, is better than blended data.
