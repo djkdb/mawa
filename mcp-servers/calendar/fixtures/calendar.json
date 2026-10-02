@@ -1,0 +1,114 @@
+{
+  "_note": "SYNTHETIC DEMO DATA. Not a real calendar. Dates are relative via {\"$daysAgo\": n} (negative = future).",
+  "events": [
+    {
+      "sourceId": "calendar:event:demoev001",
+      "eventId": "demoev001",
+      "calendar": "primary",
+      "title": "PR #14 review sync with Minji",
+      "description": "Walk through provider abstraction comments; decide on retry strategy for OpenAI-compatible provider.",
+      "start": {
+        "$daysAgo": 1.2
+      },
+      "end": {
+        "$daysAgo": 1.1791666666666667
+      },
+      "allDay": false,
+      "location": "Google Meet",
+      "attendees": [
+        "minji@example.com",
+        "demo-user@example.com"
+      ],
+      "organizer": "minji@example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=demoev001"
+    },
+    {
+      "sourceId": "calendar:event:demoev002",
+      "eventId": "demoev002",
+      "calendar": "primary",
+      "title": "Capstone weekly check-in",
+      "description": "5-minute architecture update: MCP vs direct API integration.",
+      "start": {
+        "$daysAgo": -1.3
+      },
+      "end": {
+        "$daysAgo": -1.3416666666666668
+      },
+      "allDay": false,
+      "location": "S4-1 309",
+      "attendees": [
+        "park@cbnu.example.com",
+        "demo-user@example.com"
+      ],
+      "organizer": "park@cbnu.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=demoev002"
+    },
+    {
+      "sourceId": "calendar:event:demoev003",
+      "eventId": "demoev003",
+      "calendar": "primary",
+      "title": "Algorithm study — week 6 graphs",
+      "description": "BFS/DFS, Dijkstra, MST review.",
+      "start": {
+        "$daysAgo": -2.6
+      },
+      "end": {
+        "$daysAgo": -2.6833333333333336
+      },
+      "allDay": false,
+      "location": "Library group room B",
+      "attendees": [
+        "algo-study@example.com",
+        "demo-user@example.com"
+      ],
+      "organizer": "algo-study@example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=demoev003"
+    },
+    {
+      "sourceId": "calendar:event:demoev004",
+      "eventId": "demoev004",
+      "calendar": "primary",
+      "title": "Deep work: Google OAuth refresh fix (#17)",
+      "description": "Blocked time to fix refresh-token rotation before demo day.",
+      "start": {
+        "$daysAgo": -0.4
+      },
+      "end": {
+        "$daysAgo": -0.525
+      },
+      "allDay": false,
+      "location": null,
+      "attendees": [
+        "demo-user@example.com"
+      ],
+      "organizer": "demo-user@example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=demoev004"
+    },
+    {
+      "sourceId": "calendar:event:demoev005",
+      "eventId": "demoev005",
+      "calendar": "primary",
+      "title": "Demo day — My AI Work Agent",
+      "description": "10 min demo + 5 min Q&A. HDMI only.",
+      "start": {
+        "$daysAgo": -8.0
+      },
+      "end": {
+        "$daysAgo": -8.010416666666666
+      },
+      "allDay": false,
+      "location": "Innovation Hall",
+      "attendees": [
+        "lab@cbnu.example.com",
+        "demo-user@example.com"
+      ],
+      "organizer": "lab@cbnu.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=demoev005"
+    }
+  ]
+}

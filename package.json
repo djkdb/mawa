@@ -23,7 +23,8 @@
     "test:watch": "vitest",
     "lint": "eslint .",
     "typecheck": "tsc -b",
-    "clean": "rimraf --glob \"**/dist\" \"**/*.tsbuildinfo\" --no-glob-ignore node_modules"
+    "clean": "rimraf --glob \"**/dist\" \"**/*.tsbuildinfo\" --no-glob-ignore node_modules",
+    "pretest": "tsc -b"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

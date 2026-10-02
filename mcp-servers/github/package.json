@@ -1,0 +1,23 @@
+{
+  "name": "@mawa/mcp-github",
+  "version": "0.1.0",
+  "private": true,
+  "description": "MCP server exposing GitHub activity tools (commits, pull requests, issues, repository activity).",
+  "type": "module",
+  "bin": { "mawa-mcp-github": "./dist/index.js" },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": { ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" } },
+  "files": ["dist", "fixtures"],
+  "scripts": {
+    "build": "tsc -b",
+    "start": "node dist/index.js",
+    "start:demo": "node dist/index.js --mode=demo"
+  },
+  "dependencies": {
+    "@mawa/shared": "*",
+    "@modelcontextprotocol/sdk": "^1.31.0",
+    "@octokit/rest": "^22.0.0",
+    "zod": "^4.0.0"
+  }
+}

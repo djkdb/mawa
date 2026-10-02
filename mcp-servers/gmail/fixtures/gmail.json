@@ -1,0 +1,186 @@
+{
+  "_note": "SYNTHETIC DEMO DATA. Not a real mailbox. Dates are relative via {\"$daysAgo\": n}.",
+  "emails": [
+    {
+      "sourceId": "gmail:msg:demo0001",
+      "messageId": "demo0001",
+      "threadId": "tdemo0001",
+      "subject": "Re: my-ai-work-agent PR #14 review",
+      "from": "Kim Minji <minji@example.com>",
+      "to": [
+        "demo-user@example.com"
+      ],
+      "date": {
+        "$daysAgo": 0.4
+      },
+      "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
+      "labels": [
+        "INBOX"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0001",
+      "body": "Hi Seongjun,\n\nI went through PR #14. The provider abstraction looks clean. Three comments:\n1. Rename `complete` to `generate`? (naming, optional)\n2. OpenAICompatibleProvider does not retry on 429. That matters for Ollama under load.\n3. Add a test for the scripted provider.\n\nCan you address #2 before Friday?\n\nMinji",
+      "truncated": false
+    },
+    {
+      "sourceId": "gmail:msg:demo0002",
+      "messageId": "demo0002",
+      "threadId": "tdemo0002",
+      "subject": "[Action required] Google OAuth consent screen verification",
+      "from": "Google Cloud Platform <noreply-cloud@example.com>",
+      "to": [
+        "demo-user@example.com"
+      ],
+      "date": {
+        "$daysAgo": 1.0
+      },
+      "snippet": "Your OAuth consent screen for project my-ai-work-agent needs verification before you can use sensitive scopes with external users.",
+      "labels": [
+        "INBOX"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0002",
+      "body": "Your app requests gmail.readonly, which is a sensitive scope. While in Testing mode you may add up to 100 test users. Publishing requires verification.",
+      "truncated": false
+    },
+    {
+      "sourceId": "gmail:msg:demo0003",
+      "messageId": "demo0003",
+      "threadId": "tdemo0003",
+      "subject": "Capstone weekly check-in: agenda for Thursday",
+      "from": "Prof. Park <park@cbnu.example.com>",
+      "to": [
+        "demo-user@example.com"
+      ],
+      "date": {
+        "$daysAgo": 1.5
+      },
+      "snippet": "Please prepare a 5-minute update on your project architecture. Focus on how MCP differs from direct API calls.",
+      "labels": [
+        "INBOX"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0003",
+      "body": "Agenda for Thursday 15:00:\n- Each team: 5 min architecture update\n- Seongjun: explain MCP vs direct API integration\n- Q&A\n\nRoom S4-1 309.",
+      "truncated": false
+    },
+    {
+      "sourceId": "gmail:msg:demo0004",
+      "messageId": "demo0004",
+      "threadId": "tdemo0004",
+      "subject": "Re: Calendar MCP — token refresh bug",
+      "from": "Kim Minji <minji@example.com>",
+      "to": [
+        "demo-user@example.com"
+      ],
+      "date": {
+        "$daysAgo": 2.1
+      },
+      "snippet": "Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issue #17.",
+      "labels": [
+        "INBOX"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0004",
+      "body": "Reproduced the refresh issue you mentioned. Opened #17 with steps. The googleapis client needs the refresh_token set in credentials, otherwise it silently fails.\n\nMinji",
+      "truncated": false
+    },
+    {
+      "sourceId": "gmail:msg:demo0005",
+      "messageId": "demo0005",
+      "threadId": "tdemo0005",
+      "subject": "QueryPie AX Engineer internship — application received",
+      "from": "Recruiting <recruit@example.com>",
+      "to": [
+        "demo-user@example.com"
+      ],
+      "date": {
+        "$daysAgo": 2.6
+      },
+      "snippet": "Thank you for applying. We will review your portfolio and get back within two weeks.",
+      "labels": [
+        "INBOX"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0005",
+      "body": "Hello Seongjun,\n\nWe have received your application for the AX Engineer winter internship. Please make sure your portfolio link is accessible.\n\nRecruiting Team",
+      "truncated": false
+    },
+    {
+      "sourceId": "gmail:msg:demo0006",
+      "messageId": "demo0006",
+      "threadId": "tdemo0006",
+      "subject": "GitHub: Dependabot alert on my-ai-work-agent",
+      "from": "GitHub <noreply@github.example.com>",
+      "to": [
+        "demo-user@example.com"
+      ],
+      "date": {
+        "$daysAgo": 3.3
+      },
+      "snippet": "1 moderate severity vulnerability in a transitive dependency of vitest.",
+      "labels": [
+        "INBOX"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0006",
+      "body": "A moderate severity vulnerability was found in a dependency. Dependabot cannot update it automatically yet.",
+      "truncated": false
+    },
+    {
+      "sourceId": "gmail:msg:demo0007",
+      "messageId": "demo0007",
+      "threadId": "tdemo0007",
+      "subject": "Algorithm study: week 6 problem set",
+      "from": "Study Group <algo-study@example.com>",
+      "to": [
+        "demo-user@example.com"
+      ],
+      "date": {
+        "$daysAgo": 4.0
+      },
+      "snippet": "Week 6 covers graphs: BFS/DFS, Dijkstra, MST. Solutions due Sunday.",
+      "labels": [
+        "INBOX"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0007",
+      "body": "Week 6 problem set attached. Push to cbnu-algorithms by Sunday night. We review Monday.",
+      "truncated": false
+    },
+    {
+      "sourceId": "gmail:msg:demo0008",
+      "messageId": "demo0008",
+      "threadId": "tdemo0008",
+      "subject": "Re: Demo day slot confirmed — Oct 10",
+      "from": "Lab Admin <lab@cbnu.example.com>",
+      "to": [
+        "demo-user@example.com"
+      ],
+      "date": {
+        "$daysAgo": 5.2
+      },
+      "snippet": "Your demo slot is confirmed for Oct 10, 14:00. Projector supports HDMI only.",
+      "labels": [
+        "INBOX"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0008",
+      "body": "Slot confirmed. 10 minutes demo + 5 minutes Q&A. Bring an HDMI adapter.",
+      "truncated": false
+    },
+    {
+      "sourceId": "gmail:msg:demo0009",
+      "messageId": "demo0009",
+      "threadId": "tdemo0009",
+      "subject": "50% off cloud credits this week only",
+      "from": "Cloud Promo <promo@example.com>",
+      "to": [
+        "demo-user@example.com"
+      ],
+      "date": {
+        "$daysAgo": 0.9
+      },
+      "snippet": "Limited time offer on compute credits.",
+      "labels": [
+        "INBOX",
+        "CATEGORY_PROMOTIONS"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0009",
+      "body": "Promotional content.",
+      "truncated": false
+    }
+  ]
+}

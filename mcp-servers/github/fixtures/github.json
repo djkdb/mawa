@@ -1,0 +1,345 @@
+{
+  "_note": "SYNTHETIC DEMO DATA. Not real user data. Dates are relative via {\"$daysAgo\": n}.",
+  "commits": [
+    {
+      "sourceId": "github:commit:demo-user/my-ai-work-agent@a1b2c3d4e5f6",
+      "repo": "demo-user/my-ai-work-agent",
+      "sha": "a1b2c3d4e5f60000000000000000000000000000",
+      "message": "feat(agent): add LLM provider abstraction with Anthropic and OpenAI adapters",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 0.3
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/commit/a1b2c3d4e5f6",
+      "additions": 412,
+      "deletions": 38
+    },
+    {
+      "sourceId": "github:commit:demo-user/my-ai-work-agent@b2c3d4e5f6a1",
+      "repo": "demo-user/my-ai-work-agent",
+      "sha": "b2c3d4e5f6a10000000000000000000000000000",
+      "message": "feat(mcp): wire GitHub MCP server over stdio transport",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 0.8
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/commit/b2c3d4e5f6a1",
+      "additions": 286,
+      "deletions": 12
+    },
+    {
+      "sourceId": "github:commit:demo-user/my-ai-work-agent@c3d4e5f6a1b2",
+      "repo": "demo-user/my-ai-work-agent",
+      "sha": "c3d4e5f6a1b20000000000000000000000000000",
+      "message": "test(agent-core): cover source-grounded report validation",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 1.1
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/commit/c3d4e5f6a1b2",
+      "additions": 154,
+      "deletions": 4
+    },
+    {
+      "sourceId": "github:commit:demo-user/my-ai-work-agent@d4e5f6a1b2c3",
+      "repo": "demo-user/my-ai-work-agent",
+      "sha": "d4e5f6a1b2c30000000000000000000000000000",
+      "message": "feat(web): agent activity timeline with SSE streaming",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 1.6
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/commit/d4e5f6a1b2c3",
+      "additions": 521,
+      "deletions": 77
+    },
+    {
+      "sourceId": "github:commit:demo-user/my-ai-work-agent@e5f6a1b2c3d4",
+      "repo": "demo-user/my-ai-work-agent",
+      "sha": "e5f6a1b2c3d40000000000000000000000000000",
+      "message": "fix(api): propagate mode into every agent event",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 2.0
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/commit/e5f6a1b2c3d4",
+      "additions": 24,
+      "deletions": 9
+    },
+    {
+      "sourceId": "github:commit:demo-user/my-ai-work-agent@f6a1b2c3d4e5",
+      "repo": "demo-user/my-ai-work-agent",
+      "sha": "f6a1b2c3d4e50000000000000000000000000000",
+      "message": "feat(mcp): calendar server with get_events / search_events",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 2.4
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/commit/f6a1b2c3d4e5",
+      "additions": 310,
+      "deletions": 0
+    },
+    {
+      "sourceId": "github:commit:demo-user/my-ai-work-agent@0a1b2c3d4e5f",
+      "repo": "demo-user/my-ai-work-agent",
+      "sha": "0a1b2c3d4e5f0000000000000000000000000000",
+      "message": "feat(mcp): gmail server with search_project_emails",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 2.9
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/commit/0a1b2c3d4e5f",
+      "additions": 344,
+      "deletions": 15
+    },
+    {
+      "sourceId": "github:commit:demo-user/my-ai-work-agent@1b2c3d4e5f60",
+      "repo": "demo-user/my-ai-work-agent",
+      "sha": "1b2c3d4e5f600000000000000000000000000000",
+      "message": "docs: architecture and decision log",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 3.5
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/commit/1b2c3d4e5f60",
+      "additions": 198,
+      "deletions": 0
+    },
+    {
+      "sourceId": "github:commit:demo-user/my-ai-work-agent@2c3d4e5f6a01",
+      "repo": "demo-user/my-ai-work-agent",
+      "sha": "2c3d4e5f6a010000000000000000000000000000",
+      "message": "chore: scaffold npm workspaces, eslint, vitest",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 4.2
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/commit/2c3d4e5f6a01",
+      "additions": 620,
+      "deletions": 0
+    },
+    {
+      "sourceId": "github:commit:demo-user/cbnu-algorithms@3d4e5f6a0b1c",
+      "repo": "demo-user/cbnu-algorithms",
+      "sha": "3d4e5f6a0b1c0000000000000000000000000000",
+      "message": "solve: week 5 dp problems (knapsack, LIS)",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 4.9
+      },
+      "url": "https://github.com/demo-user/cbnu-algorithms/commit/3d4e5f6a0b1c",
+      "additions": 133,
+      "deletions": 2
+    },
+    {
+      "sourceId": "github:commit:demo-user/cbnu-algorithms@4e5f6a0b1c2d",
+      "repo": "demo-user/cbnu-algorithms",
+      "sha": "4e5f6a0b1c2d0000000000000000000000000000",
+      "message": "solve: dijkstra with priority queue",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 5.6
+      },
+      "url": "https://github.com/demo-user/cbnu-algorithms/commit/4e5f6a0b1c2d",
+      "additions": 88,
+      "deletions": 6
+    },
+    {
+      "sourceId": "github:commit:demo-user/cbnu-algorithms@5f6a0b1c2d3e",
+      "repo": "demo-user/cbnu-algorithms",
+      "sha": "5f6a0b1c2d3e0000000000000000000000000000",
+      "message": "refactor: shared fast io template",
+      "author": "demo-user",
+      "date": {
+        "$daysAgo": 6.3
+      },
+      "url": "https://github.com/demo-user/cbnu-algorithms/commit/5f6a0b1c2d3e",
+      "additions": 41,
+      "deletions": 30
+    }
+  ],
+  "pullRequests": [
+    {
+      "sourceId": "github:pr:demo-user/my-ai-work-agent#14",
+      "repo": "demo-user/my-ai-work-agent",
+      "number": 14,
+      "title": "feat: agent-core with provider abstraction and report validation",
+      "state": "open",
+      "author": "demo-user",
+      "createdAt": {
+        "$daysAgo": 1.2
+      },
+      "updatedAt": {
+        "$daysAgo": 0.3
+      },
+      "mergedAt": null,
+      "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
+      "reviewComments": 3,
+      "labels": [
+        "agent",
+        "needs-review"
+      ]
+    },
+    {
+      "sourceId": "github:pr:demo-user/my-ai-work-agent#12",
+      "repo": "demo-user/my-ai-work-agent",
+      "number": 12,
+      "title": "feat: MCP servers for GitHub, Gmail, Calendar (demo mode)",
+      "state": "merged",
+      "author": "demo-user",
+      "createdAt": {
+        "$daysAgo": 3.2
+      },
+      "updatedAt": {
+        "$daysAgo": 2.3
+      },
+      "mergedAt": {
+        "$daysAgo": 2.3
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/pull/12",
+      "reviewComments": 5,
+      "labels": [
+        "mcp"
+      ]
+    },
+    {
+      "sourceId": "github:pr:demo-user/my-ai-work-agent#11",
+      "repo": "demo-user/my-ai-work-agent",
+      "number": 11,
+      "title": "chore: workspace scaffold and shared schemas",
+      "state": "merged",
+      "author": "demo-user",
+      "createdAt": {
+        "$daysAgo": 4.5
+      },
+      "updatedAt": {
+        "$daysAgo": 4.1
+      },
+      "mergedAt": {
+        "$daysAgo": 4.1
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/pull/11",
+      "reviewComments": 1,
+      "labels": [
+        "chore"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "sourceId": "github:issue:demo-user/my-ai-work-agent#17",
+      "repo": "demo-user/my-ai-work-agent",
+      "number": 17,
+      "title": "Google OAuth refresh token is not rotated after expiry",
+      "state": "open",
+      "author": "demo-user",
+      "createdAt": {
+        "$daysAgo": 1.0
+      },
+      "updatedAt": {
+        "$daysAgo": 0.5
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
+      "labels": [
+        "bug",
+        "auth",
+        "priority:high"
+      ],
+      "assignees": [
+        "demo-user"
+      ]
+    },
+    {
+      "sourceId": "github:issue:demo-user/my-ai-work-agent#16",
+      "repo": "demo-user/my-ai-work-agent",
+      "number": 16,
+      "title": "Agent exceeds tool-call budget on broad prompts",
+      "state": "open",
+      "author": "demo-user",
+      "createdAt": {
+        "$daysAgo": 1.8
+      },
+      "updatedAt": {
+        "$daysAgo": 1.1
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
+      "labels": [
+        "agent",
+        "enhancement"
+      ],
+      "assignees": [
+        "demo-user"
+      ]
+    },
+    {
+      "sourceId": "github:issue:demo-user/my-ai-work-agent#15",
+      "repo": "demo-user/my-ai-work-agent",
+      "number": 15,
+      "title": "Portfolio: presentation mode keyboard navigation",
+      "state": "open",
+      "author": "demo-user",
+      "createdAt": {
+        "$daysAgo": 2.6
+      },
+      "updatedAt": {
+        "$daysAgo": 2.6
+      },
+      "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
+      "labels": [
+        "portfolio"
+      ],
+      "assignees": []
+    },
+    {
+      "sourceId": "github:issue:demo-user/cbnu-algorithms#3",
+      "repo": "demo-user/cbnu-algorithms",
+      "number": 3,
+      "title": "Week 6: graph problems set",
+      "state": "open",
+      "author": "demo-user",
+      "createdAt": {
+        "$daysAgo": 3.0
+      },
+      "updatedAt": {
+        "$daysAgo": 3.0
+      },
+      "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
+      "labels": [
+        "weekly"
+      ],
+      "assignees": [
+        "demo-user"
+      ]
+    }
+  ],
+  "repositories": [
+    {
+      "sourceId": "github:repo:demo-user/my-ai-work-agent",
+      "repo": "demo-user/my-ai-work-agent",
+      "url": "https://github.com/demo-user/my-ai-work-agent",
+      "description": "Connect work. Understand context. Execute with AI.",
+      "defaultBranch": "main",
+      "lastPushedAt": {
+        "$daysAgo": 0.3
+      },
+      "openIssues": 3,
+      "openPullRequests": 1,
+      "commitsInPeriod": 9,
+      "language": "TypeScript"
+    },
+    {
+      "sourceId": "github:repo:demo-user/cbnu-algorithms",
+      "repo": "demo-user/cbnu-algorithms",
+      "url": "https://github.com/demo-user/cbnu-algorithms",
+      "description": "Algorithm practice for CBNU coursework",
+      "defaultBranch": "main",
+      "lastPushedAt": {
+        "$daysAgo": 4.9
+      },
+      "openIssues": 1,
+      "openPullRequests": 0,
+      "commitsInPeriod": 3,
+      "language": "C++"
+    }
+  ]
+}

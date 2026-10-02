@@ -1,6 +1,17 @@
 {
   "files": [],
   "references": [
-    { "path": "packages/shared" }
+    {
+      "path": "packages/shared"
+    },
+    {
+      "path": "mcp-servers/github"
+    },
+    {
+      "path": "mcp-servers/gmail"
+    },
+    {
+      "path": "mcp-servers/calendar"
+    }
   ]
 }
