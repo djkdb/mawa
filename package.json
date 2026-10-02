@@ -22,7 +22,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
-    "typecheck": "tsc -b && npm run typecheck -w apps/web -w portfolio",
+    "typecheck": "tsc -b && npm run typecheck -w apps/web -w portfolio -w motion",
     "clean": "rimraf --glob \"**/dist\" \"**/*.tsbuildinfo\" --no-glob-ignore node_modules",
     "pretest": "tsc -b",
     "export:portfolio-data": "node scripts/export-portfolio-data.mjs"

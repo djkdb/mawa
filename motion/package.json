@@ -1,0 +1,25 @@
+{
+  "name": "@mawa/motion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "45-second motion graphic (Remotion) introducing My AI Work Agent.",
+  "type": "module",
+  "scripts": {
+    "studio": "remotion studio",
+    "build": "tsc --noEmit -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "render": "remotion render MyAIWorkAgent out/my-ai-work-agent.mp4",
+    "render:still": "remotion still MyAIWorkAgent out/poster.png --frame=1230"
+  },
+  "dependencies": {
+    "@mawa/shared": "*",
+    "@remotion/cli": "^4.0.532",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "remotion": "^4.0.532"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0"
+  }
+}
