@@ -87,6 +87,27 @@ Only these events reach the UI. Model reasoning is never emitted.
 
 React 19 · TypeScript · Vite 8 · Tailwind 4 · Three.js / React Three Fiber / drei · Framer Motion · GSAP (available) · Node 22 · Hono · `@modelcontextprotocol/sdk` · zod 4 · Anthropic SDK · OpenAI SDK · `@octokit/rest` · `googleapis` · Remotion · Vitest · Playwright · ESLint 10.
 
+## Live Demo
+
+Demo mode runs **for free, with no API key and no server**: `apps/web` has a browser-only build that replays runs recorded from the real agent + MCP pipeline over synthetic fixtures. The UI code path is the same one a live run uses (same events, same report schema, same source-integrity validation), so what you see is the real product UX, labelled honestly as `DEMO MODE · SYNTHETIC DATA · RECORDED MCP RUN`.
+
+```bash
+npm run build:demo           # → apps/web/dist-demo (static, deploy anywhere)
+npm run preview:demo -w apps/web
+```
+
+The three example requests are exactly the prompts that were recorded; free-form prompts need the API server. Recordings are regenerated from the real servers with `npm run export:portfolio-data` into `packages/shared/demo/`.
+
+## Demo vs Real
+
+| | DEMO (browser-only build) | DEMO (API, default `npm run dev`) | REAL |
+| --- | --- | --- | --- |
+| Needs | nothing | Node | Node + OAuth apps (+ LLM key) |
+| Data | synthetic fixtures, recorded | synthetic fixtures, live MCP calls | your GitHub / Gmail / Calendar via OAuth |
+| MCP servers | recorded `tools/list` + `tools/call` | spawned per run, `--mode=demo` | spawned per run, `--mode=real` |
+| LLM | none (replay) | scripted, or a real model with `LLM_API_KEY` | scripted, or a real model |
+| Network from the page | none | same-origin API only | same-origin API only |
+
 ## Demo Mode
 
 `AGENT_MODE=demo` (the default) spawns all three MCP servers with `--mode=demo`. They serve clearly synthetic fixtures (user `demo-user`, 12 commits, 3 PRs, 4 issues, 9 emails, 5 events) with dates rebased to the current week. Without `LLM_API_KEY`, the `ScriptedProvider` replays a fixed tool plan and builds the report with heuristics; the UI shows `LLM: scripted (no API key)`. With a key, a real model runs over the demo fixtures. The pipeline, transport and UI are identical to Real Mode (ADR-006).
@@ -126,7 +147,7 @@ OAuth app and LLM configuration for Real Mode: [`docs/SETUP.md`](docs/SETUP.md).
 npm run dev        # builds TS packages, then starts api (:3001), web (:5173), portfolio (:5174)
 npm run build      # builds every workspace (shared, agent-core, mcp servers, api, web, portfolio; motion typechecks)
 npm run test       # vitest: schemas, MCP servers over stdio, agent loop, API (48 tests)
-npm run test:e2e   # Playwright: real browser against the built API + web (run npm run build first)
+npm run test:e2e   # Playwright: API-backed UI, portfolio, and the standalone demo build (run npm run build first)
 npm run lint       # eslint
 npm run typecheck  # tsc -b + Vite apps
 ```
@@ -175,6 +196,35 @@ Story: Work is everywhere → GitHub · Gmail · Calendar → One protocol (MCP)
                          └─────┬─────┘  └─────┬─────┘  └──────┬───────┘
                            GitHub API     Gmail API      Calendar API      (or fixtures in demo mode)
 ```
+
+## Deployment
+
+The static apps deploy to any static host; the API needs a Node host (it spawns MCP servers as child processes, so serverless platforms do not fit).
+
+**Cloudflare Pages — agent demo (browser-only)**
+
+```
+Build command:      npm ci && npm run build -w @mawa/shared && npm run build:demo -w @mawa/web
+Build output:       apps/web/dist-demo
+Environment:        NODE_VERSION=22
+                    VITE_PUBLIC_URL=https://<your-demo-domain>      (absolute og:image / og:url)
+                    VITE_PORTFOLIO_URL=https://<your-portfolio-domain>
+```
+
+**Cloudflare Pages — portfolio**
+
+```
+Build command:      npm ci && npm run build -w @mawa/shared && npm run build -w @mawa/portfolio
+Build output:       portfolio/dist
+Environment:        NODE_VERSION=22
+                    VITE_PORTFOLIO_URL=https://<your-portfolio-domain>
+                    VITE_LIVE_APP_URL=https://<your-demo-domain>
+                    VITE_CONTACT_EMAIL=you@example.com               (optional; hides the button when unset)
+```
+
+Both apps depend only on `@mawa/shared` (built first). They are single-page apps without client-side routing, so no SPA fallback rule is needed. Render Static Sites and Netlify take the same commands and output directories.
+
+**API (Real Mode)** — Railway, Fly.io, Render, or a machine behind Cloudflare Tunnel: build with `npm ci && npm run build`, run `node apps/api/dist/index.js`, set the variables from `.env.example` as secrets, mount a volume for `TOKEN_STORE_PATH`, and register `<API_PUBLIC_URL>/auth/{github,google}/callback` as OAuth redirect URIs. Deploy `apps/web` with the normal `npm run build -w @mawa/web` and `VITE_API_URL` pointing at the API.
 
 ## Lessons Learned
 

@@ -12,7 +12,7 @@
   --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-html, body, #root { height: 100%; }
+html, body, #root { min-height: 100%; }
 body {
   background: radial-gradient(1200px 600px at 20% -10%, #14213d 0%, transparent 60%), var(--color-ink);
   color: #e2e8f0;
@@ -20,5 +20,13 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 ::selection { background: #5b8cff55; }
-@keyframes pulse-dot { 0%, 100% { opacity: .35 } 50% { opacity: 1 } }
-.pulse { animation: pulse-dot 1.2s ease-in-out infinite; }
+
+/* Visible focus everywhere, without relying on component-level classes. */
+:focus-visible { outline: 2px solid #9db7ff; outline-offset: 2px; border-radius: 6px; }
+
+.panel { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(30, 41, 59, 0.9); border-radius: 18px; }
+.eyebrow { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--color-fog); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}
