@@ -38,7 +38,7 @@ export function buildAnalysisPrompt(context: AggregatedContext, userPrompt: stri
   const payload = {
     period: context.period,
     sources: context.sources.map((s) => ({ id: s.id, type: s.type, title: s.title, timestamp: s.timestamp })),
-    items: context.items.map((i) => ({ sourceId: i.sourceId, summary: i.summary })),
+    items: context.items.map((i) => ({ sourceId: i.sourceId, kind: i.kind, title: i.title, timestamp: i.timestamp, summary: i.summary, fields: pickFields(i.raw) })),
     toolSummaries: context.toolSummaries,
   };
   return `The user asked: "${userPrompt}"
@@ -56,4 +56,12 @@ Hard rules:
 ${CONTEXT_BLOCK_START}
 ${JSON.stringify(payload)}
 ${CONTEXT_BLOCK_END}`;
+}
+
+const FIELD_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'from', 'snippet', 'start', 'end', 'location', 'reviewComments', 'commitsInPeriod', 'openIssues', 'mergedAt', 'allDay'] as const;
+/** A small, stable subset of each item's raw fields; enough to write concrete sentences without dumping payloads. */
+export function pickFields(raw: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const k of FIELD_KEYS) if (raw[k] !== undefined && raw[k] !== null) out[k] = raw[k];
+  return out;
 }

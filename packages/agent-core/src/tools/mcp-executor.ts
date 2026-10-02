@@ -57,7 +57,10 @@ export class McpToolExecutor implements ToolExecutor {
     await this.connect();
     if (this.toolCache) return this.toolCache;
     const defs: ToolDefinition[] = [];
-    for (const [id, client] of this.clients) {
+    // Iterate in configured order (not Map insertion order, which follows connect completion) so discovery is deterministic.
+    for (const id of this.servers) {
+      const client = this.clients.get(id);
+      if (!client) continue;
       const { tools } = await client.listTools();
       for (const t of tools) {
         defs.push({ server: id, name: t.name, description: t.description ?? '', inputSchema: t.inputSchema as ToolDefinition['inputSchema'] });
