@@ -13,6 +13,11 @@ export interface RecordedRun {
 
 const RECORDED = (demoRuns as unknown as { recordedAt: string; note: string; runs: RecordedRun[] });
 
+/** A finished recorded run, for showing a completed result on first paint (no replay, no timers). */
+export function getRecordedRun(id?: string): RecordedRun | null {
+  return (id ? RECORDED.runs.find((r) => r.id === id) : RECORDED.runs[0]) ?? null;
+}
+
 /** The example requests the demo can answer: exactly the prompts that were recorded. */
 export const DEMO_EXAMPLES = RECORDED.runs.map((r) => ({ id: r.id, prompt: r.prompt }));
 export const DEMO_RECORDED_AT = RECORDED.recordedAt;

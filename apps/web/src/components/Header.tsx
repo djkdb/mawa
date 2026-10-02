@@ -1,31 +1,17 @@
-import { PROJECT } from '@mawa/shared';
-import { IS_DEMO_BUILD, PORTFOLIO_URL, REPO_URL, type Status } from '../lib/client.js';
+import { PORTFOLIO_URL, REPO_URL, type Status } from '../lib/client.js';
 import { ModeBadge } from './ModeBadge.js';
 
 export function Header({ status }: { status: Status | null }) {
-  const llm = status
-    ? status.llm.isModel
-      ? `${status.llm.provider} · ${status.llm.model}`
-      : IS_DEMO_BUILD
-        ? 'none · recorded replay'
-        : 'scripted (no API key)'
-    : '…';
   return (
-    <header className="flex flex-wrap items-center justify-between gap-x-6 gap-y-3 border-b border-line/70 pb-4">
-      <div className="flex items-center gap-3">
+    <header className="flex items-center justify-between gap-4 py-1">
+      <div className="flex min-w-0 items-center gap-2.5">
         <img src="/favicon.svg" alt="" className="h-7 w-7" />
-        <div>
-          <h1 className="font-mono text-[13px] font-semibold tracking-[0.3em] text-white">{PROJECT.name}</h1>
-          <p className="mt-0.5 hidden text-xs text-fog sm:block">{PROJECT.tagline.join(' ')}</p>
-        </div>
+        <h1 className="shrink-0 text-[15px] font-semibold text-text">My AI Work Agent</h1>
         <ModeBadge mode={status?.defaultMode ?? 'demo'} />
       </div>
-      <nav aria-label="Project links" className="flex items-center gap-4 font-mono text-[11px] text-fog">
-        <span className="hidden md:inline">
-          LLM&nbsp;<span className={status?.llm.isModel ? 'text-emerald-300' : 'text-amber-300'}>{llm}</span>
-        </span>
-        {PORTFOLIO_URL && <a href={PORTFOLIO_URL} className="hover:text-white">Portfolio</a>}
-        <a href={REPO_URL} target="_blank" rel="noreferrer" className="hover:text-white">GitHub</a>
+      <nav aria-label="프로젝트 링크" className="flex items-center gap-5 text-sm text-text-2">
+        {PORTFOLIO_URL && <a href={PORTFOLIO_URL} className="hover:text-text">포트폴리오</a>}
+        <a href={REPO_URL} target="_blank" rel="noreferrer" className="hover:text-text">GitHub</a>
       </nav>
     </header>
   );

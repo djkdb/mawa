@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AgentEvent, AgentMode, WeeklyWorkReport } from '@mawa/shared';
-import { getClient } from './client.js';
+import { getClient, getRecordedRun } from './client.js';
 
 /** Coarse phases shown in the stepper; derived from the event stream, never from a fake percentage. */
 export type RunPhase = 'idle' | 'starting' | 'discovering' | 'running' | 'aggregating' | 'analyzing' | 'report' | 'completed' | 'error';
@@ -78,11 +78,19 @@ export function useAgentRun() {
     }
   }, []);
 
+  /** Demo build only: show a recorded run as already completed (first paint), without replaying it. */
+  const showRecorded = useCallback((id?: string) => {
+    const r = getRecordedRun(id);
+    if (!r) return;
+    unsubscribe.current?.();
+    setState({ phase: 'completed', runId: `recorded_${r.id}`, mode: 'demo', events: r.events, report: r.report, warnings: r.warnings, error: null });
+  }, []);
+
   const reset = useCallback(() => {
     unsubscribe.current?.();
     setState(initial);
   }, []);
 
   const busy = state.phase !== 'idle' && state.phase !== 'completed' && state.phase !== 'error';
-  return { state, run, reset, busy };
+  return { state, run, reset, showRecorded, busy };
 }

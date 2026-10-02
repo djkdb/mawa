@@ -1,73 +1,67 @@
 import { useState } from 'react';
-import { Play, RotateCcw } from 'lucide-react';
-import { PROJECT, type AgentMode } from '@mawa/shared';
-import { DEMO_EXAMPLES, DEMO_RECORDED_AT, IS_DEMO_BUILD, type Status } from '../lib/client.js';
+import { ArrowRight, CalendarDays, GitBranch, Mail } from 'lucide-react';
+import type { AgentMode, McpServerId } from '@mawa/shared';
+import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
+import { EXAMPLE_META, SERVER_NAME } from '../lib/copy.js';
 
-export function PromptPanel({ status, busy, finished, onRun, onReset }: { status: Status | null; busy: boolean; finished: boolean; onRun: (prompt: string, mode: AgentMode) => void; onReset: () => void }) {
-  const [prompt, setPrompt] = useState<string>(DEMO_EXAMPLES[0]?.prompt ?? PROJECT.samplePrompt);
+const ICON: Record<McpServerId, React.ReactNode> = { github: <GitBranch className="h-3.5 w-3.5" aria-hidden />, gmail: <Mail className="h-3.5 w-3.5" aria-hidden />, calendar: <CalendarDays className="h-3.5 w-3.5" aria-hidden /> };
+
+export function PromptPanel({ status, busy, onRun }: { status: Status | null; busy: boolean; onRun: (prompt: string, mode: AgentMode) => void }) {
+  const [selected, setSelected] = useState<string>(DEMO_EXAMPLES[0]?.id ?? '');
+  const [custom, setCustom] = useState('');
   const [mode, setMode] = useState<AgentMode>('demo');
   const realAvailable = !IS_DEMO_BUILD && (status?.realMode.available ?? false);
+  const prompt = selected ? (DEMO_EXAMPLES.find((e) => e.id === selected)?.prompt ?? '') : custom;
 
   return (
-    <section aria-labelledby="ask-heading" className="panel p-5 sm:p-6">
+    <section aria-labelledby="ask-heading" className="surface p-5 sm:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="ask-heading" className="text-lg font-semibold text-white sm:text-xl">Ask your workspace</h2>
-        <span className="eyebrow">{IS_DEMO_BUILD ? 'Recorded MCP run · browser-only' : 'Agent run'}</span>
+        <h2 id="ask-heading" className="text-lg font-semibold">무엇을 알고 싶으세요?</h2>
+        <span className="text-sm text-text-3">질문을 고르고 실행하세요</span>
       </div>
-      <p className="mt-1 text-sm text-fog">
-        {IS_DEMO_BUILD
-          ? 'This public demo replays runs recorded from the real agent and MCP pipeline over synthetic fixtures. Choose an example request.'
-          : 'The agent discovers MCP tools, lets the model pick what it needs, and returns a report where every claim cites its source.'}
-      </p>
 
-      <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Example requests">
+      <div role="radiogroup" aria-label="질문 선택" className="mt-4 grid gap-2 sm:grid-cols-3">
         {DEMO_EXAMPLES.map((ex) => {
-          const active = ex.prompt === prompt;
+          const meta = EXAMPLE_META[ex.id] ?? { title: ex.prompt, hint: '', uses: [] as McpServerId[] };
+          const active = ex.id === selected;
           return (
-            <button key={ex.id} type="button" onClick={() => setPrompt(ex.prompt)} disabled={busy} aria-pressed={active} className={`rounded-full border px-3 py-1.5 text-left text-xs transition disabled:opacity-50 ${active ? 'border-accent/70 bg-accent-soft text-white' : 'border-line text-fog hover:border-accent/50 hover:text-white'}`}>
-              {ex.prompt}
+            <button key={ex.id} type="button" role="radio" aria-checked={active} disabled={busy} onClick={() => setSelected(ex.id)} className={`flex flex-col items-start gap-1.5 rounded-lg p-4 text-left transition disabled:opacity-60 ${active ? 'bg-surface-2 ring-1 ring-accent' : 'bg-bg/60 hover:bg-surface-2'}`}>
+              <span className="text-[15px] font-semibold leading-snug text-text">{meta.title}</span>
+              <span className="text-[13px] leading-relaxed text-text-2">{meta.hint}</span>
+              <span className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-3">
+                {meta.uses.map((s) => <span key={s} className="inline-flex items-center gap-1">{ICON[s]}{SERVER_NAME[s]}</span>)}
+              </span>
             </button>
           );
         })}
       </div>
 
-      <label htmlFor="prompt" className="sr-only">Request</label>
-      <textarea
-        id="prompt"
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        rows={2}
-        disabled={busy}
-        readOnly={IS_DEMO_BUILD}
-        aria-describedby="prompt-help"
-        className="mt-4 w-full resize-none rounded-xl border border-line bg-ink/60 px-4 py-3 text-base text-white outline-none placeholder:text-fog/60 disabled:opacity-60"
-        placeholder={PROJECT.samplePrompt}
-      />
-      <p id="prompt-help" className="mt-1.5 text-[11px] text-fog">
-        {IS_DEMO_BUILD ? `Free-form prompts need the API server. Recorded ${new Date(DEMO_RECORDED_AT).toLocaleDateString()}.` : 'Enter is a newline; use the button to run.'}
-      </p>
+      {!IS_DEMO_BUILD && (
+        <div className="mt-4">
+          <label htmlFor="prompt" className="text-sm text-text-2">직접 입력</label>
+          <textarea id="prompt" value={custom} onChange={(e) => { setCustom(e.target.value); setSelected(''); }} rows={2} disabled={busy} placeholder="예: 이번 주 리뷰 요청받은 PR만 정리해줘" className="hairline mt-1.5 w-full resize-none rounded-lg bg-bg px-4 py-3 text-[15px] text-text outline-none placeholder:text-text-3 disabled:opacity-60" />
+        </div>
+      )}
 
-      <div className="mt-4 flex flex-wrap items-center gap-3">
+      <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3">
+        <button type="button" onClick={() => onRun(prompt.trim(), mode)} disabled={busy || prompt.trim().length === 0} className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-[15px] font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
+          {busy ? '실행 중…' : '에이전트 실행'} {!busy && <ArrowRight className="h-4 w-4" aria-hidden />}
+        </button>
         {!IS_DEMO_BUILD && (
-          <div role="radiogroup" aria-label="Mode" className="flex rounded-lg border border-line p-0.5 font-mono text-xs">
+          <div role="radiogroup" aria-label="모드" className="hairline flex rounded-lg p-0.5 text-sm">
             {(['demo', 'real'] as const).map((m) => {
               const disabled = m === 'real' && !realAvailable;
               return (
-                <button key={m} type="button" role="radio" aria-checked={mode === m} disabled={busy || disabled} onClick={() => setMode(m)} title={disabled ? 'Connect GitHub or Google to enable real mode' : undefined} className={`rounded-md px-3 py-1.5 uppercase tracking-widest transition ${mode === m ? 'bg-accent-soft text-white' : 'text-fog hover:text-white'} disabled:cursor-not-allowed disabled:opacity-40`}>
-                  {m}
+                <button key={m} type="button" role="radio" aria-checked={mode === m} disabled={busy || disabled} onClick={() => setMode(m)} title={disabled ? '실제 모드는 GitHub 또는 Google을 연결해야 합니다' : undefined} className={`rounded-md px-3 py-1.5 font-medium transition ${mode === m ? 'bg-surface-2 text-text' : 'text-text-2 hover:text-text'} disabled:cursor-not-allowed disabled:opacity-40`}>
+                  {m === 'demo' ? '데모' : '실제'}
                 </button>
               );
             })}
           </div>
         )}
-        <button type="button" onClick={() => onRun(prompt.trim(), mode)} disabled={busy || prompt.trim().length === 0} className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-2.5 font-mono text-xs font-semibold uppercase tracking-[0.2em] text-white shadow-lg shadow-accent/20 transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
-          <Play className="h-3.5 w-3.5" aria-hidden /> {busy ? 'Running…' : IS_DEMO_BUILD ? 'Replay run' : 'Run agent'}
-        </button>
-        {finished && (
-          <button type="button" onClick={onReset} className="inline-flex items-center gap-1.5 font-mono text-xs text-fog hover:text-white">
-            <RotateCcw className="h-3.5 w-3.5" aria-hidden /> Reset
-          </button>
-        )}
+        <p className="text-[13px] text-text-3">
+          {IS_DEMO_BUILD ? '샘플 데이터로 기록된 실행을 재생합니다. 이 페이지는 어떤 외부 서비스에도 접속하지 않습니다.' : mode === 'demo' ? '실제 계정 대신 샘플 데이터를 사용합니다.' : `연결된 서비스(${status?.realMode.servers.join(', ')})의 데이터를 읽습니다.`}
+        </p>
       </div>
     </section>
   );
