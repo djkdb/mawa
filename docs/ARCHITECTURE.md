@@ -2,7 +2,7 @@
 
 > Connect work. Understand context. Execute with AI.
 >
-> Status: **Phase 1 — Foundation.** This document is the design contract for the
+> Status: **Phase 1 complete — workspace + shared schemas.** This document is the design contract for the
 > project. Every section marks what is *implemented*, *planned*, or *demo-only*
 > so the documentation never claims more than the code does.
 
@@ -30,11 +30,11 @@ The project is a monorepo (npm workspaces):
 | `mcp-servers/github` | MCP server exposing GitHub tools. Runs standalone over stdio. | planned |
 | `mcp-servers/gmail` | MCP server exposing Gmail tools. | planned |
 | `mcp-servers/calendar` | MCP server exposing Google Calendar tools. | planned |
-| `packages/shared` | Types shared across apps: tool schemas (zod), report schema, activity events. | planned |
+| `packages/shared` | Types shared across apps: tool schemas (zod), report schema, agent events, project metadata. | **implemented** |
 | `packages/agent-core` | Provider-agnostic agent loop, LLM provider abstraction, context aggregation, report generation. No HTTP, no UI. | planned |
 | `portfolio` | Interactive 3D portfolio (React Three Fiber) with presentation mode. | planned |
 | `motion` | Remotion composition for the 30–45 s motion graphic. | planned |
-| `docs` | Decision log and What/Why/How notes. | in progress |
+| `docs` | Architecture, decision log and What/Why/How notes. | in progress |
 
 `packages/ui` and `apps/agent` from the original proposal are intentionally
 omitted (see `docs/DECISIONS.md`, ADR-001): the agent lives in a library package

@@ -4,21 +4,31 @@ Architecture Decision Records for My AI Work Agent. Newest at the bottom.
 
 ---
 
-## ADR-001 — Monorepo layout: drop `apps/agent` and `packages/ui`
+## ADR-001 — Repository layout and v1 scope
 
-**Context.** The brief proposed `apps/{web,agent,api}`, `packages/{shared,agent-core,ui}`.
+**Context.** The brief proposed `apps/{web,agent,api}` and `packages/{shared,agent-core,ui}`.
+Confirmed with the project owner on 2026-10-02.
 
-**Decision.** Keep `apps/web`, `apps/api`, `packages/shared`, `packages/agent-core`,
-`mcp-servers/*`, `portfolio`, `motion`, `docs`. Drop `apps/agent` and `packages/ui`.
+**Decision.**
 
-**Why.** The agent is a library (`agent-core`) hosted by the API process; a
-separate runnable `apps/agent` would duplicate the API's MCP client wiring. A
-shared UI package is only worth it with multiple consumers; `web` and
-`portfolio` deliberately have different visual systems (product UI vs. pitch
-deck), so they share Tailwind config and tokens, not components.
+- Remove `apps/agent`: the agent is the `packages/agent-core` library and is
+  hosted by `apps/api`. There is one process that owns the MCP clients.
+- Remove `packages/ui`: `apps/web` (product UI) and `portfolio` (pitch deck)
+  have deliberately different visual systems and share only data types and
+  project metadata through `packages/shared`.
+- `portfolio` is a separate Vite app, fully independent from `apps/web`, so the
+  Three.js / R3F / GSAP bundle never weighs on the agent UI.
+- No database in v1. Runs are in-memory behind a `RunStore` interface (ADR-004).
 
-**Consequence.** Fewer packages to build and link; less "architecture theatre".
-Revisit if a CLI runner for the agent becomes useful.
+Final layout:
+
+```
+apps/{api,web}  mcp-servers/{github,gmail,calendar}
+packages/{shared,agent-core}  portfolio/  motion/  docs/
+```
+
+**Consequence.** Fewer packages to build and link. `packages/shared` is the
+only cross-app contract and is therefore built first (Phase 1).
 
 ---
 
@@ -44,8 +54,10 @@ report that runs a dozen tool calls.
 
 ## ADR-003 — LLM provider abstraction with a scripted provider for Demo Mode
 
-**Decision.** `LLMProvider` interface; implementations for Anthropic, OpenAI,
-OpenAI-compatible base URLs, and `ScriptedProvider`. Chosen by `LLM_PROVIDER`.
+**Decision.** `LLMProvider` interface in `agent-core`; implementations for
+Anthropic (default, `LLM_PROVIDER=anthropic`), OpenAI, OpenAI-compatible base
+URLs, and `ScriptedProvider`. `agent-core` imports no vendor SDK directly; each
+provider is a thin adapter.
 
 **Why.** The brief requires swappable providers. The scripted provider lets the
 full pipeline (including real MCP calls to demo-mode servers) run with no API
@@ -98,3 +110,18 @@ of the demo run. Remotion for `motion`.
 
 **Why.** Node 22 is available; everything above has current releases that
 support it. Avoids task-runner complexity until build times demand it.
+
+---
+
+## ADR-008 — Source integrity is enforced in the shared schema, not only in the agent
+
+**Decision.** `WeeklyWorkReportSchema` (in `packages/shared`) carries a
+`superRefine` that rejects any `ReportItem.sources[]` id absent from
+`report.sources`, rejects duplicate source ids, and requires every `observed`
+item to cite at least one source. `AgentEvent.report_generated` embeds this
+schema, so an invalid report cannot even be emitted as an event.
+
+**Why.** Putting the rule in the shared contract means every consumer (API,
+UI, tests, future CLI) gets the same guarantee, and the agent cannot bypass it
+by constructing the report by hand. `mode` is likewise required on every event
+and on the report (ADR-006) so the DEMO MODE badge is data-driven.
