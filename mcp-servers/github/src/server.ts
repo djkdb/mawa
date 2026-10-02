@@ -22,7 +22,7 @@ export function createGitHubMcpServer(provider: GitHubProvider, mode: 'demo' | '
     'get_recent_commits',
     {
       title: 'Get recent commits',
-      description: `Commits authored by the user in the period, newest first, across their most recently pushed repositories or one repo.${tag}`,
+      description: `Commits in the period, newest first, across the user's most recently pushed repositories or one repo. Each commit carries its author.${tag}`,
       inputSchema: z.object({
         ...PeriodInput,
         repo: z.string().optional().describe('Restrict to "owner/name".'),

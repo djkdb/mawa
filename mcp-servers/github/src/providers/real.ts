@@ -30,11 +30,12 @@ export class RealGitHubProvider implements GitHubProvider {
   }
 
   async getRecentCommits({ since, until, repo, limit }: { since: string; until: string; repo?: string; limit: number }): Promise<Commit[]> {
-    const { data: me } = await this.octokit.users.getAuthenticated();
+    // No `author` filter: commits whose email is not linked to a GitHub account have `author: null`
+    // and would silently disappear. The author field is returned so the model can still attribute.
     const repos = this.splitRepo(repo) ? [this.splitRepo(repo)!] : await this.activeRepos(since);
     const out: Commit[] = [];
     for (const r of repos) {
-      const { data } = await this.octokit.repos.listCommits({ owner: r.owner, repo: r.name, since, until, author: me.login, per_page: 50 });
+      const { data } = await this.octokit.repos.listCommits({ owner: r.owner, repo: r.name, since, until, per_page: 50 });
       for (const c of data) {
         out.push({
           sourceId: `github:commit:${r.owner}/${r.name}@${c.sha.slice(0, 12)}`,
@@ -79,10 +80,13 @@ export class RealGitHubProvider implements GitHubProvider {
   }
 
   async getOpenIssues({ repo, limit }: { repo?: string; limit: number }): Promise<Issue[]> {
+    // Repo-scoped listing when a repo is given; otherwise issues assigned to the user. Both are
+    // plain REST endpoints (no search API), and PRs are filtered out since GitHub returns them as issues.
     const target = this.splitRepo(repo);
-    const q = target ? `repo:${target.owner}/${target.name} is:issue is:open` : 'is:issue is:open assignee:@me';
-    const { data } = await this.octokit.search.issuesAndPullRequests({ q, sort: 'updated', per_page: limit });
-    return data.items.map((i) => {
+    const { data } = target
+      ? await this.octokit.issues.listForRepo({ owner: target.owner, repo: target.name, state: 'open', sort: 'updated', per_page: limit })
+      : await this.octokit.issues.list({ filter: 'assigned', state: 'open', sort: 'updated', per_page: limit });
+    return data.filter((i) => !i.pull_request).map((i) => {
       const fullRepo = i.repository_url.replace('https://api.github.com/repos/', '');
       return {
         sourceId: `github:issue:${fullRepo}#${i.number}`,
