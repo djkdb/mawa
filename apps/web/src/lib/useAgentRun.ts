@@ -1,8 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { AgentEvent, AgentMode, WeeklyWorkReport } from '@mawa/shared';
-import { fetchRun, startRun, subscribeRun } from './api.js';
+import { getClient } from './client.js';
 
-export type RunPhase = 'idle' | 'starting' | 'running' | 'success' | 'error';
+/** Coarse phases shown in the stepper; derived from the event stream, never from a fake percentage. */
+export type RunPhase = 'idle' | 'starting' | 'discovering' | 'running' | 'aggregating' | 'analyzing' | 'report' | 'completed' | 'error';
+
+export const PHASE_ORDER: RunPhase[] = ['starting', 'discovering', 'running', 'aggregating', 'analyzing', 'report', 'completed'];
 
 export interface AgentRunState {
   phase: RunPhase;
@@ -16,6 +19,26 @@ export interface AgentRunState {
 
 const initial: AgentRunState = { phase: 'idle', runId: null, mode: null, events: [], report: null, warnings: [], error: null };
 
+export function phaseFromEvent(type: AgentEvent['type'], prev: RunPhase): RunPhase {
+  switch (type) {
+    case 'agent_run_started':
+      return 'starting';
+    case 'tool_discovery_started':
+    case 'tool_discovered':
+      return 'discovering';
+    case 'tool_call_started':
+    case 'tool_call_completed':
+    case 'tool_call_failed':
+      return 'running';
+    case 'context_aggregated':
+      return 'analyzing';
+    case 'report_generated':
+      return 'report';
+    case 'agent_run_completed':
+      return prev === 'error' ? 'error' : 'completed';
+  }
+}
+
 export function useAgentRun() {
   const [state, setState] = useState<AgentRunState>(initial);
   const unsubscribe = useRef<(() => void) | null>(null);
@@ -23,30 +46,32 @@ export function useAgentRun() {
   useEffect(() => () => unsubscribe.current?.(), []);
 
   const run = useCallback(async (prompt: string, mode: AgentMode) => {
+    const client = getClient();
     unsubscribe.current?.();
     setState({ ...initial, phase: 'starting', mode });
     try {
-      const started = await startRun(prompt, mode);
-      setState((s) => ({ ...s, phase: 'running', runId: started.runId, mode: started.mode, warnings: started.warnings }));
-      unsubscribe.current = subscribeRun(started.runId, {
+      const started = await client.startRun(prompt, mode);
+      setState((s) => ({ ...s, runId: started.runId, mode: started.mode, warnings: started.warnings }));
+      unsubscribe.current = client.subscribeRun(started.runId, {
         onEvent: (e) =>
           setState((s) => ({
             ...s,
             events: [...s.events, e],
+            phase: e.type === 'agent_run_completed' && e.status === 'error' ? 'error' : phaseFromEvent(e.type, s.phase),
             report: e.type === 'report_generated' ? e.report : s.report,
             error: e.type === 'agent_run_completed' && e.status === 'error' ? (e.error ?? 'Run failed') : s.error,
           })),
         onDone: async (status) => {
-          const record = await fetchRun(started.runId).catch(() => null);
+          const record = await client.fetchRun(started.runId).catch(() => null);
           setState((s) => ({
             ...s,
-            phase: status === 'success' ? 'success' : 'error',
+            phase: status === 'success' ? 'completed' : 'error',
             report: record?.report ?? s.report,
             warnings: record?.warnings ?? s.warnings,
             error: record?.error ?? s.error,
           }));
         },
-        onError: (msg) => setState((s) => (s.phase === 'running' ? { ...s, phase: 'error', error: msg } : s)),
+        onError: (msg) => setState((s) => (s.phase === 'completed' || s.phase === 'error' ? s : { ...s, phase: 'error', error: msg })),
       });
     } catch (err) {
       setState((s) => ({ ...s, phase: 'error', error: err instanceof Error ? err.message : String(err) }));
@@ -58,5 +83,6 @@ export function useAgentRun() {
     setState(initial);
   }, []);
 
-  return { state, run, reset };
+  const busy = state.phase !== 'idle' && state.phase !== 'completed' && state.phase !== 'error';
+  return { state, run, reset, busy };
 }

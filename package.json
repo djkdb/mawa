@@ -26,7 +26,9 @@
     "clean": "rimraf --glob \"**/dist\" \"**/*.tsbuildinfo\" --no-glob-ignore node_modules",
     "pretest": "tsc -b",
     "export:portfolio-data": "node scripts/export-portfolio-data.mjs",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
+    "build:demo": "npm run build -w packages/shared && npm run build:demo -w apps/web",
+    "pretest:e2e": "npm run build:demo -w apps/web"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

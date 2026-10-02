@@ -10,10 +10,12 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./demo/*": "./demo/*"
   },
   "files": [
-    "dist"
+    "dist",
+    "demo"
   ],
   "scripts": {
     "build": "tsc -b"

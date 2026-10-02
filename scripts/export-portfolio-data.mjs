@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 /**
- * Generates the portfolio's data snapshots FROM THE REAL CODE so the pitch
- * never drifts from the implementation:
- *   portfolio/src/data/mcp-catalog.json  — tools/list of every MCP server + a sample tools/call output
- *   portfolio/src/data/demo-run.json     — a complete recorded demo run (events + report)
+ * Generates the demo snapshots FROM THE REAL CODE so the apps never drift
+ * from the implementation:
+ *   packages/shared/demo/mcp-catalog.json — tools/list of every MCP server + a sample tools/call output
+ *   packages/shared/demo/demo-runs.json   — complete recorded runs (events + report), one per example prompt
+ * Both apps/web (demo mode) and portfolio import these files.
  * Run after `npm run build`: `npm run export:portfolio-data`.
  */
 import { writeFile } from 'node:fs/promises';
@@ -24,6 +25,32 @@ const SAMPLE_INPUT = {
   calendar__get_upcoming_events: { days: 7, limit: 2 },
   calendar__search_events: { query: 'demo', limit: 2 },
 };
+const KEYWORDS = ['my-ai-work-agent', 'MCP', 'PR', 'OAuth', 'capstone', 'demo', 'algorithm'];
+
+/** Example prompts and the tool plan the scripted provider follows for each (a real LLM would choose itself). */
+const EXAMPLES = [
+  { id: 'weekly-progress', prompt: '이번 주 내 개발 프로젝트 진행 상황을 정리해줘.', plan: undefined },
+  {
+    id: 'priorities',
+    prompt: '이번 주 가장 중요한 작업과 다음 액션을 알려줘.',
+    plan: [
+      { name: 'github__get_pull_requests', input: {} },
+      { name: 'github__get_open_issues', input: {} },
+      { name: 'calendar__get_upcoming_events', input: { days: 7 } },
+      { name: 'gmail__search_project_emails', input: { keywords: KEYWORDS } },
+    ],
+  },
+  {
+    id: 'blockers',
+    prompt: '최근 프로젝트에서 막히고 있는 부분을 찾아줘.',
+    plan: [
+      { name: 'github__get_open_issues', input: {} },
+      { name: 'github__get_pull_requests', input: { state: 'open' } },
+      { name: 'gmail__search_emails', input: { query: 'bug OR blocked OR "action required" OR verification' } },
+      { name: 'gmail__search_project_emails', input: { keywords: KEYWORDS } },
+    ],
+  },
+];
 
 const executor = new McpToolExecutor({ servers: ['github', 'gmail', 'calendar'].map(server), mode: 'demo', clientName: 'portfolio-export' });
 try {
@@ -36,14 +63,18 @@ try {
     catalog.servers[t.server] ??= { tools: [] };
     catalog.servers[t.server].tools.push({ name: t.name, description: t.description, inputSchema: t.inputSchema, sampleInput: SAMPLE_INPUT[key] ?? {}, outputExample: example });
   }
-  await writeFile(new URL('portfolio/src/data/mcp-catalog.json', root), JSON.stringify(catalog, null, 2));
+  await writeFile(new URL('packages/shared/demo/mcp-catalog.json', root), JSON.stringify(catalog, null, 2));
   console.log(`catalog: ${tools.length} tools`);
 
-  const run = await runAgent({ prompt: '이번 주 내 개발 프로젝트 진행 상황을 정리해줘.', mode: 'demo', llm: new ScriptedProvider(), executor });
-  if (run.error) throw new Error(run.error);
-  const demo = { recordedAt: new Date().toISOString(), note: 'Recorded demo run (DEMO MODE, scripted provider, real MCP servers). Replayed in the portfolio, not live.', prompt: '이번 주 내 개발 프로젝트 진행 상황을 정리해줘.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, events: run.events, report: run.report };
-  await writeFile(new URL('portfolio/src/data/demo-run.json', root), JSON.stringify(demo, null, 2));
-  console.log(`demo run: ${run.events.length} events, ${run.report.sections.length} sections`);
+  const runs = [];
+  for (const ex of EXAMPLES) {
+    const run = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new ScriptedProvider(ex.plan), executor });
+    if (run.error) throw new Error(`${ex.id}: ${run.error}`);
+    runs.push({ id: ex.id, prompt: ex.prompt, llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, events: run.events, report: run.report, warnings: run.warnings });
+    console.log(`run ${ex.id}: ${run.events.length} events, ${run.report.sources.length} sources, ${run.report.sections.length} sections`);
+  }
+  const out = { recordedAt: new Date().toISOString(), note: 'Recorded demo runs (DEMO MODE, scripted provider, real MCP servers over stdio, synthetic fixtures). Replayed by apps/web in demo mode and by the portfolio. Not live, not real data.', runs };
+  await writeFile(new URL('packages/shared/demo/demo-runs.json', root), JSON.stringify(out, null, 2));
 } finally {
   await executor.close();
 }

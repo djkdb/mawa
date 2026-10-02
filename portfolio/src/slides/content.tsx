@@ -5,8 +5,8 @@ import { ArrowDown, Check, ExternalLink } from 'lucide-react';
 import { PROJECT, type AgentEvent, type WeeklyWorkReport } from '@mawa/shared';
 import { Eyebrow, Title } from '../components/Slide.js';
 import { LINKS } from '../lib/links.js';
-import catalog from '../data/mcp-catalog.json';
-import demoRun from '../data/demo-run.json';
+import catalog from '@mawa/shared/demo/mcp-catalog.json';
+import demoRuns from '@mawa/shared/demo/demo-runs.json';
 
 const fade = (i = 0) => ({ initial: { opacity: 0, y: 14 }, whileInView: { opacity: 1, y: 0 }, viewport: { once: false, amount: 0.4 }, transition: { delay: 0.08 * i, duration: 0.5 } });
 
@@ -22,9 +22,18 @@ export function Hero({ onExplore }: { onExplore: () => void }) {
         ))}
       </p>
       <p className="mx-auto mt-5 max-w-lg text-sm text-fog lg:mx-0">{PROJECT.descriptionKo}</p>
-      <button type="button" onClick={onExplore} className="mt-10 inline-flex items-center gap-2 rounded-full border border-accent/60 bg-accent/10 px-6 py-3 font-mono text-xs uppercase tracking-[0.3em] text-white transition hover:bg-accent/20">
-        Explore project <ArrowDown className="h-3.5 w-3.5" />
-      </button>
+      <div className="mt-10 flex flex-wrap items-center justify-center gap-3 lg:justify-start">
+        <button type="button" onClick={onExplore} className="inline-flex items-center gap-2 rounded-full border border-accent/60 bg-accent/10 px-6 py-3 font-mono text-xs uppercase tracking-[0.3em] text-white transition hover:bg-accent/20">
+          Explore project <ArrowDown className="h-3.5 w-3.5" />
+        </button>
+        {LINKS.liveApp && (
+          <a href={LINKS.liveApp} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-full border border-line px-5 py-3 font-mono text-xs uppercase tracking-[0.3em] text-slate-200 transition hover:border-accent/60 hover:text-white">
+            Live demo <ExternalLink className="h-3.5 w-3.5" />
+          </a>
+        )}
+        <a href={LINKS.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-2 py-3 font-mono text-xs uppercase tracking-[0.3em] text-fog transition hover:text-white">GitHub</a>
+        <a href={LINKS.instagram} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-2 py-3 font-mono text-xs uppercase tracking-[0.3em] text-fog transition hover:text-white">Instagram</a>
+      </div>
     </div>
   );
 }
@@ -128,8 +137,8 @@ export function Architecture() {
 }
 
 /* 05 ------------------------------------------------------------------ */
-type DemoRun = { recordedAt: string; prompt: string; events: AgentEvent[]; report: WeeklyWorkReport };
-const RUN = demoRun as unknown as DemoRun;
+type DemoRun = { id: string; prompt: string; events: AgentEvent[]; report: WeeklyWorkReport };
+const RUN = (demoRuns as unknown as { runs: DemoRun[] }).runs[0]!;
 
 export function LiveDemo({ active }: { active: boolean }) {
   const [step, setStep] = useState(0);
@@ -193,9 +202,13 @@ export function LiveDemo({ active }: { active: boolean }) {
             </div>
           ))}
         </motion.div>
-        <a href={LINKS.liveApp} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-accent hover:underline">
-          Open the live agent UI <ExternalLink className="h-3 w-3" />
-        </a>
+        {LINKS.liveApp ? (
+          <a href={LINKS.liveApp} target="_blank" rel="noreferrer" className="mt-5 inline-flex items-center gap-1.5 font-mono text-[11px] uppercase tracking-widest text-accent hover:underline">
+            Open the interactive demo <ExternalLink className="h-3 w-3" />
+          </a>
+        ) : (
+          <p className="mt-5 font-mono text-[10px] uppercase tracking-widest text-fog">Interactive demo: run apps/web locally (see README)</p>
+        )}
       </div>
     </div>
   );
@@ -343,6 +356,7 @@ export function Final() {
         <p className="mt-4 font-mono text-lg tracking-[0.3em] text-accent">AI × MCP × AX</p>
         <p className="mt-6 text-sm text-fog">Built by {PROJECT.author.name}</p>
         <div className="mt-6 flex flex-wrap gap-4 font-mono text-xs">
+          {LINKS.liveApp && <a href={LINKS.liveApp} target="_blank" rel="noreferrer" className="glass rounded-lg border-accent/50 px-4 py-2 text-white hover:brightness-110">Live demo</a>}
           <a href={LINKS.github} target="_blank" rel="noreferrer" className="glass rounded-lg px-4 py-2 text-slate-200 hover:text-white">GitHub</a>
           <a href={LINKS.instagram} target="_blank" rel="noreferrer" className="glass rounded-lg px-4 py-2 text-slate-200 hover:text-white">Instagram</a>
           {LINKS.email ? <a href={`mailto:${LINKS.email}`} className="glass rounded-lg px-4 py-2 text-slate-200 hover:text-white">Email</a> : <span className="glass rounded-lg px-4 py-2 text-fog/60" title="Set VITE_CONTACT_EMAIL to enable">Email</span>}
@@ -352,16 +366,19 @@ export function Final() {
           <div className="mt-1 font-mono text-2xl text-accent">{LINKS.instagramHandle}</div>
         </div>
       </div>
-      <div className="flex gap-4">
+      <div className="flex flex-wrap gap-4">
         {[
           ['This portfolio', LINKS.portfolio],
+          ['Live demo', LINKS.liveApp ?? ''],
           ['Instagram', LINKS.instagram],
-        ].map(([label, url]) => (
-          <div key={label} className="glass rounded-2xl p-4 text-center">
-            <QRCodeSVG value={url || 'https://example.invalid'} size={116} bgColor="transparent" fgColor="#e2e8f0" level="M" />
-            <div className="mt-2 font-mono text-[10px] tracking-widest text-fog">{label}</div>
-          </div>
-        ))}
+        ]
+          .filter(([, url]) => Boolean(url))
+          .map(([label, url]) => (
+            <div key={label} className="glass rounded-2xl p-4 text-center">
+              <QRCodeSVG value={url!} size={116} bgColor="transparent" fgColor="#e2e8f0" level="M" />
+              <div className="mt-2 font-mono text-[10px] tracking-widest text-fog">{label}</div>
+            </div>
+          ))}
       </div>
     </div>
   );
