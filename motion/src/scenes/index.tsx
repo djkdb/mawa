@@ -106,7 +106,7 @@ const CALLS = [
   ['GitHub MCP', 'get_pull_requests()', '3 pull requests'],
   ['GitHub MCP', 'get_open_issues()', '4 open issues'],
   ['Calendar MCP', 'get_events()', '4 events'],
-  ['Gmail MCP', 'search_project_emails()', '8 relevant emails'],
+  ['Gmail MCP', 'search_project_emails()', '7 relevant emails'],
   ['Context', 'aggregated', '34 sources'],
 ];
 export function Tools() {

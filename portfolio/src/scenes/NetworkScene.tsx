@@ -16,7 +16,7 @@ const NODES: NodeDef[] = [
 /** Target layouts per scene mode. Agent is index 3. */
 const LAYOUTS: Record<SceneMode, THREE.Vector3[]> = {
   network: [new THREE.Vector3(-3.0, 1.9, 0), new THREE.Vector3(3.0, 1.7, -0.5), new THREE.Vector3(0.2, -2.6, 0.3), new THREE.Vector3(0, -0.2, 0)],
-  scattered: [new THREE.Vector3(-5.5, 2.4, -2), new THREE.Vector3(5.2, 1.8, -3), new THREE.Vector3(1.5, -3.2, -1), new THREE.Vector3(0, 0, 8)],
+  scattered: [new THREE.Vector3(-5.5, 2.6, -2), new THREE.Vector3(5.4, 2.2, -3), new THREE.Vector3(1.5, -3.4, -1), new THREE.Vector3(0, -1, -14)],
   converge: [new THREE.Vector3(-0.9, 0.5, 0), new THREE.Vector3(0.9, 0.5, 0), new THREE.Vector3(0, -0.9, 0), new THREE.Vector3(0, 0, 0)],
   ambient: [new THREE.Vector3(-6, 3, -6), new THREE.Vector3(6, 2.5, -7), new THREE.Vector3(2, -4, -6), new THREE.Vector3(-2, 0, -5)],
 };

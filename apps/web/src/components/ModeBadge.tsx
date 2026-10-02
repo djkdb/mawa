@@ -12,7 +12,7 @@ export function ModeBadge({ mode, size = 'sm' }: { mode: AgentMode; size?: 'sm' 
       title={demo ? 'Synthetic fixture data served by the MCP servers in demo mode. Not your data.' : 'Live data from your connected accounts.'}
     >
       <span className={`h-1.5 w-1.5 rounded-full ${demo ? 'bg-amber-300' : 'bg-emerald-300'}`} />
-      {demo ? 'Demo mode' : 'Real mode'}
+      {demo ? 'Demo mode · synthetic data' : 'Real mode · live data'}
     </span>
   );
 }

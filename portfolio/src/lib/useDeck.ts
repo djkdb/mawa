@@ -10,16 +10,20 @@ export function useDeck(total: number) {
   const ref = useRef<HTMLDivElement>(null);
   const [index, setIndex] = useState(0);
   const [presenting, setPresenting] = useState(false);
+  /** Where we are heading; lets rapid key presses chain even while a smooth scroll is in flight. */
+  const target = useRef(0);
 
   const go = useCallback(
     (next: number) => {
       const el = ref.current;
       if (!el) return;
       const clamped = Math.max(0, Math.min(total - 1, next));
+      target.current = clamped;
       el.scrollTo({ top: clamped * el.clientHeight, behavior: 'smooth' });
     },
     [total],
   );
+  const step = useCallback((delta: number) => go(target.current + delta), [go]);
 
   const togglePresenting = useCallback(async () => {
     if (presenting) {
@@ -37,7 +41,11 @@ export function useDeck(total: number) {
     let raf = 0;
     const onScroll = () => {
       cancelAnimationFrame(raf);
-      raf = requestAnimationFrame(() => setIndex(Math.round(el.scrollTop / el.clientHeight)));
+      raf = requestAnimationFrame(() => {
+        const i = Math.round(el.scrollTop / el.clientHeight);
+        setIndex(i);
+        if (Math.abs(el.scrollTop - i * el.clientHeight) < 2) target.current = i; // settled (wheel/touch)
+      });
     };
     el.addEventListener('scroll', onScroll, { passive: true });
     return () => {
@@ -55,13 +63,13 @@ export function useDeck(total: number) {
         case 'PageDown':
         case ' ':
           e.preventDefault();
-          go(index + (e.shiftKey && e.key === ' ' ? -1 : 1));
+          step(e.shiftKey && e.key === ' ' ? -1 : 1);
           break;
         case 'ArrowLeft':
         case 'ArrowUp':
         case 'PageUp':
           e.preventDefault();
-          go(index - 1);
+          step(-1);
           break;
         case 'Home':
           go(0);
@@ -80,7 +88,7 @@ export function useDeck(total: number) {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [go, index, presenting, togglePresenting, total]);
+  }, [go, step, presenting, togglePresenting, total]);
 
   useEffect(() => {
     const onFs = () => {

@@ -16,8 +16,8 @@ export function Header({ status }: { status: Status | null }) {
       <div className="flex items-center gap-4 font-mono text-[11px] text-fog">
         <span>
           LLM&nbsp;
-          <span className={status?.llm.isModel ? 'text-emerald-300' : 'text-amber-300'}>
-            {status ? (status.llm.isModel ? `${status.llm.provider}/${status.llm.model}` : 'scripted (no API key)') : '…'}
+          <span className={status?.llm.isModel ? 'text-emerald-300' : 'text-amber-300'} title={status?.llm.isModel ? 'A real model generates the report. In demo mode it still runs over synthetic data.' : 'No LLM_API_KEY: a deterministic scripted provider stands in for the model.'}>
+            {status ? (status.llm.isModel ? `${status.llm.provider} · ${status.llm.model}` : 'scripted (no API key)') : '…'}
           </span>
         </span>
         <span>
