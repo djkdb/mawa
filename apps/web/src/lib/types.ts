@@ -25,6 +25,18 @@ export interface RunRecord {
   llm: { provider: string; model: string };
 }
 
+export interface RunSummary {
+  runId: string;
+  mode: AgentMode;
+  prompt: string;
+  status: 'running' | 'success' | 'error';
+  createdAt: string;
+  toolCalls: number;
+  sources: number;
+  /** True for runs shipped with the demo (recorded earlier), false for runs started in this session. */
+  recorded: boolean;
+}
+
 export interface StartRunResult {
   runId: string;
   mode: AgentMode;
@@ -48,5 +60,7 @@ export interface AgentClient {
   startRun(prompt: string, mode: AgentMode): Promise<StartRunResult>;
   subscribeRun(runId: string, handlers: RunSubscription): () => void;
   fetchRun(runId: string): Promise<RunRecord>;
+  /** Recent runs, newest first (without events). */
+  listRuns(): Promise<RunSummary[]>;
   disconnect(provider: 'github' | 'google'): Promise<void>;
 }

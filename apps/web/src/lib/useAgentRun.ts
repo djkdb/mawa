@@ -86,11 +86,18 @@ export function useAgentRun() {
     setState({ phase: 'completed', runId: `recorded_${r.id}`, mode: 'demo', events: r.events, report: r.report, warnings: r.warnings, error: null });
   }, []);
 
+  /** Open a finished run from history (any client). */
+  const openRun = useCallback(async (runId: string) => {
+    const r = await getClient().fetchRun(runId);
+    unsubscribe.current?.();
+    setState({ phase: r.status === 'success' ? 'completed' : 'error', runId: r.runId, mode: r.mode, events: [], report: r.report, warnings: r.warnings, error: r.error ?? null });
+  }, []);
+
   const reset = useCallback(() => {
     unsubscribe.current?.();
     setState(initial);
   }, []);
 
   const busy = state.phase !== 'idle' && state.phase !== 'completed' && state.phase !== 'error';
-  return { state, run, reset, showRecorded, busy };
+  return { state, run, reset, showRecorded, openRun, busy };
 }

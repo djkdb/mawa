@@ -27,7 +27,7 @@ export function ReportView({ report, warnings, recorded }: { report: WeeklyWorkR
       </header>
 
       {stats.length > 0 && (
-        <dl className="mt-5 grid grid-cols-3 gap-px overflow-hidden rounded-lg bg-line sm:grid-cols-5">
+        <dl className="mt-5 grid grid-cols-5 gap-px overflow-hidden rounded-lg bg-line">
           {stats.map((k) => (
             <div key={k} className="bg-surface-2 px-4 py-3" style={{ boxShadow: `inset 0 2px 0 ${SERVER_COLOR[KIND_SERVER[k] ?? 'github']}` }}>
               <dt className="text-xs text-text-3">{KIND_NAME[k]}</dt>

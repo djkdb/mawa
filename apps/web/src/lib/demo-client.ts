@@ -1,6 +1,6 @@
 import { AgentEventSchema, WeeklyWorkReportSchema, type AgentEvent, type AgentMode, type WeeklyWorkReport } from '@mawa/shared';
 import demoRuns from '@mawa/shared/demo/demo-runs.json';
-import type { AgentClient, RunRecord, RunSubscription, StartRunResult, Status } from './types.js';
+import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status } from './types.js';
 
 export interface RecordedRun {
   id: string;
@@ -87,8 +87,7 @@ export class DemoClient implements AgentClient {
     const step = (i: number) => {
       if (cancelled) return;
       if (i >= events.length) {
-        Object.assign(record, { status: 'success', report: record.recorded.report });
-        handlers.onDone('success');
+        handlers.onDone(record.status === 'running' ? 'success' : record.status);
         return;
       }
       const src = events[i]!;
@@ -105,6 +104,8 @@ export class DemoClient implements AgentClient {
         Object.assign(record, { report });
         handlers.onEvent({ ...event, report });
       } else {
+        // The record is final the moment the completion event goes out, so history never shows a stale "running".
+        if (event.type === 'agent_run_completed') Object.assign(record, { status: event.status === 'success' ? 'success' : 'error', report: record.recorded.report });
         handlers.onEvent(event);
       }
       timer = setTimeout(() => step(i + 1), DELAY[event.type] ?? 250);
@@ -116,7 +117,25 @@ export class DemoClient implements AgentClient {
     };
   }
 
+  /** Session runs (newest first) followed by the shipped recordings, so the history is never empty. */
+  async listRuns(): Promise<RunSummary[]> {
+    const session: RunSummary[] = [...this.runs.values()].reverse().map((r) => ({
+      runId: r.runId, mode: 'demo', prompt: r.prompt, status: r.status, createdAt: r.createdAt,
+      toolCalls: r.recorded.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.recorded.report.sources.length, recorded: false,
+    }));
+    const shipped: RunSummary[] = RECORDED.runs.map((r) => ({
+      runId: `recorded_${r.id}`, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: r.report.generatedAt,
+      toolCalls: r.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.report.sources.length, recorded: true,
+    }));
+    return [...session, ...shipped];
+  }
+
   async fetchRun(runId: string): Promise<RunRecord> {
+    if (runId.startsWith('recorded_')) {
+      const r = RECORDED.runs.find((x) => `recorded_${x.id}` === runId);
+      if (!r) throw new Error('Unknown recorded run');
+      return { runId, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: r.report.generatedAt, report: r.report, warnings: r.warnings, llm: r.llm };
+    }
     const r = this.runs.get(runId);
     if (!r) throw new Error('Unknown demo run');
     const { recorded: _recorded, ...record } = r;

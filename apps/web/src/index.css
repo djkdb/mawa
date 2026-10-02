@@ -49,7 +49,7 @@ p { text-wrap: pretty; }
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 
-.topnav { position: sticky; top: 0; z-index: 30; background: rgba(11, 13, 18, 0.78); backdrop-filter: blur(10px); border-bottom: 1px solid var(--color-line); }
+.topnav { position: sticky; top: 0; z-index: 30; background: rgba(11, 13, 18, 0.82); backdrop-filter: blur(10px); border-bottom: 1px solid var(--color-line); }
 .rail a { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: var(--color-text-2); font-size: 14px; }
 .rail a:hover { color: var(--color-text); background: var(--color-surface); }
 .rail a[aria-current="true"] { color: var(--color-text); background: var(--color-surface-2); box-shadow: inset 2px 0 0 var(--color-accent); }

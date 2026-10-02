@@ -1,5 +1,5 @@
 import { AgentEventSchema, type AgentMode } from '@mawa/shared';
-import type { AgentClient, RunRecord, RunSubscription, StartRunResult, Status } from './types.js';
+import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status } from './types.js';
 
 /** Talks to apps/api on the same origin (dev/preview proxy) or VITE_API_URL. */
 export class HttpClient implements AgentClient {
@@ -23,6 +23,13 @@ export class HttpClient implements AgentClient {
     const res = await fetch(`${this.base}/api/agent/runs/${runId}`);
     if (!res.ok) throw new Error(`run ${res.status}`);
     return (await res.json()) as RunRecord;
+  }
+
+  async listRuns(): Promise<RunSummary[]> {
+    const res = await fetch(`${this.base}/api/agent/runs`);
+    if (!res.ok) throw new Error(`runs ${res.status}`);
+    const rows = (await res.json()) as Array<Omit<RunRecord, 'events' | 'report'> & { toolCalls?: number; sources?: number }>;
+    return rows.map((r) => ({ runId: r.runId, mode: r.mode, prompt: r.prompt, status: r.status, createdAt: r.createdAt, toolCalls: r.toolCalls ?? 0, sources: r.sources ?? 0, recorded: false }));
   }
 
   async disconnect(provider: 'github' | 'google'): Promise<void> {

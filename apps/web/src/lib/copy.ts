@@ -62,3 +62,16 @@ export function dateKo(iso: string): string {
 /** One hue per source, used for icons, chips, tiles and activity rows. */
 export const SERVER_COLOR: Record<McpServerId, string> = { github: 'var(--color-github)', gmail: 'var(--color-gmail)', calendar: 'var(--color-calendar)' };
 export const KIND_SERVER: Record<string, McpServerId> = { commit: 'github', pr: 'github', issue: 'github', repo: 'github', msg: 'gmail', event: 'calendar' };
+
+export const TOOL_DESC_KO: Record<string, string> = {
+  get_recent_commits: '기간 내 커밋을 최신순으로 가져옵니다. 최근 푸시된 저장소 전체 또는 지정한 저장소 하나.',
+  get_pull_requests: '기간 내 갱신된 Pull Request를 열림·닫힘·병합 상태와 함께 가져옵니다.',
+  get_open_issues: '나에게 할당된 열린 이슈, 또는 특정 저장소의 열린 이슈를 가져옵니다.',
+  get_repository_activity: '저장소별 활동 요약: 기간 내 커밋 수, 열린 이슈, 마지막 푸시 시각.',
+  search_emails: 'Gmail 검색 문법으로 메일을 찾습니다. 본문 없이 요약만 반환합니다.',
+  get_email: '메일 한 통의 본문을 가져옵니다(길이 제한). 본문은 신뢰할 수 없는 입력으로 취급합니다.',
+  search_project_emails: '저장소·프로젝트·동료 이름 같은 키워드로 프로젝트 관련 메일을 찾습니다. 광고·소셜 메일은 제외.',
+  get_events: '기본 캘린더의 일정을 기간으로 조회합니다. 기본값은 이번 주(월–일).',
+  get_upcoming_events: '지금부터 N일 동안의 다가오는 일정을 가져옵니다.',
+  search_events: '제목·설명·장소를 텍스트로 검색합니다(기본 ±30일).',
+};

@@ -16,7 +16,7 @@ export function PromptPanel({ status, busy, onRun }: { status: Status | null; bu
   return (
     <section id="ask" aria-labelledby="ask-heading" className="surface scroll-mt-20 p-5 sm:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="ask-heading" className="text-lg font-semibold">무엇을 알고 싶으세요?</h2>
+        <h2 id="ask-heading" className="text-lg font-semibold">새 리포트 만들기</h2>
         <span className="text-sm text-text-3">질문을 고르고 실행하세요</span>
       </div>
 
@@ -60,7 +60,7 @@ export function PromptPanel({ status, busy, onRun }: { status: Status | null; bu
           </div>
         )}
         <p className="text-[13px] text-text-3">
-          {IS_DEMO_BUILD ? '샘플 데이터로 기록된 실행을 재생합니다. 이 페이지는 어떤 외부 서비스에도 접속하지 않습니다.' : mode === 'demo' ? '실제 계정 대신 샘플 데이터를 사용합니다.' : `연결된 서비스(${status?.realMode.servers.join(', ')})의 데이터를 읽습니다.`}
+          {IS_DEMO_BUILD ? '데모 워크스페이스: 샘플 데이터로 기록된 실행을 재생합니다. 외부 서비스에는 접속하지 않습니다.' : mode === 'demo' ? '실제 계정 대신 샘플 데이터를 사용합니다.' : `연결된 서비스(${status?.realMode.servers.join(', ')})의 데이터를 읽습니다.`}
         </p>
       </div>
     </section>

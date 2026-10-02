@@ -60,7 +60,7 @@ export function createApp(deps: AppDeps) {
 
   app.get('/api/agent/runs', async (c) => {
     const list = await runs.store.list(20);
-    return c.json(list.map(({ events: _e, report: _r, ...rest }) => rest));
+    return c.json(list.map(({ events, report, ...rest }) => ({ ...rest, toolCalls: events.filter((e) => e.type === 'tool_call_completed').length, sources: report?.sources.length ?? 0 })));
   });
 
   app.get('/api/agent/runs/:id', async (c) => {
