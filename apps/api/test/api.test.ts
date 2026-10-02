@@ -79,3 +79,31 @@ describe('TokenStore', () => {
     expect(() => new TokenStore('/tmp/x', 'short')).toThrow(/64 hex/);
   });
 });
+
+describe('real mode integrity', () => {
+  it('spawns only the connected server in --mode=real and never yields demo fixture ids', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-real-'));
+    const config = loadConfig({ AGENT_MODE: 'demo', LLM_PROVIDER: 'anthropic', TOKEN_STORE_PATH: join(dir, 't.json'), GITHUB_CLIENT_ID: 'id', GITHUB_CLIENT_SECRET: 'secret' });
+    const deps = await createDeps(config);
+    // Simulate a completed OAuth connection with a token that cannot read anything.
+    await deps.store.set({ provider: 'github', accessToken: 'invalid-token-for-test', connectedAt: 'now', account: 'tester' });
+    const app = createApp(deps);
+
+    const status = await (await app.request('/api/status')).json();
+    expect(status.integrations.github.status).toBe('connected');
+    expect(status.realMode.servers).toEqual(['github']);
+    expect(status.realMode.skipped.map((s: { id: string }) => s.id)).toEqual(['gmail', 'calendar']);
+    expect(JSON.stringify(status)).not.toContain('invalid-token-for-test');
+
+    const start = await app.request('/api/agent/run', { method: 'POST', body: JSON.stringify({ prompt: 'x', mode: 'real' }), headers: { 'content-type': 'application/json' } });
+    expect(start.status).toBe(202);
+    const { runId } = await start.json();
+    const text = await (await app.request(`/api/agent/runs/${runId}/events`)).text();
+    expect(text).toContain('"mode":"real"');
+    expect(text).not.toContain('"mode":"demo"');
+    expect(text).not.toContain('demo-user');
+    expect(text).not.toContain('invalid-token-for-test');
+    const discoveryLine = text.split('\n').find((l) => l.startsWith('data: ') && l.includes('"tool_discovery_started"'))!;
+    expect(JSON.parse(discoveryLine.slice(6)).servers).toEqual(['github']);
+  }, 60_000);
+});
