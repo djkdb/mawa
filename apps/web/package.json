@@ -1,0 +1,28 @@
+{
+  "name": "@mawa/web",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Agent UI: ask your workspace, watch MCP tool execution, read the Weekly Work Report.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit -p tsconfig.json && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "dependencies": {
+    "@mawa/shared": "*",
+    "framer-motion": "^13.0.0",
+    "lucide-react": "^1.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "@vitejs/plugin-react": "^6.0.0",
+    "tailwindcss": "^4.3.0",
+    "vite": "^8.0.0"
+  }
+}

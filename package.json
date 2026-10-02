@@ -17,18 +17,20 @@
     "motion"
   ],
   "scripts": {
-    "dev": "npm run dev --workspaces --if-present",
+    "dev": "tsc -b && concurrently -k -n api,web,portfolio -c blue,green,magenta \"npm run dev -w apps/api\" \"npm run dev -w apps/web\" \"npm run dev -w portfolio --if-present\"",
     "build": "npm run build --workspaces --if-present",
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
-    "typecheck": "tsc -b",
+    "typecheck": "tsc -b && npm run typecheck -w apps/web",
     "clean": "rimraf --glob \"**/dist\" \"**/*.tsbuildinfo\" --no-glob-ignore node_modules",
     "pretest": "tsc -b"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",
+    "@playwright/test": "^1.63.0",
     "@types/node": "^22.0.0",
+    "concurrently": "^9.0.0",
     "eslint": "^10.0.0",
     "globals": "^16.0.0",
     "rimraf": "^6.0.0",

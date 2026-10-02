@@ -12,10 +12,11 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsc -b",
-    "typecheck": "tsc -b --noEmit"
+    "build": "tsc -b"
   },
   "dependencies": {
     "zod": "^4.0.0"
