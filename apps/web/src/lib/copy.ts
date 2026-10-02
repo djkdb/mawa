@@ -58,3 +58,7 @@ export function timeKo(iso: string): string {
 export function dateKo(iso: string): string {
   return new Date(iso).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
 }
+
+/** One hue per source, used for icons, chips, tiles and activity rows. */
+export const SERVER_COLOR: Record<McpServerId, string> = { github: 'var(--color-github)', gmail: 'var(--color-gmail)', calendar: 'var(--color-calendar)' };
+export const KIND_SERVER: Record<string, McpServerId> = { commit: 'github', pr: 'github', issue: 'github', repo: 'github', msg: 'gmail', event: 'calendar' };

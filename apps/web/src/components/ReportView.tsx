@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import type { Source, WeeklyWorkReport } from '@mawa/shared';
-import { KIND_NAME, SECTION_TITLE, SOURCE_TYPE_NAME, dateKo, timeKo } from '../lib/copy.js';
+import { KIND_NAME, KIND_SERVER, SECTION_TITLE, SERVER_COLOR, SOURCE_TYPE_NAME, dateKo, timeKo } from '../lib/copy.js';
 import { ModeBadge } from './ModeBadge.js';
 import { SourceChips } from './SourcePopover.js';
 
@@ -17,7 +17,7 @@ export function ReportView({ report, warnings, recorded }: { report: WeeklyWorkR
   for (const s of report.sources) groups.set(s.type, [...(groups.get(s.type) ?? []), s]);
 
   return (
-    <article aria-labelledby="report-heading" className="surface p-5 sm:p-7">
+    <article id="report" aria-labelledby="report-heading" className="surface scroll-mt-20 p-5 sm:p-7">
       <header className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2 id="report-heading" className="text-2xl font-semibold">주간 업무 리포트</h2>
@@ -29,7 +29,7 @@ export function ReportView({ report, warnings, recorded }: { report: WeeklyWorkR
       {stats.length > 0 && (
         <dl className="mt-5 grid grid-cols-3 gap-px overflow-hidden rounded-lg bg-line sm:grid-cols-5">
           {stats.map((k) => (
-            <div key={k} className="bg-surface-2 px-4 py-3">
+            <div key={k} className="bg-surface-2 px-4 py-3" style={{ boxShadow: `inset 0 2px 0 ${SERVER_COLOR[KIND_SERVER[k] ?? 'github']}` }}>
               <dt className="text-xs text-text-3">{KIND_NAME[k]}</dt>
               <dd className="tnum text-2xl font-semibold text-text">{counts.get(k)}</dd>
             </div>

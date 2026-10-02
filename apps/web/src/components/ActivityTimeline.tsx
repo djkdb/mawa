@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { AlertTriangle, Check, ChevronDown, Loader2 } from 'lucide-react';
 import type { AgentEvent } from '@mawa/shared';
-import { summaryKo, toolLabel } from '../lib/copy.js';
+import { SERVER_COLOR, summaryKo, toolLabel } from '../lib/copy.js';
 import type { RunPhase } from '../lib/useAgentRun.js';
 
-interface Step { key: string; label: string; detail?: string; mono?: string; state: 'done' | 'active' | 'failed' }
+interface Step { key: string; label: string; detail?: string; mono?: string; color?: string; state: 'done' | 'active' | 'failed' }
 
 /** Rows a person reads: verbs while running, results when done. Reasoning is never part of the stream. */
 export function stepsFromEvents(events: AgentEvent[], phase: RunPhase): Step[] {
@@ -15,7 +15,7 @@ export function stepsFromEvents(events: AgentEvent[], phase: RunPhase): Step[] {
       case 'agent_run_started': steps.push({ key: 'start', label: '요청을 이해했습니다', state: 'done' }); break;
       case 'tool_discovery_started': steps.push({ key: 'discover', label: '사용할 수 있는 도구를 찾는 중', state: 'active' }); break;
       case 'tool_discovered': { const s = steps.find((x) => x.key === 'discover'); if (s) { s.state = 'done'; s.label = `MCP 서버 ${new Set(e.tools.map((t) => t.server)).size}곳에서 도구 ${e.tools.length}개 발견`; } break; }
-      case 'tool_call_started': { const s: Step = { key: e.call.id, label: toolLabel(e.call.server, e.call.name, false), mono: `${e.call.name}()`, state: 'active' }; tool.set(e.call.id, s); steps.push(s); break; }
+      case 'tool_call_started': { const s: Step = { key: e.call.id, label: toolLabel(e.call.server, e.call.name, false), mono: `${e.call.name}()`, color: SERVER_COLOR[e.call.server], state: 'active' }; tool.set(e.call.id, s); steps.push(s); break; }
       case 'tool_call_completed': { const s = tool.get(e.call.id); if (s) { s.state = 'done'; s.label = toolLabel(e.call.server, e.call.name, true); s.detail = summaryKo(e.result.output.summary); } break; }
       case 'tool_call_failed': { const s = tool.get(e.call.id); if (s) { s.state = 'failed'; s.detail = e.result.error.message; } break; }
       case 'context_aggregated': steps.push({ key: 'ctx', label: `출처 ${e.totalItems}건으로 맥락 구성`, state: 'done' }); steps.push({ key: 'analyze', label: '리포트 작성 중', state: 'active' }); break;
@@ -43,7 +43,7 @@ export function ActivityTimeline({ events, phase, recorded }: { events: AgentEve
     : '에이전트가 도구를 고르고 MCP로 실행하는 중';
 
   return (
-    <section aria-labelledby="activity-heading" className="surface px-5 py-4 sm:px-6">
+    <section id="activity" aria-labelledby="activity-heading" className="surface scroll-mt-20 px-5 py-4 sm:px-6">
       <div className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <h2 id="activity-heading" className="text-[15px] font-semibold">에이전트 활동{recorded && <span className="ml-2 text-sm font-normal text-text-3">기록 재생</span>}</h2>
@@ -65,7 +65,7 @@ export function ActivityTimeline({ events, phase, recorded }: { events: AgentEve
                 {s.state === 'failed' && <AlertTriangle className="h-4 w-4 text-rose-300" aria-label="실패" />}
               </span>
               <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-0.5">
-                <span className={`text-[15px] ${s.state === 'failed' ? 'text-rose-200' : s.state === 'active' ? 'text-text' : 'text-text-2'}`}>{s.label}</span>
+                <span className={`inline-flex items-center gap-2 text-[15px] ${s.state === 'failed' ? 'text-rose-200' : s.state === 'active' ? 'text-text' : 'text-text-2'}`}>{s.color && <span className="h-2 w-2 rounded-full" style={{ background: s.color }} aria-hidden />}{s.label}</span>
                 {s.detail && <span className="tnum text-sm text-text">{s.detail}</span>}
                 {s.mono && <span className="font-mono text-xs text-text-3">{s.mono}</span>}
               </div>

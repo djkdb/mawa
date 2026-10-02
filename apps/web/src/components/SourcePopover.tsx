@@ -1,7 +1,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 import { ExternalLink } from 'lucide-react';
 import type { Source } from '@mawa/shared';
-import { KIND_NAME, SOURCE_TYPE_NAME, timeKo } from '../lib/copy.js';
+import { KIND_NAME, SERVER_COLOR, SOURCE_TYPE_NAME, timeKo } from '../lib/copy.js';
 
 function kindOf(s: Source) { return KIND_NAME[String(s.metadata['kind'] ?? s.id.split(':')[1] ?? '')] ?? ''; }
 
@@ -42,7 +42,8 @@ function Chip({ source, label, open, onToggle }: { source: Source | Source[]; la
   }, [open, onToggle]);
   return (
     <span ref={ref} className="relative inline-block">
-      <button type="button" onClick={onToggle} aria-expanded={open} aria-controls={id} className={`rounded-md px-1.5 py-0.5 text-xs transition ${open ? 'bg-surface-2 text-text' : 'bg-bg text-text-2 hover:text-text'}`}>
+      <button type="button" onClick={onToggle} aria-expanded={open} aria-controls={id} className={`inline-flex items-center gap-1.5 rounded-md px-1.5 py-0.5 text-xs transition ${open ? 'bg-surface-2 text-text' : 'bg-bg text-text-2 hover:text-text'}`}>
+        {!label && <span className="h-1.5 w-1.5 rounded-full" style={{ background: SERVER_COLOR[list[0]!.type] }} aria-hidden />}
         {label ?? chipLabel(list[0]!)}
       </button>
       {open && (

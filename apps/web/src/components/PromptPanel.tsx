@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ArrowRight, CalendarDays, GitBranch, Mail } from 'lucide-react';
 import type { AgentMode, McpServerId } from '@mawa/shared';
 import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
-import { EXAMPLE_META, SERVER_NAME } from '../lib/copy.js';
+import { EXAMPLE_META, SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 
 const ICON: Record<McpServerId, React.ReactNode> = { github: <GitBranch className="h-3.5 w-3.5" aria-hidden />, gmail: <Mail className="h-3.5 w-3.5" aria-hidden />, calendar: <CalendarDays className="h-3.5 w-3.5" aria-hidden /> };
 
@@ -14,7 +14,7 @@ export function PromptPanel({ status, busy, onRun }: { status: Status | null; bu
   const prompt = selected ? (DEMO_EXAMPLES.find((e) => e.id === selected)?.prompt ?? '') : custom;
 
   return (
-    <section aria-labelledby="ask-heading" className="surface p-5 sm:p-6">
+    <section id="ask" aria-labelledby="ask-heading" className="surface scroll-mt-20 p-5 sm:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 id="ask-heading" className="text-lg font-semibold">무엇을 알고 싶으세요?</h2>
         <span className="text-sm text-text-3">질문을 고르고 실행하세요</span>
@@ -29,7 +29,7 @@ export function PromptPanel({ status, busy, onRun }: { status: Status | null; bu
               <span className="text-[15px] font-semibold leading-snug text-text">{meta.title}</span>
               <span className="text-[13px] leading-relaxed text-text-2">{meta.hint}</span>
               <span className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-3">
-                {meta.uses.map((s) => <span key={s} className="inline-flex items-center gap-1">{ICON[s]}{SERVER_NAME[s]}</span>)}
+                {meta.uses.map((s) => <span key={s} className="inline-flex items-center gap-1"><span style={{ color: SERVER_COLOR[s] }}>{ICON[s]}</span>{SERVER_NAME[s]}</span>)}
               </span>
             </button>
           );

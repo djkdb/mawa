@@ -10,7 +10,7 @@ const STEPS: Array<[string, string]> = [
 
 export function HowItWorks() {
   return (
-    <section aria-labelledby="how-heading" className="surface p-5 sm:p-7">
+    <section id="how" aria-labelledby="how-heading" className="surface scroll-mt-20 p-5 sm:p-7">
       <h2 id="how-heading" className="text-lg font-semibold">어떻게 동작하나요</h2>
       <ol className="mt-4 grid gap-x-8 gap-y-5 sm:grid-cols-2">
         {STEPS.map(([title, body], i) => (
