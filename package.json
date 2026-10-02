@@ -22,9 +22,10 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "lint": "eslint .",
-    "typecheck": "tsc -b && npm run typecheck -w apps/web",
+    "typecheck": "tsc -b && npm run typecheck -w apps/web -w portfolio",
     "clean": "rimraf --glob \"**/dist\" \"**/*.tsbuildinfo\" --no-glob-ignore node_modules",
-    "pretest": "tsc -b"
+    "pretest": "tsc -b",
+    "export:portfolio-data": "node scripts/export-portfolio-data.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",
@@ -37,5 +38,8 @@
     "typescript": "^5.9.0",
     "typescript-eslint": "^8.71.0",
     "vitest": "^5.0.0"
+  },
+  "dependencies": {
+    "@mawa/agent-core": "*"
   }
 }
