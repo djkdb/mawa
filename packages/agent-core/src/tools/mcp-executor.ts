@@ -28,7 +28,11 @@ export class McpToolExecutor implements ToolExecutor {
   private connecting: Promise<void> | null = null;
   private toolCache: ToolDefinition[] | null = null;
 
-  constructor(private readonly options: McpToolExecutorOptions) {}
+  readonly servers: readonly McpServerId[];
+
+  constructor(private readonly options: McpToolExecutorOptions) {
+    this.servers = options.servers.map((s) => s.id);
+  }
 
   async connect(): Promise<void> {
     if (!this.connecting) {

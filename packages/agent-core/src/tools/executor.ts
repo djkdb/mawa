@@ -1,10 +1,12 @@
-import type { ToolCall, ToolDefinition, ToolResult } from '@mawa/shared';
+import type { McpServerId, ToolCall, ToolDefinition, ToolResult } from '@mawa/shared';
 
 /**
  * What the agent needs from the outside world. The production implementation
  * is McpToolExecutor (real MCP clients over stdio); tests use an in-memory fake.
  */
 export interface ToolExecutor {
+  /** Servers this executor will talk to; reported in tool_discovery_started. */
+  readonly servers: readonly McpServerId[];
   listTools(): Promise<ToolDefinition[]>;
   callTool(call: ToolCall, signal?: AbortSignal): Promise<ToolResult>;
   close(): Promise<void>;

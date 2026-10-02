@@ -8,6 +8,7 @@ export const fakeTools: ToolDefinition[] = [
 ];
 
 export class FakeExecutor implements ToolExecutor {
+  readonly servers = ['github', 'calendar', 'gmail'] as const;
   calls: ToolCall[] = [];
   constructor(private failing: string[] = []) {}
   async listTools() {

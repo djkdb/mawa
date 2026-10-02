@@ -73,7 +73,7 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
     emit('agent_run_started', { prompt: input.prompt });
 
     // 1. Discover tools from every MCP server.
-    emit('tool_discovery_started', { servers: ['github', 'gmail', 'calendar'] });
+    emit('tool_discovery_started', { servers: [...input.executor.servers] });
     const discovered = await input.executor.listTools();
     const allowed = discovered.filter((d) => !policy.allowedTools || policy.allowedTools.includes(qualifiedToolName(d)));
     emit('tool_discovered', { tools: allowed });

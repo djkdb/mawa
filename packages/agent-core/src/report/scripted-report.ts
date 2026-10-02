@@ -24,21 +24,25 @@ export function buildScriptedReport(ctx: ScriptedContext): LLMReport {
 
   const sections: LLMReport['sections'] = [];
 
-  sections.push({
-    id: 'overview',
-    items: [
-      {
-        text: `This week: ${commits.length} commits, ${prs.length} pull requests, ${issues.length} open issues across ${repos.length || new Set(commits.map((c) => repoOf(c.id))).size} repositories; ${events.length} calendar events and ${emails.length} project-related emails.`,
-        confidence: 'observed',
-        sources: [...commits, ...prs, ...issues, ...events, ...emails].map((s) => s.id).slice(0, 12),
-      },
-      {
-        text: 'Most activity concentrated on the agent/MCP work; coursework repositories saw lighter, steady progress.',
-        confidence: 'inferred',
-        sources: repos.map((r) => r.id),
-      },
-    ],
-  });
+  // Overview mentions only what was actually retrieved; nothing is claimed about services that were not queried.
+  const parts: string[] = [];
+  if (commits.length || prs.length || issues.length) {
+    const repoCount = repos.length || new Set(commits.map((c) => repoOf(c.id))).size;
+    parts.push(`${commits.length} commits, ${prs.length} pull requests, ${issues.length} open issues across ${repoCount} ${repoCount === 1 ? 'repository' : 'repositories'}`);
+  }
+  if (events.length) parts.push(`${events.length} calendar events`);
+  if (emails.length) parts.push(`${emails.length} project-related emails`);
+  const overviewItems: LLMReport['sections'][number]['items'] = [];
+  if (parts.length) {
+    overviewItems.push({ text: `This week: ${parts.join('; ')}.`, confidence: 'observed', sources: [...commits, ...prs, ...issues, ...events, ...emails].map((s) => s.id).slice(0, 12) });
+  }
+  const commitsByRepo = new Map<string, number>();
+  for (const c of commits) commitsByRepo.set(repoOf(c.id), (commitsByRepo.get(repoOf(c.id)) ?? 0) + 1);
+  const top = [...commitsByRepo.entries()].sort((a, b) => b[1] - a[1])[0];
+  if (top && commitsByRepo.size > 1) {
+    overviewItems.push({ text: `Most commit activity landed in ${top[0]} (${top[1]} of ${commits.length} commits).`, confidence: 'inferred', sources: commits.filter((c) => repoOf(c.id) === top[0]).map((c) => c.id) });
+  }
+  sections.push({ id: 'overview', items: overviewItems });
 
   const repoGroups = new Map<string, typeof commits>();
   for (const c of commits) {
