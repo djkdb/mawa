@@ -146,7 +146,9 @@ api ──(5) spawn mcp-servers/github with GITHUB_TOKEN=<token> for this user
 
 Google (Gmail + Calendar) uses the same flow with
 `https://www.googleapis.com/auth/gmail.readonly` and
-`.../calendar.readonly` scopes — **read-only scopes only**.
+`.../calendar.readonly` scopes — read-only. GitHub OAuth Apps have no read-only
+repository scope (`repo` is read/write); a GitHub App with read-only permissions
+is the least-privilege option and is supported via `GITHUB_OAUTH_SCOPES=""`.
 
 Connection status is reported honestly per provider:
 `not_configured` (no client id in env) → `disconnected` → `connected`.
@@ -177,7 +179,8 @@ frontend can never show demo output without the badge.
 - OAuth tokens are encrypted at rest with a key from `SESSION_ENCRYPTION_KEY`
   and are never logged, never sent to the browser, never embedded in prompts.
 - MCP servers get the minimum credential for their job via env at spawn time.
-- Read-only scopes everywhere; the agent has no write tools in v1.
+- Read-only API usage everywhere; Google scopes are read-only, GitHub depends on
+  the app type (see §5). The agent has no write tools in v1.
 - The LLM sees tool *results*, not credentials. Tool results are size-capped
   before being placed in the prompt.
 - Tool policy: allow-list, max 12 tool calls per run, 20 s timeout per call.

@@ -93,7 +93,7 @@ React 19 · TypeScript · Vite 8 · Tailwind 4 · Three.js / React Three Fiber /
 
 ## Real Mode
 
-Real Mode uses only the integrations you have connected through OAuth: the API spawns a server **only** for connected services (GitHub with your token; Gmail and Calendar with your Google token) and skips the rest, so a `real` report never mixes in demo data. `/api/status` reports each integration as `not_configured`, `disconnected` or `connected`, and the UI's Real toggle stays disabled until something is connected. Scopes are read-only (`repo`, `read:user`; `gmail.readonly`, `calendar.readonly`). Tokens are exchanged server-side and encrypted at rest with AES-256-GCM.
+Real Mode uses only the integrations you have connected through OAuth: the API spawns a server **only** for connected services (GitHub with your token; Gmail and Calendar with your Google token) and skips the rest, so a `real` report never mixes in demo data. `/api/status` reports each integration as `not_configured`, `disconnected` or `connected`, and the UI's Real toggle stays disabled until something is connected. Only read endpoints are ever called. Google scopes are read-only (`gmail.readonly`, `calendar.readonly`). **GitHub is different:** an OAuth App's `repo` scope is read *and* write because GitHub offers no read-only repository scope for OAuth Apps. For least privilege, register a **GitHub App** with read-only permissions and set `GITHUB_OAUTH_SCOPES=""` (see [`docs/SETUP.md`](docs/SETUP.md)). Tokens are exchanged server-side and encrypted at rest with AES-256-GCM.
 
 ## Environment Variables
 
@@ -104,7 +104,8 @@ See [`.env.example`](.env.example). Nothing is hard-coded; `.env` is git-ignored
 | `AGENT_MODE` | `demo` (default) or `real` |
 | `LLM_PROVIDER` | `anthropic` (default), `openai`, `openai-compatible`, `scripted` |
 | `LLM_API_KEY`, `LLM_MODEL`, `LLM_BASE_URL` | provider credentials; `LLM_BASE_URL` for OpenAI-compatible endpoints |
-| `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | GitHub OAuth App |
+| `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | GitHub OAuth App or GitHub App OAuth credentials |
+| `GITHUB_OAUTH_SCOPES` | scopes for an OAuth App (default `read:user repo`); set to empty for a GitHub App |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth client |
 | `SESSION_ENCRYPTION_KEY` | 64 hex chars (`openssl rand -hex 32`); without it tokens are memory-only |
 | `API_PORT`, `WEB_ORIGIN`, `API_PUBLIC_URL`, `TOKEN_STORE_PATH` | server settings |
@@ -124,7 +125,7 @@ OAuth app and LLM configuration for Real Mode: [`docs/SETUP.md`](docs/SETUP.md).
 ```bash
 npm run dev        # builds TS packages, then starts api (:3001), web (:5173), portfolio (:5174)
 npm run build      # builds every workspace (shared, agent-core, mcp servers, api, web, portfolio; motion typechecks)
-npm run test       # vitest: schemas, MCP servers over stdio, agent loop, API (39 tests)
+npm run test       # vitest: schemas, MCP servers over stdio, agent loop, API (48 tests)
 npm run test:e2e   # Playwright: real browser against the built API + web (run npm run build first)
 npm run lint       # eslint
 npm run typecheck  # tsc -b + Vite apps
@@ -134,7 +135,7 @@ npm run typecheck  # tsc -b + Vite apps
 
 | Server | Tools | Real provider |
 | --- | --- | --- |
-| `mcp-servers/github` | `get_recent_commits`, `get_pull_requests`, `get_open_issues`, `get_repository_activity` | GitHub REST via `@octokit/rest`, `GITHUB_TOKEN` |
+| `mcp-servers/github` | `get_recent_commits`, `get_pull_requests`, `get_open_issues`, `get_repository_activity` | GitHub REST via `@octokit/rest`, `GITHUB_TOKEN` (verified against the real API: commits, PRs, issues of this repository) |
 | `mcp-servers/gmail` | `search_emails`, `get_email`, `search_project_emails` | Gmail API, `gmail.readonly` |
 | `mcp-servers/calendar` | `get_events`, `get_upcoming_events`, `search_events` | Calendar API, `calendar.readonly` |
 

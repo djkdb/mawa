@@ -41,7 +41,7 @@ export function IntegrationsPanel({ status, onDisconnect }: { status: Status | n
         <Row icon={<CalendarDays className="h-4 w-4" />} name="Google Calendar" status={go.status} account={go.account} connectUrl={go.connectUrl} onDisconnect={() => onDisconnect('google')} />
       </ul>
       <p className="mt-3 text-[11px] leading-relaxed text-fog">
-        Read-only scopes. Tokens are exchanged server-side and {status.tokenStore.persistent ? 'stored encrypted at rest.' : 'kept in memory only until SESSION_ENCRYPTION_KEY is set.'}
+        Read-only API usage (Google: read-only scopes; GitHub OAuth App: repo scope is read/write, see docs/SETUP.md). Tokens are exchanged server-side and {status.tokenStore.persistent ? 'stored encrypted at rest.' : 'kept in memory only until SESSION_ENCRYPTION_KEY is set.'}
       </p>
     </section>
   );

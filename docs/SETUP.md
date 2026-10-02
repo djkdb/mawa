@@ -21,7 +21,17 @@ Without `LLM_API_KEY` the scripted provider is used and the UI says so.
 2. Homepage URL: `http://localhost:5173`. Authorization callback URL: `http://localhost:3001/auth/github/callback`.
 3. Put the client id and secret into `.env` as `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`.
 
-Scopes requested: `read:user`, `repo` (needed to read private repository activity; only read endpoints are called).
+Scopes requested by default: `read:user`, `repo`. **`repo` is a read/write scope** — GitHub OAuth Apps have no read-only repository scope, and `public_repo` is write-capable too. The agent only calls read endpoints, but the token could do more; treat it accordingly.
+
+### Least privilege: use a GitHub App instead (recommended)
+
+1. GitHub → Settings → Developer settings → GitHub Apps → New GitHub App.
+2. Callback URL: `http://localhost:3001/auth/github/callback`; enable "Request user authorization (OAuth) during installation".
+3. Permissions (Repository): Contents **Read-only**, Issues **Read-only**, Pull requests **Read-only**, Metadata **Read-only**. Account: Email addresses Read-only (optional).
+4. Install the app on your account/repositories.
+5. Put the app's Client ID / Client secret into `.env` as `GITHUB_CLIENT_ID` / `GITHUB_CLIENT_SECRET`, and set `GITHUB_OAUTH_SCOPES=` (empty). GitHub App user tokens take their permissions from the app, so no scope parameter is sent.
+
+The authorization-code flow is identical for both app types; only the scope handling differs.
 
 ## 3. Google OAuth client (Gmail + Calendar)
 

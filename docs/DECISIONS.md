@@ -163,3 +163,20 @@ with nothing connected is refused.
 **Why.** Mixing demo fixtures into a report labelled `real` would be exactly
 the kind of fake claim the project rules out. Partial real data, clearly
 scoped, is better than blended data.
+
+---
+
+## ADR-012 — GitHub least privilege: document the scope gap, support GitHub Apps
+
+**Context.** GitHub OAuth Apps cannot request a read-only repository scope;
+`repo` grants write access even though this project only reads. Earlier docs
+said "read-only scopes", which was true for Google and false for GitHub.
+
+**Decision.** Keep the OAuth App flow (default scopes `read:user repo`) for a
+quick start, add `GITHUB_OAUTH_SCOPES` so a GitHub App (whose user tokens carry
+the app's read-only permissions) can be used with the same code path, and
+state the difference between "read-only API usage" and "read-only OAuth scope"
+in README, SETUP, ARCHITECTURE and the UI.
+
+**Why.** Honesty over convenience; the GitHub App path is the real
+least-privilege answer and costs one env var in this architecture.

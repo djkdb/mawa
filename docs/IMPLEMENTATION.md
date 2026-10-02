@@ -36,7 +36,7 @@ Each entry answers the three questions for one core feature and points at the co
 
 ## How are data permissions managed?
 
-**What.** OAuth 2.0 authorization-code flow in `apps/api/src/auth/oauth.ts`, read-only scopes, an encrypted token store, per-server credential injection.
+**What.** OAuth 2.0 authorization-code flow in `apps/api/src/auth/oauth.ts`, read-only Google scopes (GitHub: read-only API usage; OAuth App `repo` scope is read/write, GitHub App permissions can be read-only), an encrypted token store, per-server credential injection.
 
 **Why.** A work agent reads sensitive data. The blast radius has to be limited by design: the browser never holds tokens, the model never sees them, and each MCP server gets only its own.
 

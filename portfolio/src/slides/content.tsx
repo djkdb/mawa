@@ -84,7 +84,7 @@ const ARCH: Array<{ id: string; label: string; detail: string; code: string; lev
   { id: 'github', label: 'GitHub MCP', detail: 'get_recent_commits · get_pull_requests · get_open_issues · get_repository_activity', code: 'mcp-servers/github', level: 3 },
   { id: 'gmail', label: 'Gmail MCP', detail: 'search_emails · get_email · search_project_emails', code: 'mcp-servers/gmail', level: 3 },
   { id: 'calendar', label: 'Calendar MCP', detail: 'get_events · get_upcoming_events · search_events', code: 'mcp-servers/calendar', level: 3 },
-  { id: 'ext', label: 'EXTERNAL SERVICES', detail: 'GitHub REST (user token), Gmail API and Calendar API (read-only OAuth scopes). In Demo Mode the servers serve fixtures instead.', code: 'mcp-servers/*/src/providers/', level: 4 },
+  { id: 'ext', label: 'EXTERNAL SERVICES', detail: 'GitHub REST (user token), Gmail API and Calendar API. Only read endpoints are called; Google scopes are read-only, GitHub OAuth App scope is not (documented). In Demo Mode the servers serve fixtures instead.', code: 'mcp-servers/*/src/providers/', level: 4 },
 ];
 
 export function Architecture() {
@@ -282,7 +282,7 @@ export function Learnings() {
     ['MCP Architecture', 'Servers own credentials and schemas; the agent only sees tools/list and tools/call.'],
     ['Tool Calling', 'The model proposes calls; a policy (allow-list, budget, timeout) decides what runs.'],
     ['Agent Workflow', 'discover → plan → execute → aggregate → analyze → validate, as explicit events.'],
-    ['API Integration', 'OAuth code flow server-side, read-only scopes, tokens encrypted at rest.'],
+    ['API Integration', 'OAuth code flow server-side, read-only API usage, tokens encrypted at rest.'],
     ['Context Aggregation', 'Every tool row becomes a Source with a stable id; de-dup, sort, cap.'],
     ['AI Evaluation', 'Reports are validated mechanically: unknown citations are dropped, not trusted.'],
     ['Automation', 'The same pipeline runs on fixtures or live data; Demo Mode is a mode, not a mock.'],
