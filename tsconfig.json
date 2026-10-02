@@ -12,6 +12,9 @@
     },
     {
       "path": "mcp-servers/calendar"
+    },
+    {
+      "path": "packages/agent-core"
     }
   ]
 }

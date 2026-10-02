@@ -54,7 +54,7 @@ export const ToolCallFailedSchema = EventBaseSchema.extend({
 export const ContextAggregatedSchema = EventBaseSchema.extend({
   type: z.literal('context_aggregated'),
   /** Number of normalized context items per source, e.g. { github: 19, gmail: 8 }. */
-  counts: z.record(McpServerIdSchema, z.number().int().nonnegative()),
+  counts: z.partialRecord(McpServerIdSchema, z.number().int().nonnegative()),
   totalItems: z.number().int().nonnegative(),
 });
 
