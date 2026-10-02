@@ -1,0 +1,23 @@
+{
+  "name": "@mawa/api",
+  "version": "0.1.0",
+  "private": true,
+  "description": "HTTP host for the agent: runs, SSE activity stream, OAuth, integration status.",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc -b",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@hono/node-server": "^2.1.0",
+    "@mawa/agent-core": "*",
+    "@mawa/shared": "*",
+    "googleapis": "^182.0.0",
+    "hono": "^4.13.0",
+    "zod": "^4.0.0"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.0"
+  }
+}
