@@ -60,7 +60,7 @@ describe('runAgent with ScriptedProvider and a fake executor', () => {
         return { text: '', toolCalls: [{ id: 'a', name: 'gmail__search_project_emails', input: {} }, { id: 'b', name: 'github__get_recent_commits', input: {} }], stopReason: 'tool_use' };
       },
     };
-    const result = await runAgent({ prompt: 'x', mode: 'demo', llm: guesser, executor, period, dataPolicy: { allowedTools: ['github__get_recent_commits'], exclude: [], maskEmails: true, maskPhones: true } });
+    const result = await runAgent({ prompt: 'x', mode: 'demo', llm: guesser, executor, period, dataPolicy: { allowedTools: ['github__get_recent_commits'], exclude: [], maskEmails: true, maskPii: true } });
     expect(seen[0]!.tools!.map((t) => t.name)).toEqual(['github__get_recent_commits']);
     expect(executor.calls.map((c) => c.name)).toEqual(['get_recent_commits']);
     const denied = result.events.filter((e) => e.type === 'tool_call_denied');

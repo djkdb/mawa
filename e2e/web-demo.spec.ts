@@ -189,7 +189,7 @@ test('trust: validation demo shows the dropped citation, data-use panel, injecti
   await expect(page.locator('#report').getByText(/^근거 · /).first()).toBeVisible();
 
   const panel = page.getByRole('region', { name: '데이터 사용 내역' });
-  await expect(panel).toContainText(/메일 주소 \d+개 · 전화번호·학번 \d+개 가림/);
+  await expect(panel).toContainText(/메일 주소 \d+개 · 개인정보 \d+개 가림/);
   await expect(panel).toContainText('LLM·리포트에서 제외 1건');
   await panel.getByRole('button', { name: '자세히' }).click();
   await expect(panel).toContainText('리포트 작성 요청');
@@ -257,11 +257,28 @@ test('audit log lists reads, LLM payloads and the refused call; the policy demo 
   await expect(table.locator('tbody tr')).toHaveCount(1);
   await expect(table).toContainText('get_email');
   await expect(table).toContainText('허용 목록에 없는 도구');
+  // Hash chain: the log verifies; a copy with one edited line fails at that line.
+  await page.getByRole('button', { name: '검증', exact: true }).click();
+  await expect(page.getByRole('status').filter({ hasText: '현재 로그' })).toContainText('모두 일치');
+  await page.getByRole('button', { name: '한 줄 바꿔서 검증' }).click();
+  await expect(page.getByRole('status').filter({ hasText: '바꾼 사본' })).toContainText('3번째 줄에서 검증 실패');
+  // Another MCP client through the gateway, with its own chained log.
+  const gw = page.getByRole('region', { name: /게이트웨이 기록/ });
+  await gw.getByRole('button', { name: '자세히' }).click();
+  await expect(gw).toContainText('claude-code');
+  await expect(gw).toContainText('주민등록번호');
+  await gw.getByRole('button', { name: '체인 검증' }).click();
+  await expect(gw.getByRole('status')).toContainText('모두 일치');
 
   await page.goto(`${DEMO}#/report/recorded_policy-strict`);
   const compare = page.getByRole('region', { name: /정책 비교/ });
   await expect(compare).toContainText('호출 단계에서 거절');
-  await expect(compare).toContainText('가린 전화번호·학번');
+  await expect(compare).toContainText('가린 개인정보');
+  // Three recorded policies; picking one switches the report.
+  await expect(compare.getByRole('link', { name: /엄격한 정책/ })).toHaveAttribute('aria-current', 'page');
+  await compare.getByRole('link', { name: /정책 없음/ }).click();
+  await expect(page).toHaveURL(/recorded_policy-off$/);
+  await page.goto(`${DEMO}#/report/recorded_policy-strict`);
   await page.getByRole('button', { name: /단계 보기/ }).click();
   await expect(page.getByText(/정책이 gmail\.get_email 호출을 거절함/)).toBeVisible();
   expect(errors).toEqual([]);

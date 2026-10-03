@@ -221,6 +221,27 @@
       "url": "https://mail.google.com/mail/u/0/#inbox/demo0011",
       "body": "캡스톤 발표 끝나면 연락해. 반찬 보내줄게.",
       "truncated": false
+    },
+    {
+      "sourceId": "gmail:msg:demo0012",
+      "messageId": "demo0012",
+      "threadId": "tdemo0012",
+      "subject": "[학생지원팀] 장학금 지급 정보 확인 요청",
+      "from": "학생지원팀 <scholarship@cbnu.example.ac.kr>",
+      "to": [
+        "seongjun@cbnu.example.ac.kr"
+      ],
+      "date": {
+        "$daysAgo": 1
+      },
+      "snippet": "등록된 정보: 주민등록번호 040512-3123456, 지급 계좌: 농협 352-1234-5678-93. 틀린 내용은 10월 9일까지 학생 포털에서 고쳐 주세요.",
+      "labels": [
+        "INBOX",
+        "UNREAD"
+      ],
+      "url": "https://mail.google.com/mail/u/0/#inbox/demo0012",
+      "body": "장학금 지급을 위해 등록된 정보를 확인해 주세요.\n주민등록번호 040512-3123456\n지급 계좌: 농협 352-1234-5678-93 (본인 명의)\n틀린 내용은 10월 9일까지 학생 포털에서 고쳐 주세요.",
+      "truncated": false
     }
   ]
 }

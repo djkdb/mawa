@@ -31,9 +31,9 @@ const SAMPLE_INPUT = {
 const KEYWORDS = ['my-ai-work-agent', 'team-mate', '캡스톤', '과제', '퀴즈', '스터디', '인턴', '코딩테스트', '장학금', '발표'];
 
 /** The demo workspace's data policy (Settings shows it): family mail and ads never reach the LLM or the report. */
-export const DEMO_POLICY = { exclude: ['엄마', '쿠폰'], maskEmails: true, maskPhones: true };
+export const DEMO_POLICY = { exclude: ['엄마', '쿠폰'], maskEmails: true, maskPii: true };
 /** The policy comparison: the same question with no policy, and under a strict one (mail only through the project-scoped search). */
-const NO_POLICY = { exclude: [], maskEmails: false, maskPhones: false };
+const NO_POLICY = { exclude: [], maskEmails: false, maskPii: false };
 
 /** Example prompts and the tool plan the scripted provider follows for each (a real LLM would choose itself). */
 const EXAMPLES = [

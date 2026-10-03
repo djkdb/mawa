@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { REPORT_SECTION_ORDER, REPORT_SECTION_TITLES } from '@mawa/shared';
 import type { AggregatedContext } from '../context/aggregate.js';
-import { promptJson, type MaskOptions } from './guard.js';
+import { promptJson, type MaskOptions, type PiiKind } from './guard.js';
 
 export const CONTEXT_BLOCK_START = '<aggregated_context>';
 export const CONTEXT_BLOCK_END = '</aggregated_context>';
@@ -42,8 +42,9 @@ export interface AnalysisPrompt {
   text: string;
   /** Email addresses masked before sending. */
   maskedEmails: number;
-  /** Phone numbers and 학번 masked before sending. */
-  maskedPhones: number;
+  /** Other personal identifiers masked before sending, total and per kind. */
+  maskedPii: number;
+  piiKinds: Partial<Record<PiiKind, number>>;
   /** Field names sent per item (beyond sourceId/kind/title/timestamp/summary). */
   fields: string[];
 }
@@ -82,7 +83,7 @@ Hard rules:
 ${CONTEXT_BLOCK_START}
 ${masked.text}
 ${CONTEXT_BLOCK_END}`;
-  return { text, maskedEmails: masked.count, maskedPhones: masked.phones, fields };
+  return { text, maskedEmails: masked.count, maskedPii: masked.pii, piiKinds: masked.piiKinds, fields };
 }
 
 const FIELD_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'assignees', 'createdAt', 'updatedAt', 'from', 'snippet', 'start', 'end', 'location', 'reviewComments', 'commitsInPeriod', 'openIssues', 'mergedAt', 'allDay', 'course', 'module', 'due', 'action', 'submission'] as const;

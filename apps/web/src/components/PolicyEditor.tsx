@@ -21,11 +21,11 @@ export function PolicyEditor() {
   const [tools, setTools] = useState<Set<string>>(new Set(saved?.allowedTools ?? ALL_TOOLS));
   const [exclude, setExclude] = useState((saved?.exclude ?? []).join(', '));
   const [mask, setMask] = useState(saved?.maskEmails ?? true);
-  const [maskPh, setMaskPh] = useState(saved?.maskPhones ?? true);
+  const [maskPh, setMaskPh] = useState(saved?.maskPii ?? true);
   const [msg, setMsg] = useState<string | null>(null);
   const ro = IS_DEMO_BUILD;
   const save = () => {
-    const p: Partial<DataPolicy> = { exclude: exclude.split(/[,\n]/).map((x) => x.trim()).filter(Boolean).slice(0, 30), maskEmails: mask, maskPhones: maskPh, ...(tools.size < ALL_TOOLS.length ? { allowedTools: [...tools] } : {}) };
+    const p: Partial<DataPolicy> = { exclude: exclude.split(/[,\n]/).map((x) => x.trim()).filter(Boolean).slice(0, 30), maskEmails: mask, maskPii: maskPh, ...(tools.size < ALL_TOOLS.length ? { allowedTools: [...tools] } : {}) };
     setPolicy(p);
     setMsg('저장했습니다. 다음 실행부터 적용됩니다.');
   };
@@ -50,7 +50,7 @@ export function PolicyEditor() {
       </label>
       <label className="mt-2 flex items-center gap-2 text-sm text-text-2">
         <input type="checkbox" checked={maskPh} disabled={ro} onChange={(e) => setMaskPh(e.target.checked)} className="h-4 w-4" />
-        LLM에 보낼 때 전화번호·학번 가리기 (010-****-****)
+        개인정보 가리기: 전화번호·학번·주민등록번호·계좌·카드번호 (LLM 요청과 화면 모두)
       </label>
 
       <fieldset className="mt-4" disabled={ro}>

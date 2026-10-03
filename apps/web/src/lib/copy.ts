@@ -144,3 +144,7 @@ export const CATEGORIES: Array<{ key: string; label: string; color: string }> = 
   { key: '기타', label: '기타', color: 'var(--color-cat-other)' },
 ];
 export const categoryOf = (key: string | undefined) => CATEGORIES.find((c) => c.key === key) ?? CATEGORIES[CATEGORIES.length - 1]!;
+
+/** Kinds of personal identifiers the agent masks for the LLM (DLP-style detection). */
+export const PII_LABEL: Record<string, string> = { phone: '전화번호', studentNo: '학번', rrn: '주민등록번호', account: '계좌번호', card: '카드번호' };
+export const piiBreakdown = (kinds: Partial<Record<string, number>> | undefined) => Object.entries(kinds ?? {}).filter(([, n]) => (n ?? 0) > 0).map(([k, n]) => `${PII_LABEL[k] ?? k} ${n}`).join(' · ');

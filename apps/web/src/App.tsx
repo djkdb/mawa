@@ -62,8 +62,15 @@ export default function App() {
   // Policy demo: the recording this run is compared against (same question, no policy).
   const recId = IS_DEMO_BUILD && state.runId ? recordedIdOf(state.runId) : null;
   const rec = recId ? getRecordedRun(recId) : null;
-  const base = rec?.baseline ? getRecordedRun(rec.baseline) : null;
-  const comparison = rec && base && base.id !== rec.id ? { before: base, label: rec.policyLabel ?? '정책 적용' } : null;
+  // The weekly question is recorded under three policies; on any of them, show the comparison and a switcher.
+  const POLICY_SET = [
+    { id: 'policy-off', label: '정책 없음', hint: '가리기·제외·도구 제한 끔' },
+    { id: 'weekly-progress', label: '기본 정책', hint: '가족·광고 메일 제외, 가리기' },
+    { id: 'policy-strict', label: '엄격한 정책', hint: '메일 전체 검색·본문 도구 차단' },
+  ];
+  const comparison = rec && POLICY_SET.some((p) => p.id === rec.id)
+    ? { current: rec.id, columns: POLICY_SET.flatMap((p) => { const r = getRecordedRun(p.id); return r ? [{ ...p, events: r.events }] : []; }) }
+    : null;
 
   return (
     <Shell route={route} reportHref={reportHref} navigate={(r) => navigate(r)} status={status}>
@@ -85,7 +92,7 @@ export default function App() {
         <div className="mx-auto flex max-w-5xl flex-col gap-5">
           {state.report ? (
             <>
-              {comparison && <PolicyCompare before={comparison.before.events} after={state.events} beforeRunId={`recorded_${comparison.before.id}`} labels={[comparison.before.policyLabel ?? '기준', comparison.label]} />}
+              {comparison && comparison.columns.length > 1 && <PolicyCompare key={comparison.current} columns={comparison.columns} current={comparison.current} defaultOpen={comparison.current !== 'weekly-progress'} />}
               <ReportView key={state.runId ?? 'none'} report={state.report} warnings={state.warnings} recorded={recorded} prompt={state.prompt} onAnnounce={setAnnounce} events={state.events} note={state.note ?? null} runId={state.runId} />
               <DataUsePanel events={state.events} runId={state.runId} />
               <ActivityTimeline events={state.events} phase={state.phase} recorded={recorded} runId={state.runId} />

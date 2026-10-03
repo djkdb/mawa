@@ -317,3 +317,26 @@ known only after the first response (`modelUsage`).
 **Why.** Access control that only filters a list is a convention, not a control; the boundary
 is where a gateway enforces it. Phone numbers and student numbers are the PII a student's
 mail actually contains.
+
+## ADR-019 — The policy layer as an MCP gateway, a hash-chained audit, broader PII detection
+
+**Decision.**
+- `mcp-servers/gateway` is an MCP server that is also an MCP client of the four servers. It
+  applies the same data policy as `runAgent` (allow-list at `tools/list` and `tools/call`,
+  exclusions, masking, instruction screening) to whatever client connects, and appends every
+  call to a JSONL audit file whose lines carry `seq`, `prev` and a SHA-256 `hash` over the
+  canonical entry. On restart it continues the chain from the last line.
+- The same chain code (`@mawa/shared` `audit-chain`, WebCrypto) runs in the browser: the web
+  audit page verifies its log, shows an edited copy failing at the edited line, verifies an
+  uploaded file, and exports chained JSONL; `npm run audit:verify` checks files from either.
+- `maskPii` replaces the phone-only masking: phone, 학번 (next to the word), 주민등록번호
+  (date-shaped, hyphen required), account numbers (after 계좌/입금), card numbers (4-4-4-4,
+  Luhn). Counts per kind are recorded (`piiKinds`). When the policy masks PII, report source
+  previews are masked on screen too.
+- A recorded run of Claude Code (headless) through the gateway is shipped
+  (`npm run record:gateway-run`): its answer was written from masked results and the gateway's
+  audit names the client `claude-code`.
+
+**Why.** A policy inside one agent controls that agent only; a gateway controls the path to the
+data. A log that can be edited silently is a diary, not an audit. **Limits:** see
+docs/ENTERPRISE.md (no user identity, the chain head is not anchored externally, regex DLP).

@@ -20,7 +20,8 @@ export interface AuditRow {
   detail?: string;
   bytes?: number;
   maskedEmails?: number;
-  maskedPhones?: number;
+  maskedPii?: number;
+  piiKinds?: Partial<Record<string, number>>;
   provider?: string;
 }
 
@@ -43,7 +44,7 @@ export function auditRows(events: AgentEvent[]): AuditRow[] {
       const [server, tool] = e.call.name.split('__') as [McpServerId, string];
       out.push({ ...base, action: 'denied', server, tool, input: e.call.input, detail: '허용 목록에 없는 도구' });
     } else if (e.type === 'policy_applied') for (const x of e.excluded) out.push({ ...base, action: 'excluded', sourceIds: [x.sourceId], detail: `규칙 “${x.rule}”` });
-    else if (e.type === 'llm_request') out.push({ ...base, action: 'llm', provider: `${e.provider}/${e.model}`, detail: `${e.phase === 'plan' ? '계획' : '리포트 작성'} · ${e.contents.join(' · ')}`, bytes: e.bytes, maskedEmails: e.maskedEmails, maskedPhones: e.maskedPhones ?? 0, sentToLlm: true });
+    else if (e.type === 'llm_request') out.push({ ...base, action: 'llm', provider: `${e.provider}/${e.model}`, detail: `${e.phase === 'plan' ? '계획' : '리포트 작성'} · ${e.contents.join(' · ')}`, bytes: e.bytes, maskedEmails: e.maskedEmails, maskedPii: e.maskedPii ?? 0, piiKinds: e.piiKinds ?? {}, sentToLlm: true });
   }
   return out;
 }
@@ -72,7 +73,7 @@ export function policyFigures(events: AgentEvent[]) {
     blockedTools: pol?.blockedTools.length ?? 0,
     excluded: pol?.excluded.length ?? 0,
     maskedEmails: Math.max(0, ...llm.map((e) => e.maskedEmails)),
-    maskedPhones: Math.max(0, ...llm.map((e) => e.maskedPhones ?? 0)),
+    maskedPii: Math.max(0, ...llm.map((e) => e.maskedPii ?? 0)),
     sources,
     analysisBytes: analysis?.bytes ?? 0,
   };

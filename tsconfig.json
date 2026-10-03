@@ -20,6 +20,9 @@
       "path": "packages/agent-core"
     },
     {
+      "path": "mcp-servers/gateway"
+    },
+    {
       "path": "apps/api"
     }
   ]

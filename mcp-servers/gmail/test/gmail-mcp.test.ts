@@ -17,10 +17,10 @@ describe('Gmail MCP server (demo mode, stdio)', () => {
     expect(tools.map((t) => t.name).sort()).toEqual(['get_email', 'search_emails', 'search_project_emails']);
   });
 
-  it('search_project_emails finds the 10 relevant demo emails for the student keywords and skips promotions', async () => {
+  it('search_project_emails finds the 11 relevant demo emails for the student keywords and skips promotions', async () => {
     const res = await client.callTool({ name: 'search_project_emails', arguments: { keywords: ['my-ai-work-agent', 'team-mate', '캡스톤', '과제', '퀴즈', '스터디', '인턴', '코딩테스트', '장학금', '발표'] } });
     const sc = res.structuredContent as { data: Array<{ sourceId: string; subject: string }> };
-    expect(sc.data).toHaveLength(10);
+    expect(sc.data).toHaveLength(11);
     expect(sc.data.every((e) => e.sourceId.startsWith('gmail:msg:'))).toBe(true);
     expect(sc.data.some((e) => e.subject.includes('쿠폰'))).toBe(false);
   });

@@ -1,7 +1,233 @@
 {
-  "generatedAt": "2026-10-03T16:15:07.942Z",
+  "generatedAt": "2026-10-03T16:51:58.309Z",
   "note": "Generated from the real MCP servers in demo mode by scripts/export-portfolio-data.mjs. Output examples are DEMO DATA. `connection` and `wire` are the recorded initialize handshake and JSON-RPC messages.",
   "servers": {
+    "lms": {
+      "tools": [
+        {
+          "name": "get_courses",
+          "description": "Courses the user is enrolled in on the LMS (Moodle / CBNU eCampus). [DEMO DATA]",
+          "inputSchema": {
+            "type": "object",
+            "properties": {},
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": true
+          },
+          "sampleInput": {},
+          "outputExample": {
+            "summary": "4 courses",
+            "data": [
+              {
+                "sourceId": "lms:course:1101",
+                "courseId": 1101,
+                "shortName": "OS",
+                "title": "운영체제",
+                "url": "https://lms.chungbuk.ac.kr/course/view.php?id=1101"
+              },
+              {
+                "sourceId": "lms:course:1102",
+                "courseId": 1102,
+                "shortName": "DB",
+                "title": "데이터베이스시스템",
+                "url": "https://lms.chungbuk.ac.kr/course/view.php?id=1102"
+              }
+            ]
+          },
+          "wire": [
+            {
+              "direction": "client_to_server",
+              "kind": "request",
+              "method": "tools/call",
+              "rpcId": 2,
+              "bytes": 93,
+              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_courses\",\"arguments\":{}},\"jsonrpc\":\"2.0\",\"id\":2}"
+            },
+            {
+              "direction": "server_to_client",
+              "kind": "response",
+              "method": "tools/call",
+              "rpcId": 2,
+              "bytes": 1616,
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"4 courses\\n[\\n  {\\n    \\\"sourceId\\\": \\\"lms:course:1101\\\",\\n    \\\"courseId\\\": 1101,\\n    \\\"shortName\\\": \\\"OS\\\",\\n    \\\"title\\\": \\\"운영체제\\\",\\n    \\\"url\\\": \\\"https://lms.chungbuk.ac.kr/cour… (720자)\"}],\"structuredContent\":{\"summary\":\"4 courses\",\"data\":[{\"sourceId\":\"lms:course:1101\",\"courseId\":1101,\"shortName\":\"OS\",\"title\":\"운영체제\",\"url\":\"https://lms.chungbuk.ac.kr/course/view.php?id=1101\"},{\"sourceId\":\"lms:course:1102\",\"courseId\":1102,\"shortName\":\"DB\",\"title\":\"데이터베이스시스템\",\"url\":\"https://lms.chungbuk.ac.kr/course/view.php?id=1102\"},{\"sourceId\":\"lms:course:1103\",\"courseId\":1103,\"shortName\":\"NET\",\"title\":\"컴퓨터네트워크\",\"url\":\"https://lms.chungbuk.ac.kr/course/view.php?id=1103\"},\"… 외 1개\"]}}}"
+            }
+          ],
+          "durationMs": 5
+        },
+        {
+          "name": "get_upcoming_deadlines",
+          "description": "Things due in the LMS in the next N days (assignments to submit, quizzes to take), soonest first. Items already done drop out. [DEMO DATA]",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "days": {
+                "default": 14,
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 60
+              },
+              "limit": {
+                "default": 20,
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 50
+              }
+            },
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": true
+          },
+          "sampleInput": {
+            "days": 14,
+            "limit": 2
+          },
+          "outputExample": {
+            "summary": "2 LMS deadlines in the next 14 days",
+            "data": [
+              {
+                "sourceId": "lms:due:9001",
+                "eventId": 9001,
+                "course": "운영체제",
+                "courseId": 1101,
+                "title": "과제2: CPU 스케줄링",
+                "module": "assign",
+                "due": "2026-10-05T14:59:00.000Z",
+                "action": "과제 제출",
+                "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=9001"
+              },
+              {
+                "sourceId": "lms:due:9002",
+                "eventId": 9002,
+                "course": "데이터베이스시스템",
+                "courseId": 1102,
+                "title": "퀴즈2: 정규화",
+                "module": "quiz",
+                "due": "2026-10-08T02:00:00.000Z",
+                "action": "퀴즈 응시",
+                "url": "https://lms.chungbuk.ac.kr/mod/quiz/view.php?id=9002"
+              }
+            ]
+          },
+          "wire": [
+            {
+              "direction": "client_to_server",
+              "kind": "request",
+              "method": "tools/call",
+              "rpcId": 3,
+              "bytes": 123,
+              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_upcoming_deadlines\",\"arguments\":{\"days\":14,\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":3}"
+            },
+            {
+              "direction": "server_to_client",
+              "kind": "response",
+              "method": "tools/call",
+              "rpcId": 3,
+              "bytes": 1438,
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 LMS deadlines in the next 14 days\\n[\\n  {\\n    \\\"sourceId\\\": \\\"lms:due:9001\\\",\\n    \\\"eventId\\\": 9001,\\n    \\\"course\\\": \\\"운영체제\\\",\\n    \\\"courseId\\\": 1101,\\n    \\\"title\\\": \\\"과제2: CP… (614자)\"}],\"structuredContent\":{\"summary\":\"2 LMS deadlines in the next 14 days\",\"data\":[{\"sourceId\":\"lms:due:9001\",\"eventId\":9001,\"course\":\"운영체제\",\"courseId\":1101,\"title\":\"과제2: CPU 스케줄링\",\"module\":\"assign\",\"due\":\"2026-10-05T14:59:00.000Z\",\"action\":\"과제 제출\",\"url\":\"https://lms.chungbuk.ac.kr/mod/assign/view.php?id=9001\"},{\"sourceId\":\"lms:due:9002\",\"eventId\":9002,\"course\":\"데이터베이스시스템\",\"courseId\":1102,\"title\":\"퀴즈2: 정규화\",\"module\":\"quiz\",\"due\":\"2026-10-08T02:00:00.000Z\",\"action\":\"퀴즈 응시\",\"url\":\"https://lms.chungbuk.ac.kr/mod/quiz/view.php?id=9002\"}]}}}"
+            }
+          ],
+          "durationMs": 9
+        },
+        {
+          "name": "get_assignments",
+          "description": "Assignments due in the next N days with my submission status (submitted, draft = saved but not submitted, new = nothing yet). [DEMO DATA]",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "days": {
+                "default": 14,
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 60
+              },
+              "courseId": {
+                "type": "integer",
+                "minimum": -9007199254740991,
+                "maximum": 9007199254740991
+              },
+              "limit": {
+                "default": 10,
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 30
+              }
+            },
+            "$schema": "http://json-schema.org/draft-07/schema#"
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "destructiveHint": false,
+            "openWorldHint": true
+          },
+          "sampleInput": {
+            "days": 14,
+            "limit": 2
+          },
+          "outputExample": {
+            "summary": "2 assignments due, 2 not submitted",
+            "data": [
+              {
+                "sourceId": "lms:assign:8001",
+                "assignmentId": 8001,
+                "course": "운영체제",
+                "courseId": 1101,
+                "title": "과제2: CPU 스케줄링",
+                "due": "2026-10-05T14:59:00.000Z",
+                "submission": "draft",
+                "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8001"
+              },
+              {
+                "sourceId": "lms:assign:8003",
+                "assignmentId": 8003,
+                "course": "컴퓨터네트워크",
+                "courseId": 1103,
+                "title": "실습 보고서 3: TCP 혼잡 제어",
+                "due": "2026-10-12T14:59:00.000Z",
+                "submission": "new",
+                "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8003"
+              }
+            ]
+          },
+          "wire": [
+            {
+              "direction": "client_to_server",
+              "kind": "request",
+              "method": "tools/call",
+              "rpcId": 4,
+              "bytes": 116,
+              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_assignments\",\"arguments\":{\"days\":14,\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":4}"
+            },
+            {
+              "direction": "server_to_client",
+              "kind": "response",
+              "method": "tools/call",
+              "rpcId": 4,
+              "bytes": 1388,
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 assignments due, 2 not submitted\\n[\\n  {\\n    \\\"sourceId\\\": \\\"lms:assign:8001\\\",\\n    \\\"assignmentId\\\": 8001,\\n    \\\"course\\\": \\\"운영체제\\\",\\n    \\\"courseId\\\": 1101,\\n    \\\"title\\\": \\\"… (600자)\"}],\"structuredContent\":{\"summary\":\"2 assignments due, 2 not submitted\",\"data\":[{\"sourceId\":\"lms:assign:8001\",\"assignmentId\":8001,\"course\":\"운영체제\",\"courseId\":1101,\"title\":\"과제2: CPU 스케줄링\",\"due\":\"2026-10-05T14:59:00.000Z\",\"submission\":\"draft\",\"url\":\"https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8001\"},{\"sourceId\":\"lms:assign:8003\",\"assignmentId\":8003,\"course\":\"컴퓨터네트워크\",\"courseId\":1103,\"title\":\"실습 보고서 3: TCP 혼잡 제어\",\"due\":\"2026-10-12T14:59:00.000Z\",\"submission\":\"new\",\"url\":\"https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8003\"}]}}}"
+            }
+          ],
+          "durationMs": 2
+        }
+      ],
+      "connection": {
+        "transport": "stdio",
+        "command": "node mcp-servers/lms/dist/index.js --mode=demo",
+        "protocolVersion": "2025-11-25",
+        "serverInfo": {
+          "name": "mawa-lms",
+          "version": "0.1.0"
+        },
+        "capabilities": [
+          "tools"
+        ]
+      }
+    },
     "github": {
       "tools": [
         {
@@ -88,7 +314,7 @@
               "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"3 commits across 1 repositories\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:commit:seongjun/my-ai-work-agent@a1b2c3d4e5f6\\\",\\n    \\\"repo\\\": \\\"seongjun/my-ai-work-agent\\\",\\n    \\\"sha\\\"… (1281자)\"}],\"structuredContent\":{\"summary\":\"3 commits across 1 repositories\",\"data\":[{\"sourceId\":\"github:commit:seongjun/my-ai-work-agent@a1b2c3d4e5f6\",\"repo\":\"seongjun/my-ai-work-agent\",\"sha\":\"a1b2c3d4e5f60000000000000000000000000000\",\"message\":\"feat(web): MCP 연결도와 JSON-RPC 메시지 로그\",\"author\":\"seongjun\",\"date\":\"2026-10-02T19:48:00.000Z\",\"url\":\"https://github.com/seongjun/my-ai-work-agent/commit/a1b2c3d4e5f6\",\"additions\":388,\"deletions\":41},{\"sourceId\":\"github:commit:seongjun/my-ai-work-agent@b2c3d4e5f6a1\",\"repo\":\"seongjun/my-ai-work-agent\",\"sha\":\"b2c3d4e5f6a10000000000000000000000000000\",\"message\":\"feat(agent): LLM 전송 데이터 마스킹·지시문 감지\",\"author\":\"seongjun\",\"date\":\"2026-10-02T05:24:00.000Z\",\"url\":\"https://github.com/seongjun/my-ai-work-agent/commit/b2c3d4e5f6a1\",\"additions\":214,\"deletions\":22},{\"sourceId\":\"github:commit:seongjun/my-ai-work-agent@c3d4e5f6a1b2\",\"repo\":\"seongjun/my-ai-work-agent\",\"sha\":\"c3d4e5f6a1b20000000000000000000000000000\",\"message\":\"fix(web): 모바일에서 출처 팝오버가 탭바에 가려짐\",\"author\":\"seongjun\",\"date\":\"2026-10-01T17:24:00.000Z\",\"url\":\"https://github.com/seongjun/my-ai-work-agent/commit/c3d4e5f6a1b2\",\"additions\":18,\"deletions\":9}]}}}"
             }
           ],
-          "durationMs": 13
+          "durationMs": 12
         },
         {
           "name": "get_pull_requests",
@@ -272,7 +498,7 @@
               "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 open issues\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:issue:cbnu-capstone/team-mate#12\\\",\\n    \\\"repo\\\": \\\"cbnu-capstone/team-mate\\\",\\n    \\\"number\\\": 12,\\n    \\\"title\\\": \\\"ERD 확정 (us… (902자)\"}],\"structuredContent\":{\"summary\":\"2 open issues\",\"data\":[{\"sourceId\":\"github:issue:cbnu-capstone/team-mate#12\",\"repo\":\"cbnu-capstone/team-mate\",\"number\":12,\"title\":\"ERD 확정 (users-teams 관계)\",\"state\":\"open\",\"author\":\"jimin\",\"createdAt\":\"2026-09-30T07:48:00.000Z\",\"updatedAt\":\"2026-10-02T05:24:00.000Z\",\"url\":\"https://github.com/cbnu-capstone/team-mate/issues/12\",\"labels\":[\"capstone\",\"priority:high\"],\"assignees\":[\"seongjun\"]},{\"sourceId\":\"github:issue:cbnu-capstone/team-mate#13\",\"repo\":\"cbnu-capstone/team-mate\",\"number\":13,\"title\":\"중간발표 슬라이드 초안\",\"state\":\"open\",\"author\":\"jimin\",\"createdAt\":\"2026-10-01T05:24:00.000Z\",\"updatedAt\":\"2026-10-01T05:24:00.000Z\",\"url\":\"https://github.com/cbnu-capstone/team-mate/issues/13\",\"labels\":[\"capstone\"],\"assignees\":[]}]}}}"
             }
           ],
-          "durationMs": 1
+          "durationMs": 2
         },
         {
           "name": "get_repository_activity",
@@ -372,14 +598,31 @@
         ]
       }
     },
-    "lms": {
+    "calendar": {
       "tools": [
         {
-          "name": "get_courses",
-          "description": "Courses the user is enrolled in on the LMS (Moodle / CBNU eCampus). [DEMO DATA]",
+          "name": "get_events",
+          "description": "Events on the primary calendar in a time range. Defaults to the current ISO week (Mon–Sun). [DEMO DATA]",
           "inputSchema": {
             "type": "object",
-            "properties": {},
+            "properties": {
+              "timeMin": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              "timeMax": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              "limit": {
+                "default": 50,
+                "type": "integer",
+                "minimum": 1,
+                "maximum": 100
+              }
+            },
             "$schema": "http://json-schema.org/draft-07/schema#"
           },
           "annotations": {
@@ -387,23 +630,45 @@
             "destructiveHint": false,
             "openWorldHint": true
           },
-          "sampleInput": {},
+          "sampleInput": {
+            "limit": 2
+          },
           "outputExample": {
-            "summary": "4 courses",
+            "summary": "2 events",
             "data": [
               {
-                "sourceId": "lms:course:1101",
-                "courseId": 1101,
-                "shortName": "OS",
-                "title": "운영체제",
-                "url": "https://lms.chungbuk.ac.kr/course/view.php?id=1101"
+                "sourceId": "calendar:event:demoev001",
+                "eventId": "demoev001",
+                "calendar": "primary",
+                "title": "운영체제 수업",
+                "description": "CPU 스케줄링 2",
+                "start": "2026-10-01T01:30:00.000Z",
+                "end": "2026-10-01T02:45:00.000Z",
+                "allDay": false,
+                "location": "S4-1 101",
+                "attendees": [
+                  "seongjun@cbnu.example.ac.kr"
+                ],
+                "organizer": "seongjun@cbnu.example.ac.kr",
+                "status": "confirmed",
+                "url": "https://calendar.google.com/calendar/event?eid=demoev001"
               },
               {
-                "sourceId": "lms:course:1102",
-                "courseId": 1102,
-                "shortName": "DB",
-                "title": "데이터베이스시스템",
-                "url": "https://lms.chungbuk.ac.kr/course/view.php?id=1102"
+                "sourceId": "calendar:event:demoev002",
+                "eventId": "demoev002",
+                "calendar": "primary",
+                "title": "인스타 개발 콘텐츠 업로드 (@zun_it_)",
+                "description": "MCP 연결도 캡처로 릴스 1개",
+                "start": "2026-10-02T12:00:00.000Z",
+                "end": "2026-10-02T12:30:00.000Z",
+                "allDay": false,
+                "location": null,
+                "attendees": [
+                  "seongjun@cbnu.example.ac.kr"
+                ],
+                "organizer": "seongjun@cbnu.example.ac.kr",
+                "status": "confirmed",
+                "url": "https://calendar.google.com/calendar/event?eid=demoev002"
               }
             ]
           },
@@ -413,37 +678,37 @@
               "kind": "request",
               "method": "tools/call",
               "rpcId": 2,
-              "bytes": 93,
-              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_courses\",\"arguments\":{}},\"jsonrpc\":\"2.0\",\"id\":2}"
+              "bytes": 101,
+              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_events\",\"arguments\":{\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":2}"
             },
             {
               "direction": "server_to_client",
               "kind": "response",
               "method": "tools/call",
               "rpcId": 2,
-              "bytes": 1616,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"4 courses\\n[\\n  {\\n    \\\"sourceId\\\": \\\"lms:course:1101\\\",\\n    \\\"courseId\\\": 1101,\\n    \\\"shortName\\\": \\\"OS\\\",\\n    \\\"title\\\": \\\"운영체제\\\",\\n    \\\"url\\\": \\\"https://lms.chungbuk.ac.kr/cour… (720자)\"}],\"structuredContent\":{\"summary\":\"4 courses\",\"data\":[{\"sourceId\":\"lms:course:1101\",\"courseId\":1101,\"shortName\":\"OS\",\"title\":\"운영체제\",\"url\":\"https://lms.chungbuk.ac.kr/course/view.php?id=1101\"},{\"sourceId\":\"lms:course:1102\",\"courseId\":1102,\"shortName\":\"DB\",\"title\":\"데이터베이스시스템\",\"url\":\"https://lms.chungbuk.ac.kr/course/view.php?id=1102\"},{\"sourceId\":\"lms:course:1103\",\"courseId\":1103,\"shortName\":\"NET\",\"title\":\"컴퓨터네트워크\",\"url\":\"https://lms.chungbuk.ac.kr/course/view.php?id=1103\"},\"… 외 1개\"]}}}"
+              "bytes": 2240,
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 events\\n[\\n  {\\n    \\\"sourceId\\\": \\\"calendar:event:demoev001\\\",\\n    \\\"eventId\\\": \\\"demoev001\\\",\\n    \\\"calendar\\\": \\\"primary\\\",\\n    \\\"title\\\": \\\"운영체제 수업\\\",\\n    \\\"description\\\": \\\"CP… (1032자)\"}],\"structuredContent\":{\"summary\":\"2 events\",\"data\":[{\"sourceId\":\"calendar:event:demoev001\",\"eventId\":\"demoev001\",\"calendar\":\"primary\",\"title\":\"운영체제 수업\",\"description\":\"CPU 스케줄링 2\",\"start\":\"2026-10-01T01:30:00.000Z\",\"end\":\"2026-10-01T02:45:00.000Z\",\"allDay\":false,\"location\":\"S4-1 101\",\"attendees\":[\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"seongjun@cbnu.example.ac.kr\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev001\"},{\"sourceId\":\"calendar:event:demoev002\",\"eventId\":\"demoev002\",\"calendar\":\"primary\",\"title\":\"인스타 개발 콘텐츠 업로드 (@zun_it_)\",\"description\":\"MCP 연결도 캡처로 릴스 1개\",\"start\":\"2026-10-02T12:00:00.000Z\",\"end\":\"2026-10-02T12:30:00.000Z\",\"allDay\":false,\"location\":null,\"attendees\":[\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"seongjun@cbnu.example.ac.kr\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev002\"}]}}}"
             }
           ],
-          "durationMs": 5
+          "durationMs": 18
         },
         {
-          "name": "get_upcoming_deadlines",
-          "description": "Things due in the LMS in the next N days (assignments to submit, quizzes to take), soonest first. Items already done drop out. [DEMO DATA]",
+          "name": "get_upcoming_events",
+          "description": "Events starting from now for the next N days. [DEMO DATA]",
           "inputSchema": {
             "type": "object",
             "properties": {
               "days": {
-                "default": 14,
+                "default": 7,
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 60
+                "maximum": 30
               },
               "limit": {
                 "default": 20,
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 50
+                "maximum": 100
               }
             },
             "$schema": "http://json-schema.org/draft-07/schema#"
@@ -454,33 +719,46 @@
             "openWorldHint": true
           },
           "sampleInput": {
-            "days": 14,
+            "days": 7,
             "limit": 2
           },
           "outputExample": {
-            "summary": "2 LMS deadlines in the next 14 days",
+            "summary": "2 upcoming events in the next 7 days",
             "data": [
               {
-                "sourceId": "lms:due:9001",
-                "eventId": 9001,
-                "course": "운영체제",
-                "courseId": 1101,
-                "title": "과제2: CPU 스케줄링",
-                "module": "assign",
-                "due": "2026-10-05T14:59:00.000Z",
-                "action": "과제 제출",
-                "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=9001"
+                "sourceId": "calendar:event:demoev003",
+                "eventId": "demoev003",
+                "calendar": "primary",
+                "title": "캡스톤 팀 회의",
+                "description": "ERD 확정(#12), 중간발표 역할 분담",
+                "start": "2026-10-05T09:00:00.000Z",
+                "end": "2026-10-05T10:30:00.000Z",
+                "allDay": false,
+                "location": "S4-1 팀플실",
+                "attendees": [
+                  "jimin@example.com",
+                  "seongjun@cbnu.example.ac.kr"
+                ],
+                "organizer": "jimin@example.com",
+                "status": "confirmed",
+                "url": "https://calendar.google.com/calendar/event?eid=demoev003"
               },
               {
-                "sourceId": "lms:due:9002",
-                "eventId": 9002,
-                "course": "데이터베이스시스템",
-                "courseId": 1102,
-                "title": "퀴즈2: 정규화",
-                "module": "quiz",
-                "due": "2026-10-08T02:00:00.000Z",
-                "action": "퀴즈 응시",
-                "url": "https://lms.chungbuk.ac.kr/mod/quiz/view.php?id=9002"
+                "sourceId": "calendar:event:demoev004",
+                "eventId": "demoev004",
+                "calendar": "primary",
+                "title": "운영체제 과제2 마감",
+                "description": "eCampus 제출 (코드 + 보고서 PDF)",
+                "start": "2026-10-05T14:00:00.000Z",
+                "end": "2026-10-05T14:59:00.000Z",
+                "allDay": false,
+                "location": "eCampus",
+                "attendees": [
+                  "seongjun@cbnu.example.ac.kr"
+                ],
+                "organizer": "seongjun@cbnu.example.ac.kr",
+                "status": "confirmed",
+                "url": "https://calendar.google.com/calendar/event?eid=demoev004"
               }
             ]
           },
@@ -490,44 +768,50 @@
               "kind": "request",
               "method": "tools/call",
               "rpcId": 3,
-              "bytes": 123,
-              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_upcoming_deadlines\",\"arguments\":{\"days\":14,\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":3}"
+              "bytes": 119,
+              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_upcoming_events\",\"arguments\":{\"days\":7,\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":3}"
             },
             {
               "direction": "server_to_client",
               "kind": "response",
               "method": "tools/call",
               "rpcId": 3,
-              "bytes": 1438,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 LMS deadlines in the next 14 days\\n[\\n  {\\n    \\\"sourceId\\\": \\\"lms:due:9001\\\",\\n    \\\"eventId\\\": 9001,\\n    \\\"course\\\": \\\"운영체제\\\",\\n    \\\"courseId\\\": 1101,\\n    \\\"title\\\": \\\"과제2: CP… (614자)\"}],\"structuredContent\":{\"summary\":\"2 LMS deadlines in the next 14 days\",\"data\":[{\"sourceId\":\"lms:due:9001\",\"eventId\":9001,\"course\":\"운영체제\",\"courseId\":1101,\"title\":\"과제2: CPU 스케줄링\",\"module\":\"assign\",\"due\":\"2026-10-05T14:59:00.000Z\",\"action\":\"과제 제출\",\"url\":\"https://lms.chungbuk.ac.kr/mod/assign/view.php?id=9001\"},{\"sourceId\":\"lms:due:9002\",\"eventId\":9002,\"course\":\"데이터베이스시스템\",\"courseId\":1102,\"title\":\"퀴즈2: 정규화\",\"module\":\"quiz\",\"due\":\"2026-10-08T02:00:00.000Z\",\"action\":\"퀴즈 응시\",\"url\":\"https://lms.chungbuk.ac.kr/mod/quiz/view.php?id=9002\"}]}}}"
+              "bytes": 2370,
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 upcoming events in the next 7 days\\n[\\n  {\\n    \\\"sourceId\\\": \\\"calendar:event:demoev003\\\",\\n    \\\"eventId\\\": \\\"demoev003\\\",\\n    \\\"calendar\\\": \\\"primary\\\",\\n    \\\"title\\\": \\\"캡스톤 … (1090자)\"}],\"structuredContent\":{\"summary\":\"2 upcoming events in the next 7 days\",\"data\":[{\"sourceId\":\"calendar:event:demoev003\",\"eventId\":\"demoev003\",\"calendar\":\"primary\",\"title\":\"캡스톤 팀 회의\",\"description\":\"ERD 확정(#12), 중간발표 역할 분담\",\"start\":\"2026-10-05T09:00:00.000Z\",\"end\":\"2026-10-05T10:30:00.000Z\",\"allDay\":false,\"location\":\"S4-1 팀플실\",\"attendees\":[\"jimin@example.com\",\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"jimin@example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev003\"},{\"sourceId\":\"calendar:event:demoev004\",\"eventId\":\"demoev004\",\"calendar\":\"primary\",\"title\":\"운영체제 과제2 마감\",\"description\":\"eCampus 제출 (코드 + 보고서 PDF)\",\"start\":\"2026-10-05T14:00:00.000Z\",\"end\":\"2026-10-05T14:59:00.000Z\",\"allDay\":false,\"location\":\"eCampus\",\"attendees\":[\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"seongjun@cbnu.example.ac.kr\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev004\"}]}}}"
             }
           ],
-          "durationMs": 10
+          "durationMs": 4
         },
         {
-          "name": "get_assignments",
-          "description": "Assignments due in the next N days with my submission status (submitted, draft = saved but not submitted, new = nothing yet). [DEMO DATA]",
+          "name": "search_events",
+          "description": "Free-text search over event title, description and location in a time range (default: ±30 days). [DEMO DATA]",
           "inputSchema": {
             "type": "object",
             "properties": {
-              "days": {
-                "default": 14,
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 60
+              "query": {
+                "type": "string",
+                "minLength": 1
               },
-              "courseId": {
-                "type": "integer",
-                "minimum": -9007199254740991,
-                "maximum": 9007199254740991
+              "timeMin": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
+              },
+              "timeMax": {
+                "type": "string",
+                "format": "date-time",
+                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
               },
               "limit": {
-                "default": 10,
+                "default": 20,
                 "type": "integer",
                 "minimum": 1,
-                "maximum": 30
+                "maximum": 100
               }
             },
+            "required": [
+              "query"
+            ],
             "$schema": "http://json-schema.org/draft-07/schema#"
           },
           "annotations": {
@@ -536,31 +820,48 @@
             "openWorldHint": true
           },
           "sampleInput": {
-            "days": 14,
+            "query": "발표",
             "limit": 2
           },
           "outputExample": {
-            "summary": "2 assignments due, 2 not submitted",
+            "summary": "2 events matching \"발표\"",
             "data": [
               {
-                "sourceId": "lms:assign:8001",
-                "assignmentId": 8001,
-                "course": "운영체제",
-                "courseId": 1101,
-                "title": "과제2: CPU 스케줄링",
-                "due": "2026-10-05T14:59:00.000Z",
-                "submission": "draft",
-                "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8001"
+                "sourceId": "calendar:event:demoev003",
+                "eventId": "demoev003",
+                "calendar": "primary",
+                "title": "캡스톤 팀 회의",
+                "description": "ERD 확정(#12), 중간발표 역할 분담",
+                "start": "2026-10-05T09:00:00.000Z",
+                "end": "2026-10-05T10:30:00.000Z",
+                "allDay": false,
+                "location": "S4-1 팀플실",
+                "attendees": [
+                  "jimin@example.com",
+                  "seongjun@cbnu.example.ac.kr"
+                ],
+                "organizer": "jimin@example.com",
+                "status": "confirmed",
+                "url": "https://calendar.google.com/calendar/event?eid=demoev003"
               },
               {
-                "sourceId": "lms:assign:8003",
-                "assignmentId": 8003,
-                "course": "컴퓨터네트워크",
-                "courseId": 1103,
-                "title": "실습 보고서 3: TCP 혼잡 제어",
-                "due": "2026-10-12T14:59:00.000Z",
-                "submission": "new",
-                "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8003"
+                "sourceId": "calendar:event:demoev008",
+                "eventId": "demoev008",
+                "calendar": "primary",
+                "title": "캡스톤디자인 중간발표",
+                "description": "팀별 10분 발표",
+                "start": "2026-10-15T05:00:00.000Z",
+                "end": "2026-10-15T07:00:00.000Z",
+                "allDay": false,
+                "location": "S4-1 309",
+                "attendees": [
+                  "park@cbnu.example.ac.kr",
+                  "jimin@example.com",
+                  "seongjun@cbnu.example.ac.kr"
+                ],
+                "organizer": "park@cbnu.example.ac.kr",
+                "status": "confirmed",
+                "url": "https://calendar.google.com/calendar/event?eid=demoev008"
               }
             ]
           },
@@ -570,16 +871,16 @@
               "kind": "request",
               "method": "tools/call",
               "rpcId": 4,
-              "bytes": 116,
-              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_assignments\",\"arguments\":{\"days\":14,\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":4}"
+              "bytes": 121,
+              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"search_events\",\"arguments\":{\"query\":\"발표\",\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":4}"
             },
             {
               "direction": "server_to_client",
               "kind": "response",
               "method": "tools/call",
               "rpcId": 4,
-              "bytes": 1388,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 assignments due, 2 not submitted\\n[\\n  {\\n    \\\"sourceId\\\": \\\"lms:assign:8001\\\",\\n    \\\"assignmentId\\\": 8001,\\n    \\\"course\\\": \\\"운영체제\\\",\\n    \\\"courseId\\\": 1101,\\n    \\\"title\\\": \\\"… (600자)\"}],\"structuredContent\":{\"summary\":\"2 assignments due, 2 not submitted\",\"data\":[{\"sourceId\":\"lms:assign:8001\",\"assignmentId\":8001,\"course\":\"운영체제\",\"courseId\":1101,\"title\":\"과제2: CPU 스케줄링\",\"due\":\"2026-10-05T14:59:00.000Z\",\"submission\":\"draft\",\"url\":\"https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8001\"},{\"sourceId\":\"lms:assign:8003\",\"assignmentId\":8003,\"course\":\"컴퓨터네트워크\",\"courseId\":1103,\"title\":\"실습 보고서 3: TCP 혼잡 제어\",\"due\":\"2026-10-12T14:59:00.000Z\",\"submission\":\"new\",\"url\":\"https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8003\"}]}}}"
+              "bytes": 2428,
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 events matching \\\"발표\\\"\\n[\\n  {\\n    \\\"sourceId\\\": \\\"calendar:event:demoev003\\\",\\n    \\\"eventId\\\": \\\"demoev003\\\",\\n    \\\"calendar\\\": \\\"primary\\\",\\n    \\\"title\\\": \\\"캡스톤 팀 회의\\\",\\n    \\\"de… (1117자)\"}],\"structuredContent\":{\"summary\":\"2 events matching \\\"발표\\\"\",\"data\":[{\"sourceId\":\"calendar:event:demoev003\",\"eventId\":\"demoev003\",\"calendar\":\"primary\",\"title\":\"캡스톤 팀 회의\",\"description\":\"ERD 확정(#12), 중간발표 역할 분담\",\"start\":\"2026-10-05T09:00:00.000Z\",\"end\":\"2026-10-05T10:30:00.000Z\",\"allDay\":false,\"location\":\"S4-1 팀플실\",\"attendees\":[\"jimin@example.com\",\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"jimin@example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev003\"},{\"sourceId\":\"calendar:event:demoev008\",\"eventId\":\"demoev008\",\"calendar\":\"primary\",\"title\":\"캡스톤디자인 중간발표\",\"description\":\"팀별 10분 발표\",\"start\":\"2026-10-15T05:00:00.000Z\",\"end\":\"2026-10-15T07:00:00.000Z\",\"allDay\":false,\"location\":\"S4-1 309\",\"attendees\":[\"park@cbnu.example.ac.kr\",\"jimin@example.com\",\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"park@cbnu.example.ac.kr\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev008\"}]}}}"
             }
           ],
           "durationMs": 2
@@ -587,10 +888,10 @@
       ],
       "connection": {
         "transport": "stdio",
-        "command": "node mcp-servers/lms/dist/index.js --mode=demo",
+        "command": "node mcp-servers/calendar/dist/index.js --mode=demo",
         "protocolVersion": "2025-11-25",
         "serverInfo": {
-          "name": "mawa-lms",
+          "name": "mawa-calendar",
           "version": "0.1.0"
         },
         "capabilities": [
@@ -817,7 +1118,7 @@
               "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"0 project-related emails for [my-ai-work-agent]\\n[]\"}],\"structuredContent\":{\"summary\":\"0 project-related emails for [my-ai-work-agent]\",\"data\":[]}}}"
             }
           ],
-          "durationMs": 5
+          "durationMs": 2
         }
       ],
       "connection": {
@@ -826,307 +1127,6 @@
         "protocolVersion": "2025-11-25",
         "serverInfo": {
           "name": "mawa-gmail",
-          "version": "0.1.0"
-        },
-        "capabilities": [
-          "tools"
-        ]
-      }
-    },
-    "calendar": {
-      "tools": [
-        {
-          "name": "get_events",
-          "description": "Events on the primary calendar in a time range. Defaults to the current ISO week (Mon–Sun). [DEMO DATA]",
-          "inputSchema": {
-            "type": "object",
-            "properties": {
-              "timeMin": {
-                "type": "string",
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
-              },
-              "timeMax": {
-                "type": "string",
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
-              },
-              "limit": {
-                "default": 50,
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 100
-              }
-            },
-            "$schema": "http://json-schema.org/draft-07/schema#"
-          },
-          "annotations": {
-            "readOnlyHint": true,
-            "destructiveHint": false,
-            "openWorldHint": true
-          },
-          "sampleInput": {
-            "limit": 2
-          },
-          "outputExample": {
-            "summary": "2 events",
-            "data": [
-              {
-                "sourceId": "calendar:event:demoev001",
-                "eventId": "demoev001",
-                "calendar": "primary",
-                "title": "운영체제 수업",
-                "description": "CPU 스케줄링 2",
-                "start": "2026-10-01T01:30:00.000Z",
-                "end": "2026-10-01T02:45:00.000Z",
-                "allDay": false,
-                "location": "S4-1 101",
-                "attendees": [
-                  "seongjun@cbnu.example.ac.kr"
-                ],
-                "organizer": "seongjun@cbnu.example.ac.kr",
-                "status": "confirmed",
-                "url": "https://calendar.google.com/calendar/event?eid=demoev001"
-              },
-              {
-                "sourceId": "calendar:event:demoev002",
-                "eventId": "demoev002",
-                "calendar": "primary",
-                "title": "인스타 개발 콘텐츠 업로드 (@zun_it_)",
-                "description": "MCP 연결도 캡처로 릴스 1개",
-                "start": "2026-10-02T12:00:00.000Z",
-                "end": "2026-10-02T12:30:00.000Z",
-                "allDay": false,
-                "location": null,
-                "attendees": [
-                  "seongjun@cbnu.example.ac.kr"
-                ],
-                "organizer": "seongjun@cbnu.example.ac.kr",
-                "status": "confirmed",
-                "url": "https://calendar.google.com/calendar/event?eid=demoev002"
-              }
-            ]
-          },
-          "wire": [
-            {
-              "direction": "client_to_server",
-              "kind": "request",
-              "method": "tools/call",
-              "rpcId": 2,
-              "bytes": 101,
-              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_events\",\"arguments\":{\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":2}"
-            },
-            {
-              "direction": "server_to_client",
-              "kind": "response",
-              "method": "tools/call",
-              "rpcId": 2,
-              "bytes": 2240,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 events\\n[\\n  {\\n    \\\"sourceId\\\": \\\"calendar:event:demoev001\\\",\\n    \\\"eventId\\\": \\\"demoev001\\\",\\n    \\\"calendar\\\": \\\"primary\\\",\\n    \\\"title\\\": \\\"운영체제 수업\\\",\\n    \\\"description\\\": \\\"CP… (1032자)\"}],\"structuredContent\":{\"summary\":\"2 events\",\"data\":[{\"sourceId\":\"calendar:event:demoev001\",\"eventId\":\"demoev001\",\"calendar\":\"primary\",\"title\":\"운영체제 수업\",\"description\":\"CPU 스케줄링 2\",\"start\":\"2026-10-01T01:30:00.000Z\",\"end\":\"2026-10-01T02:45:00.000Z\",\"allDay\":false,\"location\":\"S4-1 101\",\"attendees\":[\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"seongjun@cbnu.example.ac.kr\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev001\"},{\"sourceId\":\"calendar:event:demoev002\",\"eventId\":\"demoev002\",\"calendar\":\"primary\",\"title\":\"인스타 개발 콘텐츠 업로드 (@zun_it_)\",\"description\":\"MCP 연결도 캡처로 릴스 1개\",\"start\":\"2026-10-02T12:00:00.000Z\",\"end\":\"2026-10-02T12:30:00.000Z\",\"allDay\":false,\"location\":null,\"attendees\":[\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"seongjun@cbnu.example.ac.kr\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev002\"}]}}}"
-            }
-          ],
-          "durationMs": 15
-        },
-        {
-          "name": "get_upcoming_events",
-          "description": "Events starting from now for the next N days. [DEMO DATA]",
-          "inputSchema": {
-            "type": "object",
-            "properties": {
-              "days": {
-                "default": 7,
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 30
-              },
-              "limit": {
-                "default": 20,
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 100
-              }
-            },
-            "$schema": "http://json-schema.org/draft-07/schema#"
-          },
-          "annotations": {
-            "readOnlyHint": true,
-            "destructiveHint": false,
-            "openWorldHint": true
-          },
-          "sampleInput": {
-            "days": 7,
-            "limit": 2
-          },
-          "outputExample": {
-            "summary": "2 upcoming events in the next 7 days",
-            "data": [
-              {
-                "sourceId": "calendar:event:demoev003",
-                "eventId": "demoev003",
-                "calendar": "primary",
-                "title": "캡스톤 팀 회의",
-                "description": "ERD 확정(#12), 중간발표 역할 분담",
-                "start": "2026-10-05T09:00:00.000Z",
-                "end": "2026-10-05T10:30:00.000Z",
-                "allDay": false,
-                "location": "S4-1 팀플실",
-                "attendees": [
-                  "jimin@example.com",
-                  "seongjun@cbnu.example.ac.kr"
-                ],
-                "organizer": "jimin@example.com",
-                "status": "confirmed",
-                "url": "https://calendar.google.com/calendar/event?eid=demoev003"
-              },
-              {
-                "sourceId": "calendar:event:demoev004",
-                "eventId": "demoev004",
-                "calendar": "primary",
-                "title": "운영체제 과제2 마감",
-                "description": "eCampus 제출 (코드 + 보고서 PDF)",
-                "start": "2026-10-05T14:00:00.000Z",
-                "end": "2026-10-05T14:59:00.000Z",
-                "allDay": false,
-                "location": "eCampus",
-                "attendees": [
-                  "seongjun@cbnu.example.ac.kr"
-                ],
-                "organizer": "seongjun@cbnu.example.ac.kr",
-                "status": "confirmed",
-                "url": "https://calendar.google.com/calendar/event?eid=demoev004"
-              }
-            ]
-          },
-          "wire": [
-            {
-              "direction": "client_to_server",
-              "kind": "request",
-              "method": "tools/call",
-              "rpcId": 3,
-              "bytes": 119,
-              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"get_upcoming_events\",\"arguments\":{\"days\":7,\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":3}"
-            },
-            {
-              "direction": "server_to_client",
-              "kind": "response",
-              "method": "tools/call",
-              "rpcId": 3,
-              "bytes": 2370,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 upcoming events in the next 7 days\\n[\\n  {\\n    \\\"sourceId\\\": \\\"calendar:event:demoev003\\\",\\n    \\\"eventId\\\": \\\"demoev003\\\",\\n    \\\"calendar\\\": \\\"primary\\\",\\n    \\\"title\\\": \\\"캡스톤 … (1090자)\"}],\"structuredContent\":{\"summary\":\"2 upcoming events in the next 7 days\",\"data\":[{\"sourceId\":\"calendar:event:demoev003\",\"eventId\":\"demoev003\",\"calendar\":\"primary\",\"title\":\"캡스톤 팀 회의\",\"description\":\"ERD 확정(#12), 중간발표 역할 분담\",\"start\":\"2026-10-05T09:00:00.000Z\",\"end\":\"2026-10-05T10:30:00.000Z\",\"allDay\":false,\"location\":\"S4-1 팀플실\",\"attendees\":[\"jimin@example.com\",\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"jimin@example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev003\"},{\"sourceId\":\"calendar:event:demoev004\",\"eventId\":\"demoev004\",\"calendar\":\"primary\",\"title\":\"운영체제 과제2 마감\",\"description\":\"eCampus 제출 (코드 + 보고서 PDF)\",\"start\":\"2026-10-05T14:00:00.000Z\",\"end\":\"2026-10-05T14:59:00.000Z\",\"allDay\":false,\"location\":\"eCampus\",\"attendees\":[\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"seongjun@cbnu.example.ac.kr\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev004\"}]}}}"
-            }
-          ],
-          "durationMs": 2
-        },
-        {
-          "name": "search_events",
-          "description": "Free-text search over event title, description and location in a time range (default: ±30 days). [DEMO DATA]",
-          "inputSchema": {
-            "type": "object",
-            "properties": {
-              "query": {
-                "type": "string",
-                "minLength": 1
-              },
-              "timeMin": {
-                "type": "string",
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
-              },
-              "timeMax": {
-                "type": "string",
-                "format": "date-time",
-                "pattern": "^(?:(?:\\d\\d[2468][048]|\\d\\d[13579][26]|\\d\\d0[48]|[02468][048]00|[13579][26]00)-02-29|\\d{4}-(?:(?:0[13578]|1[02])-(?:0[1-9]|[12]\\d|3[01])|(?:0[469]|11)-(?:0[1-9]|[12]\\d|30)|(?:02)-(?:0[1-9]|1\\d|2[0-8])))T(?:(?:[01]\\d|2[0-3]):[0-5]\\d:[0-5]\\d(?:\\.\\d+)?(?:Z))$"
-              },
-              "limit": {
-                "default": 20,
-                "type": "integer",
-                "minimum": 1,
-                "maximum": 100
-              }
-            },
-            "required": [
-              "query"
-            ],
-            "$schema": "http://json-schema.org/draft-07/schema#"
-          },
-          "annotations": {
-            "readOnlyHint": true,
-            "destructiveHint": false,
-            "openWorldHint": true
-          },
-          "sampleInput": {
-            "query": "발표",
-            "limit": 2
-          },
-          "outputExample": {
-            "summary": "2 events matching \"발표\"",
-            "data": [
-              {
-                "sourceId": "calendar:event:demoev003",
-                "eventId": "demoev003",
-                "calendar": "primary",
-                "title": "캡스톤 팀 회의",
-                "description": "ERD 확정(#12), 중간발표 역할 분담",
-                "start": "2026-10-05T09:00:00.000Z",
-                "end": "2026-10-05T10:30:00.000Z",
-                "allDay": false,
-                "location": "S4-1 팀플실",
-                "attendees": [
-                  "jimin@example.com",
-                  "seongjun@cbnu.example.ac.kr"
-                ],
-                "organizer": "jimin@example.com",
-                "status": "confirmed",
-                "url": "https://calendar.google.com/calendar/event?eid=demoev003"
-              },
-              {
-                "sourceId": "calendar:event:demoev008",
-                "eventId": "demoev008",
-                "calendar": "primary",
-                "title": "캡스톤디자인 중간발표",
-                "description": "팀별 10분 발표",
-                "start": "2026-10-15T05:00:00.000Z",
-                "end": "2026-10-15T07:00:00.000Z",
-                "allDay": false,
-                "location": "S4-1 309",
-                "attendees": [
-                  "park@cbnu.example.ac.kr",
-                  "jimin@example.com",
-                  "seongjun@cbnu.example.ac.kr"
-                ],
-                "organizer": "park@cbnu.example.ac.kr",
-                "status": "confirmed",
-                "url": "https://calendar.google.com/calendar/event?eid=demoev008"
-              }
-            ]
-          },
-          "wire": [
-            {
-              "direction": "client_to_server",
-              "kind": "request",
-              "method": "tools/call",
-              "rpcId": 4,
-              "bytes": 121,
-              "preview": "{\"method\":\"tools/call\",\"params\":{\"name\":\"search_events\",\"arguments\":{\"query\":\"발표\",\"limit\":2}},\"jsonrpc\":\"2.0\",\"id\":4}"
-            },
-            {
-              "direction": "server_to_client",
-              "kind": "response",
-              "method": "tools/call",
-              "rpcId": 4,
-              "bytes": 2428,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 events matching \\\"발표\\\"\\n[\\n  {\\n    \\\"sourceId\\\": \\\"calendar:event:demoev003\\\",\\n    \\\"eventId\\\": \\\"demoev003\\\",\\n    \\\"calendar\\\": \\\"primary\\\",\\n    \\\"title\\\": \\\"캡스톤 팀 회의\\\",\\n    \\\"de… (1117자)\"}],\"structuredContent\":{\"summary\":\"2 events matching \\\"발표\\\"\",\"data\":[{\"sourceId\":\"calendar:event:demoev003\",\"eventId\":\"demoev003\",\"calendar\":\"primary\",\"title\":\"캡스톤 팀 회의\",\"description\":\"ERD 확정(#12), 중간발표 역할 분담\",\"start\":\"2026-10-05T09:00:00.000Z\",\"end\":\"2026-10-05T10:30:00.000Z\",\"allDay\":false,\"location\":\"S4-1 팀플실\",\"attendees\":[\"jimin@example.com\",\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"jimin@example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev003\"},{\"sourceId\":\"calendar:event:demoev008\",\"eventId\":\"demoev008\",\"calendar\":\"primary\",\"title\":\"캡스톤디자인 중간발표\",\"description\":\"팀별 10분 발표\",\"start\":\"2026-10-15T05:00:00.000Z\",\"end\":\"2026-10-15T07:00:00.000Z\",\"allDay\":false,\"location\":\"S4-1 309\",\"attendees\":[\"park@cbnu.example.ac.kr\",\"jimin@example.com\",\"seongjun@cbnu.example.ac.kr\"],\"organizer\":\"park@cbnu.example.ac.kr\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev008\"}]}}}"
-            }
-          ],
-          "durationMs": 2
-        }
-      ],
-      "connection": {
-        "transport": "stdio",
-        "command": "node mcp-servers/calendar/dist/index.js --mode=demo",
-        "protocolVersion": "2025-11-25",
-        "serverInfo": {
-          "name": "mawa-calendar",
           "version": "0.1.0"
         },
         "capabilities": [

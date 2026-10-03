@@ -51,7 +51,8 @@ Built for my own week as a CBNU software student (classes, a capstone team, inte
 | Internship prep | Next selection step with D-day, coding-test prep from what was solved this week, portfolio work in progress |
 | Catching slips | A mail that says Oct 14 while the calendar says Oct 15; an injection-like "bot" mail flagged and kept out of the report |
 | Sharing | A short 한 일 / 할 일 / 막힌 것 update for Slack/Discord, or the full report as Markdown |
-| Control and proof | A **data access policy**: allowed MCP tools (hidden from the model *and* refused at the call boundary if it names one anyway), phrases whose items never reach the LLM or the report, masking of email addresses, phone numbers and 학번 in LLM payloads. An **audit log** page across runs (every read, refusal, exclusion and LLM payload with sizes and masking counts, JSONL export), a data-use panel per run, a recorded **policy comparison** (the same question with no policy vs a strict one), and source validation that drops citations of data that was never fetched |
+| Control and proof | A **data access policy**: allowed MCP tools (hidden from the model *and* refused at the call boundary if it names one anyway), phrases whose items never reach the LLM or the report, masking of email addresses and personal identifiers (phone, 학번, 주민등록번호, account and Luhn-valid card numbers, counted per kind). An **audit log** page across runs with a **SHA-256 hash chain** (verify in the browser, see an edited line fail, verify a downloaded file or `npm run audit:verify`), a data-use panel per run, the same question recorded under **three policies** (none / default / strict) side by side, and source validation that drops citations of data that was never fetched |
+| Any MCP client | The **policy gateway** (`mcp-servers/gateway`): one MCP server in front of the four, applying the same policy, masking and hash-chained audit (with the client's name) to Claude Code, Claude Desktop or this agent. [Recorded run of Claude Code through it](docs/examples/gateway-claude-code.md) |
 
 It only reads; there are no write tools. The public demo replays recorded runs over a fictional week shaped after mine (synthetic data, a fictional company "A사"); with the API server, OAuth and an LLM key it runs on your own accounts.
 
@@ -172,6 +173,8 @@ npm run test       # vitest: schemas, MCP servers over stdio, agent loop, API, d
 npm run test:e2e   # Playwright: API-backed UI, portfolio, and the standalone demo build (run npm run build first)
 npm run lint       # eslint
 npm run ask -- "질문"  # ask from the terminal; LLM_PROVIDER=claude-cli lets the model pick the MCP tools (docs/SETUP.md)
+npm run audit:verify -- file.jsonl   # verify a hash-chained audit log (web export or gateway --audit)
+npm run record:gateway-run           # Claude Code → policy gateway → demo servers, saves answer + audit
 npm run typecheck  # tsc -b + Vite apps
 ```
 
@@ -184,6 +187,19 @@ npm run typecheck  # tsc -b + Vite apps
 | `mcp-servers/calendar` | `get_events`, `get_upcoming_events`, `search_events` | Calendar API, `calendar.readonly` |
 
 Each server has integration tests that spawn the built binary and drive it with the official MCP client.
+
+## Policy Gateway
+
+`mcp-servers/gateway` is the policy layer as its own MCP server, so the controls do not depend on this agent:
+
+```sh
+npm run build
+claude mcp add mawa-gateway -- node $PWD/mcp-servers/gateway/dist/index.js \
+  --mode=demo --policy=$PWD/mcp-servers/gateway/policy.example.json --audit=$PWD/gateway-audit.jsonl
+npm run audit:verify -- gateway-audit.jsonl
+```
+
+Tools outside `allowedTools` are absent from `tools/list` and refused on `tools/call`; results are filtered by `exclude`, masked (`maskEmails`, `maskPii`) and screened for instructions before they reach the client; every call is appended to a hash-chained JSONL log with the client name from the MCP handshake. `--mode=real` starts the servers whose credentials are in the environment. What an organisation would add on top (identity, policy lifecycle, approvals, retention, DLP): [docs/ENTERPRISE.md](docs/ENTERPRISE.md).
 
 ## Agent
 

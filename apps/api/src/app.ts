@@ -101,7 +101,7 @@ export function createApp(deps: AppDeps) {
     if (!parsed.success) return c.json({ error: 'Invalid body', issues: parsed.error.issues }, 400);
     try {
       const p = parsed.data.policy;
-      const policy = p ? { ...(p.allowedTools ? { allowedTools: p.allowedTools } : {}), ...(p.exclude ? { exclude: p.exclude } : {}), ...(p.maskEmails !== undefined ? { maskEmails: p.maskEmails } : {}), ...(p.maskPhones !== undefined ? { maskPhones: p.maskPhones } : {}) } : null;
+      const policy = p ? { ...(p.allowedTools ? { allowedTools: p.allowedTools } : {}), ...(p.exclude ? { exclude: p.exclude } : {}), ...(p.maskEmails !== undefined ? { maskEmails: p.maskEmails } : {}), ...(p.maskPii !== undefined ? { maskPii: p.maskPii } : {}) } : null;
       const record = await runs.start({ prompt: parsed.data.prompt, mode: parsed.data.mode ?? config.defaultMode, ...(policy ? { policy } : {}) });
       return c.json({ runId: record.runId, mode: record.mode, llm: record.llm, warnings: record.warnings }, 202);
     } catch (err) {

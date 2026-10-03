@@ -71,8 +71,9 @@ export const LlmRequestSchema = EventBaseSchema.extend({
   /** Item fields included on the analysis turn. */
   fields: z.array(z.string()).default([]),
   maskedEmails: z.number().int().nonnegative(),
-  /** Phone numbers and student numbers (학번) masked before sending. */
-  maskedPhones: z.number().int().nonnegative().default(0),
+  /** Other personal identifiers masked before sending (phone, 학번, 주민등록번호, account, card), total and per kind. */
+  maskedPii: z.number().int().nonnegative().default(0),
+  piiKinds: z.partialRecord(z.enum(['phone', 'studentNo', 'rrn', 'account', 'card']), z.number().int().nonnegative()).default({}),
   flagged: z.array(z.object({ sourceId: z.string(), reason: z.string() })).default([]),
 });
 
@@ -96,8 +97,8 @@ export const DataPolicySchema = z.object({
   allowedTools: z.array(z.string().max(80)).max(50).optional(),
   exclude: z.array(z.string().trim().min(1).max(60)).max(30).default([]),
   maskEmails: z.boolean().default(true),
-  /** Mask phone numbers and student numbers (학번) for the LLM. */
-  maskPhones: z.boolean().default(true),
+  /** Mask personal identifiers (phone, 학번, 주민등록번호, account, card numbers) for the LLM. */
+  maskPii: z.boolean().default(true),
 });
 export type DataPolicy = z.infer<typeof DataPolicySchema>;
 

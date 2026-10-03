@@ -21,7 +21,7 @@ export async function generateReport(
   context: AggregatedContext,
   input: { runId: string; mode: AgentMode; prompt: string; generatedAt?: string; mask?: MaskOptions; onPrompt?: (p: AnalysisPrompt & { bytes: number }) => void },
 ): Promise<GenerateReportResult> {
-  const prompt = analysisPrompt(context, input.prompt, input.mask ?? { emails: true, phones: true }, input.generatedAt);
+  const prompt = analysisPrompt(context, input.prompt, input.mask ?? { emails: true, pii: true }, input.generatedAt);
   input.onPrompt?.({ ...prompt, bytes: Buffer.byteLength(AGENT_SYSTEM_PROMPT) + Buffer.byteLength(prompt.text) });
   const response = await llm.complete({
     system: AGENT_SYSTEM_PROMPT,

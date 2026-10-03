@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildScriptedReport, defaultPeriod, detectInjection, maskEmails, maskPhones, promptJson, type ScriptedContext } from '../src/index.js';
+import { buildScriptedReport, defaultPeriod, detectInjection, maskEmails, maskPii, promptJson, type ScriptedContext } from '../src/index.js';
 
 describe('guard', () => {
   it('masks personal addresses and keeps role accounts', () => {
@@ -9,14 +9,22 @@ describe('guard', () => {
   });
 
   it('masks phone numbers and 학번, not ids, dates or times', () => {
-    const m = maskPhones('조교 010-2345-6789, 사무실 043-261-1234, 01098765432, 학번 2021041234 / 학번: 20210412');
+    const m = maskPii('조교 010-2345-6789, 사무실 043-261-1234, 01098765432, 학번 2021041234 / 학번: 20210412');
     expect(m.text).toBe('조교 010-****-****, 사무실 043-****-****, 010-****-****, 학번 20******** / 학번: 20********');
-    expect(m.count).toBe(5);
-    const keep = 'PR #1234567, 2026-10-05T14:00:00.000Z, 10월 5일 23:59, sha 2021041234abc, 1786929130498';
-    expect(maskPhones(keep).text).toBe(keep);
-    const j = promptJson({ s: '연락처 010-2345-6789 jimin@example.com' }, { emails: true, phones: true });
-    expect(j).toMatchObject({ count: 1, phones: 1 });
-    expect(promptJson({ s: '010-2345-6789' }, { emails: true, phones: false }).phones).toBe(0);
+    expect(m.kinds).toEqual({ phone: 3, studentNo: 2 });
+    const keep = 'PR #1234567, 2026-10-05T14:00:00.000Z, 10월 5일 23:59, sha 2021041234abc, 1786929130498, 이슈 1234-5678-9012-3456';
+    expect(maskPii(keep).text).toBe(keep);
+    const j = promptJson({ s: '연락처 010-2345-6789 jimin@example.com' }, { emails: true, pii: true });
+    expect(j).toMatchObject({ count: 1, pii: 1, piiKinds: { phone: 1 } });
+    expect(promptJson({ s: '010-2345-6789' }, { emails: true, pii: false }).pii).toBe(0);
+  });
+
+  it('masks 주민등록번호, account and Luhn-valid card numbers, with the kind', () => {
+    const m = maskPii('주민등록번호 040512-3123456, 지급 계좌: 농협 352-1234-5678-93, 카드 4111-1111-1111-1111, 날짜 2026-10-05');
+    expect(m.text).toBe('주민등록번호 040512-*******, 지급 계좌: 농협 ***-****-****-**, 카드 ****-****-****-1111, 날짜 2026-10-05');
+    expect(m.kinds).toEqual({ rrn: 1, account: 1, card: 1 });
+    // Not a date-shaped RRN, not Luhn-valid, no account keyword: left alone.
+    expect(maskPii('991399-1234567 1234-5678-9012-3456 352-1234-5678-93').count).toBe(0);
   });
 
   it('flags instructions aimed at the model, not ordinary mail', () => {

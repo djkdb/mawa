@@ -1,0 +1,14 @@
+{
+  "allowedTools": [
+    "github__get_open_issues",
+    "github__get_pull_requests",
+    "github__get_recent_commits",
+    "gmail__search_project_emails",
+    "calendar__get_upcoming_events",
+    "lms__get_upcoming_deadlines",
+    "lms__get_assignments"
+  ],
+  "exclude": ["엄마", "쿠폰"],
+  "maskEmails": true,
+  "maskPii": true
+}
