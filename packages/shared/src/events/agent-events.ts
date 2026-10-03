@@ -29,6 +29,32 @@ export const ToolDiscoveryStartedSchema = EventBaseSchema.extend({
   servers: z.array(McpServerIdSchema),
 });
 
+/** An MCP client finished the `initialize` handshake with one server. Values come from the server's own response. */
+export const McpServerConnectedSchema = EventBaseSchema.extend({
+  type: z.literal('mcp_server_connected'),
+  server: McpServerIdSchema,
+  transport: z.literal('stdio'),
+  /** How the server process was launched, with paths made repo-relative. Never includes env. */
+  command: z.string(),
+  protocolVersion: z.string(),
+  serverInfo: z.object({ name: z.string(), version: z.string() }),
+  /** Capability keys the server advertised, e.g. ["tools"]. */
+  capabilities: z.array(z.string()),
+});
+
+/** One JSON-RPC message on a server's stdio pipe, as sent or received by the MCP client. `bytes` is the real size; `preview` is the message with long strings/arrays shortened. */
+export const McpMessageSchema = EventBaseSchema.extend({
+  type: z.literal('mcp_message'),
+  server: McpServerIdSchema,
+  direction: z.enum(['client_to_server', 'server_to_client']),
+  kind: z.enum(['request', 'response', 'notification', 'error']),
+  /** For responses, the method of the request they answer. */
+  method: z.string().optional(),
+  rpcId: z.union([z.string(), z.number()]).optional(),
+  bytes: z.number().int().nonnegative(),
+  preview: z.string(),
+});
+
 export const ToolDiscoveredSchema = EventBaseSchema.extend({
   type: z.literal('tool_discovered'),
   tools: z.array(ToolDefinitionSchema),
@@ -75,6 +101,8 @@ export const AgentRunCompletedSchema = EventBaseSchema.extend({
 export const AgentEventSchema = z.discriminatedUnion('type', [
   AgentRunStartedSchema,
   ToolDiscoveryStartedSchema,
+  McpServerConnectedSchema,
+  McpMessageSchema,
   ToolDiscoveredSchema,
   ToolCallStartedSchema,
   ToolCallCompletedSchema,
@@ -86,6 +114,8 @@ export const AgentEventSchema = z.discriminatedUnion('type', [
 
 export type AgentRunStarted = z.infer<typeof AgentRunStartedSchema>;
 export type ToolDiscoveryStarted = z.infer<typeof ToolDiscoveryStartedSchema>;
+export type McpServerConnected = z.infer<typeof McpServerConnectedSchema>;
+export type McpMessage = z.infer<typeof McpMessageSchema>;
 export type ToolDiscovered = z.infer<typeof ToolDiscoveredSchema>;
 export type ToolCallStarted = z.infer<typeof ToolCallStartedSchema>;
 export type ToolCallCompleted = z.infer<typeof ToolCallCompletedSchema>;

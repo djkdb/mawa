@@ -139,3 +139,28 @@ test('weekly report renders sections visually from source metadata (chart, PR st
   expect(api).toEqual([]);
   expect(errors).toEqual([]);
 });
+
+test('MCP is visible: handshakes, per-server traffic, JSON-RPC log, and recorded tools/call on the connections page', async ({ page }) => {
+  const { errors, api } = await collect(page);
+  await page.goto(DEMO);
+  await page.getByRole('button', { name: '에이전트 실행' }).click();
+  const topo = page.getByRole('figure', { name: 'MCP 연결 상태' });
+  await expect(topo).toContainText('mawa-github v0.1.0');
+  await expect(topo).toContainText(/stdio · MCP \d{4}-\d{2}-\d{2}/);
+  await expect(page.locator('#activity').getByText(/MCP 호출 합계/)).toBeVisible({ timeout: 30_000 });
+  await expect(topo).toContainText('핸드셰이크 3/3');
+  await page.getByRole('button', { name: /JSON-RPC 메시지 \d+개/ }).click();
+  const log = page.getByRole('list', { name: 'JSON-RPC 메시지' });
+  await expect(log).toContainText('initialize');
+  await expect(log).toContainText('tools/list');
+  await log.getByRole('button', { name: /tools\/call #\d+/ }).first().click();
+  await expect(log.locator('pre').first()).toContainText('"jsonrpc": "2.0"');
+
+  await page.getByRole('link', { name: '연결' }).first().click();
+  await expect(page.getByRole('heading', { name: 'GitHub MCP 서버' })).toBeVisible();
+  await expect(page.getByText('node mcp-servers/github/dist/index.js --mode=demo')).toBeVisible();
+  await page.getByRole('button', { name: /tools\/call 예시/ }).first().click();
+  await expect(page.getByRole('list', { name: 'get_recent_commits JSON-RPC 메시지' })).toContainText('response');
+  expect(api).toEqual([]);
+  expect(errors).toEqual([]);
+});

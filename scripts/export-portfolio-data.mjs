@@ -52,23 +52,32 @@ const EXAMPLES = [
   },
 ];
 
-const executor = new McpToolExecutor({ servers: ['github', 'gmail', 'calendar'].map(server), mode: 'demo', clientName: 'portfolio-export' });
+const newExecutor = () => new McpToolExecutor({ servers: ['github', 'gmail', 'calendar'].map(server), mode: 'demo', clientName: 'mawa-agent' });
+const executor = newExecutor();
 try {
+  const wire = [];
+  const offWire = executor.onWire((e) => wire.push(e));
   const tools = await executor.listTools();
-  const catalog = { generatedAt: new Date().toISOString(), note: 'Generated from the real MCP servers in demo mode by scripts/export-portfolio-data.mjs. Output examples are DEMO DATA.', servers: {} };
+  const catalog = { generatedAt: new Date().toISOString(), note: 'Generated from the real MCP servers in demo mode by scripts/export-portfolio-data.mjs. Output examples are DEMO DATA. `connection` and `wire` are the recorded initialize handshake and JSON-RPC messages.', servers: {} };
+  for (const e of wire) if (e.type === 'mcp_server_connected') { const { type: _t, server: id, ...connection } = e; catalog.servers[id] ??= { tools: [] }; catalog.servers[id].connection = connection; }
   for (const t of tools) {
     const key = `${t.server}__${t.name}`;
+    const from = wire.length;
     const result = await executor.callTool({ id: key, server: t.server, name: t.name, input: SAMPLE_INPUT[key] ?? {} });
     const example = result.status === 'ok' ? { summary: result.output.summary, data: Array.isArray(result.output.data) ? result.output.data.slice(0, 2) : result.output.data } : { error: result.error };
+    const rpc = wire.slice(from).filter((e) => e.type === 'mcp_message').map(({ direction, kind, method, rpcId, bytes, preview }) => ({ direction, kind, method, rpcId, bytes, preview }));
     catalog.servers[t.server] ??= { tools: [] };
-    catalog.servers[t.server].tools.push({ name: t.name, description: t.description, inputSchema: t.inputSchema, sampleInput: SAMPLE_INPUT[key] ?? {}, outputExample: example });
+    catalog.servers[t.server].tools.push({ name: t.name, description: t.description, inputSchema: t.inputSchema, sampleInput: SAMPLE_INPUT[key] ?? {}, outputExample: example, wire: rpc, durationMs: result.durationMs });
   }
+  offWire();
   await writeFile(new URL('packages/shared/demo/mcp-catalog.json', root), JSON.stringify(catalog, null, 2));
   console.log(`catalog: ${tools.length} tools`);
 
   const runs = [];
   for (const ex of EXAMPLES) {
-    const run = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new ScriptedProvider(ex.plan), executor });
+    // One executor per run, like apps/api: each recording includes the initialize handshake and tools/list.
+    const runExecutor = newExecutor();
+    const run = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new ScriptedProvider(ex.plan), executor: runExecutor }).finally(() => runExecutor.close());
     if (run.error) throw new Error(`${ex.id}: ${run.error}`);
     runs.push({ id: ex.id, prompt: ex.prompt, llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, events: run.events, report: run.report, warnings: run.warnings });
     console.log(`run ${ex.id}: ${run.events.length} events, ${run.report.sources.length} sources, ${run.report.sections.length} sections`);

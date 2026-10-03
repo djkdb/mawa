@@ -26,6 +26,7 @@ export function phaseFromEvent(type: AgentEvent['type'], prev: RunPhase): RunPha
     case 'agent_run_started':
       return 'starting';
     case 'tool_discovery_started':
+    case 'mcp_server_connected':
     case 'tool_discovered':
       return 'discovering';
     case 'tool_call_started':
@@ -38,6 +39,8 @@ export function phaseFromEvent(type: AgentEvent['type'], prev: RunPhase): RunPha
       return 'report';
     case 'agent_run_completed':
       return prev === 'error' ? 'error' : 'completed';
+    case 'mcp_message':
+      return prev === 'idle' ? 'discovering' : prev;
   }
 }
 

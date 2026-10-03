@@ -180,3 +180,23 @@ in README, SETUP, ARCHITECTURE and the UI.
 
 **Why.** Honesty over convenience; the GitHub App path is the real
 least-privilege answer and costs one env var in this architecture.
+
+---
+
+## ADR-013 — The MCP wire is part of the event trace
+
+**Context.** The UI showed tool steps, but nothing in it proved there was an
+MCP connection underneath; a viewer could not tell it from a function call.
+
+**Decision.** `McpToolExecutor` wraps the SDK's stdio transport in a tap that
+reports every JSON-RPC message in both directions, and reports each server's
+`initialize` result. `runAgent` re-emits them as `mcp_server_connected` and
+`mcp_message` events. Message bodies are recorded with long strings and arrays
+shortened (so they stay valid JSON); sizes are the real byte counts. Tokens
+never appear: they are passed to server processes as env, not over the wire.
+The demo recordings and the tool catalog are generated with one executor per
+run, like apps/api, so every recording contains the handshake.
+
+**Why.** "MCP" should be inspectable, not asserted: the topology view, the
+message log and the connections page are all drawn from these events.
+

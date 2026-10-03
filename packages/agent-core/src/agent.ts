@@ -68,12 +68,15 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
   const period = input.period ?? defaultPeriod(now());
   let context: AggregatedContext | null = null;
   let report: WeeklyWorkReport | null = null;
+  let unWire: (() => void) | null = null;
 
   try {
     emit('agent_run_started', { prompt: input.prompt });
 
     // 1. Discover tools from every MCP server.
     emit('tool_discovery_started', { servers: [...input.executor.servers] });
+    // Handshakes and JSON-RPC traffic underneath tool discovery and calls, as recorded by the MCP client.
+    unWire = input.executor.onWire?.(({ type, ...payload }) => emit(type, payload as never)) ?? null;
     const discovered = await input.executor.listTools();
     const allowed = discovered.filter((d) => !policy.allowedTools || policy.allowedTools.includes(qualifiedToolName(d)));
     emit('tool_discovered', { tools: allowed });
@@ -138,6 +141,8 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
     const message = err instanceof Error ? err.message : String(err);
     emit('agent_run_completed', { status: 'error', durationMs: now().getTime() - startedAt.getTime(), error: message });
     return { runId, mode, report, events, context, warnings, error: message };
+  } finally {
+    unWire?.();
   }
 }
 

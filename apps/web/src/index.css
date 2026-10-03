@@ -70,3 +70,11 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, main[tabindex="-1"]:focus { ou
 .flow-dot { offset-rotate: 0deg; animation: flow 3.2s linear infinite; }
 @keyframes flow { from { offset-distance: 0%; opacity: 0 } 10% { opacity: 1 } 90% { opacity: 1 } to { offset-distance: 100%; opacity: 0 } }
 @media (prefers-reduced-motion: reduce) { .flow-dot { animation: none; opacity: .6; offset-distance: 60%; } }
+
+/* A packet travelling along an MCP stdio connector while a request is in flight. */
+.wire-dot { position: absolute; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: 9999px; }
+.wire-out { animation: wire-out 0.9s linear infinite; }
+.wire-in { animation: wire-in 0.9s linear infinite; }
+@keyframes wire-out { from { left: 0; } to { left: calc(100% - 8px); } }
+@keyframes wire-in { from { left: calc(100% - 8px); } to { left: 0; } }
+@media (prefers-reduced-motion: reduce) { .wire-out, .wire-in { animation: none; left: calc(50% - 4px); } }

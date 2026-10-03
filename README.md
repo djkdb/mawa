@@ -74,7 +74,7 @@ node mcp-servers/github/dist/index.js --mode=demo      # or GITHUB_TOKEN=… --m
 `runAgent()` in `packages/agent-core/src/agent.ts`:
 
 1. `agent_run_started`
-2. `tool_discovery_started` → `tool_discovered` (tools/list on every server)
+2. `tool_discovery_started` → `mcp_server_connected` per server (from its `initialize` response: name, version, protocol version, capabilities) → `tool_discovered` (tools/list on every server). Every JSON-RPC message on each stdio pipe is also emitted as `mcp_message` (direction, method, id, real size, shortened body), so the UI shows the protocol, not a picture of it
 3. plan: the LLM receives the user's request plus the discovered tool definitions and returns tool calls
 4. execute: each call is `tool_call_started` → `tool_call_completed | tool_call_failed`; a policy caps calls (12), turns (4) and result size
 5. `context_aggregated`: rows → Sources + ContextItems, de-duplicated, sorted

@@ -1,4 +1,4 @@
-import { WeeklyWorkReportSchema } from '@mawa/shared';
+import { AgentEventSchema, WeeklyWorkReportSchema } from '@mawa/shared';
 import { fileURLToPath } from 'node:url';
 import { afterAll, describe, expect, it } from 'vitest';
 import { McpToolExecutor, ScriptedProvider, runAgent } from '../src/index.js';
@@ -40,5 +40,23 @@ describe('runAgent end-to-end over real MCP servers (demo mode)', () => {
     for (const s of report.sections) for (const i of s.items) for (const ref of i.sources) expect(ids.has(ref)).toBe(true);
     expect(report.sections.map((s) => s.id)).toEqual(['overview', 'major_activities', 'project_progress', 'schedule', 'relevant_emails', 'potential_risks', 'next_actions']);
     expect(report.sections.flatMap((s) => s.items).some((i) => i.confidence === 'inferred')).toBe(true);
+
+    // The protocol underneath is part of the trace: handshakes reported by each server, then real JSON-RPC traffic.
+    for (const e of result.events) expect(AgentEventSchema.safeParse(e).success).toBe(true);
+    const hello = result.events.filter((e) => e.type === 'mcp_server_connected');
+    expect(hello.map((e) => e.server).sort()).toEqual(['calendar', 'github', 'gmail']);
+    for (const e of hello) {
+      expect(e.serverInfo.name).toBe(`mawa-${e.server}`);
+      expect(e.protocolVersion).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(e.capabilities).toContain('tools');
+      expect(e.command).toBe(`node mcp-servers/${e.server}/dist/index.js --mode=demo`);
+    }
+    const wire = result.events.filter((e) => e.type === 'mcp_message');
+    const methods = (dir: string, kind: string) => wire.filter((m) => m.direction === dir && m.kind === kind).map((m) => m.method);
+    expect(methods('client_to_server', 'request').filter((m) => m === 'initialize')).toHaveLength(3);
+    expect(methods('client_to_server', 'request').filter((m) => m === 'tools/list')).toHaveLength(3);
+    expect(methods('client_to_server', 'request').filter((m) => m === 'tools/call')).toHaveLength(completed.length);
+    expect(methods('server_to_client', 'response').filter((m) => m === 'tools/call')).toHaveLength(completed.length);
+    for (const m of wire) expect(() => JSON.parse(m.preview)).not.toThrow();
   }, 30_000);
 });

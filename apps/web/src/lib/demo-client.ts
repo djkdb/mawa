@@ -39,6 +39,8 @@ export const DEMO_RECORDED_AT = RECORDED.recordedAt;
 const DELAY: Partial<Record<AgentEvent['type'], number>> = {
   agent_run_started: 250,
   tool_discovery_started: 350,
+  mcp_server_connected: 220,
+  mcp_message: 70,
   tool_discovered: 450,
   tool_call_started: 180,
   tool_call_completed: 320,

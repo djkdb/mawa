@@ -11,7 +11,11 @@ const SERVERS: McpServerId[] = ['github', 'gmail', 'calendar'];
 
 export function McpConnections({ status, events, onDisconnect }: { status: Status | null; events: AgentEvent[]; onDisconnect: (p: 'github' | 'google') => void }) {
   const calls = new Map<McpServerId, number>();
-  for (const e of events) if (e.type === 'tool_call_completed') calls.set(e.call.server, (calls.get(e.call.server) ?? 0) + 1);
+  const hello = new Map<McpServerId, string>();
+  for (const e of events) {
+    if (e.type === 'tool_call_completed') calls.set(e.call.server, (calls.get(e.call.server) ?? 0) + 1);
+    if (e.type === 'mcp_server_connected') hello.set(e.server, `${e.serverInfo.name} v${e.serverInfo.version}`);
+  }
   return (
     <section id="connections" aria-labelledby="mcp-heading" className="surface scroll-mt-20 p-5">
       <h2 id="mcp-heading" className="text-[15px] font-semibold">연결된 소스</h2>
@@ -28,9 +32,9 @@ export function McpConnections({ status, events, onDisconnect }: { status: Statu
               <div className="flex min-w-0 items-center gap-2.5">
                 <span className="rounded-md p-1.5" style={{ color: SERVER_COLOR[id], background: `color-mix(in srgb, ${SERVER_COLOR[id]} 14%, transparent)` }}>{ICON[id]}</span>
                 <div className="min-w-0">
-                  <div className="text-sm font-medium text-text">{SERVER_NAME[id]}</div>
+                  <div className="text-sm font-medium text-text">{SERVER_NAME[id]}{hello.get(id) && <span className="ml-2 font-mono text-[11px] font-normal text-text-3">{hello.get(id)}</span>}</div>
                   <div className="tnum truncate text-xs text-text-3">
-                    도구 {tools}개{used ? ` · 이번 실행 ${used}회 조회` : ''}
+                    {hello.has(id) ? 'stdio 연결 · ' : ''}도구 {tools}개{used ? ` · 이번 실행 ${used}회 호출` : ''}
                     {!IS_DEMO_BUILD && (integ === 'connected' ? ` · 연결됨${account ? ` (${account})` : ''}` : integ === 'disconnected' ? ' · 연결 안 됨' : ' · OAuth 미설정')}
                   </div>
                 </div>

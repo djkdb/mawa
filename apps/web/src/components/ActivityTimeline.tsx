@@ -4,6 +4,7 @@ import type { AgentEvent, McpServerId } from '@mawa/shared';
 import { IS_DEMO_BUILD } from '../lib/client.js';
 import { SERVER_COLOR, SERVER_NAME, summaryKo, toolLabel } from '../lib/copy.js';
 import type { RunPhase } from '../lib/useAgentRun.js';
+import { McpTopology, WireLog, kb } from './McpWire.js';
 
 interface ToolDetail { server: McpServerId; name: string; input: Record<string, unknown>; summary?: string; items?: number; durationMs?: number; error?: string }
 interface Step { key: string; label: string; detail?: string; color?: string; tool?: ToolDetail; state: 'done' | 'active' | 'failed' }
@@ -16,6 +17,14 @@ export function stepsFromEvents(events: AgentEvent[], phase: RunPhase): Step[] {
     switch (e.type) {
       case 'agent_run_started': steps.push({ key: 'start', label: '요청 수신', state: 'done' }); break;
       case 'tool_discovery_started': steps.push({ key: 'discover', label: '사용할 수 있는 도구를 찾는 중', state: 'active' }); break;
+      case 'mcp_server_connected': {
+        let s = steps.find((x) => x.key === 'connect');
+        if (!s) { s = { key: 'connect', label: '', detail: '', state: 'done' }; steps.splice(Math.max(0, steps.findIndex((x) => x.key === 'discover')), 0, s); }
+        const names = [...(s.detail ? s.detail.split(' · ') : []), `${e.serverInfo.name} v${e.serverInfo.version}`];
+        s.label = `MCP 서버 ${names.length}곳과 연결 (initialize · stdio · MCP ${e.protocolVersion})`;
+        s.detail = names.join(' · ');
+        break;
+      }
       case 'tool_discovered': { const s = steps.find((x) => x.key === 'discover'); if (s) { s.state = 'done'; s.label = `MCP 서버 ${new Set(e.tools.map((t) => t.server)).size}곳에서 도구 ${e.tools.length}개 발견`; } break; }
       case 'tool_call_started': { const s: Step = { key: e.call.id, label: toolLabel(e.call.server, e.call.name, false), color: SERVER_COLOR[e.call.server], tool: { server: e.call.server, name: e.call.name, input: e.call.input }, state: 'active' }; tool.set(e.call.id, s); steps.push(s); break; }
       case 'tool_call_completed': {
@@ -75,6 +84,7 @@ function downloadJson(events: AgentEvent[], runId: string | null) {
 export function ActivityTimeline({ events, phase, recorded, runId, headingRef, defaultOpen = false }: { events: AgentEvent[]; phase: RunPhase; recorded: boolean; runId?: string | null; headingRef?: React.Ref<HTMLHeadingElement>; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   const [raw, setRaw] = useState(false);
+  const [wire, setWire] = useState(false);
   const steps = stepsFromEvents(events, phase);
   if (phase === 'idle' || (!events.length && phase === 'completed')) return null;
   const done = phase === 'completed';
@@ -86,6 +96,7 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
     ? `도구 ${completed.length}회 호출 (${servers.map((s) => ({ github: 'GitHub', gmail: 'Gmail', calendar: 'Calendar' })[s]).join(', ')}) · 출처 ${sources?.type === 'context_aggregated' ? sources.totalItems : 0}건 · MCP 호출 합계 ${mcpMs}ms`
     : '에이전트가 도구를 고르고 MCP로 실행하는 중';
   const expanded = !done || open;
+  const wireCount = events.filter((e) => e.type === 'mcp_message').length;
 
   return (
     <section id="activity" aria-labelledby="activity-heading" className="surface scroll-mt-20 px-5 py-4 sm:px-6">
@@ -101,6 +112,7 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
           </button>
         )}
       </div>
+      <McpTopology events={events} live={!done} recorded={recorded || IS_DEMO_BUILD} />
       {expanded && (
         <>
           <ol id="activity-list" className="mt-4 space-y-2.5">
@@ -120,14 +132,22 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
               </li>
             ))}
           </ol>
+        </>
+      )}
           {done && (
             <div className="mt-4 border-t border-line pt-3">
               <div className="flex flex-wrap items-center gap-3">
+                {wireCount > 0 && (
+                  <button type="button" onClick={() => setWire((w) => !w)} aria-expanded={wire} className="inline-flex items-center gap-1 rounded-md py-1.5 text-sm text-text-2 hover:text-text">
+                    JSON-RPC 메시지 {wireCount}개 <ChevronDown className={`h-4 w-4 transition ${wire ? 'rotate-180' : ''}`} aria-hidden />
+                  </button>
+                )}
                 <button type="button" onClick={() => setRaw((r) => !r)} aria-expanded={raw} aria-controls="raw-events" className="inline-flex items-center gap-1 rounded-md py-1.5 text-sm text-text-2 hover:text-text">
                   원시 이벤트 {events.length}개 <ChevronDown className={`h-4 w-4 transition ${raw ? 'rotate-180' : ''}`} aria-hidden />
                 </button>
                 <button type="button" onClick={() => downloadJson(events, runId ?? null)} className="inline-flex items-center gap-1 rounded-md py-1.5 text-sm text-text-2 hover:text-text"><Download className="h-3.5 w-3.5" aria-hidden />JSON 내려받기</button>
               </div>
+              {wire && <WireLog events={events} />}
               {raw && (
                 <div id="raw-events" className="mt-2 max-h-80 overflow-auto rounded-lg bg-bg">
                   <table className="w-full text-left font-mono text-[11px]">
@@ -136,7 +156,7 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
                     <tbody>
                       {events.map((e, i) => {
                         const t0 = new Date(events[0]!.timestamp).getTime();
-                        const detail = 'call' in e ? `${e.call.server}.${e.call.name} ${JSON.stringify(e.call.input)}` : e.type === 'tool_discovered' ? `${e.tools.length} tools` : e.type === 'context_aggregated' ? JSON.stringify(e.counts) : e.type === 'report_generated' ? `${e.report.sections.length} sections, dropped ${e.droppedItems}` : e.type === 'agent_run_completed' ? e.status : e.type === 'tool_discovery_started' ? e.servers.join(',') : '';
+                        const detail = 'call' in e ? `${e.call.server}.${e.call.name} ${JSON.stringify(e.call.input)}` : e.type === 'tool_discovered' ? `${e.tools.length} tools` : e.type === 'context_aggregated' ? JSON.stringify(e.counts) : e.type === 'report_generated' ? `${e.report.sections.length} sections, dropped ${e.droppedItems}` : e.type === 'agent_run_completed' ? e.status : e.type === 'tool_discovery_started' ? e.servers.join(',') : e.type === 'mcp_message' ? `${e.direction === 'client_to_server' ? '→' : '←'} ${e.server} ${e.kind} ${e.method ?? ''}${e.rpcId !== undefined ? ` #${e.rpcId}` : ''} ${kb(e.bytes)}` : e.type === 'mcp_server_connected' ? `${e.server}: ${e.serverInfo.name} v${e.serverInfo.version}, MCP ${e.protocolVersion}, ${e.transport}` : '';
                         return (
                           <tr key={i} className="border-t border-line/50 align-top">
                             <td className="tnum px-3 py-1 text-text-3">{new Date(e.timestamp).getTime() - t0}</td>
@@ -151,8 +171,6 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
               )}
             </div>
           )}
-        </>
-      )}
     </section>
   );
 }
