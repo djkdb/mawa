@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ArrowRight, CheckCircle2, ChevronDown, Info, Play, Radio, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronDown, Info, Play, Radio, ShieldCheck, Sparkles } from 'lucide-react';
 import type { AgentMode } from '@mawa/shared';
 import { ActivityTimeline } from '../components/ActivityTimeline.js';
 import { CategoryBoard } from '../components/CategoryBoard.js';
@@ -84,9 +84,12 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
         {report && <a href={reportHref} className="inline-flex min-h-9 items-center gap-1 text-sm text-accent hover:underline">리포트 전체 보기 <ArrowRight className="h-4 w-4" aria-hidden /></a>}
       </div>
       {servers > 0 && (
-        <button type="button" onClick={() => scrollTo('activity')} className="-mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-surface px-3 py-1.5 text-xs text-text-2 hover:text-text">
+        <div className="-mt-2 flex flex-wrap gap-2">
+        <button type="button" onClick={() => scrollTo('activity')} className="inline-flex w-fit items-center gap-2 rounded-full bg-surface px-3 py-1.5 text-xs text-text-2 hover:text-text">
           <Radio className="h-3.5 w-3.5 text-calendar" aria-hidden />MCP 서버 {servers}곳 · 도구 호출 {calls}회 · JSON-RPC 메시지 {rpc}개 <span className="inline-flex items-center gap-0.5 text-text-3">· 통신 보기<ChevronDown className="h-3.5 w-3.5" aria-hidden /></span>
         </button>
+          <a href={hrefFor('audit')} className="inline-flex w-fit items-center gap-2 rounded-full bg-surface px-3 py-1.5 text-xs text-text-2 hover:text-text"><ShieldCheck className="h-3.5 w-3.5 text-ok" aria-hidden />보안 요약 · 감사 로그</a>
+        </div>
       )}
 
       {report && <FocusCard report={report} runId={state.runId} />}

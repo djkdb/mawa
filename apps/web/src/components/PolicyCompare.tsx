@@ -21,6 +21,7 @@ export function PolicyCompare({ columns, current, defaultOpen = true }: { column
     ['LLM·리포트에서 뺀 항목', (f) => f.excluded, '제외 규칙에 걸린 메일·일정'],
     ['가린 메일 주소', (f) => f.maskedEmails],
     ['가린 개인정보', (f) => f.maskedPii, '전화번호·학번·주민등록번호·계좌·카드번호'],
+    ['가명으로 바꾼 이름', (f) => f.pseudonyms, '모델에는 사람A·사람B로, 리포트에는 원래 이름으로'],
     ['MCP로 읽은 횟수', (f) => f.reads],
     ['리포트가 쓴 출처', (f) => f.sources],
     ['리포트 작성 요청 크기', (f) => kb(f.analysisBytes)],

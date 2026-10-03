@@ -1,8 +1,8 @@
 import { EventEmitter } from 'node:events';
 import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { McpToolExecutor, MemoryRunStore, createLLMProvider, runAgent, type LLMProvider, type McpServerSpec, type RunRecord, type RunStore } from '@mawa/agent-core';
-import type { AgentEvent, AgentMode, DataPolicy, McpServerId } from '@mawa/shared';
+import { ChainedAuditLog, McpToolExecutor, MemoryRunStore, createLLMProvider, runAgent, type LLMProvider, type McpServerSpec, type RunRecord, type RunStore } from '@mawa/agent-core';
+import { auditRows, type AgentEvent, type AgentMode, type AuditRow, type DataPolicy, type McpServerId } from '@mawa/shared';
 import type { OAuthService } from '../auth/oauth.js';
 import type { AppConfig } from '../config.js';
 
@@ -22,9 +22,12 @@ export interface StartRunInput {
 export class RunManager {
   private emitter = new EventEmitter();
   private llm: LLMProvider;
+  /** Append-only, hash-chained audit of every run; written by the server, not rebuilt for display. */
+  readonly audit: ChainedAuditLog<AuditRow>;
 
-  constructor(private readonly config: AppConfig, private readonly oauth: OAuthService, readonly store: RunStore = new MemoryRunStore()) {
+  constructor(private readonly config: AppConfig, private readonly oauth: OAuthService, readonly store: RunStore = new MemoryRunStore(), audit?: ChainedAuditLog<AuditRow>) {
     this.llm = createLLMProvider(config.llm);
+    this.audit = audit ?? new ChainedAuditLog<AuditRow>(config.auditLogPath);
   }
 
   get llmInfo() {
@@ -96,6 +99,7 @@ export class RunManager {
       },
     })
       .then(async (result) => {
+        await this.audit.append(auditRows(result.events));
         await this.store.update(runId, { status: result.error ? 'error' : 'success', report: result.report, warnings: [...record.warnings, ...result.warnings], ...(result.error ? { error: result.error } : {}) });
       })
       .catch(async (err: unknown) => {

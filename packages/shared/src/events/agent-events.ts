@@ -74,6 +74,8 @@ export const LlmRequestSchema = EventBaseSchema.extend({
   /** Other personal identifiers masked before sending (phone, 학번, 주민등록번호, account, card), total and per kind. */
   maskedPii: z.number().int().nonnegative().default(0),
   piiKinds: z.partialRecord(z.enum(['phone', 'studentNo', 'rrn', 'account', 'card']), z.number().int().nonnegative()).default({}),
+  /** People whose names were replaced by aliases (사람A…) in this payload. */
+  pseudonyms: z.number().int().nonnegative().default(0),
   flagged: z.array(z.object({ sourceId: z.string(), reason: z.string() })).default([]),
 });
 
@@ -99,6 +101,8 @@ export const DataPolicySchema = z.object({
   maskEmails: z.boolean().default(true),
   /** Mask personal identifiers (phone, 학번, 주민등록번호, account, card numbers) for the LLM. */
   maskPii: z.boolean().default(true),
+  /** Replace people's names with stable aliases (사람1, 사람2) for the LLM; the report is restored. */
+  pseudonymize: z.boolean().default(false),
 });
 export type DataPolicy = z.infer<typeof DataPolicySchema>;
 
@@ -200,3 +204,32 @@ export type AgentRunCompleted = z.infer<typeof AgentRunCompletedSchema>;
 export type AgentEvent = z.infer<typeof AgentEventSchema>;
 export type AgentEventType = AgentEvent['type'];
 export type ToolCallDenied = z.infer<typeof ToolCallDeniedSchema>;
+
+/**
+ * The server owns the policy; a request may only make it stricter. Masking cannot be switched
+ * off, base exclusions cannot be removed, and tools outside the base allow-list cannot be added.
+ * Returns the effective policy and what the request tried to loosen.
+ */
+export function tightenPolicy(base: DataPolicy, req?: { [K in keyof DataPolicy]?: DataPolicy[K] | undefined }): { policy: DataPolicy; refused: string[] } {
+  const refused: string[] = [];
+  const flag = (k: 'maskEmails' | 'maskPii' | 'pseudonymize') => {
+    const b = base[k] ?? false;
+    const r = req?.[k];
+    if (b && r === false) refused.push(k);
+    return b || r === true;
+  };
+  let allowedTools = base.allowedTools;
+  if (req?.allowedTools) {
+    const extra = base.allowedTools ? req.allowedTools.filter((t) => !base.allowedTools!.includes(t)) : [];
+    if (extra.length) refused.push(`allowedTools: ${extra.join(', ')}`);
+    allowedTools = req.allowedTools.filter((t) => !base.allowedTools || base.allowedTools.includes(t));
+  }
+  const policy: DataPolicy = {
+    ...(allowedTools ? { allowedTools } : {}),
+    exclude: [...new Set([...base.exclude, ...(req?.exclude ?? [])])].slice(0, 30),
+    maskEmails: flag('maskEmails'),
+    maskPii: flag('maskPii'),
+    pseudonymize: flag('pseudonymize'),
+  };
+  return { policy, refused };
+}

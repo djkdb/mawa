@@ -98,3 +98,15 @@ describe('scripted report', () => {
     expect(emails.some((e) => e.sources.includes('gmail:msg:3'))).toBe(false);
   });
 });
+
+describe('pseudonymizer', () => {
+  it('replaces people (not teams or bots) with stable aliases and restores them', async () => {
+    const { Pseudonymizer } = await import('../src/index.js');
+    const p = new Pseudonymizer();
+    p.learn([{ from: '김지민 <jimin@example.com>' }, { from: '박교수 <park@x.ac.kr>' }, { from: 'A사 채용팀 <r@x.com>' }, { from: '회의록 봇 <b@x.net>' }, { from: '김지민 <jimin@example.com>' }]);
+    expect(p.size).toBe(2);
+    const out = p.apply('김지민이 ERD를 바꾸자고 했고 박교수 메일은 10/14라고 함. A사 채용팀 안내.');
+    expect(out.text).toBe('사람A이 ERD를 바꾸자고 했고 사람B(교수) 메일은 10/14라고 함. A사 채용팀 안내.');
+    expect(p.restore('사람B(교수)께 날짜를 확인하고 사람A의 PR을 리뷰하세요')).toBe('박교수께 날짜를 확인하고 김지민의 PR을 리뷰하세요');
+  });
+});

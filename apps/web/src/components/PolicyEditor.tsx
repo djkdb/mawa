@@ -16,16 +16,22 @@ const ALL_TOOLS = SERVERS.flatMap((s) => ((catalog as unknown as Catalog).server
  * or the report, and whether email addresses are masked. In the demo it is read-only (the recordings
  * ran under it); with the API it is stored in this browser and sent with every run.
  */
-export function PolicyEditor() {
+export function PolicyEditor({ base = null }: { base?: DataPolicy | null }) {
   const saved = IS_DEMO_BUILD ? { ...DEMO_POLICY } : getPolicy();
-  const [tools, setTools] = useState<Set<string>>(new Set(saved?.allowedTools ?? ALL_TOOLS));
-  const [exclude, setExclude] = useState((saved?.exclude ?? []).join(', '));
+  // The server's policy is the floor: what it masks stays masked, what it excludes stays excluded,
+  // and tools outside its allow-list cannot be turned on here.
+  const fixedEx = IS_DEMO_BUILD ? [] : (base?.exclude ?? []);
+  const lockedTool = (t: string) => !IS_DEMO_BUILD && Boolean(base?.allowedTools) && !base!.allowedTools!.includes(t);
+  const [tools, setTools] = useState<Set<string>>(new Set((saved?.allowedTools ?? ALL_TOOLS).filter((t) => !lockedTool(t))));
+  const [exclude, setExclude] = useState((saved?.exclude ?? []).filter((x) => !fixedEx.includes(x)).join(', '));
   const [mask, setMask] = useState(saved?.maskEmails ?? true);
   const [maskPh, setMaskPh] = useState(saved?.maskPii ?? true);
+  const [pseudo, setPseudo] = useState(saved?.pseudonymize ?? false);
   const [msg, setMsg] = useState<string | null>(null);
   const ro = IS_DEMO_BUILD;
   const save = () => {
-    const p: Partial<DataPolicy> = { exclude: exclude.split(/[,\n]/).map((x) => x.trim()).filter(Boolean).slice(0, 30), maskEmails: mask, maskPii: maskPh, ...(tools.size < ALL_TOOLS.length ? { allowedTools: [...tools] } : {}) };
+    const allowedByServer = ALL_TOOLS.filter((t) => !lockedTool(t));
+    const p: Partial<DataPolicy> = { exclude: exclude.split(/[,\n]/).map((x) => x.trim()).filter(Boolean).slice(0, 30), maskEmails: mask || Boolean(base?.maskEmails), maskPii: maskPh || Boolean(base?.maskPii), pseudonymize: pseudo || Boolean(base?.pseudonymize), ...(tools.size < allowedByServer.length ? { allowedTools: [...tools] } : {}) };
     setPolicy(p);
     setMsg('저장했습니다. 다음 실행부터 적용됩니다.');
   };
@@ -37,7 +43,9 @@ export function PolicyEditor() {
       <p className="mt-1 text-[13px] text-text-3">
         에이전트가 쓸 수 있는 도구, LLM과 리포트에서 뺄 항목, 메일 주소 가리기를 정합니다. 실행마다 적용 결과가 리포트의 ‘데이터 사용 내역’과 감사 로그에 남습니다.
         {ro && ' 데모 기록은 아래 정책으로 실행됐고, 여기서는 바꿀 수 없습니다.'}
+        {!ro && base && ' 서버 정책이 기준입니다. 여기서는 더 엄격하게만 바꿀 수 있고, 서버가 켠 가리기·제외·도구 제한은 풀 수 없습니다.'}
       </p>
+      {fixedEx.length > 0 && <p className="mt-2 text-xs text-text-3">서버가 항상 빼는 단어: {fixedEx.map((x) => `“${x}”`).join(', ')}</p>}
 
       <fieldset className="mt-4" disabled={ro}>
         <legend className="text-sm font-medium text-text-2">LLM·리포트에서 뺄 단어 (보낸 사람·제목·본문 미리보기에서 찾음)</legend>
@@ -45,12 +53,16 @@ export function PolicyEditor() {
       </fieldset>
 
       <label className="mt-4 flex items-center gap-2 text-sm text-text-2">
-        <input type="checkbox" checked={mask} disabled={ro} onChange={(e) => setMask(e.target.checked)} className="h-4 w-4" />
+        <input type="checkbox" checked={mask || Boolean(!ro && base?.maskEmails)} disabled={ro || Boolean(base?.maskEmails)} onChange={(e) => setMask(e.target.checked)} className="h-4 w-4" />
         LLM에 보낼 때 메일 주소 가리기 (m***@domain)
       </label>
       <label className="mt-2 flex items-center gap-2 text-sm text-text-2">
-        <input type="checkbox" checked={maskPh} disabled={ro} onChange={(e) => setMaskPh(e.target.checked)} className="h-4 w-4" />
+        <input type="checkbox" checked={maskPh || Boolean(!ro && base?.maskPii)} disabled={ro || Boolean(base?.maskPii)} onChange={(e) => setMaskPh(e.target.checked)} className="h-4 w-4" />
         개인정보 가리기: 전화번호·학번·주민등록번호·계좌·카드번호 (LLM 요청과 화면 모두)
+      </label>
+      <label className="mt-2 flex items-center gap-2 text-sm text-text-2">
+        <input type="checkbox" checked={pseudo || Boolean(!ro && base?.pseudonymize)} disabled={ro || Boolean(base?.pseudonymize)} onChange={(e) => setPseudo(e.target.checked)} className="h-4 w-4" />
+        친구·교수님 이름을 가명(사람A, 사람B)으로 바꿔 보내기 (리포트에는 원래 이름으로 복원)
       </label>
 
       <fieldset className="mt-4" disabled={ro}>
@@ -60,7 +72,7 @@ export function PolicyEditor() {
             const [server, name] = t.split('__') as [McpServerId, string];
             return (
               <label key={t} className="flex min-w-0 items-center gap-2 text-[13px] text-text">
-                <input type="checkbox" checked={tools.has(t)} onChange={() => toggle(t)} className="h-4 w-4 shrink-0" />
+                <input type="checkbox" checked={tools.has(t)} disabled={lockedTool(t)} onChange={() => toggle(t)} className="h-4 w-4 shrink-0" />
                 <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: SERVER_COLOR[server] }} aria-hidden />
                 <span className="truncate font-mono text-xs">{name}</span>
                 <span className="text-[11px] text-text-3">{SERVER_NAME[server]}</span>

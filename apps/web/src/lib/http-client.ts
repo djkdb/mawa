@@ -1,5 +1,5 @@
 import { AgentEventSchema, type AgentMode, type DataPolicy } from '@mawa/shared';
-import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status } from './types.js';
+import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status, AuditLog } from './types.js';
 
 const TOKEN_KEY = 'mawa.apiToken';
 /** The API access token the user entered (only needed when the API sets API_ACCESS_TOKEN). */
@@ -52,6 +52,12 @@ export class HttpClient implements AgentClient {
     const res = await api(`${this.base}/auth/lms/connect`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ username, password }) });
     const body = (await res.json().catch(() => ({}))) as { error?: string };
     if (!res.ok) throw new Error(body.error ?? `eCampus 연결 실패 (${res.status})`);
+  }
+
+  async getAudit(): Promise<AuditLog> {
+    const res = await api(`${this.base}/api/audit`);
+    if (!res.ok) throw new Error(`audit ${res.status}`);
+    return (await res.json()) as AuditLog;
   }
 
   async disconnect(provider: 'github' | 'google' | 'lms'): Promise<void> {

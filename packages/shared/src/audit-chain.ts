@@ -46,9 +46,13 @@ export async function chainEntries<T extends object>(entries: T[], prev = GENESI
 
 export type ChainCheck = { ok: true; count: number; head: string } | { ok: false; count: number; brokenAt: number; reason: string };
 
-/** Checks every link; reports the first line (1-based) whose hash or back-link does not match. */
-export async function verifyChain(entries: Array<Record<string, unknown>>): Promise<ChainCheck> {
-  let prev = GENESIS;
+/**
+ * Checks every link; reports the first line (1-based) whose hash or back-link does not match.
+ * `start` is the hash the first line must link to: GENESIS for a whole log, or the `prev` of the
+ * first line when checking a tail (then everything before it is outside the check).
+ */
+export async function verifyChain(entries: Array<Record<string, unknown>>, start = GENESIS): Promise<ChainCheck> {
+  let prev = start;
   for (const [i, e] of entries.entries()) {
     if (e['prev'] !== prev) return { ok: false, count: entries.length, brokenAt: i + 1, reason: i === 0 ? '첫 줄이 체인의 시작이 아닙니다' : '이전 줄과 연결이 끊겼습니다 (삭제·순서 변경)' };
     if (e['hash'] !== (await entryHash(e))) return { ok: false, count: entries.length, brokenAt: i + 1, reason: '내용이 기록 이후 바뀌었습니다' };

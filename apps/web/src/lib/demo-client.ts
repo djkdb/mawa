@@ -1,6 +1,7 @@
 import { AgentEventSchema, WeeklyWorkReportSchema, type AgentEvent, type AgentMode, type McpServerId, type WeeklyWorkReport } from '@mawa/shared';
 import demoRuns from '@mawa/shared/demo/demo-runs.json';
-import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status } from './types.js';
+import demoAudit from '@mawa/shared/demo/demo-audit.json';
+import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status, AuditLog } from './types.js';
 
 export interface RecordedRun {
   id: string;
@@ -17,7 +18,7 @@ export interface RecordedRun {
   policyLabel?: string;
 }
 
-const RECORDED = (demoRuns as unknown as { recordedAt: string; note: string; policy?: { exclude: string[]; maskEmails: boolean }; runs: RecordedRun[] });
+const RECORDED = (demoRuns as unknown as { recordedAt: string; note: string; policy?: { exclude: string[]; maskEmails: boolean; maskPii?: boolean }; runs: RecordedRun[] });
 /** The data policy the demo recordings ran under. */
 export const DEMO_POLICY = RECORDED.policy ?? { exclude: [], maskEmails: true };
 
@@ -93,7 +94,13 @@ export class DemoClient implements AgentClient {
         google: { status: 'not_configured', account: null, connectUrl: '', services: ['gmail', 'calendar'] },
       },
       realMode: { available: false, servers: [], skipped: [{ id: 'github', reason: 'Browser-only demo: no API deployed' }, { id: 'gmail', reason: 'Browser-only demo: no API deployed' }, { id: 'calendar', reason: 'Browser-only demo: no API deployed' }] },
+      policy: { base: { maskPii: true, pseudonymize: false, ...DEMO_POLICY }, source: 'recorded' },
     };
+  }
+
+  /** The audit chain written once when the demo was recorded (scripts/export-portfolio-data.mjs). */
+  async getAudit(): Promise<AuditLog> {
+    return { source: 'recorded', entries: (demoAudit as unknown as { entries: AuditLog['entries'] }).entries };
   }
 
   async startRun(prompt: string, mode: AgentMode): Promise<StartRunResult> {

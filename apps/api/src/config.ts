@@ -1,9 +1,9 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { llmConfigFromEnv, type LLMConfig } from '@mawa/agent-core';
-import { AgentModeSchema, type AgentMode } from '@mawa/shared';
+import { AgentModeSchema, DataPolicySchema, type AgentMode, type DataPolicy } from '@mawa/shared';
 
 /** Load ../../.env (repo root) if present. Secrets never leave process.env. */
 export function loadDotenv(): void {
@@ -29,6 +29,10 @@ const EnvSchema = z.object({
   TOKEN_STORE_PATH: z.string().optional(),
   RUN_STORE_PATH: z.string().optional(),
   LMS_BASE_URL: z.string().default('https://lms.chungbuk.ac.kr'),
+  /** Hash-chained audit log (JSONL). Default: .tokens/audit.jsonl (git-ignored). */
+  AUDIT_LOG_PATH: z.string().optional(),
+  /** Server-owned data policy (JSON). Requests can only make it stricter. */
+  POLICY_PATH: z.string().optional(),
 });
 
 export interface AppConfig {
@@ -45,6 +49,9 @@ export interface AppConfig {
   encryptionKey?: string;
   tokenStorePath: string;
   runStorePath: string;
+  auditLogPath: string;
+  /** The base policy every run starts from, and where it came from. */
+  policy: { base: DataPolicy; source: string };
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
@@ -64,5 +71,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     ...(e.SESSION_ENCRYPTION_KEY ? { encryptionKey: e.SESSION_ENCRYPTION_KEY } : {}),
     tokenStorePath: e.TOKEN_STORE_PATH ?? resolve(root, '.tokens', 'tokens.enc.json'),
     runStorePath: e.RUN_STORE_PATH ?? resolve(root, '.tokens', 'runs.enc.json'),
+    auditLogPath: e.AUDIT_LOG_PATH ?? resolve(root, '.tokens', 'audit.jsonl'),
+    policy: loadPolicy(e.POLICY_PATH),
   };
+}
+
+/** The server's base policy: POLICY_PATH if given (validated), else masking on, nothing excluded. */
+function loadPolicy(path: string | undefined): { base: DataPolicy; source: string } {
+  if (!path) return { base: DataPolicySchema.parse({}), source: 'default' };
+  return { base: DataPolicySchema.parse(JSON.parse(readFileSync(path, 'utf8'))), source: path };
 }

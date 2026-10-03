@@ -1,4 +1,4 @@
-import type { AgentEvent, AgentMode, McpServerId, WeeklyWorkReport } from '@mawa/shared';
+import type { AgentEvent, AgentMode, AuditRow, Chained, ChainCheck, DataPolicy, McpServerId, WeeklyWorkReport } from '@mawa/shared';
 
 export type IntegrationStatus = 'not_configured' | 'disconnected' | 'connected';
 
@@ -14,6 +14,15 @@ export interface Status {
     lms?: { status: IntegrationStatus; account: string | null; connectUrl: string; baseUrl: string };
   };
   realMode: { available: boolean; servers: string[]; skipped: Array<{ id: string; reason: string }> };
+  /** The server-owned base policy; a run can only be stricter. */
+  policy?: { base: DataPolicy; source: 'default' | 'file' | 'recorded' };
+}
+
+/** The stored, hash-chained audit log: written by the server as runs finish (or shipped with the demo). */
+export interface AuditLog {
+  source: 'server' | 'recorded';
+  check?: ChainCheck;
+  entries: Array<Chained<AuditRow>>;
 }
 
 export interface RunRecord {
@@ -74,6 +83,8 @@ export interface AgentClient {
   /** Recent runs, newest first (without events). */
   listRuns(): Promise<RunSummary[]>;
   disconnect(provider: 'github' | 'google' | 'lms'): Promise<void>;
+  /** The stored audit log (not rebuilt from events). */
+  getAudit(): Promise<AuditLog>;
   /** CBNU eCampus (Moodle): exchange id/password for a token on the API server. */
   connectLms?(username: string, password: string): Promise<void>;
 }

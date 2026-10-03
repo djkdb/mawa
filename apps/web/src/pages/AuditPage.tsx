@@ -1,12 +1,14 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Ban, Download, EyeOff, FileSearch, Link2, Send, ShieldAlert, ShieldCheck, TriangleAlert, Upload } from 'lucide-react';
-import { chainEntries, parseJsonl, verifyChain, type AgentEvent, type ChainCheck } from '@mawa/shared';
+import { parseJsonl, verifyChain, type AgentEvent, type ChainCheck } from '@mawa/shared';
 import { getClient, type RunSummary } from '../lib/client.js';
-import { auditRows, downloadText, type AuditAction, type AuditRow } from '../lib/audit.js';
+import type { AuditLog } from '../lib/types.js';
+import { downloadText, type AuditAction, type AuditRow } from '../lib/audit.js';
 import { SERVER_COLOR, SERVER_NAME, piiBreakdown } from '../lib/copy.js';
 import { hrefFor } from '../lib/useHashRoute.js';
 import { kb } from '../components/McpWire.js';
 import { GatewayRun } from '../components/GatewayRun.js';
+import { SecuritySummary } from '../components/SecuritySummary.js';
 
 const ACTION: Record<AuditAction, { label: string; Icon: typeof Send; cls: string }> = {
   read: { label: '읽기', Icon: FileSearch, cls: 'text-text-2' },
@@ -24,6 +26,7 @@ const time = (iso: string) => new Date(iso).toLocaleString('ko-KR', { timeZone: 
  */
 export function AuditPage() {
   const [runs, setRuns] = useState<Array<{ summary: RunSummary; events: AgentEvent[] }> | null>(null);
+  const [log, setLog] = useState<AuditLog | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState<AuditAction | 'all'>('all');
   const [runFilter, setRunFilter] = useState<string>('all');
@@ -32,6 +35,8 @@ export function AuditPage() {
     let live = true;
     (async () => {
       const client = getClient();
+      const stored = await client.getAudit();
+      if (live) setLog(stored);
       const list = (await client.listRuns()).filter((r) => r.status !== 'running').slice(0, 20);
       const seen = new Set<string>();
       const loaded: Array<{ summary: RunSummary; events: AgentEvent[] }> = [];
@@ -48,7 +53,9 @@ export function AuditPage() {
     return () => { live = false; };
   }, []);
 
-  const all = useMemo(() => (runs ?? []).flatMap((r) => auditRows(r.events).map((row) => ({ row, run: r.summary }))), [runs]);
+  // Rows come from the stored, hash-chained log; runs only supply the question for each runId.
+  const byRun = useMemo(() => new Map((runs ?? []).map((r) => [r.events[0]!.runId, r.summary])), [runs]);
+  const all = useMemo(() => (log?.entries ?? []).map((row) => ({ row: row as AuditRow, run: byRun.get(row.runId) })), [log, byRun]);
   const rows = all.filter(({ row }) => (filter === 'all' || row.action === filter) && (runFilter === 'all' || row.runId === runFilter));
   const count = (a: AuditAction) => all.filter(({ row }) => row.action === a && (runFilter === 'all' || row.runId === runFilter)).length;
   const sent = all.filter(({ row }) => row.action === 'llm' && (runFilter === 'all' || row.runId === runFilter)).map(({ row }) => row);
@@ -56,17 +63,18 @@ export function AuditPage() {
 
   return (
     <div className="mx-auto max-w-6xl">
-      <p className="mb-4 max-w-3xl text-sm text-text-2">에이전트가 MCP로 읽은 데이터, 정책이 거절하거나 뺀 것, LLM에 보낸 요청을 실행마다 한 줄씩 남깁니다. 실행 이벤트로만 만들기 때문에 데모와 실제 모드가 같은 형식입니다.</p>
+      <p className="mb-4 max-w-3xl text-sm text-text-2">에이전트가 MCP로 읽은 데이터, 정책이 거절하거나 뺀 것, LLM에 보낸 요청을 한 줄씩 남깁니다. {log?.source === 'server' ? 'API 서버가 실행이 끝날 때마다 파일에 이어 쓴 로그입니다.' : '데모를 기록할 때 한 번 써 둔 로그입니다.'} 화면을 열 때 다시 만들지 않고, 저장된 해시를 그대로 검증합니다.</p>
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
       {!runs && !error && <p className="text-sm text-text-3">불러오는 중…</p>}
-      {runs && (
+      {log && <SecuritySummary entries={log.entries as Array<AuditRow & { prev: string; hash: string }>} start={log.entries[0]?.prev} />}
+      {runs && log && (
         <section aria-labelledby="audit-heading" className="surface p-4 sm:p-5">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
             <h2 id="audit-heading" className="text-[15px] font-semibold">감사 로그</h2>
-            <p className="tnum text-sm text-text-2">실행 {runFilter === 'all' ? runs.length : 1}건 · 읽기 {count('read')} · LLM 전송 {count('llm')} ({kb(sent.reduce((n, r) => n + (r.bytes ?? 0), 0))}) · 가림 {masked} · 거절 {count('denied')} · 제외 {count('excluded')}</p>
-            <button type="button" onClick={() => void chainEntries(all.map((r) => r.row)).then((c) => downloadText(c.map((x) => JSON.stringify(x)).join('\n'), 'audit-log.chained.jsonl'))} className="ml-auto inline-flex min-h-9 items-center gap-1 rounded-md px-2 text-sm text-text-2 hover:text-text"><Download className="h-3.5 w-3.5" aria-hidden />JSONL 내려받기 (해시 체인)</button>
+            <p className="tnum text-sm text-text-2">실행 {runFilter === 'all' ? new Set(log.entries.map((e) => e.runId)).size : 1}건 · 읽기 {count('read')} · LLM 전송 {count('llm')} ({kb(sent.reduce((n, r) => n + (r.bytes ?? 0), 0))}) · 가림 {masked} · 거절 {count('denied')} · 제외 {count('excluded')}</p>
+            <button type="button" onClick={() => downloadText(log.entries.map((x) => JSON.stringify(x)).join('\n'), 'audit-log.chained.jsonl')} className="ml-auto inline-flex min-h-9 items-center gap-1 rounded-md px-2 text-sm text-text-2 hover:text-text"><Download className="h-3.5 w-3.5" aria-hidden />JSONL 내려받기 (해시 체인)</button>
           </div>
-          <IntegrityPanel rows={all.map((r) => r.row)} />
+          <IntegrityPanel entries={log.entries as unknown as Array<Record<string, unknown>>} serverCheck={log.check} />
           <div className="mt-3 flex flex-wrap items-center gap-1.5">
             <div role="group" aria-label="동작" className="flex flex-wrap gap-1.5">
               {FILTERS.map((f) => (
@@ -78,7 +86,7 @@ export function AuditPage() {
             <label className="ml-auto flex items-center gap-2 text-xs text-text-3">실행
               <select value={runFilter} onChange={(e) => setRunFilter(e.target.value)} className="hairline min-h-8 max-w-[16rem] rounded-md bg-bg px-2 text-xs text-text">
                 <option value="all">전체</option>
-                {runs.map((r) => <option key={r.events[0]!.runId} value={r.events[0]!.runId}>{r.summary.prompt.slice(0, 28)}{r.summary.kind ? ` (${r.summary.kind})` : ''}</option>)}
+                {runs.filter((r) => log.entries.some((e) => e.runId === r.events[0]!.runId)).map((r) => <option key={r.events[0]!.runId} value={r.events[0]!.runId}>{r.summary.prompt.slice(0, 28)}{r.summary.kind ? ` (${r.summary.kind})` : ''}</option>)}
               </select>
             </label>
           </div>
@@ -101,7 +109,7 @@ export function AuditPage() {
   );
 }
 
-function Row({ row, run }: { row: AuditRow; run: RunSummary }) {
+function Row({ row, run }: { row: AuditRow; run: RunSummary | undefined }) {
   const a = ACTION[row.action];
   const target = row.server ? <span className="inline-flex items-center gap-1.5"><span className="h-2 w-2 rounded-full" style={{ background: SERVER_COLOR[row.server] }} aria-hidden /><span className="font-mono text-xs text-text">{row.tool}</span><span className="text-xs text-text-3">{SERVER_NAME[row.server]}</span></span>
     : row.action === 'llm' ? <span className="font-mono text-xs text-text">{row.provider}</span>
@@ -117,7 +125,7 @@ function Row({ row, run }: { row: AuditRow; run: RunSummary }) {
       <td className="py-2 pr-3">{target}</td>
       <td className="max-w-[22rem] py-2 pr-3 text-xs text-text-2"><span className="line-clamp-2 break-all">{content}</span></td>
       <td className="tnum whitespace-nowrap py-2 pr-3 text-right text-xs text-text-2">{size}</td>
-      <td className="py-2 text-xs"><a href={hrefFor('report', run.runId)} className="line-clamp-1 text-accent hover:underline">{run.prompt.slice(0, 20)}</a></td>
+      <td className="py-2 text-xs">{run ? <a href={hrefFor('report', run.runId)} className="line-clamp-1 text-accent hover:underline">{run.prompt.slice(0, 20)}</a> : <span className="font-mono text-text-3">{row.runId.slice(0, 12)}</span>}</td>
     </tr>
   );
 }
@@ -127,24 +135,25 @@ function Row({ row, run }: { row: AuditRow; run: RunSummary }) {
  * edited, removed or reordered line fails verification from that point. Verify the log as shown,
  * see what an edit does, or check a downloaded file.
  */
-function IntegrityPanel({ rows }: { rows: AuditRow[] }) {
+function IntegrityPanel({ entries, serverCheck }: { entries: Array<Record<string, unknown>>; serverCheck?: ChainCheck | undefined }) {
   const [result, setResult] = useState<{ label: string; check: ChainCheck } | null>(null);
+  // A tail of a longer log links to the line before it; the server checks the whole file.
+  const start = typeof entries[0]?.['prev'] === 'string' ? (entries[0]!['prev'] as string) : undefined;
   const run = async (label: string, tamper: boolean) => {
-    const chain = await chainEntries(rows);
-    const copy = chain.map((c) => ({ ...c })) as Array<Record<string, unknown>>;
+    const copy = entries.map((c) => ({ ...c }));
     if (tamper && copy.length > 2) copy[2] = { ...copy[2], rows: 0, detail: '조작된 기록' };
-    setResult({ label, check: await verifyChain(copy) });
+    setResult({ label, check: await verifyChain(copy, start) });
   };
   const onFile = async (f: File | undefined) => {
     if (!f) return;
-    try { setResult({ label: f.name, check: await verifyChain(parseJsonl(await f.text())) }); }
+    try { const lines = parseJsonl(await f.text()); setResult({ label: f.name, check: await verifyChain(lines, typeof lines[0]?.['prev'] === 'string' && lines[0]!['seq'] !== 1 ? (lines[0]!['prev'] as string) : undefined) }); }
     catch { setResult({ label: f.name, check: { ok: false, count: 0, brokenAt: 1, reason: 'JSONL로 읽을 수 없습니다' } }); }
   };
   return (
     <div className="mt-3 rounded-lg bg-surface-2 px-4 py-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
         <span className="inline-flex items-center gap-1.5 font-medium text-text"><Link2 className="h-4 w-4 text-accent" aria-hidden />무결성 (해시 체인)</span>
-        <span className="text-xs text-text-3">줄마다 이전 줄의 SHA-256을 담아, 한 줄이라도 바뀌거나 빠지면 그 줄부터 검증이 실패합니다.</span>
+        <span className="text-xs text-text-3">줄마다 이전 줄의 SHA-256을 담아, 한 줄이라도 바뀌거나 빠지면 그 줄부터 검증이 실패합니다.{serverCheck ? ` 서버 검증(파일 전체): ${serverCheck.ok ? `${serverCheck.count}줄 일치` : `${serverCheck.brokenAt}번째 줄 실패`}` : ''}</span>
         <div className="ml-auto flex flex-wrap gap-1.5">
           <button type="button" onClick={() => void run('현재 로그', false)} className="min-h-8 rounded-md bg-surface px-3 text-xs font-medium text-text hover:bg-bg">검증</button>
           <button type="button" onClick={() => void run('3번째 줄을 바꾼 사본', true)} className="min-h-8 rounded-md bg-surface px-3 text-xs text-text-2 hover:bg-bg hover:text-text">한 줄 바꿔서 검증</button>

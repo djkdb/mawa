@@ -3,7 +3,7 @@ import { Hono, type Context, type Next } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { z } from 'zod';
-import { AgentModeSchema, DataPolicySchema, PROJECT } from '@mawa/shared';
+import { AgentModeSchema, DataPolicySchema, PROJECT, tightenPolicy } from '@mawa/shared';
 import { GOOGLE_SCOPES, OAuthService, githubScopesFromEnv } from './auth/oauth.js';
 import { TokenStore } from './auth/token-store.js';
 import type { AppConfig } from './config.js';
@@ -93,6 +93,7 @@ export function createApp(deps: AppDeps) {
         google: { status: oauth.status('google'), account: oauth.account('google') ?? null, connectUrl: '/auth/google/start', services: ['gmail', 'calendar'], scopes: GOOGLE_SCOPES },
       },
       realMode: { available: real.servers.length > 0, servers: real.servers.map((s) => s.id), skipped: real.skipped },
+      policy: { base: config.policy.base, source: config.policy.source === 'default' ? 'default' : 'file' },
     });
   });
 
@@ -100,9 +101,10 @@ export function createApp(deps: AppDeps) {
     const parsed = RunBody.safeParse(await c.req.json().catch(() => ({})));
     if (!parsed.success) return c.json({ error: 'Invalid body', issues: parsed.error.issues }, 400);
     try {
-      const p = parsed.data.policy;
-      const policy = p ? { ...(p.allowedTools ? { allowedTools: p.allowedTools } : {}), ...(p.exclude ? { exclude: p.exclude } : {}), ...(p.maskEmails !== undefined ? { maskEmails: p.maskEmails } : {}), ...(p.maskPii !== undefined ? { maskPii: p.maskPii } : {}) } : null;
-      const record = await runs.start({ prompt: parsed.data.prompt, mode: parsed.data.mode ?? config.defaultMode, ...(policy ? { policy } : {}) });
+      // The server owns the policy; the request may only tighten it.
+      const { policy, refused } = tightenPolicy(config.policy.base, parsed.data.policy ?? undefined);
+      if (refused.length) return c.json({ error: 'The data policy can only be made stricter by a request.', refused }, 403);
+      const record = await runs.start({ prompt: parsed.data.prompt, mode: parsed.data.mode ?? config.defaultMode, policy });
       return c.json({ runId: record.runId, mode: record.mode, llm: record.llm, warnings: record.warnings }, 202);
     } catch (err) {
       return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
@@ -117,6 +119,12 @@ export function createApp(deps: AppDeps) {
       sources: report?.sources.length ?? 0,
       servers: [...new Set(events.flatMap((e) => (e.type === 'tool_call_completed' ? [e.call.server] : [])))],
     })));
+  });
+
+  /** The server's hash-chained audit log (newest 500 lines) and the verification of the whole file. */
+  app.get('/api/audit', async (c) => {
+    const { entries, check } = await runs.audit.read();
+    return c.json({ source: 'server', path: config.auditLogPath.replace(/^.*[\\/](\.tokens[\\/])/, '$1'), check, entries: entries.slice(-500) });
   });
 
   app.get('/api/agent/runs/:id', async (c) => {

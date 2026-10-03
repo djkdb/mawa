@@ -38,7 +38,7 @@ export function DataUsePanel({ events, runId }: { events: AgentEvent[]; runId: s
           {pol && (
             <p className="mt-1 text-[13px] text-text-2">
               <span className="mr-1.5 rounded bg-accent-2/70 px-1.5 py-0.5 text-[11px] font-medium text-text">정책</span>
-              제외 규칙 {pol.policy.exclude.length ? pol.policy.exclude.map((x) => `“${x}”`).join(', ') : '없음'} · 메일 주소 가리기 {pol.policy.maskEmails ? '켬' : '끔'} · 개인정보 가리기 {pol.policy.maskPii !== false ? '켬' : '끔'}{pol.policy.allowedTools ? ` · 허용 도구 ${pol.policy.allowedTools.length}개` : ''}
+              제외 규칙 {pol.policy.exclude.length ? pol.policy.exclude.map((x) => `“${x}”`).join(', ') : '없음'} · 메일 주소 가리기 {pol.policy.maskEmails ? '켬' : '끔'} · 개인정보 가리기 {pol.policy.maskPii !== false ? '켬' : '끔'}{pol.policy.pseudonymize ? ' · 이름 가명 처리 켬' : ''}{pol.policy.allowedTools ? ` · 허용 도구 ${pol.policy.allowedTools.length}개` : ''}
               {' · '}<b className="font-semibold text-text">LLM·리포트에서 제외 {pol.excluded.length}건</b>{pol.blockedTools.length ? ` · 막은 도구 ${pol.blockedTools.length}개` : ''}
             </p>
           )}
@@ -95,7 +95,7 @@ export function DataUsePanel({ events, runId }: { events: AgentEvent[]; runId: s
                   </div>
                   <div className="mt-1 text-text-2">{e.contents.join(' · ')}</div>
                   {e.fields.length > 0 && <div className="mt-1 flex flex-wrap gap-1">{e.fields.map((f) => <span key={f} className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] text-text-3">{f}</span>)}</div>}
-                  <div className="mt-1 text-xs text-text-3">메일 주소 {e.maskedEmails}개 · 개인정보 {e.maskedPii ?? 0}개 가림{e.maskedPii ? ` (${piiBreakdown(e.piiKinds)})` : ''}{e.flagged.length ? ` · 지시문 감지: ${e.flagged.map((f) => `${f.sourceId} (${f.reason})`).join(', ')}` : ''}</div>
+                  <div className="mt-1 text-xs text-text-3">메일 주소 {e.maskedEmails}개 · 개인정보 {e.maskedPii ?? 0}개 가림{e.maskedPii ? ` (${piiBreakdown(e.piiKinds)})` : ''}{e.pseudonyms ? ` · 이름 ${e.pseudonyms}명 가명` : ''}{e.flagged.length ? ` · 지시문 감지: ${e.flagged.map((f) => `${f.sourceId} (${f.reason})`).join(', ')}` : ''}</div>
                 </li>
               ))}
             </ul>

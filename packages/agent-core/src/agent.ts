@@ -6,6 +6,7 @@ import type { LLMMessage, LLMProvider, LLMToolDefinition } from './llm/types.js'
 import { AGENT_SYSTEM_PROMPT } from './report/prompt.js';
 import { generateReport } from './report/generate.js';
 import { addKinds, detectInjection, excludedBy, maskPii, promptJson, type PiiKind } from './report/guard.js';
+import { Pseudonymizer } from './report/pseudonym.js';
 import { qualifiedToolName, splitQualifiedToolName, type ToolExecutor } from './tools/executor.js';
 import { isMcpServerId } from './tools/mcp-executor.js';
 
@@ -67,8 +68,9 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
   // Demo runs start at the sample week's instant and then advance with the wall clock (durations stay real).
   const offset = mode === 'demo' ? Date.parse(process.env['MAWA_NOW'] ?? DEMO_NOW) - Date.now() : 0;
   const now = input.now ?? (() => new Date(Date.now() + offset));
-  const dataPolicy: DataPolicy = { ...input.dataPolicy, exclude: input.dataPolicy?.exclude ?? [], maskEmails: input.dataPolicy?.maskEmails ?? true, maskPii: input.dataPolicy?.maskPii ?? true };
-  const mask = { emails: dataPolicy.maskEmails, pii: dataPolicy.maskPii };
+  const dataPolicy: DataPolicy = { ...input.dataPolicy, exclude: input.dataPolicy?.exclude ?? [], maskEmails: input.dataPolicy?.maskEmails ?? true, maskPii: input.dataPolicy?.maskPii ?? true, pseudonymize: input.dataPolicy?.pseudonymize ?? false };
+  const pseudo = dataPolicy.pseudonymize ? new Pseudonymizer() : null;
+  const mask = { emails: dataPolicy.maskEmails, pii: dataPolicy.maskPii, pseudo };
   const policy: ToolPolicy = { ...DEFAULT_TOOL_POLICY, ...input.policy, ...(dataPolicy.allowedTools ? { allowedTools: dataPolicy.allowedTools } : {}) };
   const excludedRows: Array<{ sourceId: string; rule: string }> = [];
   const events: AgentEvent[] = [];
@@ -118,7 +120,7 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
         phase: 'plan', provider: input.llm.id, model: input.llm.model,
         bytes: Buffer.byteLength(JSON.stringify({ system: AGENT_SYSTEM_PROMPT, messages, tools: llmTools })),
         contents: ['사용자 질문', `도구 정의 ${llmTools.length}개`, ...(toolMsgs ? [`도구 결과 ${toolMsgs}건`] : [])],
-        fields: [], maskedEmails: planMasked, maskedPii: planPii, piiKinds: planKinds, flagged: [...flagged.values()],
+        fields: [], maskedEmails: planMasked, maskedPii: planPii, piiKinds: planKinds, pseudonyms: pseudo?.size ?? 0, flagged: [...flagged.values()],
       });
       const response = await input.llm.complete({ system: AGENT_SYSTEM_PROMPT, messages, tools: llmTools });
       if (response.stopReason === 'refusal') throw new Error('The model declined the request.');
@@ -165,6 +167,7 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
         if (result.status === 'ok') {
           emit('tool_call_completed', { call, result });
           // Third-party text goes to the model masked, tag-safe, and screened for instructions.
+          pseudo?.learn(result.output.data);
           const json = promptJson(result.output, mask);
           const masked = { text: truncate(json.text, policy.maxResultChars), count: json.count };
           planMasked += masked.count;
@@ -197,10 +200,11 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
     // 4. Analyze + validate.
     const generated = await generateReport(input.llm, context, {
       runId, mode, prompt: input.prompt, generatedAt: now().toISOString(), mask,
-      onPrompt: (p) => emit('llm_request', { phase: 'analysis', provider: input.llm.id, model: input.llm.model, bytes: p.bytes, contents: ['사용자 질문', `출처 ${context!.sources.length}건의 요약과 필드`, '리포트 JSON 스키마'], fields: p.fields, maskedEmails: p.maskedEmails, maskedPii: p.maskedPii, piiKinds: p.piiKinds, flagged: [...flagged.values()] }),
+      onPrompt: (p) => emit('llm_request', { phase: 'analysis', provider: input.llm.id, model: input.llm.model, bytes: p.bytes, contents: ['사용자 질문', `출처 ${context!.sources.length}건의 요약과 필드`, '리포트 JSON 스키마'], fields: p.fields, maskedEmails: p.maskedEmails, maskedPii: p.maskedPii, piiKinds: p.piiKinds, pseudonyms: pseudo?.size ?? 0, flagged: [...flagged.values()] }),
     });
     for (const f of flagged.values()) warnings.push(`Suspicious instructions in ${f.sourceId} (${f.reason}); treated as data.`);
-    report = generated.report;
+    // Names the model saw as aliases come back as the real names in what the user reads.
+    report = pseudo ? { ...generated.report, sections: generated.report.sections.map((s) => ({ ...s, items: s.items.map((i) => ({ ...i, text: pseudo.restore(i.text), ...(i.reason ? { reason: pseudo.restore(i.reason) } : {}) })) })) } : generated.report;
     warnings.push(...generated.warnings);
     emit('report_generated', { report, droppedItems: generated.droppedItems });
 

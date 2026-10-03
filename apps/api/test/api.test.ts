@@ -2,13 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { createApp, createDeps } from '../src/app.js';
 import { loadConfig } from '../src/config.js';
 import { TokenStore } from '../src/auth/token-store.js';
-import { mkdtemp } from 'node:fs/promises';
+import { mkdtemp, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-async function makeApp() {
+async function makeApp(env: Record<string, string> = {}) {
   const dir = await mkdtemp(join(tmpdir(), 'mawa-api-'));
-  const config = loadConfig({ AGENT_MODE: 'demo', LLM_PROVIDER: 'anthropic', TOKEN_STORE_PATH: join(dir, 't.json') });
+  const config = loadConfig({ AGENT_MODE: 'demo', LLM_PROVIDER: 'anthropic', TOKEN_STORE_PATH: join(dir, 't.json'), AUDIT_LOG_PATH: join(dir, 'audit.jsonl'), ...env });
   return createApp(await createDeps(config));
 }
 
@@ -54,6 +54,39 @@ describe('api', () => {
     expect(run.report.sections.length).toBe(7);
   }, 30_000);
 
+  it('appends each finished run to a hash-chained audit file and serves it with the check', async () => {
+    const app = await makeApp();
+    const start = await app.request('/api/agent/run', { method: 'POST', body: JSON.stringify({ prompt: '이번 주 진행 상황 정리해줘' }), headers: { 'content-type': 'application/json' } });
+    const { runId } = await start.json();
+    await (await app.request(`/api/agent/runs/${runId}/events`)).text();
+    const audit = await (await app.request('/api/audit')).json();
+    expect(audit.source).toBe('server');
+    expect(audit.check).toMatchObject({ ok: true });
+    expect(audit.entries.length).toBeGreaterThan(3);
+    expect(audit.entries.every((e: { runId: string }) => e.runId === runId)).toBe(true);
+    expect(audit.entries.map((e: { action: string }) => e.action)).toEqual(expect.arrayContaining(['read', 'llm']));
+    expect(audit.entries[0].prev).toBe('0'.repeat(64));
+  }, 30_000);
+
+  it('owns the policy: a request may tighten it but not loosen it', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-pol-'));
+    const policyPath = join(dir, 'policy.json');
+    await writeFile(policyPath, JSON.stringify({ allowedTools: ['github__get_open_issues', 'gmail__search_project_emails'], exclude: ['엄마'], maskEmails: true, maskPii: true }));
+    const app = await makeApp({ POLICY_PATH: policyPath });
+    const status = await (await app.request('/api/status')).json();
+    expect(status.policy).toMatchObject({ source: 'file', base: { exclude: ['엄마'], maskPii: true } });
+    const post = (policy: unknown) => app.request('/api/agent/run', { method: 'POST', body: JSON.stringify({ prompt: 'x', policy }), headers: { 'content-type': 'application/json' } });
+    const loosen = await post({ maskEmails: false, allowedTools: ['github__get_open_issues', 'gmail__get_email'] });
+    expect(loosen.status).toBe(403);
+    expect((await loosen.json()).refused).toEqual(['allowedTools: gmail__get_email', 'maskEmails']);
+    const tighten = await post({ allowedTools: ['github__get_open_issues'], exclude: ['쿠폰'] });
+    expect(tighten.status).toBe(202);
+    const { runId } = await tighten.json();
+    const sse = await (await app.request(`/api/agent/runs/${runId}/events`)).text();
+    const applied = JSON.parse(sse.split('\n').find((l) => l.startsWith('data:') && l.includes('"policy_applied"'))!.slice(5));
+    expect(applied.policy).toMatchObject({ allowedTools: ['github__get_open_issues'], exclude: ['엄마', '쿠폰'], maskEmails: true });
+  }, 30_000);
+
   it('oauth start returns 400 when the provider is not configured', async () => {
     const app = await makeApp();
     const res = await app.request('/auth/github/start');
@@ -83,7 +116,7 @@ describe('TokenStore', () => {
 describe('real mode integrity', () => {
   it('spawns only the connected server in --mode=real and never yields demo fixture ids', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'mawa-real-'));
-    const config = loadConfig({ AGENT_MODE: 'demo', LLM_PROVIDER: 'anthropic', TOKEN_STORE_PATH: join(dir, 't.json'), GITHUB_CLIENT_ID: 'id', GITHUB_CLIENT_SECRET: 'secret' });
+    const config = loadConfig({ AGENT_MODE: 'demo', LLM_PROVIDER: 'anthropic', TOKEN_STORE_PATH: join(dir, 't.json'), AUDIT_LOG_PATH: join(dir, 'audit.jsonl'), GITHUB_CLIENT_ID: 'id', GITHUB_CLIENT_SECRET: 'secret' });
     const deps = await createDeps(config);
     // Simulate a completed OAuth connection with a token that cannot read anything.
     await deps.store.set({ provider: 'github', accessToken: 'invalid-token-for-test', connectedAt: 'now', account: 'tester' });
@@ -146,7 +179,7 @@ describe('oauth disconnect', () => {
 describe('api access token', () => {
   it('requires the token on /api/* when API_ACCESS_TOKEN is set; health stays open', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'mawa-tok-'));
-    const config = loadConfig({ AGENT_MODE: 'demo', API_ACCESS_TOKEN: 'a-long-enough-secret', TOKEN_STORE_PATH: join(dir, 't.json') });
+    const config = loadConfig({ AGENT_MODE: 'demo', API_ACCESS_TOKEN: 'a-long-enough-secret', TOKEN_STORE_PATH: join(dir, 't.json'), AUDIT_LOG_PATH: join(dir, 'audit.jsonl') });
     const app = createApp(await createDeps(config));
     expect((await app.request('/api/health')).status).toBe(200);
     expect((await app.request('/api/status')).status).toBe(401);

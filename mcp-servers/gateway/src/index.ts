@@ -10,13 +10,21 @@ import { fileURLToPath } from 'node:url';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import { McpToolExecutor } from '@mawa/agent-core';
 import { createGateway } from './gateway.js';
+import { createRemoteGateway, loadUsers, newUserToken } from './remote.js';
 
 export { createGateway, SERVER_NAME, SERVER_VERSION, type AuditEntry, type GatewayOptions } from './gateway.js';
+export { createRemoteGateway, loadUsers, newUserToken, sha256, type GatewayUser } from './remote.js';
 
 const ENV: Record<string, string[]> = { github: ['GITHUB_TOKEN'], gmail: ['GOOGLE_ACCESS_TOKEN'], calendar: ['GOOGLE_ACCESS_TOKEN'], lms: ['LMS_TOKEN', 'LMS_BASE_URL'] };
 
 async function main() {
   const arg = (k: string) => process.argv.find((a) => a.startsWith(`--${k}=`))?.slice(k.length + 3);
+  // `--new-token=<user>`: print a token once and the users-file entry holding only its hash.
+  if (arg('new-token')) {
+    const { token, entry } = newUserToken(arg('new-token')!);
+    console.log(`token (shown once): ${token}\nadd to the users file: ${JSON.stringify(entry)}`);
+    return;
+  }
   const mode = arg('mode') === 'real' ? 'real' : 'demo';
   const policy = arg('policy') ? JSON.parse(await readFile(arg('policy')!, 'utf8')) : {};
   const ids = (arg('servers') ?? 'github,gmail,calendar,lms').split(',').filter((id) => ENV[id] && (mode === 'demo' || ENV[id]!.some((k) => process.env[k])));
@@ -28,11 +36,19 @@ async function main() {
   }));
   const executor = new McpToolExecutor({ servers, mode, clientName: 'mawa-gateway' });
   const auditPath = arg('audit');
-  const { server } = createGateway({ executor, policy, mode, ...(auditPath ? { auditPath } : {}) });
-  await server.connect(new StdioServerTransport());
   const close = () => { void executor.close().finally(() => process.exit(0)); };
   process.on('SIGINT', close);
   process.on('SIGTERM', close);
+  // Remote mode: Streamable HTTP with per-user Bearer tokens (--users=<file>), loopback unless --host.
+  if (arg('http')) {
+    if (!arg('users')) throw new Error('--http needs --users=<file> (create entries with --new-token=<user>)');
+    const { http } = createRemoteGateway({ executor, policy, mode, users: await loadUsers(arg('users')!), ...(auditPath ? { auditPath } : {}) });
+    const host = arg('host') ?? '127.0.0.1';
+    http.listen(Number(arg('http')), host, () => console.error(`[mawa-gateway] http://${host}:${arg('http')}/mcp (mode=${mode}, servers=${ids.join(',')}, audit=${auditPath ?? 'memory'})`));
+    return;
+  }
+  const { server } = createGateway({ executor, policy, mode, ...(auditPath ? { auditPath } : {}) });
+  await server.connect(new StdioServerTransport());
   process.stdin.on('end', close);
   console.error(`[mawa-gateway] ready (mode=${mode}, servers=${ids.join(',')}, audit=${auditPath ?? 'memory'})`);
 }

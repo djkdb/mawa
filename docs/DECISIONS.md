@@ -340,3 +340,22 @@ mail actually contains.
 **Why.** A policy inside one agent controls that agent only; a gateway controls the path to the
 data. A log that can be edited silently is a diary, not an audit. **Limits:** see
 docs/ENTERPRISE.md (no user identity, the chain head is not anchored externally, regex DLP).
+
+## ADR-020 — Stored audit chain, server-owned policy, remote gateway users, pseudonyms
+
+**Decision.**
+- The API appends each finished run's audit rows to a hash-chained file (`ChainedAuditLog`,
+  `AUDIT_LOG_PATH`, default `.tokens/audit.jsonl`) and serves it with a whole-file check at
+  `/api/audit`. The web page shows and verifies those stored lines; it no longer builds a
+  chain from events at view time (which would verify anything). The demo ships the chain
+  written at recording time.
+- The API's base policy comes from `POLICY_PATH`; `tightenPolicy` lets a request add
+  exclusions, drop tools or switch masking on, and answers 403 with what it tried to loosen.
+- The gateway has a Streamable HTTP mode with per-user Bearer tokens (SHA-256 stored), one
+  session per user, per-user policies that can only tighten, and the user on every audit line.
+- `pseudonymize`: names from mail senders/organizers become 사람A… in everything sent to the
+  model; report items are restored. GitHub logins stay (they are inside citable source ids).
+
+**Why.** Each answers a question a reviewer would ask of the previous version: "what stops
+someone re-chaining edited events", "what stops the client turning masking off", "who is the
+user", "do names go to the model".

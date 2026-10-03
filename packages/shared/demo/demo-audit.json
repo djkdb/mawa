@@ -1,0 +1,1749 @@
+{
+  "note": "Hash-chained audit of the shipped demo runs, written by scripts/export-portfolio-data.mjs / record-llm-run.mjs. Synthetic data.",
+  "head": "b5225e797e515b38bca123c9da5207097f49f62fa7d3609400795dbe354a85a9",
+  "entries": [
+    {
+      "at": "2026-10-03T03:00:01.162Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개",
+      "bytes": 10297,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 1,
+      "prev": "0000000000000000000000000000000000000000000000000000000000000000",
+      "hash": "8c3fb9a5c6596043f9ec1e2897596d120a0499ff8228eca0954086ec8be1c0eb"
+    },
+    {
+      "at": "2026-10-03T03:00:01.168Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_recent_commits",
+      "input": {},
+      "rows": 12,
+      "sourceIds": [
+        "github:commit:seongjun/my-ai-work-agent@a1b2c3d4e5f6",
+        "github:commit:seongjun/my-ai-work-agent@b2c3d4e5f6a1",
+        "github:commit:seongjun/my-ai-work-agent@c3d4e5f6a1b2",
+        "github:commit:seongjun/my-ai-work-agent@d4e5f6a1b2c3",
+        "github:commit:seongjun/my-ai-work-agent@e5f6a1b2c3d4",
+        "github:commit:cbnu-capstone/team-mate@f6a1b2c3d4e5",
+        "github:commit:cbnu-capstone/team-mate@a7b8c9d0e1f2",
+        "github:commit:cbnu-capstone/team-mate@b8c9d0e1f2a7",
+        "github:commit:seongjun/baekjoon@c9d0e1f2a7b8",
+        "github:commit:seongjun/baekjoon@d0e1f2a7b8c9",
+        "github:commit:seongjun/baekjoon@e1f2a7b8c9d0",
+        "github:commit:seongjun/os-hw@f2a7b8c9d0e1"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 2,
+      "prev": "8c3fb9a5c6596043f9ec1e2897596d120a0499ff8228eca0954086ec8be1c0eb",
+      "hash": "7e1f33f3df10a9915806abe1824a1f48a18d3e52d3fd7812ae22fa6bf79e9a74"
+    },
+    {
+      "at": "2026-10-03T03:00:01.173Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:pr:seongjun/my-ai-work-agent#21",
+        "github:pr:seongjun/my-ai-work-agent#19",
+        "github:pr:cbnu-capstone/team-mate#8"
+      ],
+      "durationMs": 3,
+      "sentToLlm": true,
+      "seq": 3,
+      "prev": "7e1f33f3df10a9915806abe1824a1f48a18d3e52d3fd7812ae22fa6bf79e9a74",
+      "hash": "2ba5a23c4e08ccaa986702960c7a979d69fbdb626311dee1f915b6c12569a6e9"
+    },
+    {
+      "at": "2026-10-03T03:00:01.177Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:issue:cbnu-capstone/team-mate#12",
+        "github:issue:cbnu-capstone/team-mate#13",
+        "github:issue:seongjun/os-hw#2",
+        "github:issue:seongjun/my-ai-work-agent#18"
+      ],
+      "durationMs": 3,
+      "sentToLlm": true,
+      "seq": 4,
+      "prev": "2ba5a23c4e08ccaa986702960c7a979d69fbdb626311dee1f915b6c12569a6e9",
+      "hash": "e4fea0cf48906503fe58caf6fb2cd66eeaf06d4b7fe98c2dfd479b65935ffdaa"
+    },
+    {
+      "at": "2026-10-03T03:00:01.179Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_repository_activity",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:repo:seongjun/my-ai-work-agent",
+        "github:repo:cbnu-capstone/team-mate",
+        "github:repo:seongjun/baekjoon",
+        "github:repo:seongjun/os-hw"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 5,
+      "prev": "e4fea0cf48906503fe58caf6fb2cd66eeaf06d4b7fe98c2dfd479b65935ffdaa",
+      "hash": "14f6e97cb7497561f52ef561d9d0133998a060f213d3fc7878063c460c774be3"
+    },
+    {
+      "at": "2026-10-03T03:00:01.186Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "my-ai-work-agent",
+          "team-mate",
+          "캡스톤",
+          "과제",
+          "퀴즈",
+          "스터디",
+          "인턴",
+          "코딩테스트",
+          "장학금",
+          "발표"
+        ]
+      },
+      "rows": 10,
+      "sourceIds": [
+        "gmail:msg:demo0001",
+        "gmail:msg:demo0002",
+        "gmail:msg:demo0003",
+        "gmail:msg:demo0004",
+        "gmail:msg:demo0005",
+        "gmail:msg:demo0006",
+        "gmail:msg:demo0007",
+        "gmail:msg:demo0008",
+        "gmail:msg:demo0010",
+        "gmail:msg:demo0012"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 6,
+      "prev": "14f6e97cb7497561f52ef561d9d0133998a060f213d3fc7878063c460c774be3",
+      "hash": "01df377489629957cff92ad4ef471415624fa01ace1814c6a54a09856746452b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.199Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_events",
+      "input": {},
+      "rows": 2,
+      "sourceIds": [
+        "calendar:event:demoev001",
+        "calendar:event:demoev002"
+      ],
+      "durationMs": 12,
+      "sentToLlm": true,
+      "seq": 7,
+      "prev": "01df377489629957cff92ad4ef471415624fa01ace1814c6a54a09856746452b",
+      "hash": "c3f57deca49c6c65ecfbfbfb86c796f06b68013f86aea27b5220cbfab3028767"
+    },
+    {
+      "at": "2026-10-03T03:00:01.201Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:demoev003",
+        "calendar:event:demoev004",
+        "calendar:event:demoev005",
+        "calendar:event:demoev006",
+        "calendar:event:demoev007",
+        "calendar:event:demoev008"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 8,
+      "prev": "c3f57deca49c6c65ecfbfbfb86c796f06b68013f86aea27b5220cbfab3028767",
+      "hash": "ae7dcc3f354a6912882d58bef864c03fe32bc63742b39519cbd3867fc464b867"
+    },
+    {
+      "at": "2026-10-03T03:00:01.214Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "read",
+      "server": "lms",
+      "tool": "get_upcoming_deadlines",
+      "input": {
+        "days": 14
+      },
+      "rows": 4,
+      "sourceIds": [
+        "lms:due:9001",
+        "lms:due:9002",
+        "lms:due:9003",
+        "lms:due:9004"
+      ],
+      "durationMs": 12,
+      "sentToLlm": true,
+      "seq": 9,
+      "prev": "ae7dcc3f354a6912882d58bef864c03fe32bc63742b39519cbd3867fc464b867",
+      "hash": "45853ecac383bfcbc5c7e65b6311abe05696553be88f6b5c966a64cdd8de281a"
+    },
+    {
+      "at": "2026-10-03T03:00:01.214Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개 · 도구 결과 8건",
+      "bytes": 31663,
+      "maskedEmails": 39,
+      "maskedPii": 4,
+      "piiKinds": {
+        "rrn": 1,
+        "account": 1,
+        "phone": 1,
+        "studentNo": 1
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 10,
+      "prev": "45853ecac383bfcbc5c7e65b6311abe05696553be88f6b5c966a64cdd8de281a",
+      "hash": "622ecbc7a70c90c180600076982977beda5b1288d6a2796fe6498c77e5937731"
+    },
+    {
+      "at": "2026-10-03T03:00:01.214Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "excluded",
+      "sourceIds": [
+        "gmail:msg:demo0011"
+      ],
+      "detail": "규칙 “엄마”",
+      "seq": 11,
+      "prev": "622ecbc7a70c90c180600076982977beda5b1288d6a2796fe6498c77e5937731",
+      "hash": "90f183ba5e1e7db7c6f52730c1693d199f92d381e360ef50e4c51456854ed6da"
+    },
+    {
+      "at": "2026-10-03T03:00:01.228Z",
+      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 45건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 30943,
+      "maskedEmails": 18,
+      "maskedPii": 8,
+      "piiKinds": {
+        "rrn": 2,
+        "account": 2,
+        "phone": 2,
+        "studentNo": 2
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 12,
+      "prev": "90f183ba5e1e7db7c6f52730c1693d199f92d381e360ef50e4c51456854ed6da",
+      "hash": "fb5baf76dd5e35b1766257a50a45e61372b7ce0c351455e8e9d8a5228b05591d"
+    },
+    {
+      "at": "2026-10-03T03:00:01.165Z",
+      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개",
+      "bytes": 10299,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 13,
+      "prev": "fb5baf76dd5e35b1766257a50a45e61372b7ce0c351455e8e9d8a5228b05591d",
+      "hash": "1d038257efb3f34c46f601dd45d6aa894c79dbca6db7e5366b8672cafebe3888"
+    },
+    {
+      "at": "2026-10-03T03:00:01.182Z",
+      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "mode": "demo",
+      "action": "read",
+      "server": "lms",
+      "tool": "get_upcoming_deadlines",
+      "input": {
+        "days": 14
+      },
+      "rows": 4,
+      "sourceIds": [
+        "lms:due:9001",
+        "lms:due:9002",
+        "lms:due:9003",
+        "lms:due:9004"
+      ],
+      "durationMs": 17,
+      "sentToLlm": true,
+      "seq": 14,
+      "prev": "1d038257efb3f34c46f601dd45d6aa894c79dbca6db7e5366b8672cafebe3888",
+      "hash": "cb3e275266c225214d0192b106f73c4bf62d2ec06f6a97de9e5a5f1eb58948da"
+    },
+    {
+      "at": "2026-10-03T03:00:01.186Z",
+      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "mode": "demo",
+      "action": "read",
+      "server": "lms",
+      "tool": "get_assignments",
+      "input": {
+        "days": 14
+      },
+      "rows": 3,
+      "sourceIds": [
+        "lms:assign:8001",
+        "lms:assign:8003",
+        "lms:assign:8004"
+      ],
+      "durationMs": 3,
+      "sentToLlm": true,
+      "seq": 15,
+      "prev": "cb3e275266c225214d0192b106f73c4bf62d2ec06f6a97de9e5a5f1eb58948da",
+      "hash": "d999fa792ea30c8bea29096e4bae54e3bc4ef4d4bc463f4a7b41fd042d6dedf1"
+    },
+    {
+      "at": "2026-10-03T03:00:01.199Z",
+      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:demoev003",
+        "calendar:event:demoev004",
+        "calendar:event:demoev005",
+        "calendar:event:demoev006",
+        "calendar:event:demoev007",
+        "calendar:event:demoev008"
+      ],
+      "durationMs": 12,
+      "sentToLlm": true,
+      "seq": 16,
+      "prev": "d999fa792ea30c8bea29096e4bae54e3bc4ef4d4bc463f4a7b41fd042d6dedf1",
+      "hash": "02073bd2266bb9cc646f0d4894d255ed197ea4783cf6edf7fc31935aa326f858"
+    },
+    {
+      "at": "2026-10-03T03:00:01.205Z",
+      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_emails",
+      "input": {
+        "query": "마감 OR 제출 OR 퀴즈 OR 시험 OR 발표 OR 신청"
+      },
+      "rows": 4,
+      "sourceIds": [
+        "gmail:msg:demo0002",
+        "gmail:msg:demo0003",
+        "gmail:msg:demo0005",
+        "gmail:msg:demo0006"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 17,
+      "prev": "02073bd2266bb9cc646f0d4894d255ed197ea4783cf6edf7fc31935aa326f858",
+      "hash": "a96a26cb75b06432e4fa9a08b7df54df032e1dc98e341b3cb0c11e2325c97348"
+    },
+    {
+      "at": "2026-10-03T03:00:01.210Z",
+      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:issue:cbnu-capstone/team-mate#12",
+        "github:issue:cbnu-capstone/team-mate#13",
+        "github:issue:seongjun/os-hw#2",
+        "github:issue:seongjun/my-ai-work-agent#18"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 18,
+      "prev": "a96a26cb75b06432e4fa9a08b7df54df032e1dc98e341b3cb0c11e2325c97348",
+      "hash": "4b8c720c98679930ded0589ecdc3560553873918cdcc644ee95157152c9d036f"
+    },
+    {
+      "at": "2026-10-03T03:00:01.211Z",
+      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개 · 도구 결과 5건",
+      "bytes": 20309,
+      "maskedEmails": 23,
+      "maskedPii": 2,
+      "piiKinds": {
+        "phone": 1,
+        "studentNo": 1
+      },
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 19,
+      "prev": "4b8c720c98679930ded0589ecdc3560553873918cdcc644ee95157152c9d036f",
+      "hash": "301c069dc05274e6e5e778effeae1e5dd866697e68aa7f942378f689f7266c78"
+    },
+    {
+      "at": "2026-10-03T03:00:01.211Z",
+      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "mode": "demo",
+      "action": "excluded",
+      "sourceIds": [
+        "gmail:msg:demo0011"
+      ],
+      "detail": "규칙 “엄마”",
+      "seq": 20,
+      "prev": "301c069dc05274e6e5e778effeae1e5dd866697e68aa7f942378f689f7266c78",
+      "hash": "a79bb6b7b4c549d58c12a5695173c946fc07144f5bc52b438637e5c1be76b61d"
+    },
+    {
+      "at": "2026-10-03T03:00:01.212Z",
+      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 21건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 16295,
+      "maskedEmails": 6,
+      "maskedPii": 4,
+      "piiKinds": {
+        "phone": 2,
+        "studentNo": 2
+      },
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 21,
+      "prev": "a79bb6b7b4c549d58c12a5695173c946fc07144f5bc52b438637e5c1be76b61d",
+      "hash": "6aaff551adf7eb71f8454dc8c37bf18ea05a67fc6981a81958499bc2327c779b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.154Z",
+      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개",
+      "bytes": 10294,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 22,
+      "prev": "6aaff551adf7eb71f8454dc8c37bf18ea05a67fc6981a81958499bc2327c779b",
+      "hash": "362347dad76996f482657ac28fe0d7244f5bcbba06a919d4bd6ee0e812d0c855"
+    },
+    {
+      "at": "2026-10-03T03:00:01.159Z",
+      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_emails",
+      "input": {
+        "query": "인턴 OR 채용 OR 코딩테스트 OR 면접"
+      },
+      "rows": 1,
+      "sourceIds": [
+        "gmail:msg:demo0004"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 23,
+      "prev": "362347dad76996f482657ac28fe0d7244f5bcbba06a919d4bd6ee0e812d0c855",
+      "hash": "ebf1959f00f97e56d9fcee31e12d33439592b9cf8f465888c5466659c7a50cb1"
+    },
+    {
+      "at": "2026-10-03T03:00:01.166Z",
+      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "search_events",
+      "input": {
+        "query": "코딩테스트"
+      },
+      "rows": 1,
+      "sourceIds": [
+        "calendar:event:demoev006"
+      ],
+      "durationMs": 7,
+      "sentToLlm": true,
+      "seq": 24,
+      "prev": "ebf1959f00f97e56d9fcee31e12d33439592b9cf8f465888c5466659c7a50cb1",
+      "hash": "769af27171e951918bb70193793c2c83c5fbce7e23c79b4ba1741a7282faa6b8"
+    },
+    {
+      "at": "2026-10-03T03:00:01.172Z",
+      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_recent_commits",
+      "input": {},
+      "rows": 12,
+      "sourceIds": [
+        "github:commit:seongjun/my-ai-work-agent@a1b2c3d4e5f6",
+        "github:commit:seongjun/my-ai-work-agent@b2c3d4e5f6a1",
+        "github:commit:seongjun/my-ai-work-agent@c3d4e5f6a1b2",
+        "github:commit:seongjun/my-ai-work-agent@d4e5f6a1b2c3",
+        "github:commit:seongjun/my-ai-work-agent@e5f6a1b2c3d4",
+        "github:commit:cbnu-capstone/team-mate@f6a1b2c3d4e5",
+        "github:commit:cbnu-capstone/team-mate@a7b8c9d0e1f2",
+        "github:commit:cbnu-capstone/team-mate@b8c9d0e1f2a7",
+        "github:commit:seongjun/baekjoon@c9d0e1f2a7b8",
+        "github:commit:seongjun/baekjoon@d0e1f2a7b8c9",
+        "github:commit:seongjun/baekjoon@e1f2a7b8c9d0",
+        "github:commit:seongjun/os-hw@f2a7b8c9d0e1"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 25,
+      "prev": "769af27171e951918bb70193793c2c83c5fbce7e23c79b4ba1741a7282faa6b8",
+      "hash": "5b34b8dc8e63e92fd48187c8fca2e975e6db26856fae1959e7b6675ebcb5b02b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.174Z",
+      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:issue:cbnu-capstone/team-mate#12",
+        "github:issue:cbnu-capstone/team-mate#13",
+        "github:issue:seongjun/os-hw#2",
+        "github:issue:seongjun/my-ai-work-agent#18"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 26,
+      "prev": "5b34b8dc8e63e92fd48187c8fca2e975e6db26856fae1959e7b6675ebcb5b02b",
+      "hash": "eca509a3a285651f7c83d0f878a2e8f0abe7b17626f76b98457843ced429279e"
+    },
+    {
+      "at": "2026-10-03T03:00:01.174Z",
+      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개 · 도구 결과 4건",
+      "bytes": 18579,
+      "maskedEmails": 4,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 27,
+      "prev": "eca509a3a285651f7c83d0f878a2e8f0abe7b17626f76b98457843ced429279e",
+      "hash": "91e8828e9a255ecd21d18db9719bc72c199bc4c96fa1a1f3e7bf95433ebdaa17"
+    },
+    {
+      "at": "2026-10-03T03:00:01.175Z",
+      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 18건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 13578,
+      "maskedEmails": 2,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 28,
+      "prev": "91e8828e9a255ecd21d18db9719bc72c199bc4c96fa1a1f3e7bf95433ebdaa17",
+      "hash": "7251b0fe961ccbd95f07cdc978ba5eddf3aaf4793d60fb6c641962dc9b8f00a3"
+    },
+    {
+      "at": "2026-10-03T03:00:01.206Z",
+      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개",
+      "bytes": 10263,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 29,
+      "prev": "7251b0fe961ccbd95f07cdc978ba5eddf3aaf4793d60fb6c641962dc9b8f00a3",
+      "hash": "4f08e8bb332cccdbf4641e9d4a8f2791a22d6fc0c362d072368aa69ceedbc27b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.212Z",
+      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:issue:cbnu-capstone/team-mate#12",
+        "github:issue:cbnu-capstone/team-mate#13",
+        "github:issue:seongjun/os-hw#2",
+        "github:issue:seongjun/my-ai-work-agent#18"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 30,
+      "prev": "4f08e8bb332cccdbf4641e9d4a8f2791a22d6fc0c362d072368aa69ceedbc27b",
+      "hash": "c7054276da374417eb83742f100eb5a477fc3a782819bbd3a59a2ab59fc51db8"
+    },
+    {
+      "at": "2026-10-03T03:00:01.215Z",
+      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {
+        "state": "open"
+      },
+      "rows": 2,
+      "sourceIds": [
+        "github:pr:seongjun/my-ai-work-agent#21",
+        "github:pr:cbnu-capstone/team-mate#8"
+      ],
+      "durationMs": 3,
+      "sentToLlm": true,
+      "seq": 31,
+      "prev": "c7054276da374417eb83742f100eb5a477fc3a782819bbd3a59a2ab59fc51db8",
+      "hash": "48fd0fb3cba413745e78ed30e0121b7e08acc64b0c9d776df507bfde191fe9de"
+    },
+    {
+      "at": "2026-10-03T03:00:01.221Z",
+      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "my-ai-work-agent",
+          "team-mate",
+          "캡스톤",
+          "과제",
+          "퀴즈",
+          "스터디",
+          "인턴",
+          "코딩테스트",
+          "장학금",
+          "발표"
+        ]
+      },
+      "rows": 10,
+      "sourceIds": [
+        "gmail:msg:demo0001",
+        "gmail:msg:demo0002",
+        "gmail:msg:demo0003",
+        "gmail:msg:demo0004",
+        "gmail:msg:demo0005",
+        "gmail:msg:demo0006",
+        "gmail:msg:demo0007",
+        "gmail:msg:demo0008",
+        "gmail:msg:demo0010",
+        "gmail:msg:demo0012"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 32,
+      "prev": "48fd0fb3cba413745e78ed30e0121b7e08acc64b0c9d776df507bfde191fe9de",
+      "hash": "975691dada2d3d92fdaf691d2d46e8279ca0793e00585dd8f9954ab6c769a872"
+    },
+    {
+      "at": "2026-10-03T03:00:01.234Z",
+      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:demoev003",
+        "calendar:event:demoev004",
+        "calendar:event:demoev005",
+        "calendar:event:demoev006",
+        "calendar:event:demoev007",
+        "calendar:event:demoev008"
+      ],
+      "durationMs": 13,
+      "sentToLlm": true,
+      "seq": 33,
+      "prev": "975691dada2d3d92fdaf691d2d46e8279ca0793e00585dd8f9954ab6c769a872",
+      "hash": "208528432f61ef536aa8b462514dae3aa22a4cd4d180e805ca682d8f6695f4e0"
+    },
+    {
+      "at": "2026-10-03T03:00:01.247Z",
+      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "mode": "demo",
+      "action": "read",
+      "server": "lms",
+      "tool": "get_assignments",
+      "input": {
+        "days": 14
+      },
+      "rows": 3,
+      "sourceIds": [
+        "lms:assign:8001",
+        "lms:assign:8003",
+        "lms:assign:8004"
+      ],
+      "durationMs": 12,
+      "sentToLlm": true,
+      "seq": 34,
+      "prev": "208528432f61ef536aa8b462514dae3aa22a4cd4d180e805ca682d8f6695f4e0",
+      "hash": "6d33d493ce36fcbd5eacaacab2f6331f7e7c4692b21183eb3e52340467fa2eb0"
+    },
+    {
+      "at": "2026-10-03T03:00:01.247Z",
+      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개 · 도구 결과 5건",
+      "bytes": 23214,
+      "maskedEmails": 35,
+      "maskedPii": 4,
+      "piiKinds": {
+        "rrn": 1,
+        "account": 1,
+        "phone": 1,
+        "studentNo": 1
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 35,
+      "prev": "6d33d493ce36fcbd5eacaacab2f6331f7e7c4692b21183eb3e52340467fa2eb0",
+      "hash": "0e6b2b5ad36c19fe6837f229388892418b5879c30b1fa1df7230c26b79e247c0"
+    },
+    {
+      "at": "2026-10-03T03:00:01.247Z",
+      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "mode": "demo",
+      "action": "excluded",
+      "sourceIds": [
+        "gmail:msg:demo0011"
+      ],
+      "detail": "규칙 “엄마”",
+      "seq": 36,
+      "prev": "0e6b2b5ad36c19fe6837f229388892418b5879c30b1fa1df7230c26b79e247c0",
+      "hash": "6d8e886bc6fb8ee5546b1b2a7e07b86f143c74182867fa13ed38c218bb63a8c8"
+    },
+    {
+      "at": "2026-10-03T03:00:01.248Z",
+      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 25건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 20365,
+      "maskedEmails": 18,
+      "maskedPii": 8,
+      "piiKinds": {
+        "rrn": 2,
+        "account": 2,
+        "phone": 2,
+        "studentNo": 2
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 37,
+      "prev": "6d8e886bc6fb8ee5546b1b2a7e07b86f143c74182867fa13ed38c218bb63a8c8",
+      "hash": "2c4ef3e46d2374da95bd770b60623d110066a17d52f8e4b0b06a0188e62adc96"
+    },
+    {
+      "at": "2026-10-03T03:00:01.045Z",
+      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개",
+      "bytes": 10263,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 38,
+      "prev": "2c4ef3e46d2374da95bd770b60623d110066a17d52f8e4b0b06a0188e62adc96",
+      "hash": "e793599878e969e8ac11a28c0204eac8431b8d709b5d461e7dc4a1038e672056"
+    },
+    {
+      "at": "2026-10-03T03:00:01.050Z",
+      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:issue:cbnu-capstone/team-mate#12",
+        "github:issue:cbnu-capstone/team-mate#13",
+        "github:issue:seongjun/os-hw#2",
+        "github:issue:seongjun/my-ai-work-agent#18"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 39,
+      "prev": "e793599878e969e8ac11a28c0204eac8431b8d709b5d461e7dc4a1038e672056",
+      "hash": "edc69f006621a179d8cb40b6ffe5d1e08385b3db7e0c85a9ea03aa918f3f5bd4"
+    },
+    {
+      "at": "2026-10-03T03:00:01.052Z",
+      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {
+        "state": "open"
+      },
+      "rows": 2,
+      "sourceIds": [
+        "github:pr:seongjun/my-ai-work-agent#21",
+        "github:pr:cbnu-capstone/team-mate#8"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 40,
+      "prev": "edc69f006621a179d8cb40b6ffe5d1e08385b3db7e0c85a9ea03aa918f3f5bd4",
+      "hash": "3ada6353f099edbcf5eb44bd7ba311994ba2bb7338aef0ae70b3bdea90ac6d21"
+    },
+    {
+      "at": "2026-10-03T03:00:01.059Z",
+      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "my-ai-work-agent",
+          "team-mate",
+          "캡스톤",
+          "과제",
+          "퀴즈",
+          "스터디",
+          "인턴",
+          "코딩테스트",
+          "장학금",
+          "발표"
+        ]
+      },
+      "rows": 11,
+      "sourceIds": [
+        "gmail:msg:demo0001",
+        "gmail:msg:demo0002",
+        "gmail:msg:demo0003",
+        "gmail:msg:demo0004",
+        "gmail:msg:demo0005",
+        "gmail:msg:demo0006",
+        "gmail:msg:demo0007",
+        "gmail:msg:demo0008",
+        "gmail:msg:demo0010",
+        "gmail:msg:demo0011",
+        "gmail:msg:demo0012"
+      ],
+      "durationMs": 7,
+      "sentToLlm": true,
+      "seq": 41,
+      "prev": "3ada6353f099edbcf5eb44bd7ba311994ba2bb7338aef0ae70b3bdea90ac6d21",
+      "hash": "18f0238f397708c7ed65e9fbb5b06bb24322b6055c10dd4ad17b1a55eeca682e"
+    },
+    {
+      "at": "2026-10-03T03:00:01.072Z",
+      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:demoev003",
+        "calendar:event:demoev004",
+        "calendar:event:demoev005",
+        "calendar:event:demoev006",
+        "calendar:event:demoev007",
+        "calendar:event:demoev008"
+      ],
+      "durationMs": 13,
+      "sentToLlm": true,
+      "seq": 42,
+      "prev": "18f0238f397708c7ed65e9fbb5b06bb24322b6055c10dd4ad17b1a55eeca682e",
+      "hash": "ed4877b599106905beafb3996504c074a87933e4e5666729f44b6ecea45d916b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.084Z",
+      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "mode": "demo",
+      "action": "read",
+      "server": "lms",
+      "tool": "get_assignments",
+      "input": {
+        "days": 14
+      },
+      "rows": 3,
+      "sourceIds": [
+        "lms:assign:8001",
+        "lms:assign:8003",
+        "lms:assign:8004"
+      ],
+      "durationMs": 12,
+      "sentToLlm": true,
+      "seq": 43,
+      "prev": "ed4877b599106905beafb3996504c074a87933e4e5666729f44b6ecea45d916b",
+      "hash": "a6afa047c4a585da7fed37e78c43d63d856e98325a5653947e32eb2f8403e805"
+    },
+    {
+      "at": "2026-10-03T03:00:01.084Z",
+      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개 · 도구 결과 5건",
+      "bytes": 23653,
+      "maskedEmails": 37,
+      "maskedPii": 4,
+      "piiKinds": {
+        "rrn": 1,
+        "account": 1,
+        "phone": 1,
+        "studentNo": 1
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 44,
+      "prev": "a6afa047c4a585da7fed37e78c43d63d856e98325a5653947e32eb2f8403e805",
+      "hash": "459aa8d2a838fcc1aa5941a7ae46fdf6788e277cd49c32036c8a1f73d3614ddb"
+    },
+    {
+      "at": "2026-10-03T03:00:01.085Z",
+      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 26건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 20992,
+      "maskedEmails": 20,
+      "maskedPii": 8,
+      "piiKinds": {
+        "rrn": 2,
+        "account": 2,
+        "phone": 2,
+        "studentNo": 2
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 45,
+      "prev": "459aa8d2a838fcc1aa5941a7ae46fdf6788e277cd49c32036c8a1f73d3614ddb",
+      "hash": "70f468d80cc853753d9ba8fd1638cfb491ba661382304bdd99b1a00f337f49d9"
+    },
+    {
+      "at": "2026-10-03T03:00:01.111Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개",
+      "bytes": 10297,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 46,
+      "prev": "70f468d80cc853753d9ba8fd1638cfb491ba661382304bdd99b1a00f337f49d9",
+      "hash": "fe6f5172f7fbadc2e1920cc26cc18606dc4656acdb5571e6cb1c5996e9d13f83"
+    },
+    {
+      "at": "2026-10-03T03:00:01.117Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_recent_commits",
+      "input": {},
+      "rows": 12,
+      "sourceIds": [
+        "github:commit:seongjun/my-ai-work-agent@a1b2c3d4e5f6",
+        "github:commit:seongjun/my-ai-work-agent@b2c3d4e5f6a1",
+        "github:commit:seongjun/my-ai-work-agent@c3d4e5f6a1b2",
+        "github:commit:seongjun/my-ai-work-agent@d4e5f6a1b2c3",
+        "github:commit:seongjun/my-ai-work-agent@e5f6a1b2c3d4",
+        "github:commit:cbnu-capstone/team-mate@f6a1b2c3d4e5",
+        "github:commit:cbnu-capstone/team-mate@a7b8c9d0e1f2",
+        "github:commit:cbnu-capstone/team-mate@b8c9d0e1f2a7",
+        "github:commit:seongjun/baekjoon@c9d0e1f2a7b8",
+        "github:commit:seongjun/baekjoon@d0e1f2a7b8c9",
+        "github:commit:seongjun/baekjoon@e1f2a7b8c9d0",
+        "github:commit:seongjun/os-hw@f2a7b8c9d0e1"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 47,
+      "prev": "fe6f5172f7fbadc2e1920cc26cc18606dc4656acdb5571e6cb1c5996e9d13f83",
+      "hash": "0bac23a1830471c96cc390aa874797c1d42b04d209f18f8645dc3ce2a4606d10"
+    },
+    {
+      "at": "2026-10-03T03:00:01.119Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:pr:seongjun/my-ai-work-agent#21",
+        "github:pr:seongjun/my-ai-work-agent#19",
+        "github:pr:cbnu-capstone/team-mate#8"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 48,
+      "prev": "0bac23a1830471c96cc390aa874797c1d42b04d209f18f8645dc3ce2a4606d10",
+      "hash": "7f06e1626f2bad2d2c234b2bdcd3faa948f294bdf8cd43a4115cb8a79a1e653e"
+    },
+    {
+      "at": "2026-10-03T03:00:01.121Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:issue:cbnu-capstone/team-mate#12",
+        "github:issue:cbnu-capstone/team-mate#13",
+        "github:issue:seongjun/os-hw#2",
+        "github:issue:seongjun/my-ai-work-agent#18"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 49,
+      "prev": "7f06e1626f2bad2d2c234b2bdcd3faa948f294bdf8cd43a4115cb8a79a1e653e",
+      "hash": "fbef2c6c2a5a52e517329161483ffc6ad18ae9aee6e71dc2d5da91dcbf54cc9b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.123Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_repository_activity",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:repo:seongjun/my-ai-work-agent",
+        "github:repo:cbnu-capstone/team-mate",
+        "github:repo:seongjun/baekjoon",
+        "github:repo:seongjun/os-hw"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 50,
+      "prev": "fbef2c6c2a5a52e517329161483ffc6ad18ae9aee6e71dc2d5da91dcbf54cc9b",
+      "hash": "7d68c5aef987a2e1fce9ac0abfdf7b7270c67ec117ff5436ccbca854ab41bf8f"
+    },
+    {
+      "at": "2026-10-03T03:00:01.129Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "my-ai-work-agent",
+          "team-mate",
+          "캡스톤",
+          "과제",
+          "퀴즈",
+          "스터디",
+          "인턴",
+          "코딩테스트",
+          "장학금",
+          "발표"
+        ]
+      },
+      "rows": 11,
+      "sourceIds": [
+        "gmail:msg:demo0001",
+        "gmail:msg:demo0002",
+        "gmail:msg:demo0003",
+        "gmail:msg:demo0004",
+        "gmail:msg:demo0005",
+        "gmail:msg:demo0006",
+        "gmail:msg:demo0007",
+        "gmail:msg:demo0008",
+        "gmail:msg:demo0010",
+        "gmail:msg:demo0011",
+        "gmail:msg:demo0012"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 51,
+      "prev": "7d68c5aef987a2e1fce9ac0abfdf7b7270c67ec117ff5436ccbca854ab41bf8f",
+      "hash": "7d4e18499ad72dd64eb9b144c20b2aa2ad4ad4e4830eccb7490cad949e3ea9ae"
+    },
+    {
+      "at": "2026-10-03T03:00:01.143Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_events",
+      "input": {},
+      "rows": 2,
+      "sourceIds": [
+        "calendar:event:demoev001",
+        "calendar:event:demoev002"
+      ],
+      "durationMs": 14,
+      "sentToLlm": true,
+      "seq": 52,
+      "prev": "7d4e18499ad72dd64eb9b144c20b2aa2ad4ad4e4830eccb7490cad949e3ea9ae",
+      "hash": "51e580cc2c2c3ffd0aac6575b2b6c46646d6ba95f564cb94ac832f3e81a625fa"
+    },
+    {
+      "at": "2026-10-03T03:00:01.145Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:demoev003",
+        "calendar:event:demoev004",
+        "calendar:event:demoev005",
+        "calendar:event:demoev006",
+        "calendar:event:demoev007",
+        "calendar:event:demoev008"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 53,
+      "prev": "51e580cc2c2c3ffd0aac6575b2b6c46646d6ba95f564cb94ac832f3e81a625fa",
+      "hash": "597216c198f7faa1eed7958d6df21125cb00ec1b3c2793c820b0e53cc8ab7cd5"
+    },
+    {
+      "at": "2026-10-03T03:00:01.158Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "read",
+      "server": "lms",
+      "tool": "get_upcoming_deadlines",
+      "input": {
+        "days": 14
+      },
+      "rows": 4,
+      "sourceIds": [
+        "lms:due:9001",
+        "lms:due:9002",
+        "lms:due:9003",
+        "lms:due:9004"
+      ],
+      "durationMs": 13,
+      "sentToLlm": true,
+      "seq": 54,
+      "prev": "597216c198f7faa1eed7958d6df21125cb00ec1b3c2793c820b0e53cc8ab7cd5",
+      "hash": "465b592a2e838c2e6c86bb4759f3c52c874511cce211850f6b493b9cf69de362"
+    },
+    {
+      "at": "2026-10-03T03:00:01.158Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개 · 도구 결과 8건",
+      "bytes": 32237,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 55,
+      "prev": "465b592a2e838c2e6c86bb4759f3c52c874511cce211850f6b493b9cf69de362",
+      "hash": "d96dd633799e4f86e1bd55ae828631c706c77587ab2cb60b162f49ab885350d2"
+    },
+    {
+      "at": "2026-10-03T03:00:01.158Z",
+      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 46건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 31618,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 56,
+      "prev": "d96dd633799e4f86e1bd55ae828631c706c77587ab2cb60b162f49ab885350d2",
+      "hash": "76df5fbb8315c5a5425ba4e8a8393b429d95286c1d44c646670fd535fd131c89"
+    },
+    {
+      "at": "2026-10-03T03:00:00.000Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 11개",
+      "bytes": 9051,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 57,
+      "prev": "76df5fbb8315c5a5425ba4e8a8393b429d95286c1d44c646670fd535fd131c89",
+      "hash": "3fe53cbc0d42a5ec15684c73c0407efaf535b5200d7184f1dc5cbf80ebe8f0b0"
+    },
+    {
+      "at": "2026-10-03T03:00:00.005Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_recent_commits",
+      "input": {},
+      "rows": 12,
+      "sourceIds": [
+        "github:commit:seongjun/my-ai-work-agent@a1b2c3d4e5f6",
+        "github:commit:seongjun/my-ai-work-agent@b2c3d4e5f6a1",
+        "github:commit:seongjun/my-ai-work-agent@c3d4e5f6a1b2",
+        "github:commit:seongjun/my-ai-work-agent@d4e5f6a1b2c3",
+        "github:commit:seongjun/my-ai-work-agent@e5f6a1b2c3d4",
+        "github:commit:cbnu-capstone/team-mate@f6a1b2c3d4e5",
+        "github:commit:cbnu-capstone/team-mate@a7b8c9d0e1f2",
+        "github:commit:cbnu-capstone/team-mate@b8c9d0e1f2a7",
+        "github:commit:seongjun/baekjoon@c9d0e1f2a7b8",
+        "github:commit:seongjun/baekjoon@d0e1f2a7b8c9",
+        "github:commit:seongjun/baekjoon@e1f2a7b8c9d0",
+        "github:commit:seongjun/os-hw@f2a7b8c9d0e1"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 58,
+      "prev": "3fe53cbc0d42a5ec15684c73c0407efaf535b5200d7184f1dc5cbf80ebe8f0b0",
+      "hash": "ebf29aadb4558ca815b2fb271a873f387a19ce6c957061c1105a805125ac567c"
+    },
+    {
+      "at": "2026-10-03T03:00:00.008Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:pr:seongjun/my-ai-work-agent#21",
+        "github:pr:seongjun/my-ai-work-agent#19",
+        "github:pr:cbnu-capstone/team-mate#8"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 59,
+      "prev": "ebf29aadb4558ca815b2fb271a873f387a19ce6c957061c1105a805125ac567c",
+      "hash": "d7c83670f27770c731618d802f9134c46aa41ea02e93018ecdfec2eb3f15cd56"
+    },
+    {
+      "at": "2026-10-03T03:00:00.009Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:issue:cbnu-capstone/team-mate#12",
+        "github:issue:cbnu-capstone/team-mate#13",
+        "github:issue:seongjun/os-hw#2",
+        "github:issue:seongjun/my-ai-work-agent#18"
+      ],
+      "durationMs": 1,
+      "sentToLlm": true,
+      "seq": 60,
+      "prev": "d7c83670f27770c731618d802f9134c46aa41ea02e93018ecdfec2eb3f15cd56",
+      "hash": "3fae38e99e04187e8d9acc5872c665c320a7104323799e075b507d84badf056a"
+    },
+    {
+      "at": "2026-10-03T03:00:00.011Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_repository_activity",
+      "input": {},
+      "rows": 4,
+      "sourceIds": [
+        "github:repo:seongjun/my-ai-work-agent",
+        "github:repo:cbnu-capstone/team-mate",
+        "github:repo:seongjun/baekjoon",
+        "github:repo:seongjun/os-hw"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 61,
+      "prev": "3fae38e99e04187e8d9acc5872c665c320a7104323799e075b507d84badf056a",
+      "hash": "6a11716311bb01df169050e620cb6af484d07679b19efbb644a0c053c5baec61"
+    },
+    {
+      "at": "2026-10-03T03:00:00.018Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "my-ai-work-agent",
+          "team-mate",
+          "캡스톤",
+          "과제",
+          "퀴즈",
+          "스터디",
+          "인턴",
+          "코딩테스트",
+          "장학금",
+          "발표"
+        ]
+      },
+      "rows": 10,
+      "sourceIds": [
+        "gmail:msg:demo0001",
+        "gmail:msg:demo0002",
+        "gmail:msg:demo0003",
+        "gmail:msg:demo0004",
+        "gmail:msg:demo0005",
+        "gmail:msg:demo0006",
+        "gmail:msg:demo0007",
+        "gmail:msg:demo0008",
+        "gmail:msg:demo0010",
+        "gmail:msg:demo0012"
+      ],
+      "durationMs": 7,
+      "sentToLlm": true,
+      "seq": 62,
+      "prev": "6a11716311bb01df169050e620cb6af484d07679b19efbb644a0c053c5baec61",
+      "hash": "c1c5dba7460f20ba89c1828814005adf6e4a1f23d3f3a12ea561e324f4191010"
+    },
+    {
+      "at": "2026-10-03T03:00:00.037Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_events",
+      "input": {},
+      "rows": 2,
+      "sourceIds": [
+        "calendar:event:demoev001",
+        "calendar:event:demoev002"
+      ],
+      "durationMs": 18,
+      "sentToLlm": true,
+      "seq": 63,
+      "prev": "c1c5dba7460f20ba89c1828814005adf6e4a1f23d3f3a12ea561e324f4191010",
+      "hash": "589f3109191850a59d0ae5f119994f547dbb86d4e21fa02935638761b127980e"
+    },
+    {
+      "at": "2026-10-03T03:00:00.040Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:demoev003",
+        "calendar:event:demoev004",
+        "calendar:event:demoev005",
+        "calendar:event:demoev006",
+        "calendar:event:demoev007",
+        "calendar:event:demoev008"
+      ],
+      "durationMs": 3,
+      "sentToLlm": true,
+      "seq": 64,
+      "prev": "589f3109191850a59d0ae5f119994f547dbb86d4e21fa02935638761b127980e",
+      "hash": "de49f66f09e3b009fe70d1023c7f1cc13c83789cdc8c793f17a1ef9aaaa688b0"
+    },
+    {
+      "at": "2026-10-03T03:00:00.053Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "read",
+      "server": "lms",
+      "tool": "get_upcoming_deadlines",
+      "input": {
+        "days": 14
+      },
+      "rows": 4,
+      "sourceIds": [
+        "lms:due:9001",
+        "lms:due:9002",
+        "lms:due:9003",
+        "lms:due:9004"
+      ],
+      "durationMs": 13,
+      "sentToLlm": true,
+      "seq": 65,
+      "prev": "de49f66f09e3b009fe70d1023c7f1cc13c83789cdc8c793f17a1ef9aaaa688b0",
+      "hash": "15784d33400a7a013af590c56f8137acaa498a342f4eb3c41f69ed23909c31ad"
+    },
+    {
+      "at": "2026-10-03T03:00:00.053Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "denied",
+      "server": "gmail",
+      "tool": "get_email",
+      "input": {
+        "messageId": "demo0011"
+      },
+      "detail": "허용 목록에 없는 도구",
+      "seq": 66,
+      "prev": "15784d33400a7a013af590c56f8137acaa498a342f4eb3c41f69ed23909c31ad",
+      "hash": "747c7181b9dfa3942d53d6cbd42e3f0fe8080d7763bdee8300a3eb22489887e4"
+    },
+    {
+      "at": "2026-10-03T03:00:00.053Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 11개 · 도구 결과 9건",
+      "bytes": 30693,
+      "maskedEmails": 39,
+      "maskedPii": 4,
+      "piiKinds": {
+        "rrn": 1,
+        "account": 1,
+        "phone": 1,
+        "studentNo": 1
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 67,
+      "prev": "747c7181b9dfa3942d53d6cbd42e3f0fe8080d7763bdee8300a3eb22489887e4",
+      "hash": "385321ec015e6a74c0e216aad90424375fe1e8e5adc283e148d85c146bc4b170"
+    },
+    {
+      "at": "2026-10-03T03:00:00.053Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "excluded",
+      "sourceIds": [
+        "gmail:msg:demo0011"
+      ],
+      "detail": "규칙 “엄마”",
+      "seq": 68,
+      "prev": "385321ec015e6a74c0e216aad90424375fe1e8e5adc283e148d85c146bc4b170",
+      "hash": "a4106af10f41b176a9ae53736ef298103a241fa7f59089494b7288a09e816a10"
+    },
+    {
+      "at": "2026-10-03T03:00:00.056Z",
+      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 45건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 30951,
+      "maskedEmails": 18,
+      "maskedPii": 8,
+      "piiKinds": {
+        "rrn": 2,
+        "account": 2,
+        "phone": 2,
+        "studentNo": 2
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 69,
+      "prev": "a4106af10f41b176a9ae53736ef298103a241fa7f59089494b7288a09e816a10",
+      "hash": "0ece78319ca10b1b0fc41d92dca871e13dc9ffe06a35195b95cf296396acf645"
+    },
+    {
+      "at": "2026-10-03T03:00:01.099Z",
+      "runId": "run_ebece7d9-848f-4a4f-a167-4c62150e60da",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "claude-cli/claude-cli-default",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개",
+      "bytes": 10299,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 70,
+      "prev": "0ece78319ca10b1b0fc41d92dca871e13dc9ffe06a35195b95cf296396acf645",
+      "hash": "e8da068ea40cbade818dd914d3d77260adf737c40455d5ca462be88435cbd95c"
+    },
+    {
+      "at": "2026-10-03T03:00:07.633Z",
+      "runId": "run_ebece7d9-848f-4a4f-a167-4c62150e60da",
+      "mode": "demo",
+      "action": "read",
+      "server": "lms",
+      "tool": "get_assignments",
+      "input": {
+        "days": 14,
+        "limit": 30
+      },
+      "rows": 3,
+      "sourceIds": [
+        "lms:assign:8001",
+        "lms:assign:8003",
+        "lms:assign:8004"
+      ],
+      "durationMs": 20,
+      "sentToLlm": true,
+      "seq": 71,
+      "prev": "e8da068ea40cbade818dd914d3d77260adf737c40455d5ca462be88435cbd95c",
+      "hash": "d6ddedd42f3288fbb20317233412fe2c0e6caf68624db48939dd2e66f15bc5ce"
+    },
+    {
+      "at": "2026-10-03T03:00:07.639Z",
+      "runId": "run_ebece7d9-848f-4a4f-a167-4c62150e60da",
+      "mode": "demo",
+      "action": "read",
+      "server": "lms",
+      "tool": "get_upcoming_deadlines",
+      "input": {
+        "days": 14,
+        "limit": 50
+      },
+      "rows": 4,
+      "sourceIds": [
+        "lms:due:9001",
+        "lms:due:9002",
+        "lms:due:9003",
+        "lms:due:9004"
+      ],
+      "durationMs": 4,
+      "sentToLlm": true,
+      "seq": 72,
+      "prev": "d6ddedd42f3288fbb20317233412fe2c0e6caf68624db48939dd2e66f15bc5ce",
+      "hash": "98cf4b75abc5da2c6c801832fc31f775299a65e3c3694339a08cd0f022b5436a"
+    },
+    {
+      "at": "2026-10-03T03:00:07.655Z",
+      "runId": "run_ebece7d9-848f-4a4f-a167-4c62150e60da",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14,
+        "limit": 100
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:demoev003",
+        "calendar:event:demoev004",
+        "calendar:event:demoev005",
+        "calendar:event:demoev006",
+        "calendar:event:demoev007",
+        "calendar:event:demoev008"
+      ],
+      "durationMs": 16,
+      "sentToLlm": true,
+      "seq": 73,
+      "prev": "98cf4b75abc5da2c6c801832fc31f775299a65e3c3694339a08cd0f022b5436a",
+      "hash": "07f727bee85a9c972945ea7b18bfcbd8dd45357f2543b1ec0fca264d924a77e2"
+    },
+    {
+      "at": "2026-10-03T03:00:07.663Z",
+      "runId": "run_ebece7d9-848f-4a4f-a167-4c62150e60da",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_emails",
+      "input": {
+        "query": "과제 OR 시험 OR 발표 OR 마감 OR 제출 OR deadline OR exam OR presentation OR assignment",
+        "since": "2026-09-26T00:00:00Z",
+        "limit": 50
+      },
+      "rows": 10,
+      "sourceIds": [
+        "gmail:msg:demo0001",
+        "gmail:msg:demo0002",
+        "gmail:msg:demo0003",
+        "gmail:msg:demo0004",
+        "gmail:msg:demo0005",
+        "gmail:msg:demo0006",
+        "gmail:msg:demo0007",
+        "gmail:msg:demo0008",
+        "gmail:msg:demo0010",
+        "gmail:msg:demo0012"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 74,
+      "prev": "07f727bee85a9c972945ea7b18bfcbd8dd45357f2543b1ec0fca264d924a77e2",
+      "hash": "a3b6402f5d348886512c70fd6558f02fc0df1fa362de23c1916333ec74d74b6d"
+    },
+    {
+      "at": "2026-10-03T03:00:07.663Z",
+      "runId": "run_ebece7d9-848f-4a4f-a167-4c62150e60da",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "claude-cli/claude-sonnet-5-5",
+      "detail": "계획 · 사용자 질문 · 도구 정의 13개 · 도구 결과 4건",
+      "bytes": 21947,
+      "maskedEmails": 35,
+      "maskedPii": 4,
+      "piiKinds": {
+        "rrn": 1,
+        "account": 1,
+        "phone": 1,
+        "studentNo": 1
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 75,
+      "prev": "a3b6402f5d348886512c70fd6558f02fc0df1fa362de23c1916333ec74d74b6d",
+      "hash": "5483793c51ecb8846cfa09e0c22d2944851516bad1c814f4802b79e6b577f68b"
+    },
+    {
+      "at": "2026-10-03T03:00:11.942Z",
+      "runId": "run_ebece7d9-848f-4a4f-a167-4c62150e60da",
+      "mode": "demo",
+      "action": "excluded",
+      "sourceIds": [
+        "gmail:msg:demo0009"
+      ],
+      "detail": "규칙 “쿠폰”",
+      "seq": 76,
+      "prev": "5483793c51ecb8846cfa09e0c22d2944851516bad1c814f4802b79e6b577f68b",
+      "hash": "bf477d81400386a338e8418d7615320326ea4708ae502df35a90f1bcebc5e7fd"
+    },
+    {
+      "at": "2026-10-03T03:00:11.942Z",
+      "runId": "run_ebece7d9-848f-4a4f-a167-4c62150e60da",
+      "mode": "demo",
+      "action": "excluded",
+      "sourceIds": [
+        "gmail:msg:demo0011"
+      ],
+      "detail": "규칙 “엄마”",
+      "seq": 77,
+      "prev": "bf477d81400386a338e8418d7615320326ea4708ae502df35a90f1bcebc5e7fd",
+      "hash": "16a9dae8ce926829a512d24f965acedd79b87777a6ef8449cee0268c513fbc5f"
+    },
+    {
+      "at": "2026-10-03T03:00:11.954Z",
+      "runId": "run_ebece7d9-848f-4a4f-a167-4c62150e60da",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "claude-cli/claude-sonnet-5-5",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 23건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 18499,
+      "maskedEmails": 18,
+      "maskedPii": 8,
+      "piiKinds": {
+        "rrn": 2,
+        "account": 2,
+        "phone": 2,
+        "studentNo": 2
+      },
+      "flagged": [
+        "gmail:msg:demo0010"
+      ],
+      "sentToLlm": true,
+      "seq": 78,
+      "prev": "16a9dae8ce926829a512d24f965acedd79b87777a6ef8449cee0268c513fbc5f",
+      "hash": "b5225e797e515b38bca123c9da5207097f49f62fa7d3609400795dbe354a85a9"
+    }
+  ]
+}

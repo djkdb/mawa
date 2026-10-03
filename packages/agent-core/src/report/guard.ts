@@ -86,7 +86,7 @@ export function tagSafe(json: string): string {
   return json.replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 }
 
-export interface MaskOptions { emails: boolean; pii: boolean }
+export interface MaskOptions { emails: boolean; pii: boolean; /** Replaces people's names with aliases (after masking). */ pseudo?: { apply(text: string): { text: string; count: number } } | null }
 
 /**
  * Masked and tag-safe JSON for an LLM payload. Masking runs first so escapes are never split.
@@ -100,6 +100,7 @@ export function promptJson(value: unknown, mask: boolean | MaskOptions = true): 
   let piiKinds: Partial<Record<PiiKind, number>> = {};
   if (o.emails) { const m = maskEmails(text); text = m.text; count = m.count; }
   if (o.pii) { const m = maskPii(text); text = m.text; pii = m.count; piiKinds = m.kinds; }
+  if (typeof mask !== 'boolean' && mask.pseudo) text = mask.pseudo.apply(text).text;
   return { text: tagSafe(text), count, pii, piiKinds };
 }
 

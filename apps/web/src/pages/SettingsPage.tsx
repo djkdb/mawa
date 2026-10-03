@@ -23,7 +23,7 @@ export function SettingsPage({ status }: { status: Status | null }) {
           </div>
         ))}
       </dl>
-      <PolicyEditor />
+      <PolicyEditor base={status?.policy?.base ?? null} />
       <p className="mt-4 text-[13px] text-text-3">구현 코드: <a href={REPO_URL} target="_blank" rel="noreferrer" className="text-text-2 hover:text-text">{REPO_URL.replace('https://', '')}</a></p>
     </div>
   );

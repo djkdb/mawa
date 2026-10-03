@@ -128,3 +128,27 @@ describe('aggregateContext', () => {
     expect(ctx.sources[0]!.metadata).toEqual({ kind: 'pr', repo: 'o/r', number: 1, state: 'open', labels: ['bug'], reviewComments: 2, sha: 'abcdef0' });
   });
 });
+
+describe('pseudonymize policy', () => {
+  it('sends aliases to the model and restores real names in the report', async () => {
+    const seen: string[] = [];
+    const executor = {
+      servers: ['gmail'] as const,
+      async listTools() { return [{ server: 'gmail' as const, name: 'search', description: 'd', inputSchema: { type: 'object' } }]; },
+      async callTool(call: { id: string }) { return { status: 'ok' as const, callId: call.id, durationMs: 1, output: { summary: '1', data: [{ sourceId: 'gmail:msg:1', subject: 'ERD', from: '김지민 <jimin@example.com>', snippet: '김지민: ERD 확인 부탁', date: '2026-10-01T00:00:00.000Z' }] } }; },
+    };
+    const llm: LLMProvider = {
+      id: 'spy', model: 'spy',
+      async complete(req) {
+        seen.push(JSON.stringify(req.messages));
+        if (!req.responseFormat) return seen.length === 1 ? { text: '', toolCalls: [{ id: 'c', name: 'gmail__search', input: {} }], stopReason: 'tool_use' } : { text: '', toolCalls: [], stopReason: 'end_turn' };
+        return { text: JSON.stringify({ sections: [{ id: 'next_actions', items: [{ text: '사람A에게 ERD 답장하기', confidence: 'inferred', priority: 'high', sources: ['gmail:msg:1'] }] }] }), toolCalls: [], stopReason: 'end_turn' };
+      },
+    };
+    const result = await runAgent({ prompt: 'x', mode: 'demo', llm, executor: executor as never, period, dataPolicy: { exclude: [], maskEmails: true, maskPii: true, pseudonymize: true } });
+    expect(seen.join('\n')).not.toContain('김지민');
+    expect(seen.join('\n')).toContain('사람A');
+    expect(result.report!.sections.find((s) => s.id === 'next_actions')!.items[0]!.text).toBe('김지민에게 ERD 답장하기');
+    expect(result.events.filter((e) => e.type === 'llm_request').some((e) => e.type === 'llm_request' && e.pseudonyms === 1)).toBe(true);
+  });
+});
