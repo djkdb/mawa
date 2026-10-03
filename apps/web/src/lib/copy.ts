@@ -29,8 +29,8 @@ export function relDay(iso: string, ref: number): string {
 
 /** The report period's end is exclusive (next Monday 00:00); show the last included day. */
 export function periodKo(p: { start: string; end: string }): string {
-  // The period is a calendar week computed in UTC (agent-core defaultPeriod), so its day labels are read in UTC.
-  const day = (iso: string) => new Date(iso).toLocaleDateString('ko-KR', { timeZone: 'UTC', month: 'long', day: 'numeric' });
+  // The period is a calendar week in the workspace timezone (agent-core defaultPeriod).
+  const day = (iso: string) => new Date(iso).toLocaleDateString('ko-KR', { timeZone: WORKSPACE_TZ, month: 'long', day: 'numeric' });
   return `${day(p.start)} – ${day(new Date(new Date(p.end).getTime() - 1).toISOString())}`;
 }
 
@@ -100,3 +100,14 @@ export const TOOL_DESC_KO: Record<string, string> = {
   get_upcoming_events: '지금부터 N일 동안의 다가오는 일정을 가져옵니다.',
   search_events: '제목·설명·장소를 텍스트로 검색합니다(기본 ±30일).',
 };
+
+/** What each OAuth scope lets the token do, in plain words. Shown before connecting. */
+export const SCOPE_MEANING: Record<string, { label: string; risk?: string }> = {
+  'read:user': { label: 'GitHub 프로필 읽기' },
+  repo: { label: '저장소·이슈·PR 읽기', risk: 'GitHub OAuth App의 repo 권한은 쓰기도 허용합니다. 이 앱은 읽기 API만 호출하며, 읽기 전용이 필요하면 GitHub App으로 연결하세요(GITHUB_OAUTH_SCOPES).' },
+  'https://www.googleapis.com/auth/gmail.readonly': { label: 'Gmail 읽기 전용', risk: '사서함 전체를 읽을 수 있는 권한입니다. 에이전트는 기간·키워드로 좁혀 검색하고 본문은 요청한 메일만 길이 제한을 두고 읽습니다.' },
+  'https://www.googleapis.com/auth/calendar.readonly': { label: 'Google Calendar 읽기 전용' },
+  openid: { label: '로그인 확인' },
+  email: { label: '계정 이메일 확인' },
+};
+export const DEFAULT_SCOPES = { github: ['read:user', 'repo'], google: ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/calendar.readonly', 'openid', 'email'] };

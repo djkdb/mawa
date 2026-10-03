@@ -6,7 +6,7 @@ import { EXAMPLE_META, SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 
 const ICON: Record<McpServerId, React.ReactNode> = { github: <GitBranch className="h-3.5 w-3.5" aria-hidden />, gmail: <Mail className="h-3.5 w-3.5" aria-hidden />, calendar: <CalendarDays className="h-3.5 w-3.5" aria-hidden /> };
 
-export function PromptPanel({ status, busy, onRun }: { status: Status | null; busy: boolean; onRun: (prompt: string, mode: AgentMode) => void }) {
+export function PromptPanel({ status, busy, onRun, progress = null }: { status: Status | null; busy: boolean; onRun: (prompt: string, mode: AgentMode) => void; progress?: string | null }) {
   const [selected, setSelected] = useState<string>(DEMO_EXAMPLES[0]?.id ?? '');
   const [custom, setCustom] = useState('');
   const [mode, setMode] = useState<AgentMode>('demo');
@@ -47,7 +47,13 @@ export function PromptPanel({ status, busy, onRun }: { status: Status | null; bu
         })}
       </div>
 
-      {!IS_DEMO_BUILD && (
+      {IS_DEMO_BUILD ? (
+        <div className="mt-4">
+          <label htmlFor="prompt" className="text-sm text-text-2">직접 입력</label>
+          <textarea id="prompt" rows={1} disabled placeholder="예: 이번 주 리뷰 요청받은 PR만 정리해줘" aria-describedby="prompt-demo-note" className="hairline mt-1.5 w-full resize-none rounded-lg bg-bg px-4 py-3 text-[15px] opacity-60 outline-none placeholder:text-text-3" />
+          <p id="prompt-demo-note" className="mt-1 text-xs text-text-3">데모는 기록된 질문 3개만 재생합니다. 자유 질문은 API 서버와 LLM 키를 설정한 실제 실행에서 됩니다.</p>
+        </div>
+      ) : (
         <div className="mt-4">
           <label htmlFor="prompt" className="text-sm text-text-2">직접 입력</label>
           <textarea id="prompt" value={custom} onChange={(e) => { setCustom(e.target.value); setSelected(''); }} rows={2} disabled={busy} placeholder="예: 이번 주 리뷰 요청받은 PR만 정리해줘" className="hairline mt-1.5 w-full resize-none rounded-lg bg-bg px-4 py-3 text-[15px] text-text outline-none placeholder:text-text-3 disabled:opacity-60" />
@@ -56,7 +62,7 @@ export function PromptPanel({ status, busy, onRun }: { status: Status | null; bu
 
       <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3">
         <button type="button" onClick={() => onRun(prompt.trim(), mode)} disabled={busy || prompt.trim().length === 0} className="inline-flex items-center gap-2 rounded-lg bg-accent-strong px-5 py-3 text-[15px] font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
-          {busy ? '실행 중…' : '에이전트 실행'} {!busy && <ArrowRight className="h-4 w-4" aria-hidden />}
+          {busy ? `실행 중… ${progress ?? ''}` : '에이전트 실행'} {!busy && <ArrowRight className="h-4 w-4" aria-hidden />}
         </button>
         {!IS_DEMO_BUILD && (
           <div role="radiogroup" aria-label="모드" className="hairline flex rounded-lg p-0.5 text-sm">

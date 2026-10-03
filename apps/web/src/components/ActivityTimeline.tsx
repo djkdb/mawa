@@ -1,13 +1,23 @@
 import { useState } from 'react';
 import { AlertTriangle, Check, ChevronDown, ChevronRight, Download, Loader2 } from 'lucide-react';
 import type { AgentEvent, McpServerId } from '@mawa/shared';
-import { IS_DEMO_BUILD } from '../lib/client.js';
+import { IS_DEMO_BUILD, REPO_URL } from '../lib/client.js';
 import { SERVER_COLOR, SERVER_NAME, summaryKo, toolLabel } from '../lib/copy.js';
 import type { RunPhase } from '../lib/useAgentRun.js';
 import { McpTopology, WireLog, kb } from './McpWire.js';
 
 interface ToolDetail { server: McpServerId; name: string; input: Record<string, unknown>; summary?: string; items?: number; durationMs?: number; error?: string }
-interface Step { key: string; label: string; detail?: string; color?: string; tool?: ToolDetail; state: 'done' | 'active' | 'failed' }
+interface Step { key: string; label: string; detail?: string; color?: string; tool?: ToolDetail; state: 'done' | 'active' | 'failed'; code?: string }
+
+/** Where each step lives in the source, for readers who want to check. */
+const REPO_REF = (import.meta.env['VITE_REPO_REF'] as string | undefined) ?? 'HEAD';
+const codeUrl = (path: string) => `${REPO_URL}/blob/${REPO_REF}/${path}`;
+
+/** `query:"bug OR blocked…", limit:20` — the arguments as a short inline summary. */
+export function argsSummary(input: Record<string, unknown>, max = 60): string {
+  const s = Object.entries(input).map(([k, v]) => `${k}:${typeof v === 'string' ? JSON.stringify(v) : Array.isArray(v) ? `[${v.length}]` : JSON.stringify(v)}`).join(', ');
+  return s.length > max ? `${s.slice(0, max - 1)}…` : s;
+}
 
 /** Rows a person reads: verbs while running, results when done. Model reasoning is never part of the stream. */
 export function stepsFromEvents(events: AgentEvent[], phase: RunPhase): Step[] {
@@ -15,8 +25,14 @@ export function stepsFromEvents(events: AgentEvent[], phase: RunPhase): Step[] {
   const tool = new Map<string, Step>();
   for (const e of events) {
     switch (e.type) {
-      case 'agent_run_started': steps.push({ key: 'start', label: '요청 수신', state: 'done' }); break;
-      case 'tool_discovery_started': steps.push({ key: 'discover', label: '사용할 수 있는 도구를 찾는 중', state: 'active' }); break;
+      case 'agent_run_started': steps.push({ key: 'start', label: '요청 수신', state: 'done', code: 'packages/agent-core/src/agent.ts' }); break;
+      case 'tool_discovery_started': steps.push({ key: 'discover', label: '사용할 수 있는 도구를 찾는 중', state: 'active', code: 'packages/agent-core/src/tools/mcp-executor.ts' }); break;
+      case 'llm_response': {
+        if (!e.toolCalls.length) break;
+        const scripted = e.provider === 'scripted';
+        steps.push({ key: `plan-${steps.length}`, label: `${scripted ? '실행 계획 (질문별 스크립트 규칙)' : `실행 계획 (${e.model}이 선택)`} · 도구 ${e.toolCalls.length}개`, detail: e.toolCalls.map((t) => t.name.replace('__', '.')).join(', '), state: 'done', code: scripted ? 'packages/agent-core/src/llm/scripted.ts' : 'packages/agent-core/src/agent.ts' });
+        break;
+      }
       case 'mcp_server_connected': {
         let s = steps.find((x) => x.key === 'connect');
         if (!s) { s = { key: 'connect', label: '', detail: '', state: 'done' }; steps.splice(Math.max(0, steps.findIndex((x) => x.key === 'discover')), 0, s); }
@@ -26,7 +42,7 @@ export function stepsFromEvents(events: AgentEvent[], phase: RunPhase): Step[] {
         break;
       }
       case 'tool_discovered': { const s = steps.find((x) => x.key === 'discover'); if (s) { s.state = 'done'; s.label = `MCP 서버 ${new Set(e.tools.map((t) => t.server)).size}곳에서 도구 ${e.tools.length}개 발견`; } break; }
-      case 'tool_call_started': { const s: Step = { key: e.call.id, label: toolLabel(e.call.server, e.call.name, false), color: SERVER_COLOR[e.call.server], tool: { server: e.call.server, name: e.call.name, input: e.call.input }, state: 'active' }; tool.set(e.call.id, s); steps.push(s); break; }
+      case 'tool_call_started': { const s: Step = { key: e.call.id, label: toolLabel(e.call.server, e.call.name, false), color: SERVER_COLOR[e.call.server], tool: { server: e.call.server, name: e.call.name, input: e.call.input }, state: 'active', code: `mcp-servers/${e.call.server}/src/server.ts` }; tool.set(e.call.id, s); steps.push(s); break; }
       case 'tool_call_completed': {
         const s = tool.get(e.call.id);
         if (s && s.tool) {
@@ -40,7 +56,7 @@ export function stepsFromEvents(events: AgentEvent[], phase: RunPhase): Step[] {
       }
       case 'tool_call_failed': { const s = tool.get(e.call.id); if (s && s.tool) { s.state = 'failed'; s.detail = e.result.error.message; s.tool = { ...s.tool, error: e.result.error.message, durationMs: e.result.durationMs }; } break; }
       case 'context_aggregated': steps.push({ key: 'ctx', label: `출처 ${e.totalItems}건으로 맥락 구성`, state: 'done' }); steps.push({ key: 'analyze', label: '리포트 작성 중', state: 'active' }); break;
-      case 'report_generated': { const s = steps.find((x) => x.key === 'analyze'); if (s) { s.state = 'done'; s.label = '리포트 완성'; s.detail = `섹션 ${e.report.sections.length}개 · 출처 검증 통과 · 근거 없는 항목 ${e.droppedItems}건 제외`; } break; }
+      case 'report_generated': { const s = steps.find((x) => x.key === 'analyze'); if (s) { s.state = 'done'; s.label = '리포트 완성'; s.detail = `섹션 ${e.report.sections.length}개 · 출처 검증 · 근거 없는 항목 ${e.droppedItems}건 제외`; s.code = 'packages/agent-core/src/report/generate.ts'; } break; }
       case 'agent_run_completed': if (e.status === 'error') { for (const s of steps) if (s.state === 'active') s.state = 'failed'; steps.push({ key: 'end', label: '실행 실패', detail: e.error ?? '', state: 'failed' }); } break;
     }
   }
@@ -58,7 +74,7 @@ function ToolStep({ s }: { s: Step }) {
           <span className="h-2 w-2 rounded-full" style={{ background: s.color }} aria-hidden />{s.label}
         </span>
         {s.detail && <span className="tnum text-sm text-text">{s.detail}</span>}
-        <span className="inline-flex items-center gap-0.5 font-mono text-xs text-text-3">{t.name}(){t.durationMs !== undefined ? ` · ${t.durationMs}ms` : ''}<ChevronRight className={`h-3 w-3 transition ${open ? 'rotate-90' : ''}`} aria-hidden /></span>
+        <span className="inline-flex min-w-0 items-center gap-0.5 font-mono text-xs text-text-3"><span className="truncate">{t.name}({argsSummary(t.input)})</span>{t.durationMs !== undefined ? ` · ${t.durationMs}ms` : ''}<ChevronRight className={`h-3 w-3 transition ${open ? 'rotate-90' : ''}`} aria-hidden /></span>
       </button>
       {open && (
         <dl className="mt-2 grid gap-x-4 gap-y-1 rounded-lg bg-bg px-3 py-2.5 text-xs sm:grid-cols-[88px_minmax(0,1fr)]">
@@ -126,9 +142,10 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
                 {s.tool ? <ToolStep s={s} /> : (
                   <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-0.5">
                     <span className={`text-[15px] ${s.state === 'failed' ? 'text-rose-200' : s.state === 'active' ? 'text-text' : 'text-text-2'}`}>{s.label}</span>
-                    {s.detail && <span className="tnum text-sm text-text">{s.detail}</span>}
+                    {s.detail && <span className="tnum min-w-0 break-words text-sm text-text">{s.detail}</span>}
                   </div>
                 )}
+                {s.code && <a href={codeUrl(s.code)} target="_blank" rel="noreferrer" title={s.code} className="mt-0.5 shrink-0 font-mono text-[11px] text-text-3 hover:text-text max-sm:hidden">코드</a>}
               </li>
             ))}
           </ol>
@@ -137,6 +154,7 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
           {done && (
             <div className="mt-4 border-t border-line pt-3">
               <div className="flex flex-wrap items-center gap-3">
+                <span className="text-xs text-text-3">개발자용 상세</span>
                 {wireCount > 0 && (
                   <button type="button" onClick={() => setWire((w) => !w)} aria-expanded={wire} className="inline-flex items-center gap-1 rounded-md py-1.5 text-sm text-text-2 hover:text-text">
                     JSON-RPC 메시지 {wireCount}개 <ChevronDown className={`h-4 w-4 transition ${wire ? 'rotate-180' : ''}`} aria-hidden />
@@ -156,7 +174,7 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
                     <tbody>
                       {events.map((e, i) => {
                         const t0 = new Date(events[0]!.timestamp).getTime();
-                        const detail = 'call' in e ? `${e.call.server}.${e.call.name} ${JSON.stringify(e.call.input)}` : e.type === 'tool_discovered' ? `${e.tools.length} tools` : e.type === 'context_aggregated' ? JSON.stringify(e.counts) : e.type === 'report_generated' ? `${e.report.sections.length} sections, dropped ${e.droppedItems}` : e.type === 'agent_run_completed' ? e.status : e.type === 'tool_discovery_started' ? e.servers.join(',') : e.type === 'mcp_message' ? `${e.direction === 'client_to_server' ? '→' : '←'} ${e.server} ${e.kind} ${e.method ?? ''}${e.rpcId !== undefined ? ` #${e.rpcId}` : ''} ${kb(e.bytes)}` : e.type === 'mcp_server_connected' ? `${e.server}: ${e.serverInfo.name} v${e.serverInfo.version}, MCP ${e.protocolVersion}, ${e.transport}` : '';
+                        const detail = 'call' in e ? `${e.call.server}.${e.call.name} ${JSON.stringify(e.call.input)}` : e.type === 'tool_discovered' ? `${e.tools.length} tools` : e.type === 'context_aggregated' ? JSON.stringify(e.counts) : e.type === 'report_generated' ? `${e.report.sections.length} sections, dropped ${e.droppedItems}` : e.type === 'agent_run_completed' ? e.status : e.type === 'tool_discovery_started' ? e.servers.join(',') : e.type === 'mcp_message' ? `${e.direction === 'client_to_server' ? '→' : '←'} ${e.server} ${e.kind} ${e.method ?? ''}${e.rpcId !== undefined ? ` #${e.rpcId}` : ''} ${kb(e.bytes)}` : e.type === 'mcp_server_connected' ? `${e.server}: ${e.serverInfo.name} v${e.serverInfo.version}, MCP ${e.protocolVersion}, ${e.transport}` : e.type === 'llm_request' ? `${e.phase} → ${e.provider}/${e.model} ${kb(e.bytes)}, masked ${e.maskedEmails}, flagged ${e.flagged.length}` : e.type === 'llm_response' ? `${e.provider}: ${e.stopReason}, ${e.toolCalls.length} tool calls` : '';
                         return (
                           <tr key={i} className="border-t border-line/50 align-top">
                             <td className="tnum px-3 py-1 text-text-3">{new Date(e.timestamp).getTime() - t0}</td>

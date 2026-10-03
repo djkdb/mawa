@@ -4,7 +4,11 @@ import { DemoClient, DEMO_EXAMPLES } from '../src/lib/demo-client.js';
 describe('DemoClient', () => {
   it('lists session runs before shipped recordings and replays without network', async () => {
     const c = new DemoClient();
-    expect((await c.listRuns()).map((r) => r.recorded)).toEqual([true, true, true]);
+    const shipped = await c.listRuns();
+    expect(shipped.map((r) => r.recorded)).toEqual([true, true, true, true]);
+    // The fault-injection recording is listed but never offered as an example question.
+    expect(shipped.filter((r) => r.kind === 'validation')).toHaveLength(1);
+    expect(DEMO_EXAMPLES).toHaveLength(3);
     const { runId } = await c.startRun(DEMO_EXAMPLES[2]!.prompt, 'demo');
     const list = await c.listRuns();
     expect(list[0]).toMatchObject({ runId, recorded: false, status: 'running', toolCalls: 4 });
@@ -13,6 +17,8 @@ describe('DemoClient', () => {
     expect(events[0]).toBe('agent_run_started');
     expect(events.at(-1)).toBe('agent_run_completed');
     expect((await c.fetchRun(runId)).status).toBe('success');
+    expect(events).toContain('mcp_server_connected');
+    expect(events).toContain('llm_request');
     expect((await c.listRuns())[0]?.status).toBe('success');
   }, 30_000);
 

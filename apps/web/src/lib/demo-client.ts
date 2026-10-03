@@ -9,6 +9,9 @@ export interface RecordedRun {
   events: AgentEvent[];
   report: WeeklyWorkReport;
   warnings: string[];
+  /** "validation": a fault-injection recording that shows the source validator at work. Never offered as an example. */
+  kind?: 'validation';
+  note?: string;
 }
 
 const RECORDED = (demoRuns as unknown as { recordedAt: string; note: string; runs: RecordedRun[] });
@@ -32,7 +35,17 @@ export function getRecordedRun(id?: string): RecordedRun | null {
 }
 
 /** The example requests the demo can answer: exactly the prompts that were recorded. */
-export const DEMO_EXAMPLES = RECORDED.runs.map((r) => ({ id: r.id, prompt: r.prompt }));
+export const DEMO_EXAMPLES = RECORDED.runs.filter((r) => r.kind !== 'validation').map((r) => ({ id: r.id, prompt: r.prompt }));
+
+/** Replays started in this browser, remembered across reloads (ids and times only; the content is the recording). */
+const STORE_KEY = 'mawa.demo.runs';
+type Remembered = { runId: string; id: string; createdAt: string };
+function loadRemembered(): Remembered[] {
+  try { const v = JSON.parse(localStorage.getItem(STORE_KEY) ?? '[]') as unknown; return Array.isArray(v) ? (v as Remembered[]).slice(0, 30) : []; } catch { return []; }
+}
+function remember(r: Remembered) {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify([r, ...loadRemembered().filter((x) => x.runId !== r.runId)].slice(0, 30))); } catch { /* storage unavailable: history stays in memory */ }
+}
 export const DEMO_RECORDED_AT = RECORDED.recordedAt;
 
 /** Pacing of the replay, in ms. Deliberately modest: it should read as execution, not theatre. */
@@ -41,6 +54,8 @@ const DELAY: Partial<Record<AgentEvent['type'], number>> = {
   tool_discovery_started: 350,
   mcp_server_connected: 220,
   mcp_message: 70,
+  llm_request: 300,
+  llm_response: 450,
   tool_discovered: 450,
   tool_call_started: 180,
   tool_call_completed: 320,
@@ -77,13 +92,14 @@ export class DemoClient implements AgentClient {
 
   async startRun(prompt: string, mode: AgentMode): Promise<StartRunResult> {
     if (mode !== 'demo') throw new Error('This deployment is a browser-only demo. Real mode needs the API server (see README → Demo vs Real).');
-    const recorded = RECORDED.runs.find((r) => r.prompt.trim() === prompt.trim());
+    const recorded = RECORDED.runs.find((r) => r.kind !== 'validation' && r.prompt.trim() === prompt.trim());
     if (!recorded) {
       throw new Error('Demo mode replays recorded MCP runs, so it can only answer the example requests above. Pick one of them, or run the API locally for free-form prompts.');
     }
     const runId = `demo_${recorded.id}_${Date.now().toString(36)}`;
     const record = { runId, mode: 'demo' as const, prompt: recorded.prompt, status: 'running' as const, createdAt: new Date().toISOString(), report: null, warnings: recorded.warnings, llm: recorded.llm, recorded, events: [] as AgentEvent[] };
     this.runs.set(runId, record);
+    remember({ runId, id: recorded.id, createdAt: record.createdAt });
     return { runId, mode: 'demo', warnings: recorded.warnings };
   }
 
@@ -140,11 +156,16 @@ export class DemoClient implements AgentClient {
       runId: r.runId, mode: 'demo', prompt: r.prompt, status: r.status, createdAt: r.createdAt,
       toolCalls: r.recorded.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.recorded.report.sources.length, servers: serversOf(r.recorded.events), recorded: false,
     }));
+    const earlier: RunSummary[] = loadRemembered().filter((m) => !this.runs.has(m.runId)).flatMap((m) => {
+      const r = RECORDED.runs.find((x) => x.id === m.id);
+      return r ? [{ runId: m.runId, mode: 'demo' as const, prompt: r.prompt, status: 'success' as const, createdAt: m.createdAt, toolCalls: r.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.report.sources.length, servers: serversOf(r.events), recorded: false }] : [];
+    });
     const shipped: RunSummary[] = RECORDED.runs.map((r) => ({
       runId: `recorded_${r.id}`, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: r.report.generatedAt,
       toolCalls: r.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.report.sources.length, servers: serversOf(r.events), recorded: true,
+      ...(r.kind ? { kind: r.kind } : {}),
     }));
-    return [...session, ...shipped];
+    return [...session, ...earlier, ...shipped];
   }
 
   async fetchRun(runId: string): Promise<RunRecord> {
@@ -157,7 +178,10 @@ export class DemoClient implements AgentClient {
     const id = recordedIdOf(runId);
     const r = id ? RECORDED.runs.find((x) => x.id === id) : undefined;
     if (!r) throw new Error('이 실행 기록을 찾을 수 없습니다.');
-    return { runId: `recorded_${r.id}`, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: r.report.generatedAt, report: r.report, warnings: r.warnings, llm: r.llm, events: r.events };
+    // A replay from an earlier visit keeps its own id and time; its content is the recording.
+    const earlier = loadRemembered().find((m) => m.runId === runId);
+    if (earlier) return { runId, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: earlier.createdAt, report: { ...r.report, runId }, warnings: r.warnings, llm: r.llm, events: r.events };
+    return { runId: `recorded_${r.id}`, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: r.report.generatedAt, report: r.report, warnings: r.warnings, llm: r.llm, events: r.events, ...(r.note ? { note: r.note } : {}) };
   }
 
   async disconnect(): Promise<void> {

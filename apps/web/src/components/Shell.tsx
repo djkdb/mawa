@@ -64,6 +64,8 @@ export function Shell({ route, reportHref, navigate, status, children }: { route
           <div className="flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
             <div className="flex min-w-0 items-center gap-2.5">
               <img src="/favicon.svg" alt="" className="h-6 w-6 lg:hidden" />
+              <span className="whitespace-nowrap text-[15px] font-semibold max-[359px]:hidden lg:hidden" aria-hidden>My AI Work Agent</span>
+              <span className="text-text-3 max-[359px]:hidden lg:hidden" aria-hidden>/</span>
               <h1 ref={h1} tabIndex={-1} className="truncate text-[15px] font-semibold outline-none">{ROUTE_TITLE[route]}</h1>
             </div>
             <div className="flex items-center gap-1.5">

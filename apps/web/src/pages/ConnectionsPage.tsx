@@ -5,12 +5,12 @@ import catalog from '@mawa/shared/demo/mcp-catalog.json';
 import { McpConnections } from '../components/McpConnections.js';
 import { WireRow } from '../components/McpWire.js';
 import { IS_DEMO_BUILD, type Status } from '../lib/client.js';
-import { SERVER_COLOR, SERVER_NAME, TOOL_DESC_KO } from '../lib/copy.js';
+import { DEFAULT_SCOPES, SCOPE_MEANING, SERVER_COLOR, SERVER_NAME, TOOL_DESC_KO } from '../lib/copy.js';
 
 type WireMsg = { direction: 'client_to_server' | 'server_to_client'; kind: 'request' | 'response' | 'notification' | 'error'; method?: string; rpcId?: string | number; bytes: number; preview: string };
 type Connection = { transport: 'stdio'; command: string; protocolVersion: string; serverInfo: { name: string; version: string }; capabilities: string[] };
 type JsonSchema = { properties?: Record<string, { type?: string; description?: string; enum?: string[]; default?: unknown }>; required?: string[] };
-type CatalogTool = { name: string; description: string; inputSchema: JsonSchema; wire?: WireMsg[]; durationMs?: number };
+type CatalogTool = { name: string; description: string; inputSchema: JsonSchema; annotations?: { readOnlyHint?: boolean; destructiveHint?: boolean }; wire?: WireMsg[]; durationMs?: number };
 type Catalog = { generatedAt: string; servers: Record<string, { connection?: Connection; tools: CatalogTool[] }> };
 const CATALOG = catalog as unknown as Catalog;
 const SERVERS: McpServerId[] = ['github', 'gmail', 'calendar'];
@@ -36,7 +36,10 @@ function ToolRow({ server, tool }: { server: McpServerId; tool: CatalogTool }) {
   return (
     <li className="py-3">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <span className="font-mono text-[13px] text-text">{tool.name}</span>
+        <span className="flex flex-wrap items-center gap-1.5">
+          <span className="font-mono text-[13px] text-text">{tool.name}</span>
+          {tool.annotations?.readOnlyHint && <span className="rounded bg-ok/15 px-1.5 py-0.5 text-[11px] text-emerald-200" title="서버가 tools/list에서 readOnlyHint: true로 선언">읽기 전용</span>}
+        </span>
         {wire.length > 0 && (
           <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="inline-flex min-h-8 items-center gap-1 text-xs text-text-2 hover:text-text">
             tools/call 예시{tool.durationMs !== undefined ? ` · ${tool.durationMs}ms` : ''}<ChevronRight className={`h-3 w-3 transition ${open ? 'rotate-90' : ''}`} aria-hidden />
@@ -65,11 +68,31 @@ function connectionFor(id: McpServerId, events: AgentEvent[]): { c: Connection |
 export function ConnectionsPage({ status, events, onDisconnect }: { status: Status | null; events: AgentEvent[]; onDisconnect: (p: 'github' | 'google') => void }) {
   return (
     <div className="mx-auto grid max-w-5xl gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
-      <div>
+      <div className="min-w-0">
         <McpConnections status={status} events={events} onDisconnect={onDisconnect} />
+        <section aria-labelledby="scopes-heading" className="surface mt-4 p-5">
+          <h2 id="scopes-heading" className="text-[15px] font-semibold">연결할 때 요청하는 권한</h2>
+          <p className="mt-0.5 text-[13px] text-text-3">연결 버튼을 누르기 전에 확인하세요. 토큰은 서버에만 저장되고 브라우저로 오지 않습니다.</p>
+          {(['github', 'google'] as const).map((p) => {
+            const scopes = status?.integrations[p].scopes ?? DEFAULT_SCOPES[p];
+            return (
+              <div key={p} className="mt-3">
+                <div className="text-sm font-medium text-text">{p === 'github' ? 'GitHub' : 'Google (Gmail · Calendar)'}</div>
+                <ul className="mt-1 space-y-1.5">
+                  {scopes.length ? scopes.map((sc) => (
+                    <li key={sc} className="text-[13px]">
+                      <span className="text-text-2">{SCOPE_MEANING[sc]?.label ?? sc}</span> <code className="break-all font-mono text-[11px] text-text-3">{sc.replace('https://www.googleapis.com/auth/', '')}</code>
+                      {SCOPE_MEANING[sc]?.risk && <p className="mt-0.5 text-xs text-amber-200/90">{SCOPE_MEANING[sc]!.risk}</p>}
+                    </li>
+                  )) : <li className="text-[13px] text-text-2">GitHub App 권한 사용 (scope 파라미터 없음)</li>}
+                </ul>
+              </div>
+            );
+          })}
+        </section>
         <p className="mt-3 text-[13px] text-text-3">{IS_DEMO_BUILD ? '데모 워크스페이스에서는 MCP 서버가 샘플 데이터 모드(--mode=demo)로 실행됩니다. 실제 계정 연결은 API 서버와 OAuth 설정이 필요합니다.' : '읽기 전용 API만 사용합니다. 토큰은 서버에서 암호화해 보관하고, MCP 서버 프로세스에는 환경 변수로만 전달합니다.'}</p>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex min-w-0 flex-col gap-4">
         {SERVERS.map((id) => {
           const { c, from } = connectionFor(id, events);
           const tools = CATALOG.servers[id]?.tools ?? [];

@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { CircleDot, Clock, EyeOff, GitCommitHorizontal, GitMerge, GitPullRequest, GitPullRequestClosed, Mail, MapPin, MessageSquare, RotateCcw } from 'lucide-react';
 import type { ReportItem, ReportSection, Source, WeeklyWorkReport } from '@mawa/shared';
-import { KIND_NAME, PRIORITY_KO, SERVER_COLOR, SERVER_NAME, WORKSPACE_TZ, relDay } from '../lib/copy.js';
+import { PRIORITY_KO, SERVER_COLOR, SERVER_NAME, WORKSPACE_TZ, relDay } from '../lib/copy.js';
 import { SourceChips } from './SourcePopover.js';
 
 /**
@@ -17,6 +17,10 @@ export interface BlockCtx {
   demo: boolean;
   hidden: Set<string>;
   toggle: (id: string) => void;
+  /** "Pick items for the copy" mode: shows the include/exclude control on every item. */
+  editing: boolean;
+  /** Source ids whose text looked like instructions to the model (from the run's llm_request events). */
+  flagged: Map<string, string>;
 }
 
 const meta = (s: Source | undefined, k: string): unknown => s?.metadata[k];
@@ -28,7 +32,6 @@ const repoShort = (r: string | undefined) => (r ?? '').split('/').pop() ?? '';
 const senderName = (from: string | undefined) => (from ?? '').replace(/\s*<[^>]+>\s*$/, '').replace(/^"|"$/g, '') || (from ?? '');
 const kstDay = (iso: string) => new Date(iso).toLocaleDateString('en-CA', { timeZone: WORKSPACE_TZ });
 const hm = (iso: string) => new Date(iso).toLocaleTimeString('ko-KR', { timeZone: WORKSPACE_TZ, hour: '2-digit', minute: '2-digit', hour12: false });
-const ageDays = (iso: string | undefined, ref: number) => (iso ? Math.max(0, Math.floor((ref - new Date(iso).getTime()) / 86_400_000)) : undefined);
 
 function cited(item: ReportItem, byId: Map<string, Source>): Source[] {
   return item.sources.map((id) => byId.get(id)).filter((s): s is Source => Boolean(s));
@@ -37,16 +40,25 @@ function cited(item: ReportItem, byId: Map<string, Source>): Source[] {
 /** Confidence marker, priority badge and the "leave out of the copy" toggle every item carries. */
 function Confidence({ item }: { item: ReportItem }) {
   const ok = item.confidence === 'observed';
-  return <span className={`h-2 w-2 shrink-0 rounded-sm ${ok ? 'bg-ok' : 'bg-inferred'}`} role="img" aria-label={ok ? '확인됨' : '추론'} title={ok ? '확인됨: 출처에서 직접 확인' : '추론: 출처를 바탕으로 판단'} />;
+  return <span className={`conf ${ok ? 'conf-ok' : 'conf-inf'}`} title={ok ? '확인: 인용한 출처에 그대로 있는 내용' : '추론: 출처를 바탕으로 판단한 내용'}>{ok ? '확인' : '추론'}</span>;
+}
+/** The one-line basis for a priority or judgement. */
+function Reason({ item }: { item: ReportItem }) {
+  return item.reason ? <p className="mt-1 text-xs text-text-3"><span className="text-text-2">근거</span> · {item.reason}</p> : null;
+}
+function Flag({ src, ctx }: { src: Source[]; ctx: BlockCtx }) {
+  const hit = src.find((s) => ctx.flagged.has(s.id));
+  return hit ? <span className="inline-flex items-center gap-1 rounded-md bg-caution/15 px-1.5 py-0.5 text-[11px] font-medium text-amber-200" title={ctx.flagged.get(hit.id)}>⚠ 지시문 감지 · 데이터로만 처리</span> : null;
 }
 function Priority({ item }: { item: ReportItem }) {
   return item.priority ? <span className={`pri pri-${item.priority}`}>{PRIORITY_KO[item.priority]}</span> : null;
 }
 function HideToggle({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
+  if (!ctx.editing) return null;
   const isHidden = ctx.hidden.has(item.id);
   return (
-    <button type="button" onClick={() => ctx.toggle(item.id)} aria-pressed={isHidden} aria-label={isHidden ? '항목 다시 보이기' : '복사할 때 이 항목 빼기'} title={isHidden ? '다시 보이기' : '복사할 때 빼기'} className="shrink-0 rounded-md p-1.5 text-text-3 opacity-60 hover:bg-bg hover:text-text group-hover:opacity-100 focus-visible:opacity-100">
-      {isHidden ? <RotateCcw className="h-4 w-4" aria-hidden /> : <EyeOff className="h-4 w-4" aria-hidden />}
+    <button type="button" onClick={() => ctx.toggle(item.id)} aria-pressed={isHidden} aria-label={isHidden ? '항목 다시 보이기' : '복사할 때 이 항목 빼기'} className={`inline-flex min-h-9 shrink-0 items-center gap-1 rounded-md px-2 text-xs max-sm:min-h-11 ${isHidden ? 'bg-accent-2 text-text' : 'hairline text-text-2 hover:text-text'}`}>
+      {isHidden ? <><RotateCcw className="h-3.5 w-3.5" aria-hidden />넣기</> : <><EyeOff className="h-3.5 w-3.5" aria-hidden />빼기</>}
     </button>
   );
 }
@@ -63,12 +75,15 @@ function SentenceRow({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
   const src = cited(item, ctx.byId);
   return (
     <Item item={item} ctx={ctx} className="flex items-start gap-3 py-2.5">
-      <span className="mt-[9px]"><Confidence item={item} /></span>
-      <p className="item-text min-w-0 flex-1 text-[15px] leading-relaxed text-text">
-        {item.priority && <span className="mr-2 align-[1px]"><Priority item={item} /></span>}
-        {item.text}{' '}
-        {src.length > 0 && <SourceChips sources={src} demo={ctx.demo} />}
-      </p>
+      <span className="mt-[3px]"><Confidence item={item} /></span>
+      <div className="min-w-0 flex-1">
+        <p className="item-text text-[15px] leading-relaxed text-text">
+          {item.priority && <span className="mr-2 align-[1px]"><Priority item={item} /></span>}
+          {item.text}{' '}
+          {src.length > 0 && <SourceChips sources={src} demo={ctx.demo} />}
+        </p>
+        <Reason item={item} />
+      </div>
       <HideToggle item={item} ctx={ctx} />
     </Item>
   );
@@ -109,10 +124,11 @@ function OverviewBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx
             <div className="mt-3 grid h-32 grid-cols-7 items-end gap-2" role="img" aria-label={`요일별 활동: ${days.map((d) => `${weekday(d)} ${total(d)}건`).join(', ')}`}>
               {days.map((d) => {
                 const b = perDay.get(d)!;
+                const future = d > today;
                 return (
-                  <div key={d} className="flex h-full flex-col items-center justify-end gap-1">
-                    <span className="tnum text-[11px] text-text-3">{total(d) || ''}</span>
-                    <div className="flex w-full max-w-9 flex-col-reverse overflow-hidden rounded" style={{ height: `${(total(d) / max) * 100}%` }}>
+                  <div key={d} className={`flex h-full flex-col items-center justify-end gap-1 ${future ? 'opacity-60' : ''}`}>
+                    <span className="tnum text-[11px] text-text-3">{total(d) ? `${total(d)}${future ? ' 예정' : ''}` : ''}</span>
+                    <div className={`flex w-full max-w-9 flex-col-reverse overflow-hidden rounded ${future ? 'outline-1 outline-dashed outline-offset-1 outline-text-3' : ''}`} style={{ height: `${(total(d) / max) * 100}%` }}>
                       {present.map((sv) => b[sv] ? <div key={sv} style={{ flexGrow: b[sv], background: SERVER_COLOR[sv] }} /> : null)}
                     </div>
                   </div>
@@ -323,7 +339,7 @@ function MailRow({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
         <div className="item-text truncate text-[15px] text-text" title={m.title}>{m.title}</div>
         {str(m, 'snippet') && <div className="truncate text-sm text-text-3">{str(m, 'snippet')}</div>}
         {extra && <p className="mt-1 text-sm text-text-2">{extra}</p>}
-        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">{list(m, 'labels').filter((l) => !/^(INBOX|UNREAD|CATEGORY_)/.test(l)).slice(0, 2).map((l) => <Tag key={l}>{l}</Tag>)}<SourceChips sources={[m]} demo={ctx.demo} /></div>
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5"><Flag src={[m]} ctx={ctx} />{list(m, 'labels').filter((l) => !/^(INBOX|UNREAD|CATEGORY_)/.test(l)).slice(0, 2).map((l) => <Tag key={l}>{l}</Tag>)}<SourceChips sources={[m]} demo={ctx.demo} /></div>
       </div>
       <span className="mt-1.5"><Confidence item={item} /></span>
       <HideToggle item={item} ctx={ctx} />
@@ -339,32 +355,24 @@ function RiskCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
   const src = cited(item, ctx.byId);
   const s = src[0];
   const k = kindOf(s);
-  const ref = new Date(ctx.report.generatedAt).getTime();
-  const Icon = k === 'msg' ? Mail : k === 'pr' ? GitPullRequest : CircleDot;
-  const headline = !s ? item.text : k === 'msg' ? s.title : `${KIND_NAME[k] ?? ''} #${num(s, 'number') ?? s.id.split('#')[1] ?? ''} ${s.title}`.trim();
-  const showText = !s || !item.text.includes(s.title.replace(/^(Re|Fwd?):\s*/i, ''));
-  const age = ageDays(str(s, 'createdAt'), ref);
-  const assignees = list(s, 'assignees');
+  const Icon = k === 'msg' ? Mail : k === 'pr' ? GitPullRequest : k === 'event' ? Clock : CircleDot;
+  const snippet = k === 'msg' ? str(s, 'snippet') : undefined;
   return (
-    <Item item={item} ctx={ctx} className="rounded-lg bg-surface-2 p-4" >
+    <Item item={item} ctx={ctx} className="rounded-lg bg-surface-2 p-4">
       <div className="flex items-start gap-3 border-l-[3px] pl-3" style={{ borderColor: PRI_COLOR[item.priority ?? 'low'] }}>
-        <Icon className="mt-0.5 h-4 w-4 shrink-0" style={{ color: s ? SERVER_COLOR[s.type] : undefined }} aria-hidden />
+        <Icon className="mt-1 h-4 w-4 shrink-0" style={{ color: s ? SERVER_COLOR[s.type] : undefined }} aria-hidden />
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2">
-            <Priority item={item} />
-            <h4 className="item-text min-w-0 text-[15px] font-medium leading-snug text-text">{headline}</h4>
-          </div>
-          {showText && s && <p className="mt-1 text-sm text-text-2">{item.text}</p>}
-          {k === 'msg' && str(s, 'snippet') && <p className="mt-1 line-clamp-2 text-sm text-text-3">{senderName(str(s, 'from'))} · {str(s, 'snippet')}</p>}
+          <div className="flex flex-wrap items-center gap-2"><Priority item={item} /><Confidence item={item} /><Flag src={src} ctx={ctx} /></div>
+          <h4 className="item-text mt-1 text-[15px] font-medium leading-snug text-text">{item.text}</h4>
+          {snippet && !item.text.includes(snippet.slice(0, 30)) && <p className="mt-1 line-clamp-2 text-sm text-text-3">{senderName(str(s, 'from'))} · {snippet}</p>}
+          <Reason item={item} />
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
             {list(s, 'labels').filter((l) => !/^(INBOX|UNREAD|CATEGORY_)/.test(l)).slice(0, 3).map((l) => <Tag key={l}>{l}</Tag>)}
-            {(k === 'issue' || k === 'pr') && <Tag>{assignees.length ? `담당 ${assignees.join(', ')}` : k === 'issue' ? '담당자 없음' : `작성 ${str(s, 'author') ?? ''}`}</Tag>}
-            {age !== undefined && <Tag>{age === 0 ? '오늘 열림' : `${age}일째 열림`}</Tag>}
             {num(s, 'reviewComments') ? <Tag><MessageSquare className="h-3 w-3" aria-hidden />{num(s, 'reviewComments')}</Tag> : null}
+            {src.length > 1 && <Tag>관련 출처 {src.length}건</Tag>}
             {src.length > 0 && <SourceChips sources={src} demo={ctx.demo} />}
           </div>
         </div>
-        <span className="mt-1.5"><Confidence item={item} /></span>
         <HideToggle item={item} ctx={ctx} />
       </div>
     </Item>
@@ -381,19 +389,24 @@ function ActionsBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx 
     <ol className="mt-3 grid gap-2">
       {items.map((item, i) => {
         const src = cited(item, ctx.byId);
-        const ev = src.find((s) => kindOf(s) === 'event' && s.timestamp);
+        const ev = src.find((s) => kindOf(s) === 'event' && s.timestamp && new Date(s.timestamp).getTime() >= ref);
+        // "owner · what to do" — the owner is shown as its own pill so "who" is scannable.
+        const m = /^([^·]{1,24}) · (.+)$/.exec(item.text);
         return (
-          <Item key={item.id} item={item} ctx={ctx} className="flex items-center gap-3 rounded-lg bg-surface-2 px-3 py-2.5">
-            <span className="tnum grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-semibold" style={{ color: PRI_COLOR[item.priority ?? 'low'], background: `color-mix(in srgb, ${PRI_COLOR[item.priority ?? 'low']} 15%, transparent)` }} aria-hidden>{i + 1}</span>
+          <Item key={item.id} item={item} ctx={ctx} className="flex items-start gap-3 rounded-lg bg-surface-2 px-3 py-2.5">
+            <span className="tnum mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-semibold" style={{ color: PRI_COLOR[item.priority ?? 'low'], background: `color-mix(in srgb, ${PRI_COLOR[item.priority ?? 'low']} 15%, transparent)` }} aria-hidden>{i + 1}</span>
             <div className="min-w-0 flex-1">
-              <p className="item-text text-[15px] leading-snug text-text">{item.text}</p>
-              <div className="mt-1 flex flex-wrap items-center gap-1.5">
+              <p className="item-text text-[15px] leading-snug text-text">
+                {m ? <><span className="mr-1.5 inline-flex rounded bg-accent-2/70 px-1.5 py-0.5 align-[1px] text-xs font-medium text-text">{m[1]}</span>{m[2]}</> : item.text}
+              </p>
+              <Reason item={item} />
+              <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                 <Priority item={item} />
+                <Confidence item={item} />
                 {ev && <Tag color="var(--color-calendar)">{relDay(ev.timestamp!, ref)}</Tag>}
                 {src.length > 0 && <SourceChips sources={src} demo={ctx.demo} />}
               </div>
             </div>
-            <Confidence item={item} />
             <HideToggle item={item} ctx={ctx} />
           </Item>
         );

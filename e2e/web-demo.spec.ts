@@ -62,6 +62,7 @@ test('report: deep link survives reload, copy for Slack, hide items, demo source
   await expect(page).toHaveTitle('리포트 · My AI Work Agent');
 
   // Hide one item, then copy: the hidden item is excluded.
+  await page.getByRole('button', { name: '복사할 항목 고르기' }).click();
   const firstItem = page.locator('#report [data-report-item]').first();
   const hiddenText = (await firstItem.locator('.item-text').innerText()).split('\n')[0]!.replace(/^(높음|보통|낮음)/, '').slice(0, 20);
   await firstItem.getByRole('button', { name: '복사할 때 이 항목 빼기' }).click();
@@ -129,7 +130,7 @@ test('weekly report renders sections visually from source metadata (chart, PR st
   await expect(report.getByRole('img', { name: /^요일별 활동:/ })).toBeVisible();
   await expect(report.getByText('저장소별 커밋')).toBeVisible();
   await expect(report.getByText('병합됨').first()).toBeVisible();
-  await expect(report.getByText('리뷰 코멘트 3')).toBeVisible();
+  await expect(report.getByText('리뷰 코멘트 3').first()).toBeVisible();
   await expect(report.getByText(/^\d{2}:\d{2}–\d{2}:\d{2}$/).first()).toBeVisible();
   await expect(report.getByText('Kim Minji').first()).toBeVisible();
   await report.getByRole('button', { name: /커밋 \d+개 더 보기/ }).click();
@@ -149,11 +150,11 @@ test('MCP is visible: handshakes, per-server traffic, JSON-RPC log, and recorded
   await expect(topo).toContainText(/stdio · MCP \d{4}-\d{2}-\d{2}/);
   await expect(page.locator('#activity').getByText(/MCP 호출 합계/)).toBeVisible({ timeout: 30_000 });
   await expect(topo).toContainText('핸드셰이크 3/3');
-  await page.getByRole('button', { name: /JSON-RPC 메시지 \d+개/ }).click();
+  await page.locator('#activity').getByRole('button', { name: /JSON-RPC 메시지 \d+개/ }).click();
   const log = page.getByRole('list', { name: 'JSON-RPC 메시지' });
   await expect(log).toContainText('initialize');
   await expect(log).toContainText('tools/list');
-  await log.getByRole('button', { name: /tools\/call #\d+/ }).first().click();
+  await log.getByRole('button', { name: /tools\/call \S+ #\d+/ }).first().click();
   await expect(log.locator('pre').first()).toContainText('"jsonrpc": "2.0"');
 
   await page.getByRole('link', { name: '연결' }).first().click();
@@ -162,5 +163,53 @@ test('MCP is visible: handshakes, per-server traffic, JSON-RPC log, and recorded
   await page.getByRole('button', { name: /tools\/call 예시/ }).first().click();
   await expect(page.getByRole('list', { name: 'get_recent_commits JSON-RPC 메시지' })).toContainText('response');
   expect(api).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test('trust: validation demo shows the dropped citation, data-use panel, injection flag, short Slack update', async ({ page, context }) => {
+  const { errors, api } = await collect(page);
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto(`${DEMO}#/runs`);
+  await page.getByRole('link', { name: '출처 검증 시연' }).click();
+  await expect(page.getByText(/일부러 주입한 기록/)).toBeVisible();
+  await expect(page.getByText(/초안에서 1건 제외, 1건 '추론'으로 낮춤/)).toBeVisible();
+  await expect(page.locator('#report code', { hasText: 'github:issue:demo-user/my-ai-work-agent#99' })).toBeVisible();
+
+  await page.goto(`${DEMO}#/report/recorded_weekly-progress`);
+  await expect(page.getByText('출처 검증: 모든 항목의 인용이 실제로 조회한 출처와 일치합니다')).toBeVisible();
+  await expect(page.getByText(/의심 메일: "my-ai-work-agent weekly sync notes"/)).toBeVisible();
+  await expect(page.getByText('⚠ 지시문 감지 · 데이터로만 처리').first()).toBeVisible();
+  // Decision first: risks come before the evidence sections.
+  const order = await page.locator('#report h3').allInnerTexts();
+  expect(order.indexOf('주의할 점')).toBeLessThan(order.indexOf('주요 작업'));
+  await expect(page.locator('#report').getByText(/^근거 · /).first()).toBeVisible();
+
+  const panel = page.getByRole('region', { name: '데이터 사용 내역' });
+  await expect(panel).toContainText(/메일 주소 \d+개 가림/);
+  await panel.getByRole('button', { name: '자세히' }).click();
+  await expect(panel).toContainText('리포트 작성 요청');
+
+  await page.getByRole('button', { name: /Slack용 복사/ }).click();
+  const clip = await page.evaluate(() => navigator.clipboard.readText());
+  expect(clip).toContain('*할 일*');
+  expect(clip.split('\n').length).toBeLessThan(25);
+  expect(clip).not.toMatch(/Recruiting|internship/i);
+  expect(api).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test('home: one-tap demo run ends with a visible link to the new report', async ({ page }) => {
+  const { errors } = await collect(page);
+  await page.goto(DEMO);
+  await page.getByRole('button', { name: /데모 실행해 보기/ }).click();
+  await expect(page.getByRole('button', { name: /실행 중… (MCP 연결 중|도구 \d+\/\d+|리포트 작성 중)/ }).first()).toBeVisible();
+  const done = page.getByRole('status').filter({ hasText: '리포트 완성' });
+  await expect(done).toBeVisible({ timeout: 30_000 });
+  await done.getByRole('link', { name: /리포트 보기/ }).click();
+  await expect(page).toHaveURL(/#\/report\/demo_weekly-progress_/);
+  await page.reload();
+  await page.getByRole('link', { name: '실행 기록' }).first().click();
+  await expect(page.getByRole('table')).toContainText('이번 주 진행 상황 정리');
+  expect(await page.locator('table tbody tr').count()).toBeGreaterThanOrEqual(5);
   expect(errors).toEqual([]);
 });

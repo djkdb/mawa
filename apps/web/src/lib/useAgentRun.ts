@@ -17,6 +17,10 @@ export interface AgentRunState {
   error: string | null;
   /** The question this run answers. */
   prompt: string | null;
+  /** Explains a special recording (e.g. the validation demo). */
+  note?: string | null;
+  /** When this run was started in this browser (null for runs opened from history). */
+  startedAt?: number | null;
 }
 
 const initial: AgentRunState = { phase: 'idle', runId: null, mode: null, events: [], report: null, warnings: [], error: null, prompt: null };
@@ -40,6 +44,8 @@ export function phaseFromEvent(type: AgentEvent['type'], prev: RunPhase): RunPha
     case 'agent_run_completed':
       return prev === 'error' ? 'error' : 'completed';
     case 'mcp_message':
+    case 'llm_request':
+    case 'llm_response':
       return prev === 'idle' ? 'discovering' : prev;
   }
 }
@@ -53,7 +59,7 @@ export function useAgentRun() {
   const run = useCallback(async (prompt: string, mode: AgentMode) => {
     const client = getClient();
     unsubscribe.current?.();
-    setState({ ...initial, phase: 'starting', mode, prompt });
+    setState({ ...initial, phase: 'starting', mode, prompt, startedAt: Date.now() });
     try {
       const started = await client.startRun(prompt, mode);
       setState((s) => ({ ...s, runId: started.runId, mode: started.mode, warnings: started.warnings }));
@@ -88,7 +94,7 @@ export function useAgentRun() {
     const r = getRecordedRun(id);
     if (!r) return;
     unsubscribe.current?.();
-    setState({ phase: 'completed', runId: `recorded_${r.id}`, mode: 'demo', events: r.events, report: r.report, warnings: r.warnings, error: null, prompt: r.prompt });
+    setState({ phase: 'completed', runId: `recorded_${r.id}`, mode: 'demo', events: r.events, report: r.report, warnings: r.warnings, error: null, prompt: r.prompt, note: r.note ?? null });
   }, []);
 
   /** Open a finished run from history (any client). */
@@ -96,7 +102,7 @@ export function useAgentRun() {
     try {
       const r = await getClient().fetchRun(runId);
       unsubscribe.current?.();
-      setState({ phase: r.status === 'success' ? 'completed' : r.status === 'running' ? 'running' : 'error', runId: r.runId, mode: r.mode, events: r.events ?? [], report: r.report, warnings: r.warnings, error: r.error ?? null, prompt: r.prompt });
+      setState({ phase: r.status === 'success' ? 'completed' : r.status === 'running' ? 'running' : 'error', runId: r.runId, mode: r.mode, events: r.events ?? [], report: r.report, warnings: r.warnings, error: r.error ?? null, prompt: r.prompt, note: r.note ?? null });
     } catch (err) {
       setState({ ...initial, phase: 'error', error: err instanceof Error ? err.message : String(err) });
     }

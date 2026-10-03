@@ -48,7 +48,7 @@ function Chip({ source, label, ariaLabel, demo, open, onToggle }: { source: Sour
         {label ?? chipLabel(list[0]!)}
       </button>
       {open && (
-        <span id={id} role="dialog" aria-label="출처" className={`hairline absolute ${alignRight ? 'right-0' : 'left-0'} top-full z-20 mt-1.5 w-80 rounded-lg bg-surface p-3 shadow-lg shadow-black/40 max-sm:fixed max-sm:inset-x-4 max-sm:bottom-4 max-sm:top-auto max-sm:mt-0 max-sm:w-auto`}>
+        <span id={id} role="dialog" aria-label="출처" className={`hairline absolute ${alignRight ? 'right-0' : 'left-0'} top-full z-40 mt-1.5 w-80 rounded-lg bg-surface p-3 shadow-lg shadow-black/40 max-sm:fixed max-sm:inset-x-4 max-sm:bottom-[calc(72px+env(safe-area-inset-bottom))] max-sm:top-auto max-sm:mt-0 max-sm:w-auto`}>
           <ul className="space-y-3">
             {list.map((s) => (
               <li key={s.id} className="text-sm">

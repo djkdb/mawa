@@ -6,9 +6,10 @@ export interface Status {
   defaultMode: AgentMode;
   llm: { provider: string; model: string; isModel: boolean };
   tokenStore: { persistent: boolean };
+  api?: { host: string };
   integrations: {
-    github: { status: IntegrationStatus; account: string | null; connectUrl: string };
-    google: { status: IntegrationStatus; account: string | null; connectUrl: string; services: string[] };
+    github: { status: IntegrationStatus; account: string | null; connectUrl: string; scopes?: string[] };
+    google: { status: IntegrationStatus; account: string | null; connectUrl: string; services: string[]; scopes?: string[] };
   };
   realMode: { available: boolean; servers: string[]; skipped: Array<{ id: string; reason: string }> };
 }
@@ -25,6 +26,8 @@ export interface RunRecord {
   llm: { provider: string; model: string };
   /** The run's event trace, when the client has it. */
   events?: AgentEvent[];
+  /** Explains a special recording (e.g. the validation demo). */
+  note?: string;
 }
 
 export interface RunSummary {
@@ -39,6 +42,7 @@ export interface RunSummary {
   servers: McpServerId[];
   /** True for runs shipped with the demo (recorded earlier), false for runs started in this session. */
   recorded: boolean;
+  kind?: 'validation';
 }
 
 export interface StartRunResult {

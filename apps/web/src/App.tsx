@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { ActivityTimeline } from './components/ActivityTimeline.js';
+import { DataUsePanel } from './components/DataUsePanel.js';
 import { ReportView } from './components/ReportView.js';
 import { Shell } from './components/Shell.js';
 import { IS_DEMO_BUILD, getClient, type Status } from './lib/client.js';
@@ -27,7 +28,7 @@ export default function App() {
     if (IS_DEMO_BUILD) return;
     const q = new URLSearchParams(window.location.search);
     if (q.get('connected')) setNotice(`${q.get('connected')} 연결됨`);
-    if (q.get('auth_error')) setNotice(`연결 실패: ${q.get('auth_error')}`);
+    if (q.get('auth_error')) setNotice(`${q.get('auth_error') === 'google' ? 'Google' : 'GitHub'} 연결에 실패했습니다. 자세한 원인은 API 서버 로그에 남습니다.`);
     if (q.has('connected') || q.has('auth_error')) window.history.replaceState({}, '', `/${window.location.hash}`);
   }, [showRecorded]);
 
@@ -68,7 +69,8 @@ export default function App() {
         <div className="mx-auto flex max-w-5xl flex-col gap-5">
           {state.report ? (
             <>
-              <ReportView key={state.runId ?? 'none'} report={state.report} warnings={state.warnings} recorded={recorded} prompt={state.prompt} onAnnounce={setAnnounce} />
+              <ReportView key={state.runId ?? 'none'} report={state.report} warnings={state.warnings} recorded={recorded} prompt={state.prompt} onAnnounce={setAnnounce} events={state.events} note={state.note ?? null} />
+              <DataUsePanel events={state.events} runId={state.runId} />
               <ActivityTimeline events={state.events} phase={state.phase} recorded={recorded} runId={state.runId} />
             </>
           ) : state.phase === 'error' ? (

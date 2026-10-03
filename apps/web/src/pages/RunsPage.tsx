@@ -3,7 +3,8 @@ import { DEMO_EXAMPLES, getClient, type RunSummary } from '../lib/client.js';
 import { EXAMPLE_META, SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 import { hrefFor } from '../lib/useHashRoute.js';
 
-function titleFor(prompt: string) {
+function titleFor(prompt: string, kind?: string) {
+  if (kind === 'validation') return '출처 검증 시연';
   const ex = DEMO_EXAMPLES.find((e) => e.prompt === prompt);
   return ex ? (EXAMPLE_META[ex.id]?.title ?? prompt) : prompt;
 }
@@ -35,8 +36,8 @@ export function RunsPage({ currentRunId, refreshKey }: { currentRunId: string | 
                 <tr key={r.runId} className={`border-b border-line/60 last:border-0 hover:bg-surface-2 ${r.runId === currentRunId ? 'bg-surface-2' : ''}`}>
                   <td className="tnum whitespace-nowrap px-4 py-3 text-text-2">{new Date(r.createdAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
                   <td className="px-4 py-3">
-                    <a href={hrefFor('report', r.runId)} className="font-medium text-text hover:underline">{titleFor(r.prompt)}</a>
-                    {r.recorded && <span className="ml-2 rounded bg-surface-2 px-1.5 py-0.5 text-[11px] text-text-3">샘플 기록</span>}
+                    <a href={hrefFor('report', r.runId)} className="font-medium text-text hover:underline">{titleFor(r.prompt, r.kind)}</a>
+                    {r.kind === 'validation' ? <span className="ml-2 rounded bg-inferred/15 px-1.5 py-0.5 text-[11px] text-inferred">검증 시연 · 가짜 출처 주입</span> : r.recorded ? <span className="ml-2 rounded bg-surface-2 px-1.5 py-0.5 text-[11px] text-text-3">샘플 기록</span> : null}
                   </td>
                   <td className="hidden px-4 py-3 md:table-cell">
                     <span className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-2">
