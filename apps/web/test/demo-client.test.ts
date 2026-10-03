@@ -5,10 +5,10 @@ describe('DemoClient', () => {
   it('lists session runs before shipped recordings and replays without network', async () => {
     const c = new DemoClient();
     const shipped = await c.listRuns();
-    expect(shipped.map((r) => r.recorded)).toEqual([true, true, true, true]);
+    expect(shipped.map((r) => r.recorded)).toEqual([true, true, true, true, true]);
     // The fault-injection recording is listed but never offered as an example question.
     expect(shipped.filter((r) => r.kind === 'validation')).toHaveLength(1);
-    expect(DEMO_EXAMPLES).toHaveLength(3);
+    expect(DEMO_EXAMPLES).toHaveLength(4);
     const { runId } = await c.startRun(DEMO_EXAMPLES[2]!.prompt, 'demo');
     const list = await c.listRuns();
     expect(list[0]).toMatchObject({ runId, recorded: false, status: 'running', toolCalls: 4 });

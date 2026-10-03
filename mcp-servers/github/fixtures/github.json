@@ -1,345 +1,369 @@
 {
-  "_note": "SYNTHETIC DEMO DATA. Not real user data. Dates are relative via {\"$daysAgo\": n}.",
+  "_note": "SYNTHETIC DEMO DATA for a fictional week of 이성준 (CBNU Software). Not a real GitHub account. Dates are relative via {\"$daysAgo\": n}.",
   "commits": [
     {
-      "sourceId": "github:commit:demo-user/my-ai-work-agent@a1b2c3d4e5f6",
-      "repo": "demo-user/my-ai-work-agent",
+      "sourceId": "github:commit:seongjun/my-ai-work-agent@a1b2c3d4e5f6",
+      "repo": "seongjun/my-ai-work-agent",
       "sha": "a1b2c3d4e5f60000000000000000000000000000",
-      "message": "feat(agent): add LLM provider abstraction with Anthropic and OpenAI adapters",
-      "author": "demo-user",
+      "message": "feat(web): MCP 연결도와 JSON-RPC 메시지 로그",
+      "author": "seongjun",
       "date": {
         "$daysAgo": 0.3
       },
-      "url": "https://github.com/demo-user/my-ai-work-agent/commit/a1b2c3d4e5f6",
-      "additions": 412,
-      "deletions": 38
+      "url": "https://github.com/seongjun/my-ai-work-agent/commit/a1b2c3d4e5f6",
+      "additions": 388,
+      "deletions": 41
     },
     {
-      "sourceId": "github:commit:demo-user/my-ai-work-agent@b2c3d4e5f6a1",
-      "repo": "demo-user/my-ai-work-agent",
+      "sourceId": "github:commit:seongjun/my-ai-work-agent@b2c3d4e5f6a1",
+      "repo": "seongjun/my-ai-work-agent",
       "sha": "b2c3d4e5f6a10000000000000000000000000000",
-      "message": "feat(mcp): wire GitHub MCP server over stdio transport",
-      "author": "demo-user",
+      "message": "feat(agent): LLM 전송 데이터 마스킹·지시문 감지",
+      "author": "seongjun",
       "date": {
-        "$daysAgo": 0.8
+        "$daysAgo": 0.9
       },
-      "url": "https://github.com/demo-user/my-ai-work-agent/commit/b2c3d4e5f6a1",
-      "additions": 286,
-      "deletions": 12
+      "url": "https://github.com/seongjun/my-ai-work-agent/commit/b2c3d4e5f6a1",
+      "additions": 214,
+      "deletions": 22
     },
     {
-      "sourceId": "github:commit:demo-user/my-ai-work-agent@c3d4e5f6a1b2",
-      "repo": "demo-user/my-ai-work-agent",
+      "sourceId": "github:commit:seongjun/my-ai-work-agent@c3d4e5f6a1b2",
+      "repo": "seongjun/my-ai-work-agent",
       "sha": "c3d4e5f6a1b20000000000000000000000000000",
-      "message": "test(agent-core): cover source-grounded report validation",
-      "author": "demo-user",
+      "message": "fix(web): 모바일에서 출처 팝오버가 탭바에 가려짐",
+      "author": "seongjun",
       "date": {
-        "$daysAgo": 1.1
+        "$daysAgo": 1.4
       },
-      "url": "https://github.com/demo-user/my-ai-work-agent/commit/c3d4e5f6a1b2",
-      "additions": 154,
-      "deletions": 4
-    },
-    {
-      "sourceId": "github:commit:demo-user/my-ai-work-agent@d4e5f6a1b2c3",
-      "repo": "demo-user/my-ai-work-agent",
-      "sha": "d4e5f6a1b2c30000000000000000000000000000",
-      "message": "feat(web): agent activity timeline with SSE streaming",
-      "author": "demo-user",
-      "date": {
-        "$daysAgo": 1.6
-      },
-      "url": "https://github.com/demo-user/my-ai-work-agent/commit/d4e5f6a1b2c3",
-      "additions": 521,
-      "deletions": 77
-    },
-    {
-      "sourceId": "github:commit:demo-user/my-ai-work-agent@e5f6a1b2c3d4",
-      "repo": "demo-user/my-ai-work-agent",
-      "sha": "e5f6a1b2c3d40000000000000000000000000000",
-      "message": "fix(api): propagate mode into every agent event",
-      "author": "demo-user",
-      "date": {
-        "$daysAgo": 2.0
-      },
-      "url": "https://github.com/demo-user/my-ai-work-agent/commit/e5f6a1b2c3d4",
-      "additions": 24,
+      "url": "https://github.com/seongjun/my-ai-work-agent/commit/c3d4e5f6a1b2",
+      "additions": 18,
       "deletions": 9
     },
     {
-      "sourceId": "github:commit:demo-user/my-ai-work-agent@f6a1b2c3d4e5",
-      "repo": "demo-user/my-ai-work-agent",
+      "sourceId": "github:commit:seongjun/my-ai-work-agent@d4e5f6a1b2c3",
+      "repo": "seongjun/my-ai-work-agent",
+      "sha": "d4e5f6a1b2c30000000000000000000000000000",
+      "message": "test(e2e): 데모 리포트 시각화 검증",
+      "author": "seongjun",
+      "date": {
+        "$daysAgo": 2.2
+      },
+      "url": "https://github.com/seongjun/my-ai-work-agent/commit/d4e5f6a1b2c3",
+      "additions": 96,
+      "deletions": 4
+    },
+    {
+      "sourceId": "github:commit:seongjun/my-ai-work-agent@e5f6a1b2c3d4",
+      "repo": "seongjun/my-ai-work-agent",
+      "sha": "e5f6a1b2c3d40000000000000000000000000000",
+      "message": "docs: README 사용 시나리오 추가",
+      "author": "seongjun",
+      "date": {
+        "$daysAgo": 3.1
+      },
+      "url": "https://github.com/seongjun/my-ai-work-agent/commit/e5f6a1b2c3d4",
+      "additions": 57,
+      "deletions": 12
+    },
+    {
+      "sourceId": "github:commit:cbnu-capstone/team-mate@f6a1b2c3d4e5",
+      "repo": "cbnu-capstone/team-mate",
       "sha": "f6a1b2c3d4e50000000000000000000000000000",
-      "message": "feat(mcp): calendar server with get_events / search_events",
-      "author": "demo-user",
+      "message": "feat(api): JWT 로그인 미들웨어",
+      "author": "seongjun",
       "date": {
-        "$daysAgo": 2.4
+        "$daysAgo": 1.1
       },
-      "url": "https://github.com/demo-user/my-ai-work-agent/commit/f6a1b2c3d4e5",
-      "additions": 310,
+      "url": "https://github.com/cbnu-capstone/team-mate/commit/f6a1b2c3d4e5",
+      "additions": 163,
+      "deletions": 20
+    },
+    {
+      "sourceId": "github:commit:cbnu-capstone/team-mate@a7b8c9d0e1f2",
+      "repo": "cbnu-capstone/team-mate",
+      "sha": "a7b8c9d0e1f20000000000000000000000000000",
+      "message": "feat(db): 팀·사용자 테이블 스키마 초안",
+      "author": "seongjun",
+      "date": {
+        "$daysAgo": 2.6
+      },
+      "url": "https://github.com/cbnu-capstone/team-mate/commit/a7b8c9d0e1f2",
+      "additions": 92,
       "deletions": 0
     },
     {
-      "sourceId": "github:commit:demo-user/my-ai-work-agent@0a1b2c3d4e5f",
-      "repo": "demo-user/my-ai-work-agent",
-      "sha": "0a1b2c3d4e5f0000000000000000000000000000",
-      "message": "feat(mcp): gmail server with search_project_emails",
-      "author": "demo-user",
-      "date": {
-        "$daysAgo": 2.9
-      },
-      "url": "https://github.com/demo-user/my-ai-work-agent/commit/0a1b2c3d4e5f",
-      "additions": 344,
-      "deletions": 15
-    },
-    {
-      "sourceId": "github:commit:demo-user/my-ai-work-agent@1b2c3d4e5f60",
-      "repo": "demo-user/my-ai-work-agent",
-      "sha": "1b2c3d4e5f600000000000000000000000000000",
-      "message": "docs: architecture and decision log",
-      "author": "demo-user",
-      "date": {
-        "$daysAgo": 3.5
-      },
-      "url": "https://github.com/demo-user/my-ai-work-agent/commit/1b2c3d4e5f60",
-      "additions": 198,
-      "deletions": 0
-    },
-    {
-      "sourceId": "github:commit:demo-user/my-ai-work-agent@2c3d4e5f6a01",
-      "repo": "demo-user/my-ai-work-agent",
-      "sha": "2c3d4e5f6a010000000000000000000000000000",
-      "message": "chore: scaffold npm workspaces, eslint, vitest",
-      "author": "demo-user",
+      "sourceId": "github:commit:cbnu-capstone/team-mate@b8c9d0e1f2a7",
+      "repo": "cbnu-capstone/team-mate",
+      "sha": "b8c9d0e1f2a70000000000000000000000000000",
+      "message": "chore: ESLint 설정 통일",
+      "author": "jimin",
       "date": {
         "$daysAgo": 4.2
       },
-      "url": "https://github.com/demo-user/my-ai-work-agent/commit/2c3d4e5f6a01",
-      "additions": 620,
+      "url": "https://github.com/cbnu-capstone/team-mate/commit/b8c9d0e1f2a7",
+      "additions": 31,
+      "deletions": 28
+    },
+    {
+      "sourceId": "github:commit:seongjun/baekjoon@c9d0e1f2a7b8",
+      "repo": "seongjun/baekjoon",
+      "sha": "c9d0e1f2a7b80000000000000000000000000000",
+      "message": "solve: BOJ 1753 최단경로 (Gold IV, 다익스트라)",
+      "author": "seongjun",
+      "date": {
+        "$daysAgo": 0.6
+      },
+      "url": "https://github.com/seongjun/baekjoon/commit/c9d0e1f2a7b8",
+      "additions": 48,
       "deletions": 0
     },
     {
-      "sourceId": "github:commit:demo-user/cbnu-algorithms@3d4e5f6a0b1c",
-      "repo": "demo-user/cbnu-algorithms",
-      "sha": "3d4e5f6a0b1c0000000000000000000000000000",
-      "message": "solve: week 5 dp problems (knapsack, LIS)",
-      "author": "demo-user",
+      "sourceId": "github:commit:seongjun/baekjoon@d0e1f2a7b8c9",
+      "repo": "seongjun/baekjoon",
+      "sha": "d0e1f2a7b8c90000000000000000000000000000",
+      "message": "solve: BOJ 1916 최소비용 구하기 (Gold V)",
+      "author": "seongjun",
       "date": {
-        "$daysAgo": 4.9
+        "$daysAgo": 1.7
       },
-      "url": "https://github.com/demo-user/cbnu-algorithms/commit/3d4e5f6a0b1c",
-      "additions": 133,
-      "deletions": 2
-    },
-    {
-      "sourceId": "github:commit:demo-user/cbnu-algorithms@4e5f6a0b1c2d",
-      "repo": "demo-user/cbnu-algorithms",
-      "sha": "4e5f6a0b1c2d0000000000000000000000000000",
-      "message": "solve: dijkstra with priority queue",
-      "author": "demo-user",
-      "date": {
-        "$daysAgo": 5.6
-      },
-      "url": "https://github.com/demo-user/cbnu-algorithms/commit/4e5f6a0b1c2d",
-      "additions": 88,
-      "deletions": 6
-    },
-    {
-      "sourceId": "github:commit:demo-user/cbnu-algorithms@5f6a0b1c2d3e",
-      "repo": "demo-user/cbnu-algorithms",
-      "sha": "5f6a0b1c2d3e0000000000000000000000000000",
-      "message": "refactor: shared fast io template",
-      "author": "demo-user",
-      "date": {
-        "$daysAgo": 6.3
-      },
-      "url": "https://github.com/demo-user/cbnu-algorithms/commit/5f6a0b1c2d3e",
+      "url": "https://github.com/seongjun/baekjoon/commit/d0e1f2a7b8c9",
       "additions": 41,
-      "deletions": 30
+      "deletions": 0
+    },
+    {
+      "sourceId": "github:commit:seongjun/baekjoon@e1f2a7b8c9d0",
+      "repo": "seongjun/baekjoon",
+      "sha": "e1f2a7b8c9d00000000000000000000000000000",
+      "message": "solve: BOJ 11657 타임머신 (Gold IV, 벨만-포드)",
+      "author": "seongjun",
+      "date": {
+        "$daysAgo": 3.4
+      },
+      "url": "https://github.com/seongjun/baekjoon/commit/e1f2a7b8c9d0",
+      "additions": 55,
+      "deletions": 0
+    },
+    {
+      "sourceId": "github:commit:seongjun/os-hw@f2a7b8c9d0e1",
+      "repo": "seongjun/os-hw",
+      "sha": "f2a7b8c9d0e10000000000000000000000000000",
+      "message": "hw2: 라운드 로빈 스케줄러 구현",
+      "author": "seongjun",
+      "date": {
+        "$daysAgo": 2.0
+      },
+      "url": "https://github.com/seongjun/os-hw/commit/f2a7b8c9d0e1",
+      "additions": 140,
+      "deletions": 6
     }
   ],
   "pullRequests": [
     {
-      "sourceId": "github:pr:demo-user/my-ai-work-agent#14",
-      "repo": "demo-user/my-ai-work-agent",
-      "number": 14,
-      "title": "feat: agent-core with provider abstraction and report validation",
+      "sourceId": "github:pr:seongjun/my-ai-work-agent#21",
+      "repo": "seongjun/my-ai-work-agent",
+      "number": 21,
+      "title": "feat: 대학생 워크스페이스와 마감 리포트",
       "state": "open",
-      "author": "demo-user",
+      "author": "seongjun",
       "createdAt": {
-        "$daysAgo": 1.2
+        "$daysAgo": 0.8
       },
       "updatedAt": {
         "$daysAgo": 0.3
       },
       "mergedAt": null,
-      "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
+      "url": "https://github.com/seongjun/my-ai-work-agent/pull/21",
+      "reviewComments": 0,
+      "labels": [
+        "portfolio"
+      ]
+    },
+    {
+      "sourceId": "github:pr:seongjun/my-ai-work-agent#19",
+      "repo": "seongjun/my-ai-work-agent",
+      "number": 19,
+      "title": "feat: 리포트 섹션 시각화",
+      "state": "merged",
+      "author": "seongjun",
+      "createdAt": {
+        "$daysAgo": 4.0
+      },
+      "updatedAt": {
+        "$daysAgo": 2.5
+      },
+      "mergedAt": {
+        "$daysAgo": 2.5
+      },
+      "url": "https://github.com/seongjun/my-ai-work-agent/pull/19",
+      "reviewComments": 2,
+      "labels": [
+        "portfolio"
+      ]
+    },
+    {
+      "sourceId": "github:pr:cbnu-capstone/team-mate#8",
+      "repo": "cbnu-capstone/team-mate",
+      "number": 8,
+      "title": "feat: 로그인 API와 토큰 갱신",
+      "state": "open",
+      "author": "jimin",
+      "createdAt": {
+        "$daysAgo": 1.3
+      },
+      "updatedAt": {
+        "$daysAgo": 0.7
+      },
+      "mergedAt": null,
+      "url": "https://github.com/cbnu-capstone/team-mate/pull/8",
       "reviewComments": 3,
       "labels": [
-        "agent",
+        "capstone",
         "needs-review"
-      ]
-    },
-    {
-      "sourceId": "github:pr:demo-user/my-ai-work-agent#12",
-      "repo": "demo-user/my-ai-work-agent",
-      "number": 12,
-      "title": "feat: MCP servers for GitHub, Gmail, Calendar (demo mode)",
-      "state": "merged",
-      "author": "demo-user",
-      "createdAt": {
-        "$daysAgo": 3.2
-      },
-      "updatedAt": {
-        "$daysAgo": 2.3
-      },
-      "mergedAt": {
-        "$daysAgo": 2.3
-      },
-      "url": "https://github.com/demo-user/my-ai-work-agent/pull/12",
-      "reviewComments": 5,
-      "labels": [
-        "mcp"
-      ]
-    },
-    {
-      "sourceId": "github:pr:demo-user/my-ai-work-agent#11",
-      "repo": "demo-user/my-ai-work-agent",
-      "number": 11,
-      "title": "chore: workspace scaffold and shared schemas",
-      "state": "merged",
-      "author": "demo-user",
-      "createdAt": {
-        "$daysAgo": 4.5
-      },
-      "updatedAt": {
-        "$daysAgo": 4.1
-      },
-      "mergedAt": {
-        "$daysAgo": 4.1
-      },
-      "url": "https://github.com/demo-user/my-ai-work-agent/pull/11",
-      "reviewComments": 1,
-      "labels": [
-        "chore"
       ]
     }
   ],
   "issues": [
     {
-      "sourceId": "github:issue:demo-user/my-ai-work-agent#17",
-      "repo": "demo-user/my-ai-work-agent",
-      "number": 17,
-      "title": "Google OAuth refresh token is not rotated after expiry",
+      "sourceId": "github:issue:cbnu-capstone/team-mate#12",
+      "repo": "cbnu-capstone/team-mate",
+      "number": 12,
+      "title": "ERD 확정 (users-teams 관계)",
       "state": "open",
-      "author": "demo-user",
+      "author": "jimin",
       "createdAt": {
-        "$daysAgo": 1.0
+        "$daysAgo": 2.8
       },
       "updatedAt": {
-        "$daysAgo": 0.5
+        "$daysAgo": 0.9
       },
-      "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
+      "url": "https://github.com/cbnu-capstone/team-mate/issues/12",
       "labels": [
-        "bug",
-        "auth",
+        "capstone",
         "priority:high"
       ],
       "assignees": [
-        "demo-user"
+        "seongjun"
       ]
     },
     {
-      "sourceId": "github:issue:demo-user/my-ai-work-agent#16",
-      "repo": "demo-user/my-ai-work-agent",
-      "number": 16,
-      "title": "Agent exceeds tool-call budget on broad prompts",
+      "sourceId": "github:issue:cbnu-capstone/team-mate#13",
+      "repo": "cbnu-capstone/team-mate",
+      "number": 13,
+      "title": "중간발표 슬라이드 초안",
       "state": "open",
-      "author": "demo-user",
+      "author": "jimin",
       "createdAt": {
-        "$daysAgo": 1.8
+        "$daysAgo": 1.9
       },
       "updatedAt": {
-        "$daysAgo": 1.1
+        "$daysAgo": 1.9
       },
-      "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
+      "url": "https://github.com/cbnu-capstone/team-mate/issues/13",
       "labels": [
-        "agent",
-        "enhancement"
-      ],
-      "assignees": [
-        "demo-user"
-      ]
-    },
-    {
-      "sourceId": "github:issue:demo-user/my-ai-work-agent#15",
-      "repo": "demo-user/my-ai-work-agent",
-      "number": 15,
-      "title": "Portfolio: presentation mode keyboard navigation",
-      "state": "open",
-      "author": "demo-user",
-      "createdAt": {
-        "$daysAgo": 2.6
-      },
-      "updatedAt": {
-        "$daysAgo": 2.6
-      },
-      "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
-      "labels": [
-        "portfolio"
+        "capstone"
       ],
       "assignees": []
     },
     {
-      "sourceId": "github:issue:demo-user/cbnu-algorithms#3",
-      "repo": "demo-user/cbnu-algorithms",
-      "number": 3,
-      "title": "Week 6: graph problems set",
+      "sourceId": "github:issue:seongjun/os-hw#2",
+      "repo": "seongjun/os-hw",
+      "number": 2,
+      "title": "과제2 보고서 작성 (스케줄러 비교 실험)",
       "state": "open",
-      "author": "demo-user",
+      "author": "seongjun",
       "createdAt": {
         "$daysAgo": 3.0
       },
       "updatedAt": {
-        "$daysAgo": 3.0
+        "$daysAgo": 2.0
       },
-      "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
+      "url": "https://github.com/seongjun/os-hw/issues/2",
       "labels": [
-        "weekly"
+        "homework"
       ],
       "assignees": [
-        "demo-user"
+        "seongjun"
+      ]
+    },
+    {
+      "sourceId": "github:issue:seongjun/my-ai-work-agent#18",
+      "repo": "seongjun/my-ai-work-agent",
+      "number": 18,
+      "title": "Cloudflare 배포에서 OG 이미지가 깨짐",
+      "state": "open",
+      "author": "seongjun",
+      "createdAt": {
+        "$daysAgo": 1.2
+      },
+      "updatedAt": {
+        "$daysAgo": 1.0
+      },
+      "url": "https://github.com/seongjun/my-ai-work-agent/issues/18",
+      "labels": [
+        "bug"
+      ],
+      "assignees": [
+        "seongjun"
       ]
     }
   ],
   "repositories": [
     {
-      "sourceId": "github:repo:demo-user/my-ai-work-agent",
-      "repo": "demo-user/my-ai-work-agent",
-      "url": "https://github.com/demo-user/my-ai-work-agent",
+      "sourceId": "github:repo:seongjun/my-ai-work-agent",
+      "repo": "seongjun/my-ai-work-agent",
+      "url": "https://github.com/seongjun/my-ai-work-agent",
       "description": "Connect work. Understand context. Execute with AI.",
       "defaultBranch": "main",
       "lastPushedAt": {
         "$daysAgo": 0.3
       },
-      "openIssues": 3,
+      "openIssues": 1,
       "openPullRequests": 1,
-      "commitsInPeriod": 9,
+      "commitsInPeriod": 5,
       "language": "TypeScript"
     },
     {
-      "sourceId": "github:repo:demo-user/cbnu-algorithms",
-      "repo": "demo-user/cbnu-algorithms",
-      "url": "https://github.com/demo-user/cbnu-algorithms",
-      "description": "Algorithm practice for CBNU coursework",
+      "sourceId": "github:repo:cbnu-capstone/team-mate",
+      "repo": "cbnu-capstone/team-mate",
+      "url": "https://github.com/cbnu-capstone/team-mate",
+      "description": "캡스톤디자인 팀 프로젝트: 팀원 매칭 서비스",
       "defaultBranch": "main",
       "lastPushedAt": {
-        "$daysAgo": 4.9
+        "$daysAgo": 1.1
       },
-      "openIssues": 1,
+      "openIssues": 2,
+      "openPullRequests": 1,
+      "commitsInPeriod": 3,
+      "language": "TypeScript"
+    },
+    {
+      "sourceId": "github:repo:seongjun/baekjoon",
+      "repo": "seongjun/baekjoon",
+      "url": "https://github.com/seongjun/baekjoon",
+      "description": "백준 풀이 기록",
+      "defaultBranch": "main",
+      "lastPushedAt": {
+        "$daysAgo": 0.6
+      },
+      "openIssues": 0,
       "openPullRequests": 0,
       "commitsInPeriod": 3,
       "language": "C++"
+    },
+    {
+      "sourceId": "github:repo:seongjun/os-hw",
+      "repo": "seongjun/os-hw",
+      "url": "https://github.com/seongjun/os-hw",
+      "description": "운영체제 과제",
+      "defaultBranch": "main",
+      "lastPushedAt": {
+        "$daysAgo": 2.0
+      },
+      "openIssues": 1,
+      "openPullRequests": 0,
+      "commitsInPeriod": 1,
+      "language": "C"
     }
   ]
 }

@@ -1,4 +1,5 @@
 import { IS_DEMO_BUILD, REPO_URL, type Status } from '../lib/client.js';
+import { PolicyEditor } from '../components/PolicyEditor.js';
 
 export function SettingsPage({ status }: { status: Status | null }) {
   const rows: Array<[string, string]> = [
@@ -22,6 +23,7 @@ export function SettingsPage({ status }: { status: Status | null }) {
           </div>
         ))}
       </dl>
+      <PolicyEditor />
       <p className="mt-4 text-[13px] text-text-3">구현 코드: <a href={REPO_URL} target="_blank" rel="noreferrer" className="text-text-2 hover:text-text">{REPO_URL.replace('https://', '')}</a></p>
     </div>
   );

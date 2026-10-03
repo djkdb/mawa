@@ -31,7 +31,7 @@ export function PromptPanel({ status, busy, onRun, progress = null }: { status: 
         <span className="text-sm text-text-3">질문을 고르고 실행하세요 · 방향키로 선택</span>
       </div>
 
-      <div role="radiogroup" aria-label="질문 선택" className="mt-4 grid gap-2 sm:grid-cols-3">
+      <div role="radiogroup" aria-label="질문 선택" className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {DEMO_EXAMPLES.map((ex, i) => {
           const meta = EXAMPLE_META[ex.id] ?? { title: ex.prompt, hint: '', uses: [] as McpServerId[] };
           const active = ex.id === selected;
@@ -51,7 +51,7 @@ export function PromptPanel({ status, busy, onRun, progress = null }: { status: 
         <div className="mt-4">
           <label htmlFor="prompt" className="text-sm text-text-2">직접 입력</label>
           <textarea id="prompt" rows={1} disabled placeholder="예: 이번 주 리뷰 요청받은 PR만 정리해줘" aria-describedby="prompt-demo-note" className="hairline mt-1.5 w-full resize-none rounded-lg bg-bg px-4 py-3 text-[15px] opacity-60 outline-none placeholder:text-text-3" />
-          <p id="prompt-demo-note" className="mt-1 text-xs text-text-3">데모는 기록된 질문 3개만 재생합니다. 자유 질문은 API 서버와 LLM 키를 설정한 실제 실행에서 됩니다.</p>
+          <p id="prompt-demo-note" className="mt-1 text-xs text-text-3">데모는 기록된 질문 4개만 재생합니다. 자유 질문은 API 서버와 LLM 키를 설정한 실제 실행에서 됩니다.</p>
         </div>
       ) : (
         <div className="mt-4">

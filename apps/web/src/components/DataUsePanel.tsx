@@ -41,6 +41,7 @@ export function DataUsePanel({ events, runId }: { events: AgentEvent[]; runId: s
   const masked = Math.max(0, ...llm.map((e) => e.maskedEmails));
   const flagged = new Map(llm.flatMap((e) => e.flagged).map((f) => [f.sourceId, f.reason]));
   const scripted = llm.every((e) => e.provider === 'scripted');
+  const pol = events.find((e): e is Extract<AgentEvent, { type: 'policy_applied' }> => e.type === 'policy_applied');
   const download = () => {
     const blob = new Blob([auditLines(events)], { type: 'application/x-ndjson' });
     const a = document.createElement('a');
@@ -56,6 +57,13 @@ export function DataUsePanel({ events, runId }: { events: AgentEvent[]; runId: s
         <div className="min-w-0">
           <h2 id="datause-heading" className="text-[15px] font-semibold">데이터 사용 내역</h2>
           <p className="tnum mt-0.5 text-sm text-text-2">읽기 {calls.length}회 · 항목 {rows}개 · LLM 요청 {llm.length}회 · 메일 주소 {masked}개 가림{flagged.size ? ` · 지시문 감지 ${flagged.size}건` : ''}</p>
+          {pol && (
+            <p className="mt-1 text-[13px] text-text-2">
+              <span className="mr-1.5 rounded bg-accent-2/70 px-1.5 py-0.5 text-[11px] font-medium text-text">정책</span>
+              제외 규칙 {pol.policy.exclude.length ? pol.policy.exclude.map((x) => `“${x}”`).join(', ') : '없음'} · 메일 주소 가리기 {pol.policy.maskEmails ? '켬' : '끔'}{pol.policy.allowedTools ? ` · 허용 도구 ${pol.policy.allowedTools.length}개` : ''}
+              {' · '}<b className="font-semibold text-text">LLM·리포트에서 제외 {pol.excluded.length}건</b>{pol.blockedTools.length ? ` · 막은 도구 ${pol.blockedTools.length}개` : ''}
+            </p>
+          )}
           <p className="mt-0.5 text-xs text-text-3">쓰기 도구는 없습니다. LLM에는 메일 주소를 가린 요약과 필드만 보내고, 메일·이슈 본문 속 지시문은 데이터로만 다룹니다.{scripted ? ' 이 실행의 LLM 자리에는 스크립트(scripted-heuristics-v1)가 있어 외부로 나간 데이터는 없습니다.' : ''}</p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
@@ -81,6 +89,15 @@ export function DataUsePanel({ events, runId }: { events: AgentEvent[]; runId: s
             </ul>
           </div>
           <div className="min-w-0">
+            {pol && pol.excluded.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-sm font-medium text-text-2">정책으로 뺀 항목</h3>
+                <ul className="mt-2 space-y-1 rounded-lg bg-bg px-3 py-2 font-mono text-[11px] text-text-3">
+                  {pol.excluded.map((x) => <li key={x.sourceId}>{x.sourceId} · 규칙 “{x.rule}”</li>)}
+                </ul>
+                <p className="mt-1 text-xs text-text-3">MCP 서버에서는 읽었지만 LLM 요청과 리포트에는 들어가지 않았습니다.</p>
+              </div>
+            )}
             <h3 className="text-sm font-medium text-text-2">LLM에 보낸 것</h3>
             <ul className="mt-2 space-y-2">
               {llm.map((e, i) => (

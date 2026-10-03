@@ -18,9 +18,9 @@ export interface GenerateReportResult {
 export async function generateReport(
   llm: LLMProvider,
   context: AggregatedContext,
-  input: { runId: string; mode: AgentMode; prompt: string; generatedAt?: string; onPrompt?: (p: AnalysisPrompt & { bytes: number }) => void },
+  input: { runId: string; mode: AgentMode; prompt: string; generatedAt?: string; maskEmails?: boolean; onPrompt?: (p: AnalysisPrompt & { bytes: number }) => void },
 ): Promise<GenerateReportResult> {
-  const prompt = analysisPrompt(context, input.prompt);
+  const prompt = analysisPrompt(context, input.prompt, input.maskEmails ?? true);
   input.onPrompt?.({ ...prompt, bytes: Buffer.byteLength(AGENT_SYSTEM_PROMPT) + Buffer.byteLength(prompt.text) });
   const response = await llm.complete({
     system: AGENT_SYSTEM_PROMPT,

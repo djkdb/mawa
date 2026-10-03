@@ -1,10 +1,10 @@
 import { randomUUID } from 'node:crypto';
-import type { AgentEvent, AgentMode, ToolCall, ToolDefinition, ToolResult, WeeklyWorkReport } from '@mawa/shared';
+import type { AgentEvent, AgentMode, DataPolicy, ToolCall, ToolDefinition, ToolResult, WeeklyWorkReport } from '@mawa/shared';
 import { aggregateContext, type AggregatedContext } from './context/aggregate.js';
 import type { LLMMessage, LLMProvider, LLMToolDefinition } from './llm/types.js';
 import { AGENT_SYSTEM_PROMPT } from './report/prompt.js';
 import { generateReport } from './report/generate.js';
-import { detectInjection, promptJson } from './report/guard.js';
+import { detectInjection, excludedBy, promptJson } from './report/guard.js';
 import { qualifiedToolName, splitQualifiedToolName, type ToolExecutor } from './tools/executor.js';
 import { isMcpServerId } from './tools/mcp-executor.js';
 
@@ -28,6 +28,8 @@ export interface RunAgentInput {
   executor: ToolExecutor;
   runId?: string;
   policy?: Partial<ToolPolicy>;
+  /** User-defined data policy: allowed tools, exclusion phrases, masking. */
+  dataPolicy?: Partial<DataPolicy>;
   period?: { start: string; end: string };
   onEvent?: (event: AgentEvent) => void;
   signal?: AbortSignal;
@@ -54,7 +56,9 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
   const runId = input.runId ?? `run_${randomUUID()}`;
   const mode = input.mode;
   const now = input.now ?? (() => new Date());
-  const policy: ToolPolicy = { ...DEFAULT_TOOL_POLICY, ...input.policy };
+  const dataPolicy: DataPolicy = { exclude: [], maskEmails: true, ...input.dataPolicy };
+  const policy: ToolPolicy = { ...DEFAULT_TOOL_POLICY, ...input.policy, ...(dataPolicy.allowedTools ? { allowedTools: dataPolicy.allowedTools } : {}) };
+  const excludedRows: Array<{ sourceId: string; rule: string }> = [];
   const events: AgentEvent[] = [];
   const warnings: string[] = [];
   const startedAt = now();
@@ -122,12 +126,23 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
         }
         const call: ToolCall = { id: tc.id, server: split.server, name: split.name, input: tc.input };
         emit('tool_call_started', { call });
-        const result = await input.executor.callTool(call, input.signal);
+        const raw = await input.executor.callTool(call, input.signal);
+        // The data policy keeps matching rows out of everything downstream (LLM payload, context, report).
+        let result = raw;
+        if (raw.status === 'ok' && Array.isArray(raw.output.data) && dataPolicy.exclude.length) {
+          const kept = raw.output.data.filter((row) => {
+            const rule = excludedBy(row, dataPolicy.exclude);
+            const id = row && typeof row === 'object' ? (row as { sourceId?: unknown }).sourceId : undefined;
+            if (rule && typeof id === 'string') excludedRows.push({ sourceId: id, rule });
+            return !rule;
+          });
+          result = { ...raw, output: { ...raw.output, data: kept } };
+        }
         executed.push({ call, result });
         if (result.status === 'ok') {
           emit('tool_call_completed', { call, result });
           // Third-party text goes to the model masked, tag-safe, and screened for instructions.
-          const json = promptJson(result.output);
+          const json = promptJson(result.output, dataPolicy.maskEmails);
           const masked = { text: truncate(json.text, policy.maxResultChars), count: json.count };
           planMasked += masked.count;
           for (const row of Array.isArray(result.output.data) ? result.output.data : [result.output.data]) {
@@ -146,13 +161,15 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
       if (executed.length >= policy.maxToolCalls) break;
     }
 
+    if (input.dataPolicy) emit('policy_applied', { policy: dataPolicy, blockedTools: discovered.filter((d) => !allowed.includes(d)).map(qualifiedToolName), excluded: excludedRows });
+
     // 3. Aggregate.
     context = aggregateContext(executed, period);
     emit('context_aggregated', { counts: context.counts, totalItems: context.items.length });
 
     // 4. Analyze + validate.
     const generated = await generateReport(input.llm, context, {
-      runId, mode, prompt: input.prompt, generatedAt: now().toISOString(),
+      runId, mode, prompt: input.prompt, generatedAt: now().toISOString(), maskEmails: dataPolicy.maskEmails,
       onPrompt: (p) => emit('llm_request', { phase: 'analysis', provider: input.llm.id, model: input.llm.model, bytes: p.bytes, contents: ['사용자 질문', `출처 ${context!.sources.length}건의 요약과 필드`, '리포트 JSON 스키마'], fields: p.fields, maskedEmails: p.maskedEmails, flagged: [...flagged.values()] }),
     });
     for (const f of flagged.values()) warnings.push(`Suspicious instructions in ${f.sourceId} (${f.reason}); treated as data.`);

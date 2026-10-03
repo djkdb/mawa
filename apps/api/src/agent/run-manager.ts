@@ -2,7 +2,7 @@ import { EventEmitter } from 'node:events';
 import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import { McpToolExecutor, MemoryRunStore, createLLMProvider, runAgent, type LLMProvider, type McpServerSpec, type RunRecord, type RunStore } from '@mawa/agent-core';
-import type { AgentEvent, AgentMode, McpServerId } from '@mawa/shared';
+import type { AgentEvent, AgentMode, DataPolicy, McpServerId } from '@mawa/shared';
 import type { OAuthService } from '../auth/oauth.js';
 import type { AppConfig } from '../config.js';
 
@@ -11,6 +11,7 @@ const SERVER_ENTRY = (id: McpServerId) => fileURLToPath(new URL(`../../../../mcp
 export interface StartRunInput {
   prompt: string;
   mode: AgentMode;
+  policy?: Partial<DataPolicy>;
 }
 
 /**
@@ -85,6 +86,7 @@ export class RunManager {
       mode: input.mode,
       llm: this.llm,
       executor,
+      ...(input.policy ? { dataPolicy: input.policy } : {}),
       onEvent: (event) => {
         void this.store.appendEvent(runId, event);
         this.emitter.emit(runId, event);

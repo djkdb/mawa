@@ -59,4 +59,26 @@ describe('runAgent end-to-end over real MCP servers (demo mode)', () => {
     expect(methods('server_to_client', 'response').filter((m) => m === 'tools/call')).toHaveLength(completed.length);
     for (const m of wire) expect(() => JSON.parse(m.preview)).not.toThrow();
   }, 30_000);
+
+  it('applies a data policy: excluded rows never reach the context or report, blocked tools are not offered', async () => {
+    const result = await runAgent({
+      prompt: '이번 주 공부·개발이랑 팀플 진행 상황 정리해줘.', mode: 'demo', llm: new ScriptedProvider(), executor,
+      dataPolicy: { exclude: ['엄마'], maskEmails: true, allowedTools: ['github__get_recent_commits', 'gmail__search_project_emails', 'calendar__get_events'] },
+    });
+    expect(result.error).toBeUndefined();
+    const applied = result.events.find((e) => e.type === 'policy_applied');
+    expect(applied?.type === 'policy_applied' && applied.excluded).toEqual([{ sourceId: 'gmail:msg:demo0011', rule: '엄마' }]);
+    expect(applied?.type === 'policy_applied' && applied.blockedTools).toHaveLength(7);
+    expect(result.report!.sources.some((s) => s.id === 'gmail:msg:demo0011')).toBe(false);
+    const called = new Set(result.events.flatMap((e) => (e.type === 'tool_call_completed' ? [`${e.call.server}__${e.call.name}`] : [])));
+    expect([...called].sort()).toEqual(['calendar__get_events', 'github__get_recent_commits', 'gmail__search_project_emails']);
+  }, 30_000);
+
+  it('answers a deadline question with D-day ordered deadlines and the open work behind them', async () => {
+    const result = await runAgent({ prompt: '앞으로 2주 과제·시험·발표 마감 순서대로 알려줘.', mode: 'demo', llm: new ScriptedProvider(), executor });
+    const schedule = result.report!.sections.find((s) => s.id === 'schedule')!.items;
+    expect(schedule[0]!.text).toMatch(/^D-\d+ · .*운영체제 과제2 마감 · 남은 일: #2/);
+    expect(schedule.some((i) => i.text.includes('장학금 신청'))).toBe(true);
+    expect(result.report!.sections.find((s) => s.id === 'potential_risks')!.items.some((i) => i.text.startsWith('일정 확인 필요: "캡스톤디자인 중간발표"'))).toBe(true);
+  }, 30_000);
 });

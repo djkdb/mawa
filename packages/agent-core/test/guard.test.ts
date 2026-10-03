@@ -63,8 +63,8 @@ describe('scripted report', () => {
     expect(risks.some((r) => r.text.includes('Calendar MCP bug'))).toBe(false);
   });
 
-  it('turns an unassigned issue into a "assign an owner" action', () => {
-    expect(actions.some((a) => a.text.startsWith('리드 · 이슈 #15 담당자 지정'))).toBe(true);
+  it('turns an unassigned issue into a "decide who owns it" action', () => {
+    expect(actions.some((a) => a.text.startsWith('팀 · 이슈 #15 담당자 정하기'))).toBe(true);
   });
 
   it('flags a mail whose stated weekday differs from the matching event', () => {

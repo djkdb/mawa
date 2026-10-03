@@ -46,12 +46,14 @@ function defaultPlan(toolNames: string[]) {
     .map((name) => ({
       name,
       input: name === 'gmail__search_project_emails'
-        ? { keywords: ['my-ai-work-agent', 'MCP', 'PR', 'OAuth', 'capstone', 'demo', 'algorithm'] }
+        ? { keywords: ['my-ai-work-agent', 'team-mate', '캡스톤', '과제', '퀴즈', '스터디', '인턴', '코딩테스트', '장학금', '발표'] }
         : name === 'gmail__search_emails'
-          ? { query: 'review OR issue OR meeting' }
+          ? { query: '마감 OR 제출 OR 리뷰 OR 회의' }
           : name === 'calendar__search_events'
-            ? { query: 'demo' }
-            : {},
+            ? { query: '발표' }
+            : name === 'calendar__get_upcoming_events'
+              ? { days: 14 }
+              : {},
     }));
 }
 

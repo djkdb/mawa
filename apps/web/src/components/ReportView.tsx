@@ -85,7 +85,7 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
 
   const copy = async (format: 'markdown' | 'slack') => {
     const ok = await copyText(exportReport(report, { title, prompt, hidden, format }));
-    const msg = ok ? `${format === 'slack' ? 'Slack' : 'Markdown'} 형식으로 복사했습니다${hidden.size ? ` (숨긴 항목 ${hidden.size}개 제외)` : ''}.` : '복사하지 못했습니다. 브라우저가 클립보드 접근을 막았습니다.';
+    const msg = ok ? `${format === 'slack' ? '짧은 공유용' : 'Markdown'} 형식으로 복사했습니다${hidden.size ? ` (숨긴 항목 ${hidden.size}개 제외)` : ''}.` : '복사하지 못했습니다. 브라우저가 클립보드 접근을 막았습니다.';
     setCopied(msg);
     onAnnounce(msg);
     setTimeout(() => setCopied(null), 2500);
@@ -107,7 +107,7 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
       {note && <p className="mt-3 rounded-lg bg-inferred/10 px-4 py-3 text-sm text-text">{note}</p>}
 
       <div className="mt-4 flex flex-wrap items-center gap-2">
-        <button type="button" onClick={() => void copy('slack')} className="hairline inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-surface-2 px-3 text-sm text-text hover:brightness-110"><ClipboardCopy className="h-4 w-4" aria-hidden />Slack용 복사 <span className="tnum text-xs text-text-3">{slackLines}줄</span></button>
+        <button type="button" onClick={() => void copy('slack')} className="hairline inline-flex min-h-9 items-center gap-1.5 rounded-lg bg-surface-2 px-3 text-sm text-text hover:brightness-110"><ClipboardCopy className="h-4 w-4" aria-hidden />짧게 복사 · Slack·Discord <span className="tnum text-xs text-text-3">{slackLines}줄</span></button>
         <button type="button" onClick={() => void copy('markdown')} className="hairline inline-flex min-h-9 items-center gap-1.5 rounded-lg px-3 text-sm text-text-2 hover:text-text">Markdown 전체 복사</button>
         <button type="button" onClick={() => setEditing((e) => !e)} aria-pressed={editing} className={`inline-flex min-h-9 items-center gap-1.5 rounded-lg px-3 text-sm ${editing ? 'bg-accent-2 text-text' : 'text-text-2 hover:text-text'}`}><CheckSquare className="h-4 w-4" aria-hidden />{editing ? '고르기 끝' : '복사할 항목 고르기'}</button>
         {hidden.size > 0 && <button type="button" onClick={() => setHidden(new Set())} className="inline-flex min-h-9 items-center gap-1.5 px-2 text-sm text-text-2 hover:text-text"><RotateCcw className="h-3.5 w-3.5" aria-hidden />숨긴 항목 {hidden.size}개 되돌리기</button>}
@@ -119,7 +119,7 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
       <Verification warnings={warnings} events={events} />
       {!note && <PreviousRun report={report} runId={runId} prompt={prompt} />}
 
-      {demo && <p className="mt-3 text-[13px] text-text-3">{recorded ? '기록된 실행을 재생한 결과입니다. ' : ''}가상의 demo-user 계정의 샘플 데이터로 만든 리포트이며 실제 계정 정보가 아닙니다.</p>}
+      {demo && <p className="mt-3 text-[13px] text-text-3">{recorded ? '기록된 실행을 재생한 결과입니다. ' : ''}성준님의 한 주를 가정해 만든 가상의 샘플 데이터로 만든 리포트이며, 실제 계정·메일이 아닙니다. A사는 가상의 회사입니다.</p>}
 
       <nav aria-label="리포트 섹션" className="mt-4 flex flex-wrap gap-1.5">
         {ordered.map((s) => <a key={s.id} href={`#sec-${s.id}`} onClick={(e) => { e.preventDefault(); document.getElementById(`sec-${s.id}`)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }} className="inline-flex min-h-8 items-center rounded-full bg-surface-2 px-3 text-xs text-text-2 hover:text-text">{sectionTitle(s.id, prompt)} <span className="tnum ml-1 text-text-3">{s.items.length}</span></a>)}

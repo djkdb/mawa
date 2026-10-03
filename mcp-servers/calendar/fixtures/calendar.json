@@ -1,27 +1,26 @@
 {
-  "_note": "SYNTHETIC DEMO DATA. Not a real calendar. Dates are relative via {\"$daysAgo\": n} (negative = future).",
+  "_note": "SYNTHETIC DEMO DATA for a fictional week of 이성준 (CBNU Software). Not a real calendar. Dates are relative via {\"$daysAgo\": n} (negative = future); $time is Asia/Seoul.",
   "events": [
     {
       "sourceId": "calendar:event:demoev001",
       "eventId": "demoev001",
       "calendar": "primary",
-      "title": "PR #14 review sync with Minji",
-      "description": "Walk through provider abstraction comments; decide on retry strategy for OpenAI-compatible provider.",
+      "title": "운영체제 수업",
+      "description": "CPU 스케줄링 2",
       "start": {
-        "$daysAgo": 1,
-        "$time": "14:00"
+        "$daysAgo": 2,
+        "$time": "10:30"
       },
       "end": {
-        "$daysAgo": 1,
-        "$time": "14:30"
+        "$daysAgo": 2,
+        "$time": "11:45"
       },
       "allDay": false,
-      "location": "Google Meet",
+      "location": "S4-1 101",
       "attendees": [
-        "minji@example.com",
-        "demo-user@example.com"
+        "seongjun@cbnu.example.ac.kr"
       ],
-      "organizer": "minji@example.com",
+      "organizer": "seongjun@cbnu.example.ac.kr",
       "status": "confirmed",
       "url": "https://calendar.google.com/calendar/event?eid=demoev001"
     },
@@ -29,23 +28,22 @@
       "sourceId": "calendar:event:demoev002",
       "eventId": "demoev002",
       "calendar": "primary",
-      "title": "Capstone weekly check-in",
-      "description": "5-minute architecture update: MCP vs direct API integration.",
+      "title": "인스타 개발 콘텐츠 업로드 (@zun_it_)",
+      "description": "MCP 연결도 캡처로 릴스 1개",
       "start": {
-        "$daysAgo": -2,
-        "$time": "15:00"
+        "$daysAgo": 1,
+        "$time": "21:00"
       },
       "end": {
-        "$daysAgo": -2,
-        "$time": "16:00"
+        "$daysAgo": 1,
+        "$time": "21:30"
       },
       "allDay": false,
-      "location": "S4-1 309",
+      "location": null,
       "attendees": [
-        "park@cbnu.example.com",
-        "demo-user@example.com"
+        "seongjun@cbnu.example.ac.kr"
       ],
-      "organizer": "park@cbnu.example.com",
+      "organizer": "seongjun@cbnu.example.ac.kr",
       "status": "confirmed",
       "url": "https://calendar.google.com/calendar/event?eid=demoev002"
     },
@@ -53,8 +51,55 @@
       "sourceId": "calendar:event:demoev003",
       "eventId": "demoev003",
       "calendar": "primary",
-      "title": "Algorithm study — week 6 graphs",
-      "description": "BFS/DFS, Dijkstra, MST review.",
+      "title": "캡스톤 팀 회의",
+      "description": "ERD 확정(#12), 중간발표 역할 분담",
+      "start": {
+        "$daysAgo": -2,
+        "$time": "18:00"
+      },
+      "end": {
+        "$daysAgo": -2,
+        "$time": "19:30"
+      },
+      "allDay": false,
+      "location": "S4-1 팀플실",
+      "attendees": [
+        "jimin@example.com",
+        "seongjun@cbnu.example.ac.kr"
+      ],
+      "organizer": "jimin@example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=demoev003"
+    },
+    {
+      "sourceId": "calendar:event:demoev004",
+      "eventId": "demoev004",
+      "calendar": "primary",
+      "title": "운영체제 과제2 마감",
+      "description": "eCampus 제출 (코드 + 보고서 PDF)",
+      "start": {
+        "$daysAgo": -2,
+        "$time": "23:00"
+      },
+      "end": {
+        "$daysAgo": -2,
+        "$time": "23:59"
+      },
+      "allDay": false,
+      "location": "eCampus",
+      "attendees": [
+        "seongjun@cbnu.example.ac.kr"
+      ],
+      "organizer": "seongjun@cbnu.example.ac.kr",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=demoev004"
+    },
+    {
+      "sourceId": "calendar:event:demoev005",
+      "eventId": "demoev005",
+      "calendar": "primary",
+      "title": "알고리즘 스터디 6주차",
+      "description": "BOJ 1753 · 1916 · 11657 풀이 공유",
       "start": {
         "$daysAgo": -3,
         "$time": "19:00"
@@ -64,61 +109,85 @@
         "$time": "21:00"
       },
       "allDay": false,
-      "location": "Library group room B",
+      "location": "도서관 그룹스터디룸 B",
       "attendees": [
         "algo-study@example.com",
-        "demo-user@example.com"
+        "seongjun@cbnu.example.ac.kr"
       ],
       "organizer": "algo-study@example.com",
       "status": "confirmed",
-      "url": "https://calendar.google.com/calendar/event?eid=demoev003"
+      "url": "https://calendar.google.com/calendar/event?eid=demoev005"
     },
     {
-      "sourceId": "calendar:event:demoev004",
-      "eventId": "demoev004",
+      "sourceId": "calendar:event:demoev006",
+      "eventId": "demoev006",
       "calendar": "primary",
-      "title": "Deep work: Google OAuth refresh fix (#17)",
-      "description": "Blocked time to fix refresh-token rotation before demo day.",
+      "title": "A사 인턴 코딩테스트",
+      "description": "온라인 응시 · 120분",
       "start": {
-        "$daysAgo": -1,
-        "$time": "10:00"
+        "$daysAgo": -4,
+        "$time": "19:00"
       },
       "end": {
-        "$daysAgo": -1,
-        "$time": "13:00"
+        "$daysAgo": -4,
+        "$time": "21:00"
       },
       "allDay": false,
-      "location": null,
+      "location": "온라인",
       "attendees": [
-        "demo-user@example.com"
+        "seongjun@cbnu.example.ac.kr"
       ],
-      "organizer": "demo-user@example.com",
+      "organizer": "seongjun@cbnu.example.ac.kr",
       "status": "confirmed",
-      "url": "https://calendar.google.com/calendar/event?eid=demoev004"
+      "url": "https://calendar.google.com/calendar/event?eid=demoev006"
     },
     {
-      "sourceId": "calendar:event:demoev005",
-      "eventId": "demoev005",
+      "sourceId": "calendar:event:demoev007",
+      "eventId": "demoev007",
       "calendar": "primary",
-      "title": "Demo day — My AI Work Agent",
-      "description": "10 min demo + 5 min Q&A. HDMI only.",
+      "title": "데이터베이스시스템 퀴즈2",
+      "description": "정규화 1NF~BCNF",
       "start": {
-        "$daysAgo": -8,
+        "$daysAgo": -5,
+        "$time": "10:30"
+      },
+      "end": {
+        "$daysAgo": -5,
+        "$time": "11:00"
+      },
+      "allDay": false,
+      "location": "S4-1 205",
+      "attendees": [
+        "seongjun@cbnu.example.ac.kr"
+      ],
+      "organizer": "seongjun@cbnu.example.ac.kr",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=demoev007"
+    },
+    {
+      "sourceId": "calendar:event:demoev008",
+      "eventId": "demoev008",
+      "calendar": "primary",
+      "title": "캡스톤디자인 중간발표",
+      "description": "팀별 10분 발표",
+      "start": {
+        "$daysAgo": -12,
         "$time": "14:00"
       },
       "end": {
-        "$daysAgo": -8,
-        "$time": "14:15"
+        "$daysAgo": -12,
+        "$time": "16:00"
       },
       "allDay": false,
-      "location": "Innovation Hall",
+      "location": "S4-1 309",
       "attendees": [
-        "lab@cbnu.example.com",
-        "demo-user@example.com"
+        "park@cbnu.example.ac.kr",
+        "jimin@example.com",
+        "seongjun@cbnu.example.ac.kr"
       ],
-      "organizer": "lab@cbnu.example.com",
+      "organizer": "park@cbnu.example.ac.kr",
       "status": "confirmed",
-      "url": "https://calendar.google.com/calendar/event?eid=demoev005"
+      "url": "https://calendar.google.com/calendar/event?eid=demoev008"
     }
   ]
 }

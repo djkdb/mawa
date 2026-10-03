@@ -25,7 +25,7 @@ export function HowItWorks() {
       </ol>
       {IS_DEMO_BUILD && (
         <p className="mt-5 rounded-lg bg-caution/10 px-4 py-3 text-sm leading-relaxed text-amber-100">
-          이 데모의 기록은 LLM 대신 <b>질문별로 정해 둔 실행 계획(scripted-heuristics-v1)</b>으로 만들었습니다. MCP 서버 호출, 출처 수집, 출처 검증은 실제 코드 그대로 거쳤고, 데이터는 가상의 demo-user 계정입니다. LLM이 도구를 직접 고르는 실행은 API 서버에 키를 넣고 실행할 때 볼 수 있습니다.
+          이 데모의 기록은 LLM 대신 <b>질문별로 정해 둔 실행 계획(scripted-heuristics-v1)</b>으로 만들었습니다. MCP 서버 호출, 출처 수집, 출처 검증은 실제 코드 그대로 거쳤고, 데이터는 성준님의 한 주(수업·팀플·인턴 준비)를 가정한 가상의 샘플입니다. LLM이 도구를 직접 고르는 실행은 API 서버에 키를 넣고 실행할 때 볼 수 있습니다.
         </p>
       )}
       <div className="mt-6 text-sm">

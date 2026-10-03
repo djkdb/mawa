@@ -86,7 +86,7 @@ export function Solution() {
 
 /* 04 ------------------------------------------------------------------ */
 const ARCH: Array<{ id: string; label: string; detail: string; code: string; level: number }> = [
-  { id: 'user', label: 'USER', detail: 'A natural-language request, e.g. "이번 주 내 개발 프로젝트 진행 상황을 정리해줘."', code: 'apps/web', level: 0 },
+  { id: 'user', label: 'USER', detail: 'A natural-language request, e.g. "이번 주 공부·개발이랑 팀플 진행 상황 정리해줘."', code: 'apps/web', level: 0 },
   { id: 'agent', label: 'AI AGENT', detail: 'runAgent(): discover → plan (LLM) → execute → aggregate → analyze → validate. Emits typed events; never emits reasoning.', code: 'packages/agent-core/src/agent.ts', level: 1 },
   { id: 'llm', label: 'LLM PROVIDER', detail: 'One interface, swappable adapters: Anthropic (default), OpenAI, OpenAI-compatible, and a scripted fallback for Demo Mode.', code: 'packages/agent-core/src/llm/', level: 1 },
   { id: 'client', label: 'MCP CLIENT', detail: 'One official-SDK Client per server over stdio. tools/list for discovery, tools/call for execution. Child processes get only their own token.', code: 'packages/agent-core/src/tools/mcp-executor.ts', level: 2 },

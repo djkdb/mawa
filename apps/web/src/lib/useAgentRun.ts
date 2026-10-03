@@ -46,6 +46,7 @@ export function phaseFromEvent(type: AgentEvent['type'], prev: RunPhase): RunPha
     case 'mcp_message':
     case 'llm_request':
     case 'llm_response':
+    case 'policy_applied':
       return prev === 'idle' ? 'discovering' : prev;
   }
 }

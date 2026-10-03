@@ -41,7 +41,17 @@ export function tagSafe(json: string): string {
 }
 
 /** Masked and tag-safe JSON for an LLM payload. Masking runs first so escapes are never split. */
-export function promptJson(value: unknown): { text: string; count: number } {
+export function promptJson(value: unknown, mask = true): { text: string; count: number } {
+  if (!mask) return { text: tagSafe(JSON.stringify(value)), count: 0 };
   const m = maskEmails(JSON.stringify(value));
   return { text: tagSafe(m.text), count: m.count };
+}
+
+const POLICY_FIELDS = ['subject', 'from', 'title', 'snippet', 'message', 'location', 'description', 'repo'];
+/** The first exclusion phrase a row matches (case-insensitive substring on its human-readable fields), if any. */
+export function excludedBy(row: unknown, exclude: string[]): string | null {
+  if (!exclude.length || !row || typeof row !== 'object') return null;
+  const r = row as Record<string, unknown>;
+  const text = POLICY_FIELDS.map((k) => (typeof r[k] === 'string' ? (r[k] as string) : '')).join('\n').toLowerCase();
+  return exclude.find((p) => text.includes(p.toLowerCase())) ?? null;
 }

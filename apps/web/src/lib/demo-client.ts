@@ -14,7 +14,9 @@ export interface RecordedRun {
   note?: string;
 }
 
-const RECORDED = (demoRuns as unknown as { recordedAt: string; note: string; runs: RecordedRun[] });
+const RECORDED = (demoRuns as unknown as { recordedAt: string; note: string; policy?: { exclude: string[]; maskEmails: boolean }; runs: RecordedRun[] });
+/** The data policy the demo recordings ran under. */
+export const DEMO_POLICY = RECORDED.policy ?? { exclude: [], maskEmails: true };
 
 /** MCP servers a run called, in first-call order. */
 export function serversOf(events: AgentEvent[]): McpServerId[] {
@@ -56,6 +58,7 @@ const DELAY: Partial<Record<AgentEvent['type'], number>> = {
   mcp_message: 70,
   llm_request: 300,
   llm_response: 450,
+  policy_applied: 300,
   tool_discovered: 450,
   tool_call_started: 180,
   tool_call_completed: 320,

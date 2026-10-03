@@ -21,7 +21,7 @@ USER → AI AGENT → MCP CLIENT → MCP SERVERS → EXTERNAL SERVICES
 
 ## Overview
 
-Type a request such as *"이번 주 내 개발 프로젝트 진행 상황을 정리해줘."* The agent discovers the tools exposed by three MCP servers, calls the ones it needs, normalizes every commit / PR / issue / email / event into a **Source** with a stable id, asks an LLM for a report constrained to a JSON schema, and then **mechanically rejects any bullet that cites a source id that does not exist**. The UI shows the tool calls as a timeline and the report with per-item source chips.
+Type a request such as *"이번 주 공부·개발이랑 팀플 진행 상황 정리해줘."* The agent discovers the tools exposed by three MCP servers, calls the ones it needs, normalizes every commit / PR / issue / email / event into a **Source** with a stable id, asks an LLM for a report constrained to a JSON schema, and then **mechanically rejects any bullet that cites a source id that does not exist**. The UI shows the tool calls as a timeline and the report with per-item source chips.
 
 Everything runs with zero credentials in **Demo Mode**: the same MCP servers serve synthetic fixtures and a scripted provider stands in for the LLM. Demo output is labelled `DEMO MODE` everywhere, driven by a `mode` field that is mandatory on every event and on the report.
 
@@ -41,16 +41,19 @@ One agent, connected context. Integrations are not hard-coded into the agent: ea
 
 ## What You Can Do With It
 
-| Situation | What the agent does | Where |
-| --- | --- | --- |
-| Monday weekly update | Reads last week's commits, PRs, issues, meetings and work mail and writes a short **한 일 / 할 일 / 막힌 것** update for Slack (Markdown keeps the full report) | 리포트 → Slack용 복사 |
-| "What should I do first?" | Ranks open issues, review-waiting PRs and action-required mail by labels, deadlines, ownership and age, each with its reason; next actions read "owner · action · when" | 질문: 가장 중요한 작업과 다음 액션 |
-| "Where am I stuck?" | Keeps only items waiting on someone: a fix gating a deadline, a review, an external approval, an unconfirmed date | 질문: 막히고 있는 부분 찾기 |
-| Catching slips across tools | Merges mail and events that reference the same `#N` into one item; flags a mail that states a different day than the calendar (e.g. "Thursday" vs a Monday event) | 주의할 점 |
-| 1:1 prep / lead review | Decision-first report, priority reasons, unassigned issues turned into "assign an owner", comparison with the previous run of the same question (new / ongoing / resolved) | 리포트 상단 |
-| Checking it is not making things up | Every line cites sources; the validator drops citations of sources that were never fetched; a data-use panel shows what each tool read and what reached the LLM (masked addresses, flagged instructions), exportable as a JSONL audit log | 리포트 → 출처 검증, 데이터 사용 내역 |
+Built for my own week as a CBNU software student (classes, a capstone team, internship applications, algorithm study) and designed around one question a data-access company would ask: *what did the agent read, what did it send to the model, and can I prove it?*
 
-It only reads. There are no write tools; drafting replies or editing issues is out of scope for v1.
+| Situation | What the agent does |
+| --- | --- |
+| "What's due?" | Orders assignments, quizzes, presentations and applications by D-day from calendar events **and** dates written in mail ("10월 9일까지"), and attaches the open work behind each (e.g. *OS HW2 due D-2 · remaining: #2 report*) |
+| Weekly review | Commits per repo, Baekjoon problems solved, team PRs, class and team mail, upcoming deadlines, one summary |
+| Team project | Merges a teammate's mail and the meeting that reference the same `#N` into one item; "PR #8 waits for **my** review"; unassigned issues become "decide who owns it" |
+| Internship prep | Next selection step with D-day, coding-test prep from what was solved this week, portfolio work in progress |
+| Catching slips | A mail that says Oct 14 while the calendar says Oct 15; an injection-like "bot" mail flagged and kept out of the report |
+| Sharing | A short 한 일 / 할 일 / 막힌 것 update for Slack/Discord, or the full report as Markdown |
+| Control and proof | A **data access policy** (allowed MCP tools, phrases whose items never reach the LLM or the report, email masking), a data-use panel per run (what each tool read, what each LLM request contained, what the policy excluded), a JSONL audit export, and source validation that drops citations of data that was never fetched |
+
+It only reads; there are no write tools. The public demo replays recorded runs over a fictional week shaped after mine (synthetic data, a fictional company "A사"); with the API server, OAuth and an LLM key it runs on your own accounts.
 
 ## Architecture
 

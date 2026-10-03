@@ -9,7 +9,7 @@
 ## 1. System Overview
 
 My AI Work Agent is a personal work agent. A user types a natural-language
-request such as *"이번 주 내 개발 프로젝트 진행 상황을 정리해줘"*. The agent
+request such as *"이번 주 공부·개발이랑 팀플 진행 상황 정리해줘"*. The agent
 decides which data it needs, calls tools exposed by MCP servers (GitHub, Gmail,
 Google Calendar), aggregates the results into a single context, and asks an LLM
 to turn that context into an actionable **Weekly Work Report**.

@@ -25,5 +25,5 @@ export const PROJECT = {
     'ACTIONABLE REPORT',
   ] as const,
   /** Sample prompt used across UI, portfolio and motion. */
-  samplePrompt: '이번 주 내 개발 프로젝트 진행 상황을 정리해줘.',
+  samplePrompt: '이번 주 공부·개발이랑 팀플 진행 상황 정리해줘.',
 } as const;

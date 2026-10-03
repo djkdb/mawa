@@ -16,8 +16,8 @@ test('dashboard explains itself, shows risks/actions/deadlines, and replays a ru
   const { errors, api } = await collect(page);
   await page.goto(DEMO);
   await expect(page.getByText('GitHub·Gmail·Google Calendar를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.')).toBeVisible();
-  await expect(page.getByRole('heading', { name: /demo-user님, 이번 주 업무/ })).toBeVisible();
-  await expect(page.getByRole('heading', { name: '주의할 점' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /성준님, 이번 주/ })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '놓치면 안 되는 것' })).toBeVisible();
   await expect(page.getByRole('heading', { name: '다가오는 일정' })).toBeVisible();
   await expect(page.locator('.pri-high').first()).toBeVisible();
   await expect(page.getByText(/^(D-\d+|내일|오늘)$/).first()).toBeVisible();
@@ -27,12 +27,13 @@ test('dashboard explains itself, shows risks/actions/deadlines, and replays a ru
   await radios.first().focus();
   await page.keyboard.press('ArrowRight');
   await page.keyboard.press('ArrowRight');
-  await expect(radios.nth(2)).toHaveAttribute('aria-checked', 'true');
-  await expect(radios.nth(2)).toBeFocused();
+  await page.keyboard.press('ArrowRight');
+  await expect(radios.nth(3)).toHaveAttribute('aria-checked', 'true');
+  await expect(radios.nth(3)).toBeFocused();
 
   await page.getByRole('button', { name: '에이전트 실행' }).click();
   await expect(page.locator('#activity-heading')).toBeFocused();
-  await expect(page.getByText(/도구 \d+회 호출 \(GitHub, Gmail\) · 출처 \d+건 · MCP 호출 합계 \d+ms/)).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText(/도구 \d+회 호출 \(GitHub, Gmail, Calendar\) · 출처 \d+건 · MCP 호출 합계 \d+ms/)).toBeVisible({ timeout: 30_000 });
   await expect(page.getByText('도구 선택: 질문별 실행 계획(스크립트)', { exact: false })).toBeVisible();
 
   // Tool call details: inputs, result, duration; raw events.
@@ -44,8 +45,8 @@ test('dashboard explains itself, shows risks/actions/deadlines, and replays a ru
   await page.getByRole('button', { name: /원시 이벤트 \d+개/ }).click();
   await expect(page.getByRole('table', { name: '에이전트 이벤트 트레이스' })).toContainText('tool_call_completed');
 
-  // Blocker run has its own sections and no "커밋 0개".
-  await expect(page.getByRole('heading', { name: '막힌 항목' })).toBeVisible();
+  // The "missed or stuck" run has its own sections and no "커밋 0개".
+  await expect(page.getByRole('heading', { name: '놓친 것·막힌 것' })).toBeVisible();
   expect(await page.getByText(/커밋 0개/).count()).toBe(0);
 
   expect(api, 'no API / external calls in demo mode').toEqual([]);
@@ -56,9 +57,9 @@ test('report: deep link survives reload, copy for Slack, hide items, demo source
   const { errors, api } = await collect(page);
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto(`${DEMO}#/report/recorded_blockers`);
-  await expect(page.getByRole('heading', { level: 2, name: '막히고 있는 부분 찾기' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: '놓친 것·막힌 것' })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole('heading', { level: 2, name: '막히고 있는 부분 찾기' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: '놓친 것·막힌 것' })).toBeVisible();
   await expect(page).toHaveTitle('리포트 · My AI Work Agent');
 
   // Hide one item, then copy: the hidden item is excluded.
@@ -67,11 +68,11 @@ test('report: deep link survives reload, copy for Slack, hide items, demo source
   const hiddenText = (await firstItem.locator('.item-text').innerText()).split('\n')[0]!.replace(/^(높음|보통|낮음)/, '').slice(0, 20);
   await firstItem.getByRole('button', { name: '복사할 때 이 항목 빼기' }).click();
   await expect(page.getByRole('button', { name: /숨긴 항목 1개 되돌리기/ })).toBeVisible();
-  await page.getByRole('button', { name: 'Slack용 복사' }).click();
-  await expect(page.locator('#report').getByText(/Slack 형식으로 복사했습니다 \(숨긴 항목 1개 제외\)/)).toBeVisible();
-  await expect(page.getByRole('status').filter({ hasText: 'Slack 형식으로 복사했습니다' })).toHaveCount(1);
+  await page.getByRole('button', { name: /짧게 복사/ }).click();
+  await expect(page.locator('#report').getByText(/짧은 공유용 형식으로 복사했습니다 \(숨긴 항목 1개 제외\)/)).toBeVisible();
+  await expect(page.getByRole('status').filter({ hasText: '짧은 공유용 형식으로 복사했습니다' })).toHaveCount(1);
   const clip = await page.evaluate(() => navigator.clipboard.readText());
-  expect(clip).toContain('*막히고 있는 부분 찾기*');
+  expect(clip).toContain('*놓친 것·막힌 것*');
   expect(clip).toContain('•');
   expect(clip).not.toContain(hiddenText);
 
@@ -85,9 +86,9 @@ test('report: deep link survives reload, copy for Slack, hide items, demo source
   // Run history opens a specific run by URL.
   await page.getByRole('link', { name: '실행 기록' }).first().click();
   await expect(page.getByRole('table')).toContainText('샘플 기록');
-  await page.getByRole('link', { name: '가장 중요한 작업과 다음 액션' }).click();
-  await expect(page).toHaveURL(/#\/report\/recorded_priorities$/);
-  await expect(page.getByRole('heading', { level: 2, name: '가장 중요한 작업과 다음 액션' })).toBeVisible();
+  await page.getByRole('link', { name: '마감 순서' }).click();
+  await expect(page).toHaveURL(/#\/report\/recorded_deadlines$/);
+  await expect(page.getByRole('heading', { level: 2, name: '마감 순서' })).toBeVisible();
 
   expect(api).toEqual([]);
   expect(errors).toEqual([]);
@@ -132,7 +133,7 @@ test('weekly report renders sections visually from source metadata (chart, PR st
   await expect(report.getByText('병합됨').first()).toBeVisible();
   await expect(report.getByText('리뷰 코멘트 3').first()).toBeVisible();
   await expect(report.getByText(/^\d{2}:\d{2}–\d{2}:\d{2}$/).first()).toBeVisible();
-  await expect(report.getByText('Kim Minji').first()).toBeVisible();
+  await expect(report.getByText('김지민').first()).toBeVisible();
   await report.getByRole('button', { name: /커밋 \d+개 더 보기/ }).click();
   await expect(report.getByRole('button', { name: '접기' })).toBeVisible();
   await page.setViewportSize({ width: 375, height: 812 });
@@ -177,23 +178,25 @@ test('trust: validation demo shows the dropped citation, data-use panel, injecti
 
   await page.goto(`${DEMO}#/report/recorded_weekly-progress`);
   await expect(page.getByText('출처 검증: 모든 항목의 인용이 실제로 조회한 출처와 일치합니다')).toBeVisible();
-  await expect(page.getByText(/의심 메일: "my-ai-work-agent weekly sync notes"/)).toBeVisible();
+  await expect(page.getByText(/의심 메일: "\[캡스톤\] 회의록 자동 정리"/)).toBeVisible();
   await expect(page.getByText('⚠ 지시문 감지 · 데이터로만 처리').first()).toBeVisible();
   // Decision first: risks come before the evidence sections.
   const order = await page.locator('#report h3').allInnerTexts();
-  expect(order.indexOf('주의할 점')).toBeLessThan(order.indexOf('주요 작업'));
+  expect(order.indexOf('놓치면 안 되는 것')).toBeLessThan(order.indexOf('공부·개발 기록'));
   await expect(page.locator('#report').getByText(/^근거 · /).first()).toBeVisible();
 
   const panel = page.getByRole('region', { name: '데이터 사용 내역' });
   await expect(panel).toContainText(/메일 주소 \d+개 가림/);
+  await expect(panel).toContainText('LLM·리포트에서 제외 1건');
   await panel.getByRole('button', { name: '자세히' }).click();
   await expect(panel).toContainText('리포트 작성 요청');
+  await expect(panel).toContainText('gmail:msg:demo0011 · 규칙 “엄마”');
 
-  await page.getByRole('button', { name: /Slack용 복사/ }).click();
+  await page.getByRole('button', { name: /짧게 복사/ }).click();
   const clip = await page.evaluate(() => navigator.clipboard.readText());
   expect(clip).toContain('*할 일*');
   expect(clip.split('\n').length).toBeLessThan(25);
-  expect(clip).not.toMatch(/Recruiting|internship/i);
+  expect(clip).not.toMatch(/엄마|쿠폰/);
   expect(api).toEqual([]);
   expect(errors).toEqual([]);
 });
@@ -209,7 +212,15 @@ test('home: one-tap demo run ends with a visible link to the new report', async 
   await expect(page).toHaveURL(/#\/report\/demo_weekly-progress_/);
   await page.reload();
   await page.getByRole('link', { name: '실행 기록' }).first().click();
-  await expect(page.getByRole('table')).toContainText('이번 주 진행 상황 정리');
+  await expect(page.getByRole('table')).toContainText('이번 주 정리');
   expect(await page.locator('table tbody tr').count()).toBeGreaterThanOrEqual(5);
   expect(errors).toEqual([]);
+});
+
+test('settings: the demo shows the data policy its recordings ran under (read-only)', async ({ page }) => {
+  await page.goto(`${DEMO}#/settings`);
+  const policy = page.getByRole('region', { name: '데이터 접근 정책' });
+  await expect(policy.getByRole('textbox', { name: /제외할 단어/ })).toHaveValue('엄마, 쿠폰');
+  await expect(policy.getByRole('textbox', { name: /제외할 단어/ })).toBeDisabled();
+  await expect(policy.getByRole('checkbox', { name: /메일 주소 가리기/ })).toBeChecked();
 });

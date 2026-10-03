@@ -3,20 +3,29 @@ import type { McpServerId, ReportSectionId, Source } from '@mawa/shared';
 /** Korean-first product copy. Technical identifiers stay as they are in the data. */
 export const SECTION_TITLE: Record<ReportSectionId, string> = {
   overview: '이번 주 요약',
-  major_activities: '주요 작업',
-  project_progress: '프로젝트 진행 상황',
-  schedule: '일정',
-  relevant_emails: '관련 이메일',
-  potential_risks: '주의할 점',
-  next_actions: '다음 액션',
+  major_activities: '공부·개발 기록',
+  project_progress: 'PR·프로젝트',
+  schedule: '일정·마감',
+  relevant_emails: '챙겨야 할 메일',
+  potential_risks: '놓치면 안 되는 것',
+  next_actions: '이번 주 할 일',
 };
+
+/** The demo workspace: a fictional week shaped after the author's (CBNU Software student) life. */
+export const DEMO_PERSONA = { name: '이성준', short: '성준', school: '충북대 소프트웨어학부' };
 
 export const PRIORITY_KO = { high: '높음', medium: '보통', low: '낮음' } as const;
 
 /** Section titles adapt to the question: the blockers run's risks are its blockers. */
 export function sectionTitle(id: ReportSectionId, prompt: string | null): string {
-  if (id === 'potential_risks' && prompt && /막히|블로커|block/i.test(prompt)) return '막힌 항목';
-  if (id === 'overview' && prompt && /중요|우선/.test(prompt)) return '우선순위 요약';
+  const p = prompt ?? '';
+  if (id === 'potential_risks' && /막히|놓친|블로커|block/i.test(p)) return '놓친 것·막힌 것';
+  if (id === 'schedule' && /마감|시험|과제/.test(p)) return '마감 순서';
+  if (id === 'potential_risks' && /마감|시험|과제/.test(p)) return '위험한 마감';
+  if (id === 'schedule' && /인턴|취업|코딩테스트/.test(p)) return '다가오는 전형';
+  if (id === 'major_activities' && /인턴|취업|코딩테스트/.test(p)) return '포트폴리오 작업';
+  if (id === 'relevant_emails' && /인턴|취업|코딩테스트/.test(p)) return '채용 메일';
+  if (id === 'overview' && /중요|우선/.test(p)) return '우선순위 요약';
   return SECTION_TITLE[id];
 }
 
@@ -39,9 +48,10 @@ export const SOURCE_TYPE_NAME: Record<Source['type'], string> = SERVER_NAME;
 export const KIND_NAME: Record<string, string> = { commit: '커밋', pr: 'PR', issue: '이슈', repo: '저장소', msg: '이메일', event: '일정' };
 
 export const EXAMPLE_META: Record<string, { title: string; hint: string; uses: McpServerId[] }> = {
-  'weekly-progress': { title: '이번 주 진행 상황 정리', hint: '커밋·PR·이슈, 일정, 관련 메일을 모아 주간 리포트로', uses: ['github', 'calendar', 'gmail'] },
-  priorities: { title: '가장 중요한 작업과 다음 액션', hint: '열린 PR·이슈와 다가오는 일정에서 우선순위 도출', uses: ['github', 'calendar', 'gmail'] },
-  blockers: { title: '막히고 있는 부분 찾기', hint: '열린 이슈·PR과 조치가 필요한 메일에서 블로커 추출', uses: ['github', 'gmail'] },
+  'weekly-progress': { title: '이번 주 정리', hint: '커밋·백준·팀플 PR, 수업 메일, 일정을 한 번에', uses: ['github', 'calendar', 'gmail'] },
+  deadlines: { title: '마감 순서', hint: '과제·퀴즈·발표·신청 마감을 D-day 순으로, 남은 일까지', uses: ['calendar', 'gmail', 'github'] },
+  career: { title: '취업 준비 현황', hint: '인턴 전형 일정, 코딩테스트 대비, 포트폴리오 작업', uses: ['gmail', 'calendar', 'github'] },
+  blockers: { title: '놓친 것·막힌 것', hint: '내 차례인 리뷰, 팀원 부탁, 어긋난 일정', uses: ['github', 'gmail', 'calendar'] },
 };
 
 /** "Searching → Searched" style verb pairs per tool, with the result summary translated where it is a known shape. */

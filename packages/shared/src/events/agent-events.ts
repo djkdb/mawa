@@ -85,6 +85,26 @@ export const LlmResponseSchema = EventBaseSchema.extend({
   toolCalls: z.array(z.object({ name: z.string(), input: z.record(z.string(), z.unknown()) })),
 });
 
+/**
+ * A user-defined data policy for one run: which tools the agent may call, which items are kept
+ * out of the LLM payload and the report (case-insensitive phrases matched against subject, sender,
+ * title, snippet, location), and whether email addresses are masked for the LLM.
+ */
+export const DataPolicySchema = z.object({
+  allowedTools: z.array(z.string().max(80)).max(50).optional(),
+  exclude: z.array(z.string().trim().min(1).max(60)).max(30).default([]),
+  maskEmails: z.boolean().default(true),
+});
+export type DataPolicy = z.infer<typeof DataPolicySchema>;
+
+/** What the data policy did in this run. Emitted once, after tool execution. */
+export const PolicyAppliedSchema = EventBaseSchema.extend({
+  type: z.literal('policy_applied'),
+  policy: DataPolicySchema,
+  blockedTools: z.array(z.string()),
+  excluded: z.array(z.object({ sourceId: z.string(), rule: z.string() })),
+});
+
 export const ToolDiscoveredSchema = EventBaseSchema.extend({
   type: z.literal('tool_discovered'),
   tools: z.array(ToolDefinitionSchema),
@@ -135,6 +155,7 @@ export const AgentEventSchema = z.discriminatedUnion('type', [
   McpMessageSchema,
   LlmRequestSchema,
   LlmResponseSchema,
+  PolicyAppliedSchema,
   ToolDiscoveredSchema,
   ToolCallStartedSchema,
   ToolCallCompletedSchema,
@@ -150,6 +171,7 @@ export type McpServerConnected = z.infer<typeof McpServerConnectedSchema>;
 export type McpMessage = z.infer<typeof McpMessageSchema>;
 export type LlmRequest = z.infer<typeof LlmRequestSchema>;
 export type LlmResponse = z.infer<typeof LlmResponseSchema>;
+export type PolicyApplied = z.infer<typeof PolicyAppliedSchema>;
 export type ToolDiscovered = z.infer<typeof ToolDiscoveredSchema>;
 export type ToolCallStarted = z.infer<typeof ToolCallStartedSchema>;
 export type ToolCallCompleted = z.infer<typeof ToolCallCompletedSchema>;

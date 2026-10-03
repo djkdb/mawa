@@ -1,9 +1,13 @@
-import { AgentEventSchema, type AgentMode } from '@mawa/shared';
+import { AgentEventSchema, type AgentMode, type DataPolicy } from '@mawa/shared';
 import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status } from './types.js';
 
 const TOKEN_KEY = 'mawa.apiToken';
 /** The API access token the user entered (only needed when the API sets API_ACCESS_TOKEN). */
 export function getApiToken(): string | null { try { return localStorage.getItem(TOKEN_KEY); } catch { return null; } }
+const POLICY_KEY = 'mawa.policy';
+/** The data policy the user set on the settings page; sent with every run. */
+export function getPolicy(): Partial<DataPolicy> | null { try { const v = localStorage.getItem(POLICY_KEY); return v ? (JSON.parse(v) as Partial<DataPolicy>) : null; } catch { return null; } }
+export function setPolicy(p: Partial<DataPolicy> | null) { try { if (p) localStorage.setItem(POLICY_KEY, JSON.stringify(p)); else localStorage.removeItem(POLICY_KEY); } catch { /* storage unavailable */ } }
 export function setApiToken(t: string | null) { try { if (t) localStorage.setItem(TOKEN_KEY, t); else localStorage.removeItem(TOKEN_KEY); } catch { /* storage unavailable */ } }
 
 /** fetch with the access token, when one is set. */
@@ -25,7 +29,7 @@ export class HttpClient implements AgentClient {
   }
 
   async startRun(prompt: string, mode: AgentMode): Promise<StartRunResult> {
-    const res = await api(`${this.base}/api/agent/run`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prompt, mode }) });
+    const res = await api(`${this.base}/api/agent/run`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prompt, mode, ...(getPolicy() ? { policy: getPolicy() } : {}) }) });
     const body = (await res.json()) as StartRunResult & { error?: string };
     if (!res.ok) throw new Error(body.error ?? `run failed (${res.status})`);
     return body;

@@ -105,9 +105,9 @@ const CALLS = [
   ['GitHub MCP', 'get_recent_commits()', '12 commits'],
   ['GitHub MCP', 'get_pull_requests()', '3 pull requests'],
   ['GitHub MCP', 'get_open_issues()', '4 open issues'],
-  ['Calendar MCP', 'get_events()', '4 events'],
-  ['Gmail MCP', 'search_project_emails()', '7 relevant emails'],
-  ['Context', 'aggregated', '34 sources'],
+  ['Calendar MCP', 'get_upcoming_events()', '6 upcoming events'],
+  ['Gmail MCP', 'search_project_emails()', '10 relevant emails'],
+  ['Context', 'aggregated', '40 sources'],
 ];
 export function Tools() {
   const frame = useCurrentFrame();
@@ -140,11 +140,11 @@ export function Tools() {
 
 /* 30–38 s */
 const SECTIONS = [
-  ['Overview', '12 commits, 3 PRs, 4 open issues across 2 repos; 4 events, 8 emails.', 'observed'],
-  ['Major Activities', 'my-ai-work-agent: agent-core, MCP servers, SSE timeline.', 'observed'],
-  ['Schedule', 'PR #14 review sync · Capstone check-in · Demo day Oct 10.', 'observed'],
-  ['Potential Risks', 'OAuth refresh token rotation (#17) may block the demo.', 'inferred'],
-  ['Next Actions', 'Resolve #17 · address review on PR #14 · rehearse demo.', 'inferred'],
+  ['Overview', '12 commits in 4 repos, 3 BOJ problems; 4 deadlines in the next 7 days.', 'observed'],
+  ['Major Activities', 'my-ai-work-agent · team-mate (capstone) · baekjoon · os-hw.', 'observed'],
+  ['Schedule', 'OS HW2 due D-2 · coding test D-4 · DB quiz D-5 · midterm talk.', 'observed'],
+  ['Potential Risks', 'Midterm talk: mail says Oct 14, calendar says Oct 15.', 'inferred'],
+  ['Next Actions', 'Finalize ERD (#12) · review PR #8 · finish HW2 report (#2).', 'inferred'],
 ];
 export function Report() {
   const frame = useCurrentFrame();

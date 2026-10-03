@@ -48,7 +48,7 @@ export function buildAnalysisPrompt(context: AggregatedContext, userPrompt: stri
   return analysisPrompt(context, userPrompt).text;
 }
 
-export function analysisPrompt(context: AggregatedContext, userPrompt: string): AnalysisPrompt {
+export function analysisPrompt(context: AggregatedContext, userPrompt: string, maskEmails = true): AnalysisPrompt {
   const sectionList = REPORT_SECTION_ORDER.map((id) => `- ${id}: ${REPORT_SECTION_TITLES[id]}`).join('\n');
   const payload = {
     request: userPrompt,
@@ -57,7 +57,7 @@ export function analysisPrompt(context: AggregatedContext, userPrompt: string): 
     items: context.items.map((i) => ({ sourceId: i.sourceId, kind: i.kind, title: i.title, timestamp: i.timestamp, summary: i.summary, fields: pickFields(i.raw) })),
     toolSummaries: context.toolSummaries,
   };
-  const masked = promptJson(payload);
+  const masked = promptJson(payload, maskEmails);
   const fields = [...new Set(payload.items.flatMap((i) => Object.keys(i.fields)))].sort();
   const text = `The user asked: "${userPrompt}"
 

@@ -36,15 +36,15 @@ describe('GitHub MCP server (demo mode, stdio)', () => {
   it('get_pull_requests filters by state', async () => {
     const res = await client.callTool({ name: 'get_pull_requests', arguments: { state: 'merged' } });
     const sc = res.structuredContent as { data: Array<{ state: string }> };
-    expect(sc.data).toHaveLength(2);
+    expect(sc.data).toHaveLength(1);
     expect(sc.data.every((p) => p.state === 'merged')).toBe(true);
   });
 
-  it('get_open_issues returns 4 and get_repository_activity returns 2', async () => {
+  it('get_open_issues returns 4 and get_repository_activity returns 4', async () => {
     const issues = await client.callTool({ name: 'get_open_issues', arguments: {} });
     expect((issues.structuredContent as { data: unknown[] }).data).toHaveLength(4);
     const repos = await client.callTool({ name: 'get_repository_activity', arguments: {} });
-    expect((repos.structuredContent as { data: unknown[] }).data).toHaveLength(2);
+    expect((repos.structuredContent as { data: unknown[] }).data).toHaveLength(4);
   });
 
   it('rejects invalid input via schema', async () => {

@@ -231,3 +231,25 @@ cross-origin protection.
 exportable (JSONL audit), and every claim must hold in real mode too, since
 all of it is computed from the same events.
 
+---
+
+## ADR-015 — A student's week as the demo, and a user-defined data policy
+
+**Context.** The author is a software student; a generic "team weekly report"
+demo was neither something he would use nor a strong story for a data-access
+governance audience.
+
+**Decision.** The demo fixtures describe a fictional week of a CBNU software
+student (classes and deadlines, a capstone team repo, internship coding test at
+a fictional company, Baekjoon study, a family mail, an ad, an injection-like
+bot mail). The scripted writer gains `deadlines` and `career` intents, D-day
+ordering from events and from dates written in mail, "my review" detection,
+and area tags (수업/팀플/취업/공부/학사). A `DataPolicy` (allowed tools,
+exclusion phrases, masking) is accepted by the API per run, applied before
+anything reaches the LLM or the context, and reported as `policy_applied`.
+The demo shows the policy its recordings ran under, read-only.
+
+**Why.** Real use first (it is the author's own week), and the policy makes the
+governance story concrete: the user decides what the agent may read and send,
+and every run proves what happened.
+

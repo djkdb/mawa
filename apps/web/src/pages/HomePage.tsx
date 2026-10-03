@@ -5,7 +5,7 @@ import { ActivityTimeline } from '../components/ActivityTimeline.js';
 import { PromptPanel } from '../components/PromptPanel.js';
 import { StatStrip, reportTitle } from '../components/ReportView.js';
 import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
-import { PRIORITY_KO, periodKo, relDay, sectionTitle, timeKo } from '../lib/copy.js';
+import { PRIORITY_KO, periodKo, relDay, sectionTitle, timeKo, DEMO_PERSONA } from '../lib/copy.js';
 import type { AgentRunState } from '../lib/useAgentRun.js';
 
 function Highlights({ report, prompt, reportHref }: { report: WeeklyWorkReport; prompt: string | null; reportHref: string }) {
@@ -40,7 +40,7 @@ function Highlights({ report, prompt, reportHref }: { report: WeeklyWorkReport; 
         </Card>
       )}
       {actions.length > 0 && (
-        <Card title="다음 액션" more={Math.max(0, actions.length - 3)}>
+        <Card title="이번 주 할 일" more={Math.max(0, actions.length - 3)}>
           <ul>{actions.slice(0, 3).map((i) => <Item key={i.id} priority={i.priority} text={i.text} />)}</ul>
         </Card>
       )}
@@ -72,7 +72,7 @@ function progressOf(state: AgentRunState): string {
 /** Dashboard: what matters this week first (risks, actions, deadlines), then the composer and the run. */
 export function HomePage({ status, state, busy, onRun, reportHref }: { status: Status | null; state: AgentRunState; busy: boolean; onRun: (p: string, m: AgentMode) => void; reportHref: string }) {
   const report = state.report;
-  const who = IS_DEMO_BUILD ? 'demo-user' : (status?.integrations.github.account ?? '');
+  const who = IS_DEMO_BUILD ? DEMO_PERSONA.short : (status?.integrations.github.account ?? '');
   const activityHeading = useRef<HTMLHeadingElement>(null);
   const prev = useRef(state.phase);
   useEffect(() => {
@@ -102,7 +102,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
           <p className="text-sm leading-relaxed text-text-2">
             <b className="font-semibold text-text">GitHub·Gmail·Google Calendar를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.</b>
-            {IS_DEMO_BUILD && <> 지금은 <span className="text-amber-200">데모 워크스페이스</span>로, 가상의 demo-user 샘플 데이터로 기록된 실행을 재생합니다. 실제 계정에는 접속하지 않습니다.</>}
+            {IS_DEMO_BUILD && <> 지금은 <span className="text-amber-200">데모 워크스페이스</span>로, 성준님의 한 주를 가정해 만든 가상의 샘플 데이터(수업·팀플·인턴 준비)로 기록된 실행을 재생합니다. 실제 계정에는 접속하지 않습니다.</>}
           </p>
         </div>
         {IS_DEMO_BUILD && DEMO_EXAMPLES[0] && (
@@ -123,7 +123,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
 
       <div className="flex flex-wrap items-end justify-between gap-2">
         <div>
-          <h2 className="text-2xl font-semibold">{who ? `${who}님, ` : ''}이번 주 업무</h2>
+          <h2 className="text-2xl font-semibold">{who ? `${who}님, ` : ''}이번 주</h2>
           {report && <p className="text-sm text-text-2">{periodKo(report.period)} · {reportTitle(state.prompt)} · {generated}</p>}
         </div>
         {report && <a href={reportHref} className="inline-flex min-h-9 items-center gap-1 text-sm text-accent hover:underline">리포트 전체 보기 <ArrowRight className="h-4 w-4" aria-hidden /></a>}

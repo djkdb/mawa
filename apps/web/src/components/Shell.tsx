@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { CircleHelp, Code2, FileText, History, Home, Plug, Settings, X } from 'lucide-react';
 import { IS_DEMO_BUILD, REPO_URL, type Status } from '../lib/client.js';
+import { DEMO_PERSONA } from '../lib/copy.js';
 import { hrefFor, type Route } from '../lib/useHashRoute.js';
 import { HowItWorks } from './HowItWorks.js';
 import { ModeBadge } from './ModeBadge.js';
@@ -18,7 +19,7 @@ export function Shell({ route, reportHref, navigate, status, children }: { route
   const h1 = useRef<HTMLHeadingElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const first = useRef(true);
-  const workspace = IS_DEMO_BUILD ? 'demo-user' : (status?.integrations.github.account ?? status?.integrations.google.account ?? '내 워크스페이스');
+  const workspace = IS_DEMO_BUILD ? `${DEMO_PERSONA.name} (샘플)` : (status?.integrations.github.account ?? status?.integrations.google.account ?? '내 워크스페이스');
 
   // Announce route changes: update the document title and move focus to the page heading (not on first load).
   useEffect(() => {

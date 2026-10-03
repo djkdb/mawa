@@ -16,26 +16,26 @@ describe('Calendar MCP server (demo mode, stdio)', () => {
     expect(tools.map((t) => t.name).sort()).toEqual(['get_events', 'get_upcoming_events', 'search_events']);
   });
 
-  it('get_upcoming_events returns the 4 future demo events within 7 days, sorted', async () => {
+  it('get_upcoming_events returns the 5 future demo events within 7 days, sorted', async () => {
     const res = await client.callTool({ name: 'get_upcoming_events', arguments: { days: 7 } });
     const sc = res.structuredContent as { data: Array<{ start: string; sourceId: string }> };
-    expect(sc.data).toHaveLength(3);
+    expect(sc.data).toHaveLength(5);
     expect(sc.data.every((e) => e.sourceId.startsWith('calendar:event:'))).toBe(true);
     const starts = sc.data.map((e) => e.start);
     expect([...starts].sort()).toEqual(starts);
   });
 
   it('search_events matches by text across ±30 days', async () => {
-    const res = await client.callTool({ name: 'search_events', arguments: { query: 'demo day' } });
+    const res = await client.callTool({ name: 'search_events', arguments: { query: '중간발표' } });
     const sc = res.structuredContent as { data: Array<{ title: string }> };
-    // Matches the "Demo day" event itself and the deep-work block whose description mentions demo day.
+    // Matches the presentation itself and the team meeting whose description mentions it.
     expect(sc.data).toHaveLength(2);
-    expect(sc.data.some((e) => e.title.startsWith('Demo day'))).toBe(true);
+    expect(sc.data.some((e) => e.title === '캡스톤디자인 중간발표')).toBe(true);
   });
 
-  it('get_events over a 30-day window returns all 5 fixture events', async () => {
+  it('get_events over a 30-day window returns all 8 fixture events', async () => {
     const now = Date.now();
     const res = await client.callTool({ name: 'get_events', arguments: { timeMin: new Date(now - 15 * 86_400_000).toISOString(), timeMax: new Date(now + 15 * 86_400_000).toISOString() } });
-    expect((res.structuredContent as { data: unknown[] }).data).toHaveLength(5);
+    expect((res.structuredContent as { data: unknown[] }).data).toHaveLength(8);
   });
 });

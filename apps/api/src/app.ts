@@ -3,7 +3,7 @@ import { Hono, type Context, type Next } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { z } from 'zod';
-import { AgentModeSchema, PROJECT } from '@mawa/shared';
+import { AgentModeSchema, DataPolicySchema, PROJECT } from '@mawa/shared';
 import { GOOGLE_SCOPES, OAuthService, githubScopesFromEnv } from './auth/oauth.js';
 import { TokenStore } from './auth/token-store.js';
 import type { AppConfig } from './config.js';
@@ -33,7 +33,7 @@ export async function createDeps(config: AppConfig): Promise<AppDeps> {
   return { config, oauth, runs, store };
 }
 
-const RunBody = z.object({ prompt: z.string().trim().min(1).max(2000), mode: AgentModeSchema.optional() });
+const RunBody = z.object({ prompt: z.string().trim().min(1).max(2000), mode: AgentModeSchema.optional(), policy: DataPolicySchema.partial().optional() });
 
 export function createApp(deps: AppDeps) {
   const { config, oauth, runs } = deps;
@@ -98,7 +98,9 @@ export function createApp(deps: AppDeps) {
     const parsed = RunBody.safeParse(await c.req.json().catch(() => ({})));
     if (!parsed.success) return c.json({ error: 'Invalid body', issues: parsed.error.issues }, 400);
     try {
-      const record = await runs.start({ prompt: parsed.data.prompt, mode: parsed.data.mode ?? config.defaultMode });
+      const p = parsed.data.policy;
+      const policy = p ? { ...(p.allowedTools ? { allowedTools: p.allowedTools } : {}), ...(p.exclude ? { exclude: p.exclude } : {}), ...(p.maskEmails !== undefined ? { maskEmails: p.maskEmails } : {}) } : null;
+      const record = await runs.start({ prompt: parsed.data.prompt, mode: parsed.data.mode ?? config.defaultMode, ...(policy ? { policy } : {}) });
       return c.json({ runId: record.runId, mode: record.mode, llm: record.llm, warnings: record.warnings }, 202);
     } catch (err) {
       return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
