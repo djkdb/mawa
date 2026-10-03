@@ -64,19 +64,28 @@ process.stdin.on('end', () => {
 });
 
 describe('resolveClaudeCommand (Windows lookup)', () => {
-  it('runs the npm shim cli.js with node instead of spawning claude.cmd', async () => {
+  const none = () => [];
+  it('reads an npm .cmd shim and runs its .js target with node', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'mawa-win-'));
     const pkg = join(dir, 'node_modules', '@anthropic-ai', 'claude-code');
     await mkdir(pkg, { recursive: true });
-    await writeFile(join(dir, 'claude.cmd'), '@echo off');
+    await writeFile(join(dir, 'claude.cmd'), '@ECHO off\r\n"%_prog%"  "%dp0%\\node_modules\\@anthropic-ai\\claude-code\\cli.js" %*\r\n');
     await writeFile(join(pkg, 'cli.js'), '');
-    expect(resolveClaudeCommand(undefined, 'win32', { PATH: dir })).toEqual({ command: process.execPath, prefix: [join(pkg, 'cli.js')] });
+    expect(resolveClaudeCommand(undefined, 'win32', { PATH: dir }, none)).toEqual({ command: process.execPath, prefix: [join(pkg, 'cli.js')] });
   });
-  it('prefers claude.exe and honours CLAUDE_BIN', async () => {
+  it('follows a shim to a packaged .exe and uses where.exe results', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-win-'));
+    const bin = join(dir, 'node_modules', '@anthropic-ai', 'claude-code', 'bin');
+    await mkdir(bin, { recursive: true });
+    await writeFile(join(bin, 'claude.exe'), '');
+    await writeFile(join(dir, 'claude.cmd'), '"%dp0%\\node_modules\\@anthropic-ai\\claude-code\\bin\\claude.exe" %*');
+    expect(resolveClaudeCommand(undefined, 'win32', { PATH: '' }, () => [join(dir, 'claude'), join(dir, 'claude.cmd')]).command).toBe(join(bin, 'claude.exe'));
+  });
+  it('prefers claude.exe on PATH and honours CLAUDE_BIN', async () => {
     const dir = await mkdtemp(join(tmpdir(), 'mawa-win-'));
     await writeFile(join(dir, 'claude.exe'), '');
-    expect(resolveClaudeCommand(undefined, 'win32', { PATH: dir }).command).toBe(join(dir, 'claude.exe'));
-    expect(resolveClaudeCommand(undefined, 'win32', { PATH: dir, CLAUDE_BIN: 'C:/x/claude.exe' }).command).toBe('C:/x/claude.exe');
+    expect(resolveClaudeCommand(undefined, 'win32', { PATH: dir }, none).command).toBe(join(dir, 'claude.exe'));
+    expect(resolveClaudeCommand(undefined, 'win32', { PATH: dir, CLAUDE_BIN: join(dir, 'claude.exe') }, none).command).toBe(join(dir, 'claude.exe'));
     expect(resolveClaudeCommand(undefined, 'linux', {}).command).toBe('claude');
   });
 });

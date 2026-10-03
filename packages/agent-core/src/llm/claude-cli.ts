@@ -1,8 +1,8 @@
-import { spawn } from 'node:child_process';
-import { existsSync } from 'node:fs';
+import { execFileSync, spawn } from 'node:child_process';
+import { existsSync, readFileSync } from 'node:fs';
 import { mkdtemp } from 'node:fs/promises';
 import { homedir, tmpdir } from 'node:os';
-import { delimiter, join } from 'node:path';
+import { delimiter, dirname, join } from 'node:path';
 import type { LLMMessage, LLMProvider, LLMRequest, LLMResponse } from './types.js';
 import { LLMProviderError } from './types.js';
 
@@ -15,22 +15,45 @@ export interface ClaudeCliOptions {
 }
 
 /**
- * How to start the CLI. On Windows, Node's spawn does not find `claude.cmd` (npm shim) without a
- * shell, and going through cmd.exe would mangle the JSON arguments, so the shim's cli.js is run
- * with this Node instead. `claude.exe` (native installer) is spawned directly.
+ * How to start the CLI. On Windows, Node's spawn finds neither `claude.cmd` nor `claude.ps1`
+ * (npm shims) without a shell, and going through cmd.exe would mangle the JSON arguments. So the
+ * shim is read for the file it launches: a .js is run with this Node, an .exe is spawned directly.
  */
-export function resolveClaudeCommand(bin: string | undefined, platform = process.platform, env = process.env): { command: string; prefix: string[] } {
+export function resolveClaudeCommand(bin: string | undefined, platform = process.platform, env = process.env, where = whereClaude): { command: string; prefix: string[] } {
   const explicit = bin ?? env['CLAUDE_BIN'];
-  if (explicit) return explicit.toLowerCase().endsWith('.js') ? { command: process.execPath, prefix: [explicit] } : { command: explicit, prefix: [] };
-  if (platform !== 'win32') return { command: 'claude', prefix: [] };
-  const dirs = [...(env['PATH'] ?? env['Path'] ?? '').split(delimiter).filter(Boolean), join(homedir(), '.local', 'bin'), ...(env['APPDATA'] ? [join(env['APPDATA'], 'npm')] : [])];
-  for (const dir of dirs) {
-    const exe = join(dir, 'claude.exe');
-    if (existsSync(exe)) return { command: exe, prefix: [] };
-    const cli = join(dir, 'node_modules', '@anthropic-ai', 'claude-code', 'cli.js');
-    if (existsSync(join(dir, 'claude.cmd')) && existsSync(cli)) return { command: process.execPath, prefix: [cli] };
+  if (platform !== 'win32') return { command: explicit ?? 'claude', prefix: [] };
+  const candidates = explicit ? [explicit] : [...where(env), ...searchDirs(env).flatMap((d) => ['claude.exe', 'claude.cmd'].map((f) => join(d, f)))];
+  for (const c of candidates) {
+    const r = fromCandidate(c);
+    if (r) return r;
   }
-  return { command: 'claude', prefix: [] };
+  return { command: explicit ?? 'claude', prefix: [] };
+}
+
+function searchDirs(env: NodeJS.ProcessEnv): string[] {
+  return [...(env['PATH'] ?? env['Path'] ?? '').split(delimiter).filter(Boolean), join(homedir(), '.local', 'bin'), ...(env['APPDATA'] ? [join(env['APPDATA'], 'npm')] : [])];
+}
+
+function whereClaude(env: NodeJS.ProcessEnv): string[] {
+  try {
+    return execFileSync('where.exe', ['claude'], { env, encoding: 'utf8', windowsHide: true, stdio: ['ignore', 'pipe', 'ignore'] }).split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
+  } catch {
+    return [];
+  }
+}
+
+function fromCandidate(file: string): { command: string; prefix: string[] } | undefined {
+  if (!existsSync(file)) return undefined;
+  const lower = file.toLowerCase();
+  if (lower.endsWith('.js') || lower.endsWith('.mjs') || lower.endsWith('.cjs')) return { command: process.execPath, prefix: [file] };
+  if (lower.endsWith('.exe')) return { command: file, prefix: [] };
+  // npm shims (.cmd / .ps1 / extensionless sh): the target is written relative to the shim's folder.
+  let text: string;
+  try { text = readFileSync(lower.endsWith('.cmd') || lower.endsWith('.ps1') ? file : `${file}.cmd`, 'utf8'); } catch { return undefined; }
+  const m = /(?:%~?dp0%?|\$basedir)[\\/]+([^"'\s]+\.(?:exe|js|mjs|cjs))/i.exec(text);
+  if (!m) return undefined;
+  const target = join(dirname(file), ...m[1]!.split(/[\\/]+/));
+  return existsSync(target) ? fromCandidate(target) : undefined;
 }
 
 /** What the model returns on a planning turn: which tools to call next, or none when it has enough. */
