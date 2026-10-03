@@ -6,7 +6,8 @@ import { hrefFor } from '../lib/useHashRoute.js';
 function titleFor(prompt: string, kind?: string) {
   if (kind === 'validation') return '출처 검증 시연';
   const ex = DEMO_EXAMPLES.find((e) => e.prompt === prompt);
-  return ex ? (EXAMPLE_META[ex.id]?.title ?? prompt) : prompt;
+  const base = ex ? (EXAMPLE_META[ex.id]?.title ?? prompt) : prompt;
+  return kind === 'llm' ? `${base} — AI가 고른 도구로` : base;
 }
 
 export function RunsPage({ currentRunId, refreshKey }: { currentRunId: string | null; refreshKey: number }) {
@@ -16,7 +17,7 @@ export function RunsPage({ currentRunId, refreshKey }: { currentRunId: string | 
   return (
     <div className="mx-auto max-w-5xl">
       <p className="mb-4 text-sm text-text-2">에이전트가 만든 리포트 목록입니다. 질문을 누르면 그 실행의 리포트와 활동 기록을 엽니다.</p>
-      {error && <p role="alert" className="text-sm text-rose-200">{error}</p>}
+      {error && <p role="alert" className="text-sm text-danger">{error}</p>}
       {runs && (
         <div className="surface overflow-hidden">
           <table className="w-full text-sm">
@@ -46,7 +47,7 @@ export function RunsPage({ currentRunId, refreshKey }: { currentRunId: string | 
                   </td>
                   <td className="tnum hidden px-4 py-3 text-text-2 sm:table-cell">{r.toolCalls}회</td>
                   <td className="tnum hidden px-4 py-3 text-text-2 sm:table-cell">{r.sources}건</td>
-                  <td className="px-4 py-3"><span className={`tag ${r.status === 'success' ? 'bg-ok/15 text-emerald-200' : r.status === 'running' ? 'bg-accent-2 text-text' : 'bg-rose-400/15 text-rose-200'}`}>{r.status === 'success' ? '완료' : r.status === 'running' ? '실행 중' : '실패'}</span></td>
+                  <td className="px-4 py-3"><span className={`tag ${r.status === 'success' ? 'bg-ok/15 text-ok' : r.status === 'running' ? 'bg-accent-2 text-text' : 'bg-danger/15 text-danger'}`}>{r.status === 'success' ? '완료' : r.status === 'running' ? '실행 중' : '실패'}</span></td>
                 </tr>
               ))}
             </tbody>

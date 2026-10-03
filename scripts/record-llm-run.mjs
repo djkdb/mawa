@@ -6,6 +6,7 @@
  * 실행 기록 as "실제 LLM 기록 · <model>". Data stays synthetic; only the planner and writer are a model.
  *
  *   LLM_API_KEY=... npm run build && npm run record:llm-run
+ *   LLM_PROVIDER=claude-cli npm run record:llm-run   # uses the local Claude Code login
  */
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -13,20 +14,22 @@ import { McpToolExecutor, createLLMProvider, llmConfigFromEnv, runAgent } from '
 
 const config = llmConfigFromEnv();
 if (config.provider === 'scripted') {
-  console.error('BLOCKED: set LLM_API_KEY (and optionally LLM_PROVIDER, LLM_MODEL) to record a real LLM run.');
+  console.error('BLOCKED: set LLM_API_KEY (and optionally LLM_PROVIDER, LLM_MODEL), or LLM_PROVIDER=claude-cli, to record a real LLM run.');
   process.exit(2);
 }
 const root = new URL('../', import.meta.url);
 const file = new URL('packages/shared/demo/demo-runs.json', root);
 const server = (id) => ({ id, command: process.execPath, args: [fileURLToPath(new URL(`mcp-servers/${id}/dist/index.js`, root))] });
 const llm = createLLMProvider(config);
-const prompt = process.argv[2] ?? '이번 주 내 개발 프로젝트 진행 상황을 정리해줘.';
-const executor = new McpToolExecutor({ servers: ['github', 'gmail', 'calendar', 'lms'].map(server), mode: 'demo', clientName: 'mawa-agent' });
-const run = await runAgent({ prompt, mode: 'demo', llm, executor }).finally(() => executor.close());
-if (run.error || !run.report) { console.error(`run failed: ${run.error}`); process.exit(1); }
+const prompt = process.argv[2] ?? '앞으로 2주 과제·시험·발표 마감 순서대로 알려줘.';
 const out = JSON.parse(await readFile(file, 'utf8'));
+// Same data policy as the scripted recordings (excluded words, masked addresses).
+const dataPolicy = out.policy;
+const executor = new McpToolExecutor({ servers: ['github', 'gmail', 'calendar', 'lms'].map(server), mode: 'demo', clientName: 'mawa-agent' });
+const run = await runAgent({ prompt, mode: 'demo', llm, executor, ...(dataPolicy ? { dataPolicy } : {}) }).finally(() => executor.close());
+if (run.error || !run.report) { console.error(`run failed: ${run.error}`); process.exit(1); }
 out.runs = out.runs.filter((r) => r.kind !== 'llm');
-out.runs.push({ id: 'llm-weekly', kind: 'llm', prompt, note: `실제 LLM(${llm.id} · ${llm.model})이 도구를 고르고 리포트를 쓴 기록입니다. 데이터는 샘플(--mode=demo)입니다.`, llm: { provider: llm.id, model: llm.model }, recordedAt: new Date().toISOString(), events: run.events, report: run.report, warnings: run.warnings });
+out.runs.push({ id: 'llm-run', kind: 'llm', prompt, note: `실제 LLM(${llm.id} · ${llm.model})이 도구를 고르고 리포트를 쓴 기록입니다. 데이터는 샘플(--mode=demo)입니다.`, llm: { provider: llm.id, model: llm.model }, recordedAt: new Date().toISOString(), events: run.events, report: run.report, warnings: run.warnings });
 await writeFile(file, JSON.stringify(out, null, 2));
 const calls = run.events.filter((e) => e.type === 'tool_call_completed').map((e) => `${e.call.server}.${e.call.name}`);
-console.log(`recorded llm-weekly with ${llm.id}/${llm.model}: ${calls.length} tool calls (${calls.join(', ')}), dropped ${run.events.find((e) => e.type === 'report_generated')?.droppedItems ?? 0}`);
+console.log(`recorded llm-run with ${llm.id}/${llm.model}: ${calls.length} tool calls (${calls.join(', ')}), dropped ${run.events.find((e) => e.type === 'report_generated')?.droppedItems ?? 0}`);

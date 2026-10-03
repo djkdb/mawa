@@ -5,7 +5,9 @@ describe('DemoClient', () => {
   it('lists session runs before shipped recordings and replays without network', async () => {
     const c = new DemoClient();
     const shipped = await c.listRuns();
-    expect(shipped.map((r) => r.recorded)).toEqual([true, true, true, true, true]);
+    expect(shipped.map((r) => r.recorded)).toEqual([true, true, true, true, true, true]);
+    // One run was recorded with a real model choosing the tools; it is labelled, not offered as an example.
+    expect(shipped.filter((r) => r.kind === 'llm')).toEqual([expect.objectContaining({ runId: 'recorded_llm-run', model: expect.stringMatching(/\S/) })]);
     // The fault-injection recording is listed but never offered as an example question.
     expect(shipped.filter((r) => r.kind === 'validation')).toHaveLength(1);
     expect(DEMO_EXAMPLES).toHaveLength(4);

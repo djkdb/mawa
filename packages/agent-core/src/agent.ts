@@ -52,6 +52,13 @@ export interface RunAgentResult {
  * Every transition is emitted as a typed AgentEvent carrying runId, timestamp and mode.
  * Model reasoning is never emitted; only state transitions are.
  */
+/** "2026-10-03 Sat 13:12 KST" — the model gets the local date and weekday instead of deriving them. */
+function kstToday(d: Date): string {
+  const k = new Date(d.getTime() + 9 * 3600_000);
+  const day = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][k.getUTCDay()];
+  return `${k.toISOString().slice(0, 10)} ${day} ${k.toISOString().slice(11, 16)} KST`;
+}
+
 export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
   const runId = input.runId ?? `run_${randomUUID()}`;
   const mode = input.mode;
@@ -89,7 +96,7 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
     const llmTools: LLMToolDefinition[] = allowed.map((d) => ({ name: qualifiedToolName(d), description: d.description, inputSchema: d.inputSchema }));
 
     // 2. Plan + execute loop.
-    const messages: LLMMessage[] = [{ role: 'user', content: `${input.prompt}\n\n(Reporting period: ${period.start} to ${period.end}. Today is ${now().toISOString()}.)` }];
+    const messages: LLMMessage[] = [{ role: 'user', content: `${input.prompt}\n\n(Reporting period: ${period.start} to ${period.end}. Today is ${kstToday(now())} (${now().toISOString()}). Count weekdays from today’s; omit a weekday rather than guess.)` }];
     const executed: Array<{ call: ToolCall; result: ToolResult }> = [];
     let turns = 0;
     let planMasked = 0;
