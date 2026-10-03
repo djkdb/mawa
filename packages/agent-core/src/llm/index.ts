@@ -8,7 +8,7 @@ export * from './types.js';
 export { AnthropicProvider } from './anthropic.js';
 export { OpenAIProvider, OpenAICompatibleProvider } from './openai.js';
 export { ScriptedProvider } from './scripted.js';
-export { ClaudeCliProvider } from './claude-cli.js';
+export { ClaudeCliProvider, resolveClaudeCommand } from './claude-cli.js';
 
 export type LLMProviderId = 'anthropic' | 'openai' | 'openai-compatible' | 'claude-cli' | 'scripted';
 

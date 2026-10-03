@@ -23,6 +23,15 @@ Node 22 이상이 필요합니다. AI 모드로 돌리려면 Claude Code가 설�
 read -s GITHUB_TOKEN && export GITHUB_TOKEN   # 붙여넣고 Enter (화면에 안 보임)
 LLM_PROVIDER=claude-cli npm run ask -- --mode=real "이번 주 내 GitHub 활동이랑 리뷰 대기 정리해줘."
 ```
+**Windows PowerShell**은 `read`가 없으므로 이렇게 넣습니다. 첫 줄은 그대로 입력하고 Enter → `GitHub token:` 칸에 붙여넣기:
+```powershell
+$s = Read-Host -AsSecureString "GitHub token"
+$env:GITHUB_TOKEN = [System.Net.NetworkCredential]::new("", $s).Password
+$env:LLM_PROVIDER = "claude-cli"
+npm run ask -- --mode=real "이번 주 내 GitHub 활동이랑 리뷰 대기 정리해줘."
+```
+토큰을 명령 줄에 직접 쓰지 마세요. PowerShell은 입력한 명령을 기록 파일에 남깁니다. 실수했다면 `Remove-Item (Get-PSReadLineOption).HistorySavePath` 후 토큰을 삭제·재발급하세요. `claude`를 못 찾으면 `$env:CLAUDE_BIN = "<claude.exe 또는 cli.js 경로>"`로 지정합니다.
+
 - AI 없이 스크립트로만 보려면 `LLM_PROVIDER=` 부분을 빼고 실행합니다.
 - 실제 모드에서는 토큰이 있는 서버(GitHub)만 켜집니다. 화면 첫 줄에 `real data`가 보여야 합니다.
 

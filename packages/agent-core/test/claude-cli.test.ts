@@ -1,8 +1,8 @@
-import { chmod, mkdtemp, readFile, writeFile } from 'node:fs/promises';
+import { chmod, mkdir, mkdtemp, readFile, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { ClaudeCliProvider } from '../src/index.js';
+import { ClaudeCliProvider, resolveClaudeCommand } from '../src/index.js';
 
 /**
  * Tests the Claude Code CLI adapter against a stand-in `claude` script that records
@@ -60,5 +60,23 @@ process.stdin.on('end', () => {
   it('fails clearly when the binary is missing', async () => {
     const p = new ClaudeCliProvider({ bin: join(dir, 'nope') });
     await expect(p.complete({ system: 'S', messages: [{ role: 'user', content: 'x' }] })).rejects.toThrow(/not available/);
+  });
+});
+
+describe('resolveClaudeCommand (Windows lookup)', () => {
+  it('runs the npm shim cli.js with node instead of spawning claude.cmd', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-win-'));
+    const pkg = join(dir, 'node_modules', '@anthropic-ai', 'claude-code');
+    await mkdir(pkg, { recursive: true });
+    await writeFile(join(dir, 'claude.cmd'), '@echo off');
+    await writeFile(join(pkg, 'cli.js'), '');
+    expect(resolveClaudeCommand(undefined, 'win32', { PATH: dir })).toEqual({ command: process.execPath, prefix: [join(pkg, 'cli.js')] });
+  });
+  it('prefers claude.exe and honours CLAUDE_BIN', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-win-'));
+    await writeFile(join(dir, 'claude.exe'), '');
+    expect(resolveClaudeCommand(undefined, 'win32', { PATH: dir }).command).toBe(join(dir, 'claude.exe'));
+    expect(resolveClaudeCommand(undefined, 'win32', { PATH: dir, CLAUDE_BIN: 'C:/x/claude.exe' }).command).toBe('C:/x/claude.exe');
+    expect(resolveClaudeCommand(undefined, 'linux', {}).command).toBe('claude');
   });
 });

@@ -1,7 +1,8 @@
 import { spawn } from 'node:child_process';
+import { existsSync } from 'node:fs';
 import { mkdtemp } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { homedir, tmpdir } from 'node:os';
+import { delimiter, join } from 'node:path';
 import type { LLMMessage, LLMProvider, LLMRequest, LLMResponse } from './types.js';
 import { LLMProviderError } from './types.js';
 
@@ -11,6 +12,25 @@ export interface ClaudeCliOptions {
   /** Model alias or id passed as --model (default: the CLI's default model). */
   model?: string;
   timeoutMs?: number;
+}
+
+/**
+ * How to start the CLI. On Windows, Node's spawn does not find `claude.cmd` (npm shim) without a
+ * shell, and going through cmd.exe would mangle the JSON arguments, so the shim's cli.js is run
+ * with this Node instead. `claude.exe` (native installer) is spawned directly.
+ */
+export function resolveClaudeCommand(bin: string | undefined, platform = process.platform, env = process.env): { command: string; prefix: string[] } {
+  const explicit = bin ?? env['CLAUDE_BIN'];
+  if (explicit) return explicit.toLowerCase().endsWith('.js') ? { command: process.execPath, prefix: [explicit] } : { command: explicit, prefix: [] };
+  if (platform !== 'win32') return { command: 'claude', prefix: [] };
+  const dirs = [...(env['PATH'] ?? env['Path'] ?? '').split(delimiter).filter(Boolean), join(homedir(), '.local', 'bin'), ...(env['APPDATA'] ? [join(env['APPDATA'], 'npm')] : [])];
+  for (const dir of dirs) {
+    const exe = join(dir, 'claude.exe');
+    if (existsSync(exe)) return { command: exe, prefix: [] };
+    const cli = join(dir, 'node_modules', '@anthropic-ai', 'claude-code', 'cli.js');
+    if (existsSync(join(dir, 'claude.cmd')) && existsSync(cli)) return { command: process.execPath, prefix: [cli] };
+  }
+  return { command: 'claude', prefix: [] };
 }
 
 /** What the model returns on a planning turn: which tools to call next, or none when it has enough. */
@@ -81,13 +101,14 @@ export class ClaudeCliProvider implements LLMProvider {
     const cwd = await this.cwd;
     const args = ['-p', '--output-format', 'json', '--tools', '', '--no-session-persistence', '--system-prompt', system, '--json-schema', JSON.stringify(schema), ...(this.options.model ? ['--model', this.options.model] : [])];
     return new Promise((resolve, reject) => {
-      const child = spawn(this.options.bin ?? 'claude', args, { cwd, stdio: ['pipe', 'pipe', 'pipe'] });
+      const { command, prefix } = resolveClaudeCommand(this.options.bin);
+      const child = spawn(command, [...prefix, ...args], { cwd, stdio: ['pipe', 'pipe', 'pipe'], windowsHide: true });
       let stdout = '';
       let stderr = '';
       const timer = setTimeout(() => { child.kill('SIGTERM'); reject(new LLMProviderError('claude CLI timed out', this.id, true)); }, this.options.timeoutMs ?? 240_000);
       child.stdout.on('data', (d) => { stdout += String(d); });
       child.stderr.on('data', (d) => { stderr += String(d); });
-      child.on('error', (err) => { clearTimeout(timer); reject(new LLMProviderError(`claude CLI not available: ${err.message}`, this.id, false, { cause: err })); });
+      child.on('error', (err) => { clearTimeout(timer); reject(new LLMProviderError(`claude CLI not available (${command}): ${err.message}. Install and log in to Claude Code (claude --version), or set CLAUDE_BIN to its path.`, this.id, false, { cause: err })); });
       child.on('close', (code) => {
         clearTimeout(timer);
         try { resolve(JSON.parse(stdout)); } catch { reject(new LLMProviderError(`claude CLI exited ${code}: ${(stderr || stdout).slice(0, 300)}`, this.id, false)); }
