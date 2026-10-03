@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import { ArrowRight, CheckCircle2, Info, Play, Radio } from 'lucide-react';
 import type { AgentMode, WeeklyWorkReport } from '@mawa/shared';
 import { ActivityTimeline } from '../components/ActivityTimeline.js';
+import { ItemText } from '../components/ItemText.js';
 import { PromptPanel } from '../components/PromptPanel.js';
 import { StatStrip, reportTitle } from '../components/ReportView.js';
 import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
@@ -22,13 +23,14 @@ function Highlights({ report, prompt, reportHref }: { report: WeeklyWorkReport; 
     <section className="surface flex flex-col p-5">
       <h3 className="text-[15px] font-semibold">{title}</h3>
       <div className="mt-2 flex-1">{children}</div>
-      {more ? <a href={reportHref} className="mt-3 inline-flex min-h-9 items-center text-sm text-text-2 hover:text-text">{more}개 더 보기</a> : null}
+      {more ? <a href={reportHref} className="mt-2 inline-flex min-h-9 items-center gap-1 text-sm font-medium text-accent hover:underline">{more}개 더 보기 <ArrowRight className="h-3.5 w-3.5" aria-hidden /></a> : null}
     </section>
   );
-  const Item = ({ priority, text }: { priority?: 'high' | 'medium' | 'low' | undefined; text: string }) => (
-    <li className="flex items-start gap-2 py-1.5 text-sm leading-relaxed text-text">
-      {priority ? <span className={`pri pri-${priority} mt-0.5 shrink-0`}>{PRIORITY_KO[priority]}</span> : <span className="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-sm bg-inferred" aria-hidden />}
-      <span className="min-w-0">{text}</span>
+  const byId = new Map(report.sources.map((s) => [s.id, s]));
+  const Item = ({ item, action = false }: { item: WeeklyWorkReport['sections'][number]['items'][number]; action?: boolean }) => (
+    <li className="flex items-start gap-2.5 border-t border-line/60 py-3 first:border-t-0 first:pt-1">
+      {item.priority ? <span className={`pri pri-${item.priority} mt-0.5 w-9 shrink-0 justify-center`}>{PRIORITY_KO[item.priority]}</span> : <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-sm bg-inferred" aria-hidden />}
+      <ItemText item={item} byId={byId} refTime={ref} action={action} compact />
     </li>
   );
 
@@ -36,12 +38,12 @@ function Highlights({ report, prompt, reportHref }: { report: WeeklyWorkReport; 
     <div className="grid gap-4 lg:grid-cols-3">
       {risks.length > 0 && (
         <Card title={sectionTitle('potential_risks', prompt)} more={Math.max(0, risks.length - 3)}>
-          <ul>{risks.slice(0, 3).map((i) => <Item key={i.id} priority={i.priority} text={i.text} />)}</ul>
+          <ul>{risks.slice(0, 3).map((i) => <Item key={i.id} item={i} />)}</ul>
         </Card>
       )}
       {actions.length > 0 && (
         <Card title="이번 주 할 일" more={Math.max(0, actions.length - 3)}>
-          <ul>{actions.slice(0, 3).map((i) => <Item key={i.id} priority={i.priority} text={i.text} />)}</ul>
+          <ul>{actions.slice(0, 3).map((i) => <Item key={i.id} item={i} action />)}</ul>
         </Card>
       )}
       <Card title="다가오는 일정">

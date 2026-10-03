@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { CircleDot, Clock, EyeOff, GitCommitHorizontal, GitMerge, GitPullRequest, GitPullRequestClosed, Mail, MapPin, MessageSquare, RotateCcw } from 'lucide-react';
 import type { ReportItem, ReportSection, Source, WeeklyWorkReport } from '@mawa/shared';
 import { PRIORITY_KO, SERVER_COLOR, SERVER_NAME, WORKSPACE_TZ, relDay } from '../lib/copy.js';
+import { ItemText } from './ItemText.js';
 import { SourceChips } from './SourcePopover.js';
 
 /**
@@ -367,7 +368,7 @@ function RiskCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
         <Icon className="mt-1 h-4 w-4 shrink-0" style={{ color: s ? SERVER_COLOR[s.type] : undefined }} aria-hidden />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2"><Priority item={item} /><Confidence item={item} /><Flag src={src} ctx={ctx} /></div>
-          <h4 className="item-text mt-1 text-[15px] font-medium leading-snug text-text">{item.text}</h4>
+          <div className="mt-1"><ItemText item={item} byId={ctx.byId} refTime={new Date(ctx.report.generatedAt).getTime()} /></div>
           {snippet && !item.text.includes(snippet.slice(0, 30)) && <p className="mt-1 line-clamp-2 text-sm text-text-3">{senderName(str(s, 'from'))} · {snippet}</p>}
           <Reason item={item} />
           <div className="mt-2 flex flex-wrap items-center gap-1.5">
@@ -393,21 +394,15 @@ function ActionsBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx 
     <ol className="mt-3 grid gap-2">
       {items.map((item, i) => {
         const src = cited(item, ctx.byId);
-        const ev = src.find((s) => kindOf(s) === 'event' && s.timestamp && new Date(s.timestamp).getTime() >= ref);
-        // "owner · what to do" — the owner is shown as its own pill so "who" is scannable.
-        const m = /^([^·]{1,24}) · (.+)$/.exec(item.text);
         return (
           <Item key={item.id} item={item} ctx={ctx} className="flex items-start gap-3 rounded-lg bg-surface-2 px-3 py-2.5">
             <span className="tnum mt-0.5 grid h-7 w-7 shrink-0 place-items-center rounded-full text-sm font-semibold" style={{ color: PRI_COLOR[item.priority ?? 'low'], background: `color-mix(in srgb, ${PRI_COLOR[item.priority ?? 'low']} 15%, transparent)` }} aria-hidden>{i + 1}</span>
             <div className="min-w-0 flex-1">
-              <p className="item-text text-[15px] leading-snug text-text">
-                {m ? <><span className="mr-1.5 inline-flex rounded bg-accent-2/70 px-1.5 py-0.5 align-[1px] text-xs font-medium text-text">{m[1]}</span>{m[2]}</> : item.text}
-              </p>
+              <ItemText item={item} byId={ctx.byId} refTime={ref} action />
               <Reason item={item} />
               <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                 <Priority item={item} />
                 <Confidence item={item} />
-                {ev && <Tag color="var(--color-calendar)">{relDay(ev.timestamp!, ref)}</Tag>}
                 {src.length > 0 && <SourceChips sources={src} demo={ctx.demo} />}
               </div>
             </div>
