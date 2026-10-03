@@ -2,6 +2,7 @@ import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { CommitSchema, IssueSchema, PullRequestSchema, RepositoryActivitySchema, type GitHubProvider } from '../types.js';
+import { clockNow } from '@mawa/shared';
 
 const FixtureSchema = z.object({
   commits: z.array(CommitSchema),
@@ -48,7 +49,7 @@ export class DemoGitHubProvider implements GitHubProvider {
 }
 
 /** Replace `{"$daysAgo": n}` markers with ISO timestamps relative to now. */
-export function rebaseDates(value: unknown, now = Date.now()): unknown {
+export function rebaseDates(value: unknown, now = clockNow()): unknown {
   if (Array.isArray(value)) return value.map((v) => rebaseDates(v, now));
   if (value && typeof value === 'object') {
     const obj = value as Record<string, unknown>;

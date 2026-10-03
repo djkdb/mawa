@@ -2,8 +2,11 @@ import { useEffect, useRef, useState } from 'react';
 import { ActivityTimeline } from './components/ActivityTimeline.js';
 import { DataUsePanel } from './components/DataUsePanel.js';
 import { ReportView } from './components/ReportView.js';
+import { PolicyCompare } from './components/PolicyCompare.js';
+import { AuditPage } from './pages/AuditPage.js';
 import { Shell } from './components/Shell.js';
 import { IS_DEMO_BUILD, getClient, type Status } from './lib/client.js';
+import { getRecordedRun, recordedIdOf } from './lib/demo-client.js';
 import { setApiToken } from './lib/http-client.js';
 import { useAgentRun } from './lib/useAgentRun.js';
 import { hrefFor, useHashRoute } from './lib/useHashRoute.js';
@@ -56,6 +59,11 @@ export default function App() {
   const startRun: typeof run = (p, m) => { if (route !== 'home') navigate('home'); return run(p, m); };
   const reportHref = hrefFor('report', state.runId);
   const recorded = IS_DEMO_BUILD;
+  // Policy demo: the recording this run is compared against (same question, no policy).
+  const recId = IS_DEMO_BUILD && state.runId ? recordedIdOf(state.runId) : null;
+  const rec = recId ? getRecordedRun(recId) : null;
+  const base = rec?.baseline ? getRecordedRun(rec.baseline) : null;
+  const comparison = rec && base && base.id !== rec.id ? { before: base, label: rec.policyLabel ?? '정책 적용' } : null;
 
   return (
     <Shell route={route} reportHref={reportHref} navigate={(r) => navigate(r)} status={status}>
@@ -77,6 +85,7 @@ export default function App() {
         <div className="mx-auto flex max-w-5xl flex-col gap-5">
           {state.report ? (
             <>
+              {comparison && <PolicyCompare before={comparison.before.events} after={state.events} beforeRunId={`recorded_${comparison.before.id}`} labels={[comparison.before.policyLabel ?? '기준', comparison.label]} />}
               <ReportView key={state.runId ?? 'none'} report={state.report} warnings={state.warnings} recorded={recorded} prompt={state.prompt} onAnnounce={setAnnounce} events={state.events} note={state.note ?? null} runId={state.runId} />
               <DataUsePanel events={state.events} runId={state.runId} />
               <ActivityTimeline events={state.events} phase={state.phase} recorded={recorded} runId={state.runId} />
@@ -91,6 +100,7 @@ export default function App() {
         </div>
       )}
       {route === 'runs' && <RunsPage currentRunId={state.runId} refreshKey={state.events.length + (state.runId?.length ?? 0) + (state.phase === 'completed' ? 1 : 0)} />}
+      {route === 'audit' && <AuditPage />}
       {route === 'connections' && <ConnectionsPage status={status} events={state.events} onDisconnect={(p) => getClient().disconnect(p).then(refresh)} onConnected={() => { setNotice('eCampus 연결됨'); void refresh(); }} />}
       {route === 'settings' && <SettingsPage status={status} />}
     </Shell>

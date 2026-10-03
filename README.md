@@ -51,7 +51,7 @@ Built for my own week as a CBNU software student (classes, a capstone team, inte
 | Internship prep | Next selection step with D-day, coding-test prep from what was solved this week, portfolio work in progress |
 | Catching slips | A mail that says Oct 14 while the calendar says Oct 15; an injection-like "bot" mail flagged and kept out of the report |
 | Sharing | A short 한 일 / 할 일 / 막힌 것 update for Slack/Discord, or the full report as Markdown |
-| Control and proof | A **data access policy** (allowed MCP tools, phrases whose items never reach the LLM or the report, email masking), a data-use panel per run (what each tool read, what each LLM request contained, what the policy excluded), a JSONL audit export, and source validation that drops citations of data that was never fetched |
+| Control and proof | A **data access policy**: allowed MCP tools (hidden from the model *and* refused at the call boundary if it names one anyway), phrases whose items never reach the LLM or the report, masking of email addresses, phone numbers and 학번 in LLM payloads. An **audit log** page across runs (every read, refusal, exclusion and LLM payload with sizes and masking counts, JSONL export), a data-use panel per run, a recorded **policy comparison** (the same question with no policy vs a strict one), and source validation that drops citations of data that was never fetched |
 
 It only reads; there are no write tools. The public demo replays recorded runs over a fictional week shaped after mine (synthetic data, a fictional company "A사"); with the API server, OAuth and an LLM key it runs on your own accounts.
 

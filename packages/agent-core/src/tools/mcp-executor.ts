@@ -2,7 +2,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
 import type { Transport, TransportSendOptions } from '@modelcontextprotocol/sdk/shared/transport.js';
 import type { JSONRPCMessage, MessageExtraInfo } from '@modelcontextprotocol/sdk/types.js';
-import { McpServerIdSchema, type AgentMode, type McpServerId, type ToolCall, type ToolDefinition, type ToolResult } from '@mawa/shared';
+import { DEMO_NOW, McpServerIdSchema, type AgentMode, type McpServerId, type ToolCall, type ToolDefinition, type ToolResult } from '@mawa/shared';
 import type { ToolExecutor, WireEvent } from './executor.js';
 
 const PREVIEW_CHARS = 4000;
@@ -34,6 +34,8 @@ export interface McpToolExecutorOptions {
   /** Per-call timeout in ms. */
   callTimeoutMs?: number;
   clientName?: string;
+  /** Demo mode only: the instant the servers treat as now (default DEMO_NOW, or MAWA_NOW from the environment). */
+  demoNow?: string;
 }
 
 /**
@@ -62,7 +64,7 @@ export class McpToolExecutor implements ToolExecutor {
           const stdio = new StdioClientTransport({
             command: spec.command,
             args,
-            env: { ...filteredProcessEnv(), ...(spec.env ?? {}) },
+            env: { ...filteredProcessEnv(), ...(this.options.mode === 'demo' ? { MAWA_NOW: this.options.demoNow ?? process.env['MAWA_NOW'] ?? DEMO_NOW } : {}), ...(spec.env ?? {}) },
             stderr: 'pipe',
           });
           const tap = new TapTransport(stdio, spec.id, (e) => this.notify(e));

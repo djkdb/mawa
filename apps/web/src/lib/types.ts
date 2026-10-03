@@ -44,7 +44,7 @@ export interface RunSummary {
   servers: McpServerId[];
   /** True for runs shipped with the demo (recorded earlier), false for runs started in this session. */
   recorded: boolean;
-  kind?: 'validation' | 'llm';
+  kind?: 'validation' | 'llm' | 'policy';
   model?: string;
 }
 

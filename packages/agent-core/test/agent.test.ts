@@ -47,6 +47,30 @@ describe('runAgent with ScriptedProvider and a fake executor', () => {
     await runAgent({ prompt: 'x', mode: 'real', llm: new ScriptedProvider(), executor, period, policy: { allowedTools: ['github__get_recent_commits'] } });
     expect(executor.calls.map((c) => c.name)).toEqual(['get_recent_commits']);
   });
+
+  it('refuses a blocked tool at call time even when the model names it, and tells the model', async () => {
+    const executor = new FakeExecutor();
+    const seen: LLMRequest[] = [];
+    const guesser: LLMProvider = {
+      id: 'guesser', model: 'guesser',
+      async complete(req) {
+        seen.push(req);
+        if (seen.length > 1) return { text: '', toolCalls: [], stopReason: 'end_turn' };
+        // Names a tool that is not in the list it was given.
+        return { text: '', toolCalls: [{ id: 'a', name: 'gmail__search_project_emails', input: {} }, { id: 'b', name: 'github__get_recent_commits', input: {} }], stopReason: 'tool_use' };
+      },
+    };
+    const result = await runAgent({ prompt: 'x', mode: 'demo', llm: guesser, executor, period, dataPolicy: { allowedTools: ['github__get_recent_commits'], exclude: [], maskEmails: true, maskPhones: true } });
+    expect(seen[0]!.tools!.map((t) => t.name)).toEqual(['github__get_recent_commits']);
+    expect(executor.calls.map((c) => c.name)).toEqual(['get_recent_commits']);
+    const denied = result.events.filter((e) => e.type === 'tool_call_denied');
+    expect(denied).toHaveLength(1);
+    expect(denied[0]).toMatchObject({ call: { name: 'gmail__search_project_emails' }, reason: 'policy' });
+    expect(result.events.find((e) => e.type === 'policy_applied')).toMatchObject({ deniedCalls: 1 });
+    const refusal = seen[1]!.messages.find((m) => m.role === 'tool' && m.isError);
+    expect(refusal?.content).toMatch(/Refused by the user's data policy/);
+    for (const e of result.events) expect(AgentEventSchema.safeParse(e).success).toBe(true);
+  });
 });
 
 describe('generateReport source integrity', () => {

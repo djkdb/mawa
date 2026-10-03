@@ -31,7 +31,9 @@ const SAMPLE_INPUT = {
 const KEYWORDS = ['my-ai-work-agent', 'team-mate', '캡스톤', '과제', '퀴즈', '스터디', '인턴', '코딩테스트', '장학금', '발표'];
 
 /** The demo workspace's data policy (Settings shows it): family mail and ads never reach the LLM or the report. */
-export const DEMO_POLICY = { exclude: ['엄마', '쿠폰'], maskEmails: true };
+export const DEMO_POLICY = { exclude: ['엄마', '쿠폰'], maskEmails: true, maskPhones: true };
+/** The policy comparison: the same question with no policy, and under a strict one (mail only through the project-scoped search). */
+const NO_POLICY = { exclude: [], maskEmails: false, maskPhones: false };
 
 /** Example prompts and the tool plan the scripted provider follows for each (a real LLM would choose itself). */
 const EXAMPLES = [
@@ -83,6 +85,17 @@ class FabricatingProvider extends ScriptedProvider {
     return { ...res, text: JSON.stringify(report) };
   }
 }
+/**
+ * Policy demo: a planner that, besides its plan, asks for a tool the policy removed from its list
+ * (reading one mail's full body) — what a model guessing tool names would do. The run is labelled as such.
+ */
+class GuessingProvider extends ScriptedProvider {
+  async complete(request) {
+    const res = await super.complete(request);
+    if (request.responseFormat || !res.toolCalls.length) return res;
+    return { ...res, toolCalls: [...res.toolCalls, { id: 'guess_get_email', name: 'gmail__get_email', input: { messageId: 'demo0011' } }] };
+  }
+}
 const executor = newExecutor();
 try {
   const wire = [];
@@ -119,6 +132,20 @@ try {
     if (run.error) throw new Error(`validation-demo: ${run.error}`);
     runs.push({ id: 'validation-demo', kind: 'validation', prompt, note: '출처 검증 시연: 리포트 단계에 존재하지 않는 출처를 인용한 항목 1건과 출처 없는 "확인됨" 항목 1건을 일부러 주입한 기록입니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + fault injection' }, events: run.events, report: run.report, warnings: run.warnings });
     console.log(`run validation-demo: dropped ${run.events.find((e) => e.type === 'report_generated')?.droppedItems}`);
+  }
+  {
+    const ex = EXAMPLES[0];
+    const base = newExecutor();
+    const off = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new ScriptedProvider(ex.plan), executor: base, dataPolicy: NO_POLICY }).finally(() => base.close());
+    if (off.error) throw new Error(`policy-off: ${off.error}`);
+    runs.push({ id: 'policy-off', kind: 'policy', prompt: ex.prompt, note: '정책 비교의 기준 실행입니다. 제외 규칙, 메일 주소·전화번호 가리기, 도구 제한을 모두 끄고 같은 질문을 실행했습니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, policyLabel: '정책 없음', events: off.events, report: off.report, warnings: off.warnings });
+    const strictExec = newExecutor();
+    const tools = (await strictExec.listTools()).map((t) => `${t.server}__${t.name}`);
+    const strict = { ...DEMO_POLICY, allowedTools: tools.filter((t) => t !== 'gmail__get_email' && t !== 'gmail__search_emails') };
+    const on = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new GuessingProvider(ex.plan), executor: strictExec, dataPolicy: strict }).finally(() => strictExec.close());
+    if (on.error) throw new Error(`policy-strict: ${on.error}`);
+    runs.push({ id: 'policy-strict', kind: 'policy', baseline: 'policy-off', prompt: ex.prompt, note: '정책 시연: 메일 전체 검색·본문 읽기 도구를 막고 제외 규칙과 가리기를 켠 실행입니다. 플래너가 막힌 도구(gmail.get_email)를 일부러 요청하도록 주입했고, 호출 단계에서 거절됐습니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + blocked-tool request' }, policyLabel: '엄격한 정책', events: on.events, report: on.report, warnings: on.warnings });
+    console.log(`policy demo: denied ${on.events.filter((e) => e.type === 'tool_call_denied').length}`);
   }
   // Keep a real-LLM recording made with `npm run record:llm-run`; this script never fabricates one.
   try {

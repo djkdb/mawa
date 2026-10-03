@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { CircleHelp, Code2, FileText, History, Home, Monitor, Moon, Plug, Settings, Sun, X } from 'lucide-react';
+import { CircleHelp, Code2, FileText, History, Home, Monitor, Moon, Plug, ScrollText, Settings, Sun, X } from 'lucide-react';
 import { IS_DEMO_BUILD, REPO_URL, type Status } from '../lib/client.js';
 import { DEMO_PERSONA } from '../lib/copy.js';
 import { useTheme, type ThemePref } from '../lib/theme.js';
@@ -11,10 +11,11 @@ const NAV: Array<{ id: Route; label: string; icon: typeof Home }> = [
   { id: 'home', label: '홈', icon: Home },
   { id: 'report', label: '리포트', icon: FileText },
   { id: 'runs', label: '실행 기록', icon: History },
+  { id: 'audit', label: '감사 로그', icon: ScrollText },
   { id: 'connections', label: '연결', icon: Plug },
   { id: 'settings', label: '설정', icon: Settings },
 ];
-export const ROUTE_TITLE: Record<Route, string> = { home: '홈', report: '리포트', runs: '실행 기록', connections: '연결된 소스', settings: '설정' };
+export const ROUTE_TITLE: Record<Route, string> = { home: '홈', report: '리포트', runs: '실행 기록', audit: '감사 로그', connections: '연결된 소스', settings: '설정' };
 
 const THEMES: Array<{ id: ThemePref; label: string; Icon: typeof Sun }> = [
   { id: 'system', label: '시스템 설정 따르기', Icon: Monitor },

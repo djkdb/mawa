@@ -20,7 +20,7 @@ export class ScriptedProvider implements LLMProvider {
   async complete(request: LLMRequest): Promise<LLMResponse> {
     if (request.responseFormat) {
       const context = extractContext(request.messages);
-      const report = buildScriptedReport(context);
+      const report = buildScriptedReport(context, context.today ? Date.parse(context.today) : Date.now());
       return { text: JSON.stringify(report), toolCalls: [], stopReason: 'end_turn' };
     }
 

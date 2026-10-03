@@ -8,7 +8,7 @@ export function SettingsPage({ status }: { status: Status | null }) {
     ['도구 선택', IS_DEMO_BUILD ? '질문별 고정 계획 · 실제 모드에서는 LLM이 발견된 도구 중에서 선택' : status?.llm.isModel ? 'LLM이 발견된 MCP 도구 중에서 선택' : '규칙 기반 계획'],
     ['실행 기록 보관', IS_DEMO_BUILD ? '이 브라우저에 실행 목록과 숨긴 항목만 저장 (localStorage)' : status?.runStore?.persistent ? '서버 파일에 암호화 저장 (최근 30건, 지난 실행 비교에 사용) · 실행마다 감사 로그(JSONL) 내려받기 가능' : '서버 메모리 (최근 50건, 재시작하면 사라짐 · SESSION_ENCRYPTION_KEY를 설정하면 암호화 저장) · 감사 로그(JSONL) 내려받기 가능'],
     ['정책 한도', '도구 호출 최대 12회 · 계획 턴 최대 4회 · 도구 결과는 12,000자까지만 LLM에 전달'],
-    ['LLM에 보내는 데이터', '메일 주소는 가려서(m***@domain) 보냄 · 메일 본문 대신 요약과 미리보기만 · 메일·이슈 속 지시문은 감지해 데이터로만 처리'],
+    ['LLM에 보내는 데이터', '메일 주소(m***@domain)·전화번호·학번은 가려서 보냄 · 메일 본문 대신 요약과 미리보기만 · 메일·이슈 속 지시문은 감지해 데이터로만 처리 · 허용 목록 밖 도구는 호출 단계에서도 거절'],
     ['API 접근', IS_DEMO_BUILD ? '해당 없음 (API 서버 없음)' : `${status?.api?.host === '127.0.0.1' ? '이 컴퓨터에서만 접속 (127.0.0.1)' : `${status?.api?.host ?? '…'}에 바인딩`} · 다른 출처의 요청 차단${status?.api?.tokenRequired ? ' · 접근 토큰 필요' : ''}`],
     ['토큰 보관', IS_DEMO_BUILD ? '해당 없음' : status?.tokenStore.persistent ? '서버에서 AES-256-GCM 암호화 저장' : '서버 메모리 (SESSION_ENCRYPTION_KEY 미설정)'],
     ['권한', '읽기 API만 호출 · 모든 MCP 도구가 readOnlyHint로 선언됨 · 쓰기 도구 없음 (토큰 권한은 연결 화면 참고)'],

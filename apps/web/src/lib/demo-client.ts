@@ -10,8 +10,11 @@ export interface RecordedRun {
   report: WeeklyWorkReport;
   warnings: string[];
   /** "validation": a fault-injection recording that shows the source validator at work. Never offered as an example. */
-  kind?: 'validation' | 'llm';
+  kind?: 'validation' | 'llm' | 'policy';
   note?: string;
+  /** For the policy demo: the recording of the same question without the policy, and a short label. */
+  baseline?: string;
+  policyLabel?: string;
 }
 
 const RECORDED = (demoRuns as unknown as { recordedAt: string; note: string; policy?: { exclude: string[]; maskEmails: boolean }; runs: RecordedRun[] });

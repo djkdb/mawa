@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { reply } from './rebase-dates.js';
 import { AssignmentSchema, CourseSchema, DeadlineSchema, type LmsProvider } from './types.js';
+import { clockNow } from '@mawa/shared';
 
 export const SERVER_NAME = 'mawa-lms';
 export const SERVER_VERSION = '0.1.0';
@@ -10,7 +11,7 @@ const RO = { readOnlyHint: true, destructiveHint: false, openWorldHint: true } a
 export function createLmsMcpServer(provider: LmsProvider, mode: 'demo' | 'real'): McpServer {
   const server = new McpServer({ name: SERVER_NAME, version: SERVER_VERSION });
   const tag = mode === 'demo' ? ' [DEMO DATA]' : '';
-  const window = (days: number) => { const now = Date.now(); return { from: new Date(now).toISOString(), to: new Date(now + days * 86_400_000).toISOString() }; };
+  const window = (days: number) => { const now = clockNow(); return { from: new Date(now).toISOString(), to: new Date(now + days * 86_400_000).toISOString() }; };
 
   server.registerTool(
     'get_courses',

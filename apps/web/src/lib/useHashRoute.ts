@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 
-export type Route = 'home' | 'report' | 'runs' | 'connections' | 'settings';
-const ROUTES: Route[] = ['home', 'report', 'runs', 'connections', 'settings'];
+export type Route = 'home' | 'report' | 'runs' | 'audit' | 'connections' | 'settings';
+const ROUTES: Route[] = ['home', 'report', 'runs', 'audit', 'connections', 'settings'];
 
 export interface Location { route: Route; param: string | null; query: URLSearchParams }
 

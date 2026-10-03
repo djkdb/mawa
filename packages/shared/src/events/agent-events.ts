@@ -71,6 +71,8 @@ export const LlmRequestSchema = EventBaseSchema.extend({
   /** Item fields included on the analysis turn. */
   fields: z.array(z.string()).default([]),
   maskedEmails: z.number().int().nonnegative(),
+  /** Phone numbers and student numbers (학번) masked before sending. */
+  maskedPhones: z.number().int().nonnegative().default(0),
   flagged: z.array(z.object({ sourceId: z.string(), reason: z.string() })).default([]),
 });
 
@@ -94,6 +96,8 @@ export const DataPolicySchema = z.object({
   allowedTools: z.array(z.string().max(80)).max(50).optional(),
   exclude: z.array(z.string().trim().min(1).max(60)).max(30).default([]),
   maskEmails: z.boolean().default(true),
+  /** Mask phone numbers and student numbers (학번) for the LLM. */
+  maskPhones: z.boolean().default(true),
 });
 export type DataPolicy = z.infer<typeof DataPolicySchema>;
 
@@ -102,6 +106,8 @@ export const PolicyAppliedSchema = EventBaseSchema.extend({
   type: z.literal('policy_applied'),
   policy: DataPolicySchema,
   blockedTools: z.array(z.string()),
+  /** Calls the model asked for that the policy refused at call time. */
+  deniedCalls: z.number().int().nonnegative().default(0),
   excluded: z.array(z.object({ sourceId: z.string(), rule: z.string() })),
 });
 
@@ -125,6 +131,16 @@ export const ToolCallFailedSchema = EventBaseSchema.extend({
   type: z.literal('tool_call_failed'),
   call: ToolCallSchema,
   result: ToolResultErrorSchema,
+});
+
+/**
+ * The model asked for a tool the data policy does not allow. The call never reaches the MCP server;
+ * the model is told it was refused so it can continue with the tools it has.
+ */
+export const ToolCallDeniedSchema = EventBaseSchema.extend({
+  type: z.literal('tool_call_denied'),
+  call: z.object({ id: z.string(), name: z.string(), input: z.record(z.string(), z.unknown()) }),
+  reason: z.enum(['policy']),
 });
 
 export const ContextAggregatedSchema = EventBaseSchema.extend({
@@ -160,6 +176,7 @@ export const AgentEventSchema = z.discriminatedUnion('type', [
   ToolCallStartedSchema,
   ToolCallCompletedSchema,
   ToolCallFailedSchema,
+  ToolCallDeniedSchema,
   ContextAggregatedSchema,
   ReportGeneratedSchema,
   AgentRunCompletedSchema,
@@ -181,3 +198,4 @@ export type ReportGenerated = z.infer<typeof ReportGeneratedSchema>;
 export type AgentRunCompleted = z.infer<typeof AgentRunCompletedSchema>;
 export type AgentEvent = z.infer<typeof AgentEventSchema>;
 export type AgentEventType = AgentEvent['type'];
+export type ToolCallDenied = z.infer<typeof ToolCallDeniedSchema>;

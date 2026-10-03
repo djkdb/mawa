@@ -31,14 +31,14 @@
         "seongjun@cbnu.example.ac.kr"
       ],
       "date": {
-        "$daysAgo": 1.0
+        "$daysAgo": 1
       },
-      "snippet": "과제2(CPU 스케줄링) 제출 마감은 10월 5일 23:59입니다. 코드와 보고서(PDF)를 eCampus에 업로드하세요.",
+      "snippet": "과제2(CPU 스케줄링) 제출 마감은 10월 5일 23:59입니다. 코드와 보고서(PDF)를 eCampus에 업로드하세요. 문의는 조교 연락처 010-2345-6789로 주세요.",
       "labels": [
         "INBOX"
       ],
       "url": "https://mail.google.com/mail/u/0/#inbox/demo0002",
-      "body": "과제2(CPU 스케줄링) 제출 마감은 10월 5일 23:59입니다. 코드와 보고서(PDF)를 eCampus에 업로드하세요. 지각 제출은 하루 10% 감점입니다.",
+      "body": "과제2(CPU 스케줄링) 제출 마감은 10월 5일 23:59입니다. 코드와 보고서(PDF)를 eCampus에 업로드하세요. 지각 제출은 하루 10% 감점입니다.\n\n문의: 운영체제 조교 010-2345-6789",
       "truncated": false
     },
     {
@@ -111,14 +111,14 @@
         "seongjun@cbnu.example.ac.kr"
       ],
       "date": {
-        "$daysAgo": 3.0
+        "$daysAgo": 3
       },
-      "snippet": "신청 기간은 10월 1일부터 10월 9일까지입니다. 학생 포털에서 신청하세요.",
+      "snippet": "학번 2021041234 학생은 신청 대상입니다. 신청 기간은 10월 1일부터 10월 9일까지이며 학생 포털에서 신청하세요.",
       "labels": [
         "INBOX"
       ],
       "url": "https://mail.google.com/mail/u/0/#inbox/demo0006",
-      "body": "신청 기간은 10월 1일부터 10월 9일까지입니다. 학생 포털에서 신청하세요.",
+      "body": "학번 2021041234 이성준 학생은 2026-2 교내 장학금 신청 대상입니다.\n신청 기간: 10월 1일 ~ 10월 9일, 학생 포털에서 신청\n문의: 학부 사무실 043-261-1234",
       "truncated": false
     },
     {

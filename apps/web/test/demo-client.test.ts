@@ -5,7 +5,9 @@ describe('DemoClient', () => {
   it('lists session runs before shipped recordings and replays without network', async () => {
     const c = new DemoClient();
     const shipped = await c.listRuns();
-    expect(shipped.map((r) => r.recorded)).toEqual([true, true, true, true, true, true]);
+    expect(shipped.map((r) => r.recorded)).toEqual([true, true, true, true, true, true, true, true]);
+    // The policy demo: the same question with no policy and under a strict one.
+    expect(shipped.filter((r) => r.kind === 'policy').map((r) => r.runId)).toEqual(['recorded_policy-off', 'recorded_policy-strict']);
     // One run was recorded with a real model choosing the tools; it is labelled, not offered as an example.
     expect(shipped.filter((r) => r.kind === 'llm')).toEqual([expect.objectContaining({ runId: 'recorded_llm-run', model: expect.stringMatching(/\S/) })]);
     // The fault-injection recording is listed but never offered as an example question.

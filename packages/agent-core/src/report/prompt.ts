@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { REPORT_SECTION_ORDER, REPORT_SECTION_TITLES } from '@mawa/shared';
 import type { AggregatedContext } from '../context/aggregate.js';
-import { promptJson } from './guard.js';
+import { promptJson, type MaskOptions } from './guard.js';
 
 export const CONTEXT_BLOCK_START = '<aggregated_context>';
 export const CONTEXT_BLOCK_END = '</aggregated_context>';
@@ -42,6 +42,8 @@ export interface AnalysisPrompt {
   text: string;
   /** Email addresses masked before sending. */
   maskedEmails: number;
+  /** Phone numbers and 학번 masked before sending. */
+  maskedPhones: number;
   /** Field names sent per item (beyond sourceId/kind/title/timestamp/summary). */
   fields: string[];
 }
@@ -50,16 +52,17 @@ export function buildAnalysisPrompt(context: AggregatedContext, userPrompt: stri
   return analysisPrompt(context, userPrompt).text;
 }
 
-export function analysisPrompt(context: AggregatedContext, userPrompt: string, maskEmails = true): AnalysisPrompt {
+export function analysisPrompt(context: AggregatedContext, userPrompt: string, mask: boolean | MaskOptions = true, today?: string): AnalysisPrompt {
   const sectionList = REPORT_SECTION_ORDER.map((id) => `- ${id}: ${REPORT_SECTION_TITLES[id]}`).join('\n');
   const payload = {
     request: userPrompt,
+    ...(today ? { today } : {}),
     period: context.period,
     sources: context.sources.map((s) => ({ id: s.id, type: s.type, title: s.title, timestamp: s.timestamp })),
     items: context.items.map((i) => ({ sourceId: i.sourceId, kind: i.kind, title: i.title, timestamp: i.timestamp, summary: i.summary, fields: pickFields(i.raw) })),
     toolSummaries: context.toolSummaries,
   };
-  const masked = promptJson(payload, maskEmails);
+  const masked = promptJson(payload, mask);
   const fields = [...new Set(payload.items.flatMap((i) => Object.keys(i.fields)))].sort();
   const text = `The user asked: "${userPrompt}"
 
@@ -79,7 +82,7 @@ Hard rules:
 ${CONTEXT_BLOCK_START}
 ${masked.text}
 ${CONTEXT_BLOCK_END}`;
-  return { text, maskedEmails: masked.count, fields };
+  return { text, maskedEmails: masked.count, maskedPhones: masked.phones, fields };
 }
 
 const FIELD_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'assignees', 'createdAt', 'updatedAt', 'from', 'snippet', 'start', 'end', 'location', 'reviewComments', 'commitsInPeriod', 'openIssues', 'mergedAt', 'allDay', 'course', 'module', 'due', 'action', 'submission'] as const;

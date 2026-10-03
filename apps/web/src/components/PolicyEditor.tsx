@@ -21,10 +21,11 @@ export function PolicyEditor() {
   const [tools, setTools] = useState<Set<string>>(new Set(saved?.allowedTools ?? ALL_TOOLS));
   const [exclude, setExclude] = useState((saved?.exclude ?? []).join(', '));
   const [mask, setMask] = useState(saved?.maskEmails ?? true);
+  const [maskPh, setMaskPh] = useState(saved?.maskPhones ?? true);
   const [msg, setMsg] = useState<string | null>(null);
   const ro = IS_DEMO_BUILD;
   const save = () => {
-    const p: Partial<DataPolicy> = { exclude: exclude.split(/[,\n]/).map((x) => x.trim()).filter(Boolean).slice(0, 30), maskEmails: mask, ...(tools.size < ALL_TOOLS.length ? { allowedTools: [...tools] } : {}) };
+    const p: Partial<DataPolicy> = { exclude: exclude.split(/[,\n]/).map((x) => x.trim()).filter(Boolean).slice(0, 30), maskEmails: mask, maskPhones: maskPh, ...(tools.size < ALL_TOOLS.length ? { allowedTools: [...tools] } : {}) };
     setPolicy(p);
     setMsg('저장했습니다. 다음 실행부터 적용됩니다.');
   };
@@ -44,8 +45,12 @@ export function PolicyEditor() {
       </fieldset>
 
       <label className="mt-4 flex items-center gap-2 text-sm text-text-2">
-        <input type="checkbox" checked={mask} disabled={ro} onChange={(e) => setMask(e.target.checked)} className="h-4 w-4 accent-[var(--color-accent)]" />
+        <input type="checkbox" checked={mask} disabled={ro} onChange={(e) => setMask(e.target.checked)} className="h-4 w-4" />
         LLM에 보낼 때 메일 주소 가리기 (m***@domain)
+      </label>
+      <label className="mt-2 flex items-center gap-2 text-sm text-text-2">
+        <input type="checkbox" checked={maskPh} disabled={ro} onChange={(e) => setMaskPh(e.target.checked)} className="h-4 w-4" />
+        LLM에 보낼 때 전화번호·학번 가리기 (010-****-****)
       </label>
 
       <fieldset className="mt-4" disabled={ro}>
@@ -55,7 +60,7 @@ export function PolicyEditor() {
             const [server, name] = t.split('__') as [McpServerId, string];
             return (
               <label key={t} className="flex min-w-0 items-center gap-2 text-[13px] text-text">
-                <input type="checkbox" checked={tools.has(t)} onChange={() => toggle(t)} className="h-4 w-4 shrink-0 accent-[var(--color-accent)]" />
+                <input type="checkbox" checked={tools.has(t)} onChange={() => toggle(t)} className="h-4 w-4 shrink-0" />
                 <span className="h-1.5 w-1.5 shrink-0 rounded-full" style={{ background: SERVER_COLOR[server] }} aria-hidden />
                 <span className="truncate font-mono text-xs">{name}</span>
                 <span className="text-[11px] text-text-3">{SERVER_NAME[server]}</span>

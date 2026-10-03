@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { clockNow } from '@mawa/shared';
 
 /** Shape of a single GitHub item as returned by this server's tools. */
 export const CommitSchema = z.object({
@@ -68,7 +69,7 @@ export interface GitHubProvider {
 }
 
 export function defaultPeriod(): { since: string; until: string } {
-  const until = new Date();
+  const until = new Date(clockNow());
   const since = new Date(until.getTime() - 7 * 24 * 60 * 60 * 1000);
   return { since: since.toISOString(), until: until.toISOString() };
 }

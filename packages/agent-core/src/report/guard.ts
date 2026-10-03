@@ -1,6 +1,7 @@
 /**
  * What the agent does to third-party data before it reaches an LLM:
  *  - email addresses are masked (role accounts such as noreply@ are kept: they identify a system, not a person)
+ *  - Korean phone numbers and student numbers (학번) are masked
  *  - text that looks like instructions aimed at the model is flagged, so the run and the UI can show it
  * The user's own UI still shows their data unmasked; only the LLM payload is minimized.
  */
@@ -14,6 +15,20 @@ export function maskEmails(text: string): { text: string; count: number } {
     count += 1;
     return `${local[0] ?? ''}***@${domain}`;
   });
+  return { text: out, count };
+}
+
+// 010-1234-5678, 010 1234 5678, 01012345678, 043-261-1234. Not preceded/followed by more digits (ids, timestamps).
+const PHONE = /(?<![\d-])(01[016789]|0[2-6]\d?)([-. ]?)(\d{3,4})\2(\d{4})(?![\d-])/g;
+// A student number is only masked next to the word 학번 (bare 10-digit numbers are too often ids).
+const STUDENT_NO = /(학번\s*[:：]?\s*)(\d{8,10})/g;
+
+/** Masks phone numbers (keeps the prefix: 010-****-5678 → 010-****-****) and 학번 values. */
+export function maskPhones(text: string): { text: string; count: number } {
+  let count = 0;
+  const out = text
+    .replace(PHONE, (_all, a: string, sep: string) => { count += 1; return `${a}${sep || '-'}****${sep || '-'}****`; })
+    .replace(STUDENT_NO, (_all, label: string, n: string) => { count += 1; return `${label}${n.slice(0, 2)}********`; });
   return { text: out, count };
 }
 
@@ -40,11 +55,20 @@ export function tagSafe(json: string): string {
   return json.replace(/</g, '\\u003c').replace(/>/g, '\\u003e');
 }
 
-/** Masked and tag-safe JSON for an LLM payload. Masking runs first so escapes are never split. */
-export function promptJson(value: unknown, mask = true): { text: string; count: number } {
-  if (!mask) return { text: tagSafe(JSON.stringify(value)), count: 0 };
-  const m = maskEmails(JSON.stringify(value));
-  return { text: tagSafe(m.text), count: m.count };
+export interface MaskOptions { emails: boolean; phones: boolean }
+
+/**
+ * Masked and tag-safe JSON for an LLM payload. Masking runs first so escapes are never split.
+ * `count` is masked email addresses, `phones` masked phone/student numbers.
+ */
+export function promptJson(value: unknown, mask: boolean | MaskOptions = true): { text: string; count: number; phones: number } {
+  const o = typeof mask === 'boolean' ? { emails: mask, phones: mask } : mask;
+  let text = JSON.stringify(value);
+  let count = 0;
+  let phones = 0;
+  if (o.emails) { const m = maskEmails(text); text = m.text; count = m.count; }
+  if (o.phones) { const m = maskPhones(text); text = m.text; phones = m.count; }
+  return { text: tagSafe(text), count, phones };
 }
 
 const POLICY_FIELDS = ['subject', 'from', 'title', 'snippet', 'message', 'location', 'description', 'repo'];

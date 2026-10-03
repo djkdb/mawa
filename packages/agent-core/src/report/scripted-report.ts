@@ -4,6 +4,8 @@ import { detectInjection } from './guard.js';
 /** Minimal view of the aggregated context the scripted provider receives (see buildAnalysisPrompt). */
 export interface ScriptedContext {
   request?: string;
+  /** When the report is written (ISO); D-days and "upcoming" are relative to it. */
+  today?: string;
   period: { start: string; end: string };
   sources: Array<{ id: string; type: string; title: string; timestamp?: string }>;
   items: Array<{ sourceId: string; kind?: string; title?: string; timestamp?: string; summary: string; fields?: Record<string, unknown> }>;

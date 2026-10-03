@@ -2,6 +2,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { z } from 'zod';
 import { reply } from './rebase-dates.js';
 import { CalendarEventSchema, thisWeek, type CalendarProvider } from './types.js';
+import { clockNow } from '@mawa/shared';
 
 export const SERVER_NAME = 'mawa-calendar';
 export const SERVER_VERSION = '0.1.0';
@@ -41,7 +42,7 @@ export function createCalendarMcpServer(provider: CalendarProvider, mode: 'demo'
       outputSchema: Output,
     },
     async (args) => {
-      const now = Date.now();
+      const now = clockNow();
       const data = await provider.getEvents({ timeMin: new Date(now).toISOString(), timeMax: new Date(now + args.days * 86_400_000).toISOString(), limit: args.limit });
       return reply(`${data.length} upcoming events in the next ${args.days} days`, data);
     },
@@ -62,7 +63,7 @@ export function createCalendarMcpServer(provider: CalendarProvider, mode: 'demo'
       outputSchema: Output,
     },
     async (args) => {
-      const now = Date.now();
+      const now = clockNow();
       const data = await provider.getEvents({
         timeMin: args.timeMin ?? new Date(now - 30 * 86_400_000).toISOString(),
         timeMax: args.timeMax ?? new Date(now + 30 * 86_400_000).toISOString(),

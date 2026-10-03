@@ -189,7 +189,7 @@ test('trust: validation demo shows the dropped citation, data-use panel, injecti
   await expect(page.locator('#report').getByText(/^근거 · /).first()).toBeVisible();
 
   const panel = page.getByRole('region', { name: '데이터 사용 내역' });
-  await expect(panel).toContainText(/메일 주소 \d+개 가림/);
+  await expect(panel).toContainText(/메일 주소 \d+개 · 전화번호·학번 \d+개 가림/);
   await expect(panel).toContainText('LLM·리포트에서 제외 1건');
   await panel.getByRole('button', { name: '자세히' }).click();
   await expect(panel).toContainText('리포트 작성 요청');
@@ -244,4 +244,26 @@ test('report: category filter narrows the sections and the copy', async ({ page,
   expect(clip).not.toContain('코딩테스트');
   await group.getByRole('button', { name: '전체' }).click();
   expect((await page.locator('#report [data-report-item]').allInnerTexts()).join('\n')).toContain('Cloudflare');
+});
+
+test('audit log lists reads, LLM payloads and the refused call; the policy demo compares both runs', async ({ page }) => {
+  const { errors, api } = await collect(page);
+  await page.goto(`${DEMO}#/audit`);
+  await expect(page.getByRole('heading', { name: '감사 로그', level: 2 })).toBeVisible();
+  const table = page.getByRole('table', { name: '감사 로그' });
+  await expect(table).toContainText('search_project_emails');
+  await expect(table).toContainText('LLM 전송');
+  await page.getByRole('button', { name: /^거절/ }).click();
+  await expect(table.locator('tbody tr')).toHaveCount(1);
+  await expect(table).toContainText('get_email');
+  await expect(table).toContainText('허용 목록에 없는 도구');
+
+  await page.goto(`${DEMO}#/report/recorded_policy-strict`);
+  const compare = page.getByRole('region', { name: /정책 비교/ });
+  await expect(compare).toContainText('호출 단계에서 거절');
+  await expect(compare).toContainText('가린 전화번호·학번');
+  await page.getByRole('button', { name: /단계 보기/ }).click();
+  await expect(page.getByText(/정책이 gmail\.get_email 호출을 거절함/)).toBeVisible();
+  expect(errors).toEqual([]);
+  expect(api).toEqual([]);
 });

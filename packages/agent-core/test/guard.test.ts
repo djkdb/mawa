@@ -1,11 +1,22 @@
 import { describe, expect, it } from 'vitest';
-import { buildScriptedReport, defaultPeriod, detectInjection, maskEmails, promptJson, type ScriptedContext } from '../src/index.js';
+import { buildScriptedReport, defaultPeriod, detectInjection, maskEmails, maskPhones, promptJson, type ScriptedContext } from '../src/index.js';
 
 describe('guard', () => {
   it('masks personal addresses and keeps role accounts', () => {
     const r = maskEmails('Kim Minji <minji@example.com>, GitHub <noreply@github.com>, GCP <noreply-cloud@example.com>');
     expect(r.text).toBe('Kim Minji <m***@example.com>, GitHub <noreply@github.com>, GCP <noreply-cloud@example.com>');
     expect(r.count).toBe(1);
+  });
+
+  it('masks phone numbers and 학번, not ids, dates or times', () => {
+    const m = maskPhones('조교 010-2345-6789, 사무실 043-261-1234, 01098765432, 학번 2021041234 / 학번: 20210412');
+    expect(m.text).toBe('조교 010-****-****, 사무실 043-****-****, 010-****-****, 학번 20******** / 학번: 20********');
+    expect(m.count).toBe(5);
+    const keep = 'PR #1234567, 2026-10-05T14:00:00.000Z, 10월 5일 23:59, sha 2021041234abc, 1786929130498';
+    expect(maskPhones(keep).text).toBe(keep);
+    const j = promptJson({ s: '연락처 010-2345-6789 jimin@example.com' }, { emails: true, phones: true });
+    expect(j).toMatchObject({ count: 1, phones: 1 });
+    expect(promptJson({ s: '010-2345-6789' }, { emails: true, phones: false }).phones).toBe(0);
   });
 
   it('flags instructions aimed at the model, not ordinary mail', () => {

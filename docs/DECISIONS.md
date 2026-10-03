@@ -295,3 +295,25 @@ flagged the injected meeting-bot mail (dropped citations: 0).
 
 **Trade-offs.** ≈25–60 s per run (two to three CLI start-ups); the model id is
 known only after the first response (`modelUsage`).
+
+## ADR-018 — Policy enforced at the call boundary, PII masking, a pinned demo clock
+
+**Decision.**
+- Tools outside `allowedTools` are removed from the list the model sees **and** refused at
+  call time (`tool_call_denied`): the request never reaches the MCP server and the model is
+  told it was refused. A model that guesses a hidden tool name cannot read through it.
+- LLM payloads mask phone numbers (010-****-****, 043-****-****) and 학번 next to the word
+  학번, in addition to email addresses (`maskPhones`, default on). Bare long numbers are left
+  alone (ids, timestamps). The user's own UI still shows their data unmasked.
+- An audit log page builds one row per read / refusal / exclusion / LLM payload from run
+  events, across runs, with a JSONL export. The demo ships a policy comparison: the same
+  question recorded with no policy and with a strict one (a planner that also requests the
+  blocked `gmail.get_email`, labelled as such).
+- Demo runs use a pinned clock (`DEMO_NOW`, 2026-10-03 12:00 KST, advancing with the wall
+  clock for durations). The MCP client passes it to demo servers as `MAWA_NOW`; the analysis
+  payload carries `today`. Before this, recordings made after midnight shifted every
+  fixture date by a day against the fixed dates written in the sample mail.
+
+**Why.** Access control that only filters a list is a convention, not a control; the boundary
+is where a gateway enforces it. Phone numbers and student numbers are the PII a student's
+mail actually contains.

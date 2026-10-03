@@ -3,29 +3,11 @@ import { ChevronDown, Download } from 'lucide-react';
 import type { AgentEvent } from '@mawa/shared';
 import { SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 import { kb } from './McpWire.js';
+import { auditJsonl, auditRows, downloadText, rowsOf } from '../lib/audit.js';
 
 type LlmReq = Extract<AgentEvent, { type: 'llm_request' }>;
 type Done = Extract<AgentEvent, { type: 'tool_call_completed' }>;
-
-function rowsOf(e: Done): string[] {
-  const d = e.result.output.data;
-  const rows = Array.isArray(d) ? d : d && typeof d === 'object' ? [d] : [];
-  return rows.flatMap((r) => (r && typeof r === 'object' && typeof (r as { sourceId?: unknown }).sourceId === 'string' ? [(r as { sourceId: string }).sourceId] : []));
-}
-
-/** One JSON line per data access: what was read, from where, and whether it went to the LLM. */
-function auditLines(events: AgentEvent[]): string {
-  const sentToLlm = events.some((e) => e.type === 'llm_request' && e.phase === 'analysis');
-  return events
-    .flatMap((e): Array<Record<string, unknown>> => {
-      if (e.type === 'tool_call_completed') return [{ at: e.timestamp, runId: e.runId, mode: e.mode, action: 'tools/call', server: e.call.server, tool: e.call.name, input: e.call.input, rows: rowsOf(e).length, sourceIds: rowsOf(e), durationMs: e.result.durationMs, sentToLlm }];
-      if (e.type === 'tool_call_failed') return [{ at: e.timestamp, runId: e.runId, mode: e.mode, action: 'tools/call', server: e.call.server, tool: e.call.name, input: e.call.input, error: e.result.error.code }];
-      if (e.type === 'llm_request') return [{ at: e.timestamp, runId: e.runId, mode: e.mode, action: 'llm_request', phase: e.phase, provider: e.provider, model: e.model, bytes: e.bytes, contents: e.contents, fields: e.fields, maskedEmails: e.maskedEmails, flagged: e.flagged }];
-      return [];
-    })
-    .map((x) => JSON.stringify(x))
-    .join('\n');
-}
+type Denied = Extract<AgentEvent, { type: 'tool_call_denied' }>;
 
 /**
  * What this run read and what it sent to the model: per tool call (server, arguments, rows, source ids)
@@ -42,25 +24,20 @@ export function DataUsePanel({ events, runId }: { events: AgentEvent[]; runId: s
   const flagged = new Map(llm.flatMap((e) => e.flagged).map((f) => [f.sourceId, f.reason]));
   const scripted = llm.every((e) => e.provider === 'scripted');
   const pol = events.find((e): e is Extract<AgentEvent, { type: 'policy_applied' }> => e.type === 'policy_applied');
-  const download = () => {
-    const blob = new Blob([auditLines(events)], { type: 'application/x-ndjson' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `${runId ?? 'run'}-data-access.jsonl`;
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  };
+  const denied = events.filter((e): e is Denied => e.type === 'tool_call_denied');
+  const phones = Math.max(0, ...llm.map((e) => e.maskedPhones ?? 0));
+  const download = () => downloadText(auditJsonl(auditRows(events)), `${runId ?? 'run'}-data-access.jsonl`);
 
   return (
     <section aria-labelledby="datause-heading" className="surface px-5 py-4 sm:px-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="min-w-0">
           <h2 id="datause-heading" className="text-[15px] font-semibold">데이터 사용 내역</h2>
-          <p className="tnum mt-0.5 text-sm text-text-2">읽기 {calls.length}회 · 항목 {rows}개 · LLM 요청 {llm.length}회 · 메일 주소 {masked}개 가림{flagged.size ? ` · 지시문 감지 ${flagged.size}건` : ''}</p>
+          <p className="tnum mt-0.5 text-sm text-text-2">읽기 {calls.length}회 · 항목 {rows}개 · LLM 요청 {llm.length}회 · 메일 주소 {masked}개 · 전화번호·학번 {phones}개 가림{denied.length ? ` · 거절한 호출 ${denied.length}건` : ''}{flagged.size ? ` · 지시문 감지 ${flagged.size}건` : ''}</p>
           {pol && (
             <p className="mt-1 text-[13px] text-text-2">
               <span className="mr-1.5 rounded bg-accent-2/70 px-1.5 py-0.5 text-[11px] font-medium text-text">정책</span>
-              제외 규칙 {pol.policy.exclude.length ? pol.policy.exclude.map((x) => `“${x}”`).join(', ') : '없음'} · 메일 주소 가리기 {pol.policy.maskEmails ? '켬' : '끔'}{pol.policy.allowedTools ? ` · 허용 도구 ${pol.policy.allowedTools.length}개` : ''}
+              제외 규칙 {pol.policy.exclude.length ? pol.policy.exclude.map((x) => `“${x}”`).join(', ') : '없음'} · 메일 주소 가리기 {pol.policy.maskEmails ? '켬' : '끔'} · 전화번호·학번 가리기 {pol.policy.maskPhones !== false ? '켬' : '끔'}{pol.policy.allowedTools ? ` · 허용 도구 ${pol.policy.allowedTools.length}개` : ''}
               {' · '}<b className="font-semibold text-text">LLM·리포트에서 제외 {pol.excluded.length}건</b>{pol.blockedTools.length ? ` · 막은 도구 ${pol.blockedTools.length}개` : ''}
             </p>
           )}
@@ -89,6 +66,15 @@ export function DataUsePanel({ events, runId }: { events: AgentEvent[]; runId: s
             </ul>
           </div>
           <div className="min-w-0">
+            {denied.length > 0 && (
+              <div className="mb-4">
+                <h3 className="text-sm font-medium text-text-2">정책이 거절한 호출</h3>
+                <ul className="mt-2 space-y-1 rounded-lg bg-bg px-3 py-2 font-mono text-[11px] text-text-3">
+                  {denied.map((d) => <li key={d.call.id}>{d.call.name.replace('__', '.')} {JSON.stringify(d.call.input)} · 허용 목록에 없음</li>)}
+                </ul>
+                <p className="mt-1 text-xs text-text-3">요청은 MCP 서버로 가지 않았고, 모델에게는 거절됐다고 알렸습니다.</p>
+              </div>
+            )}
             {pol && pol.excluded.length > 0 && (
               <div className="mb-4">
                 <h3 className="text-sm font-medium text-text-2">정책으로 뺀 항목</h3>
@@ -108,7 +94,7 @@ export function DataUsePanel({ events, runId }: { events: AgentEvent[]; runId: s
                   </div>
                   <div className="mt-1 text-text-2">{e.contents.join(' · ')}</div>
                   {e.fields.length > 0 && <div className="mt-1 flex flex-wrap gap-1">{e.fields.map((f) => <span key={f} className="rounded bg-surface-2 px-1.5 py-0.5 font-mono text-[11px] text-text-3">{f}</span>)}</div>}
-                  <div className="mt-1 text-xs text-text-3">메일 주소 {e.maskedEmails}개 가림{e.flagged.length ? ` · 지시문 감지: ${e.flagged.map((f) => `${f.sourceId} (${f.reason})`).join(', ')}` : ''}</div>
+                  <div className="mt-1 text-xs text-text-3">메일 주소 {e.maskedEmails}개 · 전화번호·학번 {e.maskedPhones ?? 0}개 가림{e.flagged.length ? ` · 지시문 감지: ${e.flagged.map((f) => `${f.sourceId} (${f.reason})`).join(', ')}` : ''}</div>
                 </li>
               ))}
             </ul>

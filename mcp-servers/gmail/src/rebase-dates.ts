@@ -1,5 +1,6 @@
+import { clockNow } from '@mawa/shared';
 /** Replace `{"$daysAgo": n}` markers (negative = future) with ISO timestamps relative to now. */
-export function rebaseDates(value: unknown, now = Date.now()): unknown {
+export function rebaseDates(value: unknown, now = clockNow()): unknown {
   if (Array.isArray(value)) return value.map((v) => rebaseDates(v, now));
   if (value && typeof value === 'object') {
     const obj = value as Record<string, unknown>;

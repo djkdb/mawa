@@ -2,6 +2,7 @@ import { REPORT_SECTION_ORDER, REPORT_SECTION_TITLES, WeeklyWorkReportSchema, ty
 import type { AggregatedContext } from '../context/aggregate.js';
 import type { LLMProvider } from '../llm/types.js';
 import { AGENT_SYSTEM_PROMPT, LLMReportSchema, analysisPrompt, llmReportJsonSchema, type AnalysisPrompt } from './prompt.js';
+import type { MaskOptions } from './guard.js';
 
 export interface GenerateReportResult {
   report: WeeklyWorkReport;
@@ -18,9 +19,9 @@ export interface GenerateReportResult {
 export async function generateReport(
   llm: LLMProvider,
   context: AggregatedContext,
-  input: { runId: string; mode: AgentMode; prompt: string; generatedAt?: string; maskEmails?: boolean; onPrompt?: (p: AnalysisPrompt & { bytes: number }) => void },
+  input: { runId: string; mode: AgentMode; prompt: string; generatedAt?: string; mask?: MaskOptions; onPrompt?: (p: AnalysisPrompt & { bytes: number }) => void },
 ): Promise<GenerateReportResult> {
-  const prompt = analysisPrompt(context, input.prompt, input.maskEmails ?? true);
+  const prompt = analysisPrompt(context, input.prompt, input.mask ?? { emails: true, phones: true }, input.generatedAt);
   input.onPrompt?.({ ...prompt, bytes: Buffer.byteLength(AGENT_SYSTEM_PROMPT) + Buffer.byteLength(prompt.text) });
   const response = await llm.complete({
     system: AGENT_SYSTEM_PROMPT,

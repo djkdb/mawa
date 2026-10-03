@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { clockNow } from '@mawa/shared';
 
 export const EmailSummarySchema = z.object({
   sourceId: z.string(),
@@ -27,7 +28,7 @@ export interface GmailProvider {
 }
 
 export function defaultSince(): string {
-  return new Date(Date.now() - 7 * 86_400_000).toISOString();
+  return new Date(clockNow() - 7 * 86_400_000).toISOString();
 }
 
 /** Builds a Gmail search query that finds mail related to a set of project keywords. */
