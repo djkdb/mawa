@@ -1,4 +1,4 @@
-import { useEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useState } from 'react';
 import { CheckSquare, ChevronDown, ClipboardCopy, RotateCcw, ShieldCheck, TriangleAlert } from 'lucide-react';
 import type { AgentEvent, ReportSectionId, Source, WeeklyWorkReport } from '@mawa/shared';
 import { DEMO_EXAMPLES } from '../lib/client.js';
@@ -21,11 +21,12 @@ export function StatStrip({ report }: { report: WeeklyWorkReport }) {
   const stats = ['commit', 'pr', 'issue', 'event', 'due', 'msg'].filter((k) => counts.has(k));
   if (!stats.length) return null;
   return (
-    <dl className="stat-grid grid gap-px overflow-hidden rounded-lg bg-line" style={{ '--n': stats.length } as CSSProperties}>
+    <dl aria-label="읽은 출처" className="flex flex-wrap items-center gap-x-5 gap-y-2 text-sm">
       {stats.map((k) => (
-        <div key={k} className="bg-surface-2 px-3 py-2.5 sm:px-4 sm:py-3" style={{ boxShadow: `inset 0 2px 0 ${SERVER_COLOR[KIND_SERVER[k] ?? 'github']}` }}>
-          <dt className="whitespace-nowrap text-xs text-text-3">{KIND_NAME[k]}</dt>
-          <dd className="tnum text-xl font-semibold text-text sm:text-2xl">{counts.get(k)}</dd>
+        <div key={k} className="flex items-center gap-2">
+          <span className="h-2 w-2 rounded-full" style={{ background: SERVER_COLOR[KIND_SERVER[k] ?? 'github'] }} aria-hidden />
+          <dt className="text-text-2">{KIND_NAME[k]}</dt>
+          <dd className="tnum font-semibold text-text">{counts.get(k)}</dd>
         </div>
       ))}
     </dl>
@@ -152,9 +153,9 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
 
       {ordered.map((section) => (
         <section key={section.id} aria-labelledby={`sec-${section.id}`} className="mt-8 scroll-mt-24">
-          {section.id === firstEvidence && <p className="mb-6 border-t border-line pt-6 text-xs font-medium text-text-3">근거 자료 · 위 판단에 쓰인 원본 활동</p>}
+          {section.id === firstEvidence && <div className="mb-6 border-t border-line pt-6"><h2 className="text-[15px] font-semibold text-text-2">근거 자료</h2><p className="text-sm text-text-3">위 판단에 쓰인 원본 활동입니다.</p></div>}
           <h3 id={`sec-${section.id}`} className="flex scroll-mt-24 items-center gap-2 text-[17px] font-semibold">
-            {(() => { const { Icon, color } = SECTION_ICON[section.id]; return <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg" style={{ color, background: `color-mix(in srgb, ${color} 15%, transparent)` }}><Icon className="h-4 w-4" aria-hidden /></span>; })()}
+            {(() => { const { Icon, color } = SECTION_ICON[section.id]; return <Icon className="h-[18px] w-[18px] shrink-0" style={{ color }} aria-hidden />; })()}
             {sectionTitle(section.id, prompt)}
             <span className="tnum text-sm font-normal text-text-3">{section.items.length}</span>
           </h3>

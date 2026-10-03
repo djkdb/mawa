@@ -44,8 +44,7 @@ export function PromptPanel({ status, busy, onRun, progress = null }: { status: 
           const active = ex.id === selected;
           return (
             <button key={ex.id} ref={(el) => { radios.current[i] = el; }} type="button" role="radio" aria-checked={active} tabIndex={i === activeIndex ? 0 : -1} onKeyDown={(e) => onKey(e, i)} disabled={busy} onClick={() => setSelected(ex.id)} className={`flex w-[72%] shrink-0 snap-start flex-col items-start gap-1.5 rounded-xl p-4 text-left transition disabled:opacity-60 sm:w-auto ${active ? 'bg-surface-2 ring-2 ring-accent' : 'bg-bg/60 ring-1 ring-line hover:bg-surface-2'}`}>
-              {(() => { const x = EX_ICON[ex.id]; return x ? <span className="mb-1 grid h-8 w-8 place-items-center rounded-lg" style={{ color: x.color, background: `color-mix(in srgb, ${x.color} 15%, transparent)` }}><x.Icon className="h-4 w-4" aria-hidden /></span> : null; })()}
-              <span className="text-[15px] font-semibold leading-snug text-text">{meta.title}</span>
+              <span className="flex items-center gap-2 text-[15px] font-semibold leading-snug text-text">{(() => { const x = EX_ICON[ex.id]; return x ? <x.Icon className="h-4 w-4 shrink-0" style={{ color: x.color }} aria-hidden /> : null; })()}{meta.title}</span>
               <span className="text-[13px] leading-relaxed text-text-2">{meta.hint}</span>
               <span className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-3">
                 {meta.uses.map((s) => <span key={s} className="inline-flex items-center gap-1"><span style={{ color: SERVER_COLOR[s] }}>{ICON[s]}</span>{SERVER_NAME[s]}</span>)}

@@ -49,9 +49,9 @@ export function CategoryBoard({ report, runId }: { report: WeeklyWorkReport; run
           const count = (k: Entry['kind']) => entries.filter((e) => e.kind === k).length;
           const high = entries.filter((e) => e.item.priority === 'high').length;
           return (
-            <section key={c.key} aria-label={c.label} className="surface flex flex-col p-5" style={{ boxShadow: `inset 0 3px 0 ${c.color}` }}>
+            <section key={c.key} aria-label={c.label} className="surface flex flex-col p-5">
               <div className="flex items-center gap-2">
-                <span className="grid h-7 w-7 place-items-center rounded-md" style={{ color: c.color, background: `color-mix(in srgb, ${c.color} 16%, transparent)` }}><Icon className="h-4 w-4" aria-hidden /></span>
+                <Icon className="h-[18px] w-[18px] shrink-0" style={{ color: c.color }} aria-hidden />
                 <h4 className="text-[15px] font-semibold text-text">{c.label}</h4>
                 {high > 0 && <span className="pri pri-high">높음 {high}</span>}
                 <span className="tnum ml-auto text-xs text-text-3">{[count('할 일') && `할 일 ${count('할 일')}`, count('주의') && `주의 ${count('주의')}`, count('일정') && `일정 ${count('일정')}`, count('기록') && `기록 ${count('기록')}`].filter(Boolean).join(' · ')}</span>

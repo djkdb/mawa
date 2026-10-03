@@ -100,9 +100,9 @@ export function Shell({ route, reportHref, navigate, status, children }: { route
 
         <main id="main" tabIndex={-1} className="flex-1 px-4 py-5 pb-28 outline-none sm:px-6 lg:pb-10">{children}</main>
 
-        <nav aria-label="주 메뉴" className="fixed inset-x-0 bottom-0 z-30 flex border-t border-line bg-surface/95 backdrop-blur lg:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
+        <nav aria-label="주 메뉴" className="fixed inset-x-0 bottom-0 z-30 flex border-t border-line bg-surface lg:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
           {NAV.map((n) => (
-            <a key={n.id} href={href(n.id)} onClick={(e) => go(e, n.id)} aria-current={route === n.id ? 'page' : undefined} className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 text-[11px] ${route === n.id ? 'text-text' : 'text-text-3'}`}>
+            <a key={n.id} href={href(n.id)} onClick={(e) => go(e, n.id)} aria-current={route === n.id ? 'page' : undefined} className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 text-[11px] ${route === n.id ? 'font-semibold text-accent' : 'text-text-3'}`}>
               <n.icon className="h-5 w-5" aria-hidden /> {n.label}
             </a>
           ))}

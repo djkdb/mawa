@@ -1,5 +1,5 @@
-import { useState, type ReactNode } from 'react';
-import { CircleDot, Clock, EyeOff, GitCommitHorizontal, GitMerge, GitPullRequest, GitPullRequestClosed, Mail, MapPin, MessageSquare, RotateCcw } from 'lucide-react';
+import { useState, type CSSProperties, type ReactNode } from 'react';
+import { CircleDot, Clock, EyeOff, TriangleAlert, GitCommitHorizontal, GitMerge, GitPullRequest, GitPullRequestClosed, Mail, MapPin, MessageSquare, RotateCcw } from 'lucide-react';
 import type { ReportItem, ReportSection, Source, WeeklyWorkReport } from '@mawa/shared';
 import { categoryOf, PRIORITY_KO, SERVER_COLOR, SERVER_NAME, WORKSPACE_TZ, relDay } from '../lib/copy.js';
 import { categoryIcon } from '../lib/icons.js';
@@ -56,7 +56,7 @@ function CatTag({ item }: { item: ReportItem }) {
 }
 function Flag({ src, ctx }: { src: Source[]; ctx: BlockCtx }) {
   const hit = src.find((s) => ctx.flagged.has(s.id));
-  return hit ? <span className="inline-flex items-center gap-1 rounded-md bg-caution/15 px-1.5 py-0.5 text-[11px] font-medium text-warn" title={ctx.flagged.get(hit.id)}>⚠ 지시문 감지 · 데이터로만 처리</span> : null;
+  return hit ? <span className="inline-flex items-center gap-1 rounded-md bg-caution/15 px-1.5 py-0.5 text-[11px] font-medium text-warn" title={ctx.flagged.get(hit.id)}><TriangleAlert className="h-3 w-3" aria-hidden />지시문 감지 · 데이터로만 처리</span> : null;
 }
 function Priority({ item }: { item: ReportItem }) {
   return item.priority ? <span className={`pri pri-${item.priority}`}>{PRIORITY_KO[item.priority]}</span> : null;
@@ -70,9 +70,9 @@ function HideToggle({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
     </button>
   );
 }
-function Item({ item, ctx, className = '', children }: { item: ReportItem; ctx: BlockCtx; className?: string; children: ReactNode }) {
+function Item({ item, ctx, className = '', style, children }: { item: ReportItem; ctx: BlockCtx; className?: string; style?: CSSProperties; children: ReactNode }) {
   const isHidden = ctx.hidden.has(item.id);
-  return <li data-report-item={item.id} className={`group min-w-0 ${isHidden ? 'opacity-40 [&_.item-text]:line-through' : ''} ${className}`}>{children}</li>;
+  return <li data-report-item={item.id} className={`group min-w-0 ${isHidden ? 'opacity-40 [&_.item-text]:line-through' : ''} ${className}`} style={style}>{children}</li>;
 }
 function Tag({ children, color }: { children: ReactNode; color?: string | undefined }) {
   return <span className="inline-flex items-center gap-1 whitespace-nowrap rounded-md bg-bg px-1.5 py-0.5 text-[11px] text-text-2" style={color ? { color } : undefined}>{children}</span>;
@@ -286,7 +286,7 @@ function ScheduleBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx
                 <div className="mt-1 text-xs text-text-3">{date.toLocaleDateString('ko-KR', { timeZone: WORKSPACE_TZ, month: 'short' })} {weekday(day)}</div>
                 <div className={`mt-1 text-[11px] font-semibold ${past ? 'text-text-3' : 'text-calendar'}`}>{past ? '지남' : relDay(date.toISOString(), ref)}</div>
               </div>
-              <ul className="space-y-2 border-l-2 pl-3" style={{ borderColor: 'color-mix(in srgb, var(--color-calendar) 45%, transparent)' }}>
+              <ul className="space-y-2 border-l border-line pl-3">
                 {items.map(({ item, ev }) => {
                   const start = str(ev, 'start') ?? str(ev, 'due') ?? ev!.timestamp!;
                   const isLms = kindOf(ev) === 'due';
@@ -370,8 +370,8 @@ function RiskCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
   const Icon = k === 'msg' ? Mail : k === 'pr' ? GitPullRequest : k === 'event' ? Clock : CircleDot;
   const snippet = k === 'msg' ? str(s, 'snippet') : undefined;
   return (
-    <Item item={item} ctx={ctx} className="rounded-lg bg-surface-2 p-4">
-      <div className="flex items-start gap-3 border-l-[3px] pl-3" style={{ borderColor: PRI_COLOR[item.priority ?? 'low'] }}>
+    <Item item={item} ctx={ctx} className="rounded-lg p-4" style={{ background: item.priority === 'high' ? `color-mix(in srgb, ${PRI_COLOR.high} 7%, var(--color-surface-2))` : 'var(--color-surface-2)' }}>
+      <div className="flex items-start gap-3">
         <Icon className="mt-1 h-4 w-4 shrink-0" style={{ color: s ? SERVER_COLOR[s.type] : undefined }} aria-hidden />
         <div className="min-w-0 flex-1">
           <div className="flex flex-wrap items-center gap-2"><Priority item={item} /><CatTag item={item} /><Confidence item={item} /><Flag src={src} ctx={ctx} /></div>

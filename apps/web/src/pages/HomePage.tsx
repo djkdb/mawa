@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ArrowRight, CheckCircle2, Info, Play, Radio, Sparkles } from 'lucide-react';
+import { ArrowRight, CheckCircle2, ChevronDown, Info, Play, Radio, Sparkles } from 'lucide-react';
 import type { AgentMode } from '@mawa/shared';
 import { ActivityTimeline } from '../components/ActivityTimeline.js';
 import { CategoryBoard } from '../components/CategoryBoard.js';
@@ -85,7 +85,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
       </div>
       {servers > 0 && (
         <button type="button" onClick={() => scrollTo('activity')} className="-mt-2 inline-flex w-fit items-center gap-2 rounded-full bg-surface px-3 py-1.5 text-xs text-text-2 hover:text-text">
-          <Radio className="h-3.5 w-3.5 text-calendar" aria-hidden />MCP 서버 {servers}곳 · 도구 호출 {calls}회 · JSON-RPC 메시지 {rpc}개 <span className="text-text-3">· 통신 보기 ↓</span>
+          <Radio className="h-3.5 w-3.5 text-calendar" aria-hidden />MCP 서버 {servers}곳 · 도구 호출 {calls}회 · JSON-RPC 메시지 {rpc}개 <span className="inline-flex items-center gap-0.5 text-text-3">· 통신 보기<ChevronDown className="h-3.5 w-3.5" aria-hidden /></span>
         </button>
       )}
 

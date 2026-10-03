@@ -182,7 +182,7 @@ test('trust: validation demo shows the dropped citation, data-use panel, injecti
   await page.goto(`${DEMO}#/report/recorded_weekly-progress`);
   await expect(page.getByText('출처 검증: 모든 항목의 인용이 실제로 조회한 출처와 일치합니다')).toBeVisible();
   await expect(page.getByText(/의심 메일: "\[캡스톤\] 회의록 자동 정리"/)).toBeVisible();
-  await expect(page.getByText('⚠ 지시문 감지 · 데이터로만 처리').first()).toBeVisible();
+  await expect(page.getByText('지시문 감지 · 데이터로만 처리', { exact: true }).first()).toBeVisible();
   // Decision first: risks come before the evidence sections.
   const order = (await page.locator('#report h3').allInnerTexts()).map((t) => t.replace(/\s*\d+\s*$/, '').trim());
   expect(order.indexOf('놓치면 안 되는 것')).toBeLessThan(order.indexOf('공부·개발 기록'));

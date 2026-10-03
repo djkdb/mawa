@@ -73,7 +73,7 @@ export function McpTopology({ events, live, recorded }: { events: AgentEvent[]; 
                 <div className="h-0.5 w-full" style={{ background: s.connected || s.initializing ? color : 'var(--color-line)', opacity: s.connected ? 0.8 : 0.4 }} />
                 {active && <span className={`wire-dot ${toServer ? 'wire-out' : 'wire-in'}`} style={{ background: color }} />}
               </div>
-              <div className="hairline flex min-w-0 items-center gap-3 rounded-lg bg-surface-2 px-3 py-2.5 md:my-1" style={{ borderLeft: `3px solid ${s.connected ? color : 'var(--color-line)'}` }}>
+              <div className="hairline flex min-w-0 items-center gap-3 rounded-lg bg-surface-2 px-3 py-2.5 md:my-1">
                 <Icon className="h-4 w-4 shrink-0" style={{ color }} aria-hidden />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline gap-x-2">
@@ -82,7 +82,7 @@ export function McpTopology({ events, live, recorded }: { events: AgentEvent[]; 
                   </div>
                   <div className="tnum truncate text-xs text-text-2 max-sm:hidden">
                     {s.connected ? `stdio · MCP ${s.connected.protocolVersion}` : 'stdio'}
-                    {s.messages > 0 && <> · 메시지 {s.messages} · ↑{kb(s.sent)} ↓{kb(s.received)}</>}
+                    {s.messages > 0 && <> · 메시지 {s.messages} · 보냄 {kb(s.sent)} · 받음 {kb(s.received)}</>}
                   </div>
                 </div>
                 <span className={`inline-flex shrink-0 items-center gap-1.5 rounded-full bg-surface px-2 py-0.5 text-[11px] font-medium ${active ? 'text-text' : 'text-text-2'}`}>

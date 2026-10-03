@@ -43,7 +43,7 @@
 
 /* Light theme: same tokens, darker hues so coloured text stays readable on white. */
 @layer base {
-  :root { --glow-1: rgba(59, 130, 246, 0.16); --glow-2: rgba(45, 212, 191, 0.07); --nav-bg: rgba(11, 13, 18, 0.82); --surface-edge: rgba(255, 255, 255, 0.04); --surface-shadow: none; --pri-high-bg: rgba(244,63,94,0.16); --pri-high-fg: #fda4af; --pri-med-bg: rgba(245,158,11,0.14); --pri-med-fg: #fcd34d; --pri-low-bg: rgba(148,163,184,0.14); --pri-low-fg: #cbd5e1; --conf-ok-bg: rgba(52,211,153,0.14); --conf-ok-fg: #6ee7b7; --conf-inf-bg: rgba(192,132,252,0.14); --conf-inf-fg: #d8b4fe; color-scheme: dark; }
+  :root { --nav-bg: rgba(11, 13, 18, 0.82); --surface-edge: rgba(255, 255, 255, 0.04); --surface-shadow: none; --pri-high-bg: rgba(244,63,94,0.16); --pri-high-fg: #fda4af; --pri-med-bg: rgba(245,158,11,0.14); --pri-med-fg: #fcd34d; --pri-low-bg: rgba(148,163,184,0.14); --pri-low-fg: #cbd5e1; --conf-ok-bg: rgba(52,211,153,0.14); --conf-ok-fg: #6ee7b7; --conf-inf-bg: rgba(192,132,252,0.14); --conf-inf-fg: #d8b4fe; color-scheme: dark; }
   :root[data-theme="light"] {
     color-scheme: light;
     --color-bg: #f4f6fa; --color-surface: #ffffff; --color-surface-2: #eef1f6; --color-line: #dde2ea;
@@ -54,7 +54,7 @@
     --color-cat-task: #1d4ed8; --color-cat-team: #7e22ce; --color-cat-dev: #4f46e5; --color-cat-meet: #0f766e; --color-cat-job: #b45309; --color-cat-study: #4d7c0f; --color-cat-school: #be185d; --color-cat-security: #be123c; --color-cat-other: #475569;
     --color-pr-open: #047857; --color-pr-merged: #7e22ce; --color-pr-closed: #64748b; --color-issue: #b45309;
     --color-pri-high: #e11d48; --color-pri-medium: #d97706; --color-pri-low: #94a3b8;
-    --glow-1: rgba(59, 130, 246, 0.10); --glow-2: rgba(45, 212, 191, 0.06); --nav-bg: rgba(255, 255, 255, 0.85); --surface-edge: #e3e7ee; --surface-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    --nav-bg: rgba(255, 255, 255, 0.85); --surface-edge: #e3e7ee; --surface-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
     --pri-high-bg: #ffe4e8; --pri-high-fg: #be123c; --pri-med-bg: #fef3c7; --pri-med-fg: #92400e; --pri-low-bg: #eef1f6; --pri-low-fg: #475569;
     --conf-ok-bg: #d1fae5; --conf-ok-fg: #047857; --conf-inf-bg: #f3e8ff; --conf-inf-fg: #7e22ce;
   }
@@ -72,11 +72,7 @@ dialog::backdrop { background: rgba(0,0,0,0.5); }
 .pri-medium { background: var(--pri-med-bg); color: var(--pri-med-fg); }
 .pri-low { background: var(--pri-low-bg); color: var(--pri-low-fg); }
 body {
-  background:
-    radial-gradient(1100px 520px at 12% -10%, var(--glow-1), transparent 60%),
-    radial-gradient(900px 480px at 100% 10%, var(--glow-2), transparent 60%),
-    var(--color-bg);
-  background-attachment: fixed;
+  background: var(--color-bg);
   color: var(--color-text);
   font-family: var(--font-sans);
   font-size: 16px;
@@ -104,7 +100,8 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, main[tabindex="-1"]:focus { ou
 .topnav { position: sticky; top: 0; z-index: 30; background: var(--nav-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--color-line); }
 .rail a { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: var(--color-text-2); font-size: 14px; }
 .rail a:hover { color: var(--color-text); background: var(--color-surface); }
-.rail a[aria-current="true"] { color: var(--color-text); background: var(--color-surface-2); box-shadow: inset 2px 0 0 var(--color-accent); }
+.rail a[aria-current="page"] { color: var(--color-text); background: var(--color-surface-2); font-weight: 600; }
+.rail a[aria-current="page"] svg { color: var(--color-accent); }
 .flow-dot { offset-rotate: 0deg; animation: flow 3.2s linear infinite; }
 @keyframes flow { from { offset-distance: 0%; opacity: 0 } 10% { opacity: 1 } 90% { opacity: 1 } to { offset-distance: 100%; opacity: 0 } }
 @media (prefers-reduced-motion: reduce) { .flow-dot { animation: none; opacity: .6; offset-distance: 60%; } }
@@ -118,10 +115,16 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, main[tabindex="-1"]:focus { ou
 @media (prefers-reduced-motion: reduce) { .wire-out, .wire-in { animation: none; left: calc(50% - 4px); } }
 
 /* Confidence as a word, not a colour dot. */
-.conf { display: inline-flex; align-items: center; border-radius: 6px; padding: 0 6px; font-size: 11px; font-weight: 600; line-height: 18px; white-space: nowrap; }
-.conf-ok { background: var(--conf-ok-bg); color: var(--conf-ok-fg); }
-.conf-inf { background: var(--conf-inf-bg); color: var(--conf-inf-fg); }
+.conf { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 500; line-height: 18px; white-space: nowrap; }
+.conf::before { content: ''; width: 5px; height: 5px; border-radius: 9999px; background: currentColor; }
+.conf-ok { color: var(--conf-ok-fg); }
+.conf-inf { color: var(--conf-inf-fg); }
 
-/* Stat strip: all counts on one row from sm up, three per row on phones. */
-.stat-grid { grid-template-columns: repeat(min(var(--n), 3), minmax(0, 1fr)); }
-@media (min-width: 640px) { .stat-grid { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); } }
+/* Browser surfaces carry the palette too: caret, native controls, scrollbars, links. */
+:root { accent-color: var(--color-accent-strong); caret-color: var(--color-accent); scrollbar-color: color-mix(in srgb, var(--color-text-3) 45%, transparent) transparent; }
+a { text-underline-offset: 3px; }
+
+/* Motion: strong ease-out, short, state only. Press feedback on buttons (Emil Kowalski's standards). */
+:root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
+button, a, [role="radio"] { transition-property: color, background-color, box-shadow, opacity, transform; transition-duration: 160ms; transition-timing-function: var(--ease-out); }
+button:not(:disabled):active, [role="radio"]:not(:disabled):active { transform: scale(0.97); }
