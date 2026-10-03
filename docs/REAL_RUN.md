@@ -47,3 +47,43 @@ npm run ask -- --mode=real "이번 주 내 GitHub 활동이랑 리뷰 대기 정
 ## 무엇이 어디로 가나
 - 에이전트는 GitHub **읽기 API만** 호출합니다. 쓰기 도구는 없습니다.
 - AI 모드에서는 도구 결과(마스킹 후)가 Claude Code를 통해 Anthropic 모델로 갑니다. 보내고 싶지 않은 저장소는 2-3에서 고르지 마세요.
+
+---
+
+# 웹 서비스로 실행하기 (GitHub 연결 버튼)
+
+터미널 대신 브라우저에서 "연결 → 질문 → 리포트" 흐름으로 돌립니다. 토큰을 붙여넣는 대신 GitHub 로그인 화면에서 권한을 승인합니다.
+
+## 1. GitHub App 만들기 (읽기 전용, 5분)
+GitHub → Settings → Developer settings → **GitHub Apps → New GitHub App**
+- GitHub App name: `mawa-local-<아이디>` (전역에서 유일해야 함)
+- Homepage URL: `http://localhost:5173`
+- Callback URL: `http://localhost:3001/auth/github/callback`
+- Webhook: **Active 체크 해제**
+- Repository permissions: **Contents / Issues / Pull requests → Read-only** (Metadata는 자동 Read-only)
+- Where can this GitHub App be installed: **Only on this account** → Create
+- 만든 뒤 **Generate a new client secret** → Client ID와 secret을 복사 (Private key는 필요 없음)
+- 왼쪽 **Install App** → 내 계정 → 보여줄 저장소만 선택
+
+## 2. `.env` 만들기 (저장소 루트, 커밋되지 않음)
+```powershell
+copy .env.example .env
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"   # 출력값을 SESSION_ENCRYPTION_KEY에
+notepad .env
+```
+바꿀 줄:
+```
+AGENT_MODE=real
+LLM_PROVIDER=claude-cli
+GITHUB_CLIENT_ID=<Client ID>
+GITHUB_CLIENT_SECRET=<client secret>
+GITHUB_OAUTH_SCOPES=
+SESSION_ENCRYPTION_KEY=<위에서 만든 64자리>
+```
+
+## 3. 실행
+```powershell
+npm run dev
+```
+브라우저에서 `http://localhost:5173` → **연결** → GitHub **연결** → 승인 → 홈에서 질문.
+연결 해제는 같은 화면의 **연결 해제**(GitHub 쪽 승인도 함께 취소).
