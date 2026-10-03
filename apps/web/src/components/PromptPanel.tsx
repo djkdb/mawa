@@ -51,7 +51,7 @@ export function PromptPanel({ status, busy, onRun, progress = null }: { status: 
         <div className="mt-4">
           <label htmlFor="prompt" className="text-sm text-text-2">직접 입력</label>
           <textarea id="prompt" rows={1} disabled placeholder="예: 이번 주 리뷰 요청받은 PR만 정리해줘" aria-describedby="prompt-demo-note" className="hairline mt-1.5 w-full resize-none rounded-lg bg-bg px-4 py-3 text-[15px] opacity-60 outline-none placeholder:text-text-3" />
-          <p id="prompt-demo-note" className="mt-1 text-xs text-text-3">데모는 기록된 질문 4개만 재생합니다. 자유 질문은 API 서버와 LLM 키를 설정한 실제 실행에서 됩니다.</p>
+          <p id="prompt-demo-note" className="mt-1 text-xs text-text-3">데모는 기록된 질문 4개만 재생합니다. 자유 질문은 API 서버를 LLM(Anthropic API 키 또는 Claude Code CLI)과 함께 실행하면 됩니다.</p>
         </div>
       ) : (
         <div className="mt-4">
@@ -69,7 +69,7 @@ export function PromptPanel({ status, busy, onRun, progress = null }: { status: 
             {(['demo', 'real'] as const).map((m) => {
               const disabled = m === 'real' && !realAvailable;
               return (
-                <button key={m} type="button" role="radio" aria-checked={mode === m} disabled={busy || disabled} onClick={() => setMode(m)} title={disabled ? '실제 모드는 GitHub 또는 Google을 연결해야 합니다' : undefined} className={`rounded-md px-3 py-1.5 font-medium transition ${mode === m ? 'bg-surface-2 text-text' : 'text-text-2 hover:text-text'} disabled:cursor-not-allowed disabled:opacity-40`}>
+                <button key={m} type="button" role="radio" aria-checked={mode === m} disabled={busy || disabled} onClick={() => setMode(m)} title={disabled ? '실제 모드는 GitHub·Google·eCampus 중 하나를 연결해야 합니다' : undefined} className={`rounded-md px-3 py-1.5 font-medium transition ${mode === m ? 'bg-surface-2 text-text' : 'text-text-2 hover:text-text'} disabled:cursor-not-allowed disabled:opacity-40`}>
                   {m === 'demo' ? '데모' : '실제'}
                 </button>
               );

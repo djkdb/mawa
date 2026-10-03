@@ -29,7 +29,8 @@
     "test:e2e": "playwright test",
     "build:demo": "npm run build -w packages/shared && npm run build:demo -w apps/web",
     "pretest:e2e": "npm run build:demo -w apps/web",
-    "record:llm-run": "node scripts/record-llm-run.mjs"
+    "record:llm-run": "node scripts/record-llm-run.mjs",
+    "ask": "node scripts/ask.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

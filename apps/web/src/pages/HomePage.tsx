@@ -14,7 +14,8 @@ function progressOf(state: AgentRunState): string {
   const planned = state.events.filter((e) => e.type === 'llm_response').reduce((n, e) => n + (e.type === 'llm_response' ? e.toolCalls.length : 0), 0);
   const done = state.events.filter((e) => e.type === 'tool_call_completed' || e.type === 'tool_call_failed').length;
   if (state.events.some((e) => e.type === 'context_aggregated')) return '리포트 작성 중';
-  return planned ? `도구 ${done}/${planned}` : 'MCP 연결 중';
+  if (planned) return `도구 ${done}/${planned}`;
+  return state.events.some((e) => e.type === 'llm_request') ? '계획 세우는 중' : 'MCP 연결 중';
 }
 
 /** Dashboard: what matters this week first (risks, actions, deadlines), then the composer and the run. */

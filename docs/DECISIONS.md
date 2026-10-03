@@ -276,3 +276,22 @@ missing from the calendar.
 has not run against eCampus with a real account (no credentials in the build
 environment). Users should check the university's IT usage rules.
 
+
+## ADR-017 — Claude Code CLI as an LLM provider
+
+**Decision.** `LLM_PROVIDER=claude-cli` runs each LLM request as one headless
+`claude -p` call (`--tools ""`, `--no-session-persistence`, `--json-schema`,
+empty temp cwd). Planning turns get the MCP tool list in the prompt and return
+`{text, toolCalls}`; the agent — not the CLI — executes the calls over MCP, so
+the data policy, masking, injection flags, citation validation and the audit
+trail apply exactly as with the API providers. The analysis turn returns the
+report JSON against the same schema.
+
+**Why.** Lets a student run the real model loop with their existing Claude Code
+login instead of an API key in this app. Verified on the sample workspace: the
+model chose LMS, calendar and mail tools on its own, found the mail-only
+scholarship deadline, the mail-vs-calendar presentation-date conflict and
+flagged the injected meeting-bot mail (dropped citations: 0).
+
+**Trade-offs.** ≈25–60 s per run (two to three CLI start-ups); the model id is
+known only after the first response (`modelUsage`).

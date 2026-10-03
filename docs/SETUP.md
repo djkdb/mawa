@@ -13,7 +13,20 @@ LLM_MODEL=claude-opus-5-5       # optional override
 OpenAI: `LLM_PROVIDER=openai`, `LLM_API_KEY=sk-...`, `LLM_MODEL=gpt-4.1`.
 OpenAI-compatible (Ollama, vLLM, LM Studio): `LLM_PROVIDER=openai-compatible`, `LLM_BASE_URL=http://localhost:11434/v1`, `LLM_MODEL=llama3.1`.
 
-Without `LLM_API_KEY` the scripted provider is used and the UI says so.
+Claude Code CLI (no API key in this app): `LLM_PROVIDER=claude-cli` (optional `LLM_MODEL=sonnet`). Each LLM request becomes one headless `claude -p --output-format json --json-schema … --tools "" --no-session-persistence` call, run in an empty temp directory, using the CLI's own login. On planning turns the model returns the tool calls it wants as JSON and the agent executes them over MCP; on the analysis turn it returns the report JSON. Slower than the API (≈25–60 s per run) but needs no key.
+
+Without `LLM_API_KEY` (and without `claude-cli`) the scripted provider is used and the UI says so.
+
+### Asking from the terminal
+
+```
+npm run build
+npm run ask -- "앞으로 2주 과제·시험·발표 마감 순서대로 알려줘."                   # scripted, sample data
+LLM_PROVIDER=claude-cli npm run ask -- "놓친 거나 막힌 거 있어?"                  # model picks the tools
+LLM_PROVIDER=claude-cli npm run ask -- --mode=real "이번 주 정리해줘"            # GITHUB_TOKEN / GOOGLE_ACCESS_TOKEN / LMS_TOKEN from env
+```
+
+It prints the MCP handshakes, the plan the model chose, each tool call and the report by category (`--json` for the raw report).
 
 ## 2. GitHub OAuth App
 

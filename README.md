@@ -141,7 +141,7 @@ See [`.env.example`](.env.example). Nothing is hard-coded; `.env` is git-ignored
 | Variable | Purpose |
 | --- | --- |
 | `AGENT_MODE` | `demo` (default) or `real` |
-| `LLM_PROVIDER` | `anthropic` (default), `openai`, `openai-compatible`, `scripted` |
+| `LLM_PROVIDER` | `anthropic` (default), `openai`, `openai-compatible`, `claude-cli` (uses the local Claude Code login, no key), `scripted` |
 | `LLM_API_KEY`, `LLM_MODEL`, `LLM_BASE_URL` | provider credentials; `LLM_BASE_URL` for OpenAI-compatible endpoints |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | GitHub OAuth App or GitHub App OAuth credentials |
 | `GITHUB_OAUTH_SCOPES` | scopes for an OAuth App (default `read:user repo`); set to empty for a GitHub App |
@@ -168,9 +168,10 @@ OAuth app and LLM configuration for Real Mode: [`docs/SETUP.md`](docs/SETUP.md).
 ```bash
 npm run dev        # builds TS packages, then starts api (:3001), web (:5173), portfolio (:5174)
 npm run build      # builds every workspace (shared, agent-core, mcp servers, api, web, portfolio; motion typechecks)
-npm run test       # vitest: schemas, MCP servers over stdio, agent loop, API, demo client (50 tests)
+npm run test       # vitest: schemas, MCP servers over stdio, agent loop, API, demo client (vitest)
 npm run test:e2e   # Playwright: API-backed UI, portfolio, and the standalone demo build (run npm run build first)
 npm run lint       # eslint
+npm run ask -- "질문"  # ask from the terminal; LLM_PROVIDER=claude-cli lets the model pick the MCP tools (docs/SETUP.md)
 npm run typecheck  # tsc -b + Vite apps
 ```
 
