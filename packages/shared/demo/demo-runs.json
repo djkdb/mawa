@@ -1,5 +1,5 @@
 {
-  "recordedAt": "2026-10-02T07:12:22.298Z",
+  "recordedAt": "2026-10-03T03:10:44.635Z",
   "note": "Recorded demo runs (DEMO MODE, scripted provider, real MCP servers over stdio, synthetic fixtures). Replayed by apps/web in demo mode and by the portfolio. Not live, not real data.",
   "runs": [
     {
@@ -12,15 +12,15 @@
       "events": [
         {
           "type": "agent_run_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.183Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.579Z",
           "mode": "demo",
           "prompt": "이번 주 내 개발 프로젝트 진행 상황을 정리해줘."
         },
         {
           "type": "tool_discovery_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.183Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.579Z",
           "mode": "demo",
           "servers": [
             "github",
@@ -30,8 +30,8 @@
         },
         {
           "type": "tool_discovered",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.184Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.579Z",
           "mode": "demo",
           "tools": [
             {
@@ -330,8 +330,8 @@
         },
         {
           "type": "tool_call_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.184Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.580Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_1",
@@ -342,8 +342,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.187Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.582Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_1",
@@ -363,7 +363,7 @@
                   "sha": "a1b2c3d4e5f60000000000000000000000000000",
                   "message": "feat(agent): add LLM provider abstraction with Anthropic and OpenAI adapters",
                   "author": "demo-user",
-                  "date": "2026-10-02T00:00:21.009Z",
+                  "date": "2026-10-02T19:58:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/commit/a1b2c3d4e5f6",
                   "additions": 412,
                   "deletions": 38
@@ -374,7 +374,7 @@
                   "sha": "b2c3d4e5f6a10000000000000000000000000000",
                   "message": "feat(mcp): wire GitHub MCP server over stdio transport",
                   "author": "demo-user",
-                  "date": "2026-10-01T12:00:21.009Z",
+                  "date": "2026-10-02T07:58:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/commit/b2c3d4e5f6a1",
                   "additions": 286,
                   "deletions": 12
@@ -385,7 +385,7 @@
                   "sha": "c3d4e5f6a1b20000000000000000000000000000",
                   "message": "test(agent-core): cover source-grounded report validation",
                   "author": "demo-user",
-                  "date": "2026-10-01T04:48:21.009Z",
+                  "date": "2026-10-02T00:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/commit/c3d4e5f6a1b2",
                   "additions": 154,
                   "deletions": 4
@@ -396,7 +396,7 @@
                   "sha": "d4e5f6a1b2c30000000000000000000000000000",
                   "message": "feat(web): agent activity timeline with SSE streaming",
                   "author": "demo-user",
-                  "date": "2026-09-30T16:48:21.009Z",
+                  "date": "2026-10-01T12:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/commit/d4e5f6a1b2c3",
                   "additions": 521,
                   "deletions": 77
@@ -407,7 +407,7 @@
                   "sha": "e5f6a1b2c3d40000000000000000000000000000",
                   "message": "fix(api): propagate mode into every agent event",
                   "author": "demo-user",
-                  "date": "2026-09-30T07:12:21.009Z",
+                  "date": "2026-10-01T03:10:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/commit/e5f6a1b2c3d4",
                   "additions": 24,
                   "deletions": 9
@@ -418,7 +418,7 @@
                   "sha": "f6a1b2c3d4e50000000000000000000000000000",
                   "message": "feat(mcp): calendar server with get_events / search_events",
                   "author": "demo-user",
-                  "date": "2026-09-29T21:36:21.009Z",
+                  "date": "2026-09-30T17:34:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/commit/f6a1b2c3d4e5",
                   "additions": 310,
                   "deletions": 0
@@ -429,7 +429,7 @@
                   "sha": "0a1b2c3d4e5f0000000000000000000000000000",
                   "message": "feat(mcp): gmail server with search_project_emails",
                   "author": "demo-user",
-                  "date": "2026-09-29T09:36:21.009Z",
+                  "date": "2026-09-30T05:34:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/commit/0a1b2c3d4e5f",
                   "additions": 344,
                   "deletions": 15
@@ -440,7 +440,7 @@
                   "sha": "1b2c3d4e5f600000000000000000000000000000",
                   "message": "docs: architecture and decision log",
                   "author": "demo-user",
-                  "date": "2026-09-28T19:12:21.009Z",
+                  "date": "2026-09-29T15:10:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/commit/1b2c3d4e5f60",
                   "additions": 198,
                   "deletions": 0
@@ -451,7 +451,7 @@
                   "sha": "2c3d4e5f6a010000000000000000000000000000",
                   "message": "chore: scaffold npm workspaces, eslint, vitest",
                   "author": "demo-user",
-                  "date": "2026-09-28T02:24:21.009Z",
+                  "date": "2026-09-28T22:22:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/commit/2c3d4e5f6a01",
                   "additions": 620,
                   "deletions": 0
@@ -462,7 +462,7 @@
                   "sha": "3d4e5f6a0b1c0000000000000000000000000000",
                   "message": "solve: week 5 dp problems (knapsack, LIS)",
                   "author": "demo-user",
-                  "date": "2026-09-27T09:36:21.009Z",
+                  "date": "2026-09-28T05:34:43.827Z",
                   "url": "https://github.com/demo-user/cbnu-algorithms/commit/3d4e5f6a0b1c",
                   "additions": 133,
                   "deletions": 2
@@ -473,7 +473,7 @@
                   "sha": "4e5f6a0b1c2d0000000000000000000000000000",
                   "message": "solve: dijkstra with priority queue",
                   "author": "demo-user",
-                  "date": "2026-09-26T16:48:21.009Z",
+                  "date": "2026-09-27T12:46:43.827Z",
                   "url": "https://github.com/demo-user/cbnu-algorithms/commit/4e5f6a0b1c2d",
                   "additions": 88,
                   "deletions": 6
@@ -484,20 +484,20 @@
                   "sha": "5f6a0b1c2d3e0000000000000000000000000000",
                   "message": "refactor: shared fast io template",
                   "author": "demo-user",
-                  "date": "2026-09-26T00:00:21.009Z",
+                  "date": "2026-09-26T19:58:43.827Z",
                   "url": "https://github.com/demo-user/cbnu-algorithms/commit/5f6a0b1c2d3e",
                   "additions": 41,
                   "deletions": 30
                 }
               ]
             },
-            "durationMs": 3
+            "durationMs": 1
           }
         },
         {
           "type": "tool_call_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.187Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.582Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_2",
@@ -508,8 +508,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.189Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.583Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_2",
@@ -530,8 +530,8 @@
                   "title": "feat: agent-core with provider abstraction and report validation",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-10-01T02:24:21.009Z",
-                  "updatedAt": "2026-10-02T00:00:21.009Z",
+                  "createdAt": "2026-10-01T22:22:43.827Z",
+                  "updatedAt": "2026-10-02T19:58:43.827Z",
                   "mergedAt": null,
                   "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
                   "reviewComments": 3,
@@ -547,9 +547,9 @@
                   "title": "feat: MCP servers for GitHub, Gmail, Calendar (demo mode)",
                   "state": "merged",
                   "author": "demo-user",
-                  "createdAt": "2026-09-29T02:24:21.009Z",
-                  "updatedAt": "2026-09-30T00:00:21.009Z",
-                  "mergedAt": "2026-09-30T00:00:21.009Z",
+                  "createdAt": "2026-09-29T22:22:43.827Z",
+                  "updatedAt": "2026-09-30T19:58:43.827Z",
+                  "mergedAt": "2026-09-30T19:58:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/pull/12",
                   "reviewComments": 5,
                   "labels": [
@@ -563,9 +563,9 @@
                   "title": "chore: workspace scaffold and shared schemas",
                   "state": "merged",
                   "author": "demo-user",
-                  "createdAt": "2026-09-27T19:12:21.009Z",
-                  "updatedAt": "2026-09-28T04:48:21.009Z",
-                  "mergedAt": "2026-09-28T04:48:21.009Z",
+                  "createdAt": "2026-09-28T15:10:43.827Z",
+                  "updatedAt": "2026-09-29T00:46:43.827Z",
+                  "mergedAt": "2026-09-29T00:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/pull/11",
                   "reviewComments": 1,
                   "labels": [
@@ -574,13 +574,13 @@
                 }
               ]
             },
-            "durationMs": 2
+            "durationMs": 1
           }
         },
         {
           "type": "tool_call_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.189Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.583Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_3",
@@ -591,8 +591,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.193Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.584Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_3",
@@ -613,8 +613,8 @@
                   "title": "Google OAuth refresh token is not rotated after expiry",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-10-01T07:12:21.009Z",
-                  "updatedAt": "2026-10-01T19:12:21.009Z",
+                  "createdAt": "2026-10-02T03:10:43.827Z",
+                  "updatedAt": "2026-10-02T15:10:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
                   "labels": [
                     "bug",
@@ -632,8 +632,8 @@
                   "title": "Agent exceeds tool-call budget on broad prompts",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-09-30T12:00:21.009Z",
-                  "updatedAt": "2026-10-01T04:48:21.009Z",
+                  "createdAt": "2026-10-01T07:58:43.827Z",
+                  "updatedAt": "2026-10-02T00:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
                   "labels": [
                     "agent",
@@ -650,8 +650,8 @@
                   "title": "Portfolio: presentation mode keyboard navigation",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-09-29T16:48:21.009Z",
-                  "updatedAt": "2026-09-29T16:48:21.009Z",
+                  "createdAt": "2026-09-30T12:46:43.827Z",
+                  "updatedAt": "2026-09-30T12:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
                   "labels": [
                     "portfolio"
@@ -665,8 +665,8 @@
                   "title": "Week 6: graph problems set",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-09-29T07:12:21.009Z",
-                  "updatedAt": "2026-09-29T07:12:21.009Z",
+                  "createdAt": "2026-09-30T03:10:43.827Z",
+                  "updatedAt": "2026-09-30T03:10:43.827Z",
                   "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
                   "labels": [
                     "weekly"
@@ -677,13 +677,13 @@
                 }
               ]
             },
-            "durationMs": 4
+            "durationMs": 1
           }
         },
         {
           "type": "tool_call_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.193Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.584Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_4",
@@ -694,8 +694,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.195Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.586Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_4",
@@ -715,7 +715,7 @@
                   "url": "https://github.com/demo-user/my-ai-work-agent",
                   "description": "Connect work. Understand context. Execute with AI.",
                   "defaultBranch": "main",
-                  "lastPushedAt": "2026-10-02T00:00:21.009Z",
+                  "lastPushedAt": "2026-10-02T19:58:43.827Z",
                   "openIssues": 3,
                   "openPullRequests": 1,
                   "commitsInPeriod": 9,
@@ -727,7 +727,7 @@
                   "url": "https://github.com/demo-user/cbnu-algorithms",
                   "description": "Algorithm practice for CBNU coursework",
                   "defaultBranch": "main",
-                  "lastPushedAt": "2026-09-27T09:36:21.009Z",
+                  "lastPushedAt": "2026-09-28T05:34:43.827Z",
                   "openIssues": 1,
                   "openPullRequests": 0,
                   "commitsInPeriod": 3,
@@ -740,8 +740,8 @@
         },
         {
           "type": "tool_call_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.195Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.586Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_5",
@@ -754,8 +754,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.197Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.587Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_5",
@@ -780,7 +780,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-10-01T21:36:21.907Z",
+                  "date": "2026-10-02T17:34:44.471Z",
                   "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
                   "labels": [
                     "INBOX"
@@ -796,7 +796,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-30T04:48:21.907Z",
+                  "date": "2026-10-01T00:46:44.471Z",
                   "snippet": "Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issue #17.",
                   "labels": [
                     "INBOX"
@@ -812,7 +812,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-29T16:48:21.907Z",
+                  "date": "2026-09-30T12:46:44.471Z",
                   "snippet": "Thank you for applying. We will review your portfolio and get back within two weeks.",
                   "labels": [
                     "INBOX"
@@ -828,7 +828,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-28T07:12:21.907Z",
+                  "date": "2026-09-29T03:10:44.471Z",
                   "snippet": "Week 6 covers graphs: BFS/DFS, Dijkstra, MST. Solutions due Sunday.",
                   "labels": [
                     "INBOX"
@@ -837,13 +837,13 @@
                 }
               ]
             },
-            "durationMs": 2
+            "durationMs": 1
           }
         },
         {
           "type": "tool_call_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.197Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.587Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_6",
@@ -864,8 +864,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.200Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.589Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_6",
@@ -898,7 +898,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-10-01T21:36:21.907Z",
+                  "date": "2026-10-02T17:34:44.471Z",
                   "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
                   "labels": [
                     "INBOX"
@@ -914,7 +914,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-10-01T07:12:21.907Z",
+                  "date": "2026-10-02T03:10:44.471Z",
                   "snippet": "Your OAuth consent screen for project my-ai-work-agent needs verification before you can use sensitive scopes with external users.",
                   "labels": [
                     "INBOX"
@@ -930,7 +930,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-30T19:12:21.907Z",
+                  "date": "2026-10-01T15:10:44.471Z",
                   "snippet": "Please prepare a 5-minute update on your project architecture. Focus on how MCP differs from direct API calls.",
                   "labels": [
                     "INBOX"
@@ -946,7 +946,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-30T04:48:21.907Z",
+                  "date": "2026-10-01T00:46:44.471Z",
                   "snippet": "Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issue #17.",
                   "labels": [
                     "INBOX"
@@ -962,7 +962,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-29T00:00:21.907Z",
+                  "date": "2026-09-29T19:58:44.471Z",
                   "snippet": "1 moderate severity vulnerability in a transitive dependency of vitest.",
                   "labels": [
                     "INBOX"
@@ -978,7 +978,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-28T07:12:21.907Z",
+                  "date": "2026-09-29T03:10:44.471Z",
                   "snippet": "Week 6 covers graphs: BFS/DFS, Dijkstra, MST. Solutions due Sunday.",
                   "labels": [
                     "INBOX"
@@ -994,7 +994,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-27T02:24:21.907Z",
+                  "date": "2026-09-27T22:22:44.471Z",
                   "snippet": "Your demo slot is confirmed for Oct 10, 14:00. Projector supports HDMI only.",
                   "labels": [
                     "INBOX"
@@ -1008,8 +1008,8 @@
         },
         {
           "type": "tool_call_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.200Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.589Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_7",
@@ -1020,8 +1020,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.202Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.591Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_7",
@@ -1033,7 +1033,7 @@
             "status": "ok",
             "callId": "scripted_call_7",
             "output": {
-              "summary": "4 events",
+              "summary": "2 events",
               "data": [
                 {
                   "sourceId": "calendar:event:demoev001",
@@ -1041,8 +1041,8 @@
                   "calendar": "primary",
                   "title": "PR #14 review sync with Minji",
                   "description": "Walk through provider abstraction comments; decide on retry strategy for OpenAI-compatible provider.",
-                  "start": "2026-10-01T02:24:22.012Z",
-                  "end": "2026-10-01T02:54:22.012Z",
+                  "start": "2026-10-02T05:00:00.000Z",
+                  "end": "2026-10-02T05:30:00.000Z",
                   "allDay": false,
                   "location": "Google Meet",
                   "attendees": [
@@ -1059,8 +1059,8 @@
                   "calendar": "primary",
                   "title": "Deep work: Google OAuth refresh fix (#17)",
                   "description": "Blocked time to fix refresh-token rotation before demo day.",
-                  "start": "2026-10-02T16:48:22.012Z",
-                  "end": "2026-10-02T19:48:22.012Z",
+                  "start": "2026-10-04T01:00:00.000Z",
+                  "end": "2026-10-04T04:00:00.000Z",
                   "allDay": false,
                   "location": null,
                   "attendees": [
@@ -1069,42 +1069,6 @@
                   "organizer": "demo-user@example.com",
                   "status": "confirmed",
                   "url": "https://calendar.google.com/calendar/event?eid=demoev004"
-                },
-                {
-                  "sourceId": "calendar:event:demoev002",
-                  "eventId": "demoev002",
-                  "calendar": "primary",
-                  "title": "Capstone weekly check-in",
-                  "description": "5-minute architecture update: MCP vs direct API integration.",
-                  "start": "2026-10-03T14:24:22.012Z",
-                  "end": "2026-10-03T15:24:22.012Z",
-                  "allDay": false,
-                  "location": "S4-1 309",
-                  "attendees": [
-                    "park@cbnu.example.com",
-                    "demo-user@example.com"
-                  ],
-                  "organizer": "park@cbnu.example.com",
-                  "status": "confirmed",
-                  "url": "https://calendar.google.com/calendar/event?eid=demoev002"
-                },
-                {
-                  "sourceId": "calendar:event:demoev003",
-                  "eventId": "demoev003",
-                  "calendar": "primary",
-                  "title": "Algorithm study — week 6 graphs",
-                  "description": "BFS/DFS, Dijkstra, MST review.",
-                  "start": "2026-10-04T21:36:22.012Z",
-                  "end": "2026-10-04T23:36:22.012Z",
-                  "allDay": false,
-                  "location": "Library group room B",
-                  "attendees": [
-                    "algo-study@example.com",
-                    "demo-user@example.com"
-                  ],
-                  "organizer": "algo-study@example.com",
-                  "status": "confirmed",
-                  "url": "https://calendar.google.com/calendar/event?eid=demoev003"
                 }
               ]
             },
@@ -1113,8 +1077,8 @@
         },
         {
           "type": "tool_call_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.202Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.591Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_8",
@@ -1125,8 +1089,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.204Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.593Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_8",
@@ -1146,8 +1110,8 @@
                   "calendar": "primary",
                   "title": "Deep work: Google OAuth refresh fix (#17)",
                   "description": "Blocked time to fix refresh-token rotation before demo day.",
-                  "start": "2026-10-02T16:48:22.012Z",
-                  "end": "2026-10-02T19:48:22.012Z",
+                  "start": "2026-10-04T01:00:00.000Z",
+                  "end": "2026-10-04T04:00:00.000Z",
                   "allDay": false,
                   "location": null,
                   "attendees": [
@@ -1163,8 +1127,8 @@
                   "calendar": "primary",
                   "title": "Capstone weekly check-in",
                   "description": "5-minute architecture update: MCP vs direct API integration.",
-                  "start": "2026-10-03T14:24:22.012Z",
-                  "end": "2026-10-03T15:24:22.012Z",
+                  "start": "2026-10-05T06:00:00.000Z",
+                  "end": "2026-10-05T07:00:00.000Z",
                   "allDay": false,
                   "location": "S4-1 309",
                   "attendees": [
@@ -1181,8 +1145,8 @@
                   "calendar": "primary",
                   "title": "Algorithm study — week 6 graphs",
                   "description": "BFS/DFS, Dijkstra, MST review.",
-                  "start": "2026-10-04T21:36:22.012Z",
-                  "end": "2026-10-04T23:36:22.012Z",
+                  "start": "2026-10-06T10:00:00.000Z",
+                  "end": "2026-10-06T12:00:00.000Z",
                   "allDay": false,
                   "location": "Library group room B",
                   "attendees": [
@@ -1200,8 +1164,8 @@
         },
         {
           "type": "tool_call_started",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.204Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.593Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_9",
@@ -1214,8 +1178,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.205Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.594Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_9",
@@ -1237,8 +1201,8 @@
                   "calendar": "primary",
                   "title": "Deep work: Google OAuth refresh fix (#17)",
                   "description": "Blocked time to fix refresh-token rotation before demo day.",
-                  "start": "2026-10-02T16:48:22.012Z",
-                  "end": "2026-10-02T19:48:22.012Z",
+                  "start": "2026-10-04T01:00:00.000Z",
+                  "end": "2026-10-04T04:00:00.000Z",
                   "allDay": false,
                   "location": null,
                   "attendees": [
@@ -1254,8 +1218,8 @@
                   "calendar": "primary",
                   "title": "Demo day — My AI Work Agent",
                   "description": "10 min demo + 5 min Q&A. HDMI only.",
-                  "start": "2026-10-10T07:12:22.012Z",
-                  "end": "2026-10-10T07:27:22.012Z",
+                  "start": "2026-10-11T05:00:00.000Z",
+                  "end": "2026-10-11T05:15:00.000Z",
                   "allDay": false,
                   "location": "Innovation Hall",
                   "attendees": [
@@ -1273,8 +1237,8 @@
         },
         {
           "type": "context_aggregated",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.217Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.601Z",
           "mode": "demo",
           "counts": {
             "calendar": 5,
@@ -1285,13 +1249,13 @@
         },
         {
           "type": "report_generated",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.272Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.620Z",
           "mode": "demo",
           "report": {
-            "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
+            "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
             "mode": "demo",
-            "generatedAt": "2026-10-02T07:12:22.217Z",
+            "generatedAt": "2026-10-03T03:10:44.601Z",
             "period": {
               "start": "2026-09-28T00:00:00.000Z",
               "end": "2026-10-05T00:00:00.000Z"
@@ -1303,7 +1267,7 @@
                 "type": "calendar",
                 "title": "Demo day — My AI Work Agent",
                 "url": "https://calendar.google.com/calendar/event?eid=demoev005",
-                "timestamp": "2026-10-10T07:12:22.012Z",
+                "timestamp": "2026-10-11T05:00:00.000Z",
                 "metadata": {
                   "kind": "event"
                 }
@@ -1313,7 +1277,7 @@
                 "type": "calendar",
                 "title": "Algorithm study — week 6 graphs",
                 "url": "https://calendar.google.com/calendar/event?eid=demoev003",
-                "timestamp": "2026-10-04T21:36:22.012Z",
+                "timestamp": "2026-10-06T10:00:00.000Z",
                 "metadata": {
                   "kind": "event"
                 }
@@ -1323,7 +1287,7 @@
                 "type": "calendar",
                 "title": "Capstone weekly check-in",
                 "url": "https://calendar.google.com/calendar/event?eid=demoev002",
-                "timestamp": "2026-10-03T14:24:22.012Z",
+                "timestamp": "2026-10-05T06:00:00.000Z",
                 "metadata": {
                   "kind": "event"
                 }
@@ -1333,7 +1297,7 @@
                 "type": "calendar",
                 "title": "Deep work: Google OAuth refresh fix (#17)",
                 "url": "https://calendar.google.com/calendar/event?eid=demoev004",
-                "timestamp": "2026-10-02T16:48:22.012Z",
+                "timestamp": "2026-10-04T01:00:00.000Z",
                 "metadata": {
                   "kind": "event"
                 }
@@ -1343,7 +1307,7 @@
                 "type": "github",
                 "title": "feat(agent): add LLM provider abstraction with Anthropic and OpenAI adapters",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/a1b2c3d4e5f6",
-                "timestamp": "2026-10-02T00:00:21.009Z",
+                "timestamp": "2026-10-02T19:58:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1353,7 +1317,7 @@
                 "type": "github",
                 "title": "feat: agent-core with provider abstraction and report validation",
                 "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
-                "timestamp": "2026-10-02T00:00:21.009Z",
+                "timestamp": "2026-10-02T19:58:43.827Z",
                 "metadata": {
                   "kind": "pr"
                 }
@@ -1363,7 +1327,7 @@
                 "type": "github",
                 "title": "demo-user/my-ai-work-agent",
                 "url": "https://github.com/demo-user/my-ai-work-agent",
-                "timestamp": "2026-10-02T00:00:21.009Z",
+                "timestamp": "2026-10-02T19:58:43.827Z",
                 "metadata": {
                   "kind": "repo"
                 }
@@ -1373,7 +1337,7 @@
                 "type": "gmail",
                 "title": "Re: my-ai-work-agent PR #14 review",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0001",
-                "timestamp": "2026-10-01T21:36:21.907Z",
+                "timestamp": "2026-10-02T17:34:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -1383,7 +1347,7 @@
                 "type": "github",
                 "title": "Google OAuth refresh token is not rotated after expiry",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
-                "timestamp": "2026-10-01T19:12:21.009Z",
+                "timestamp": "2026-10-02T15:10:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -1393,9 +1357,19 @@
                 "type": "github",
                 "title": "feat(mcp): wire GitHub MCP server over stdio transport",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/b2c3d4e5f6a1",
-                "timestamp": "2026-10-01T12:00:21.009Z",
+                "timestamp": "2026-10-02T07:58:43.827Z",
                 "metadata": {
                   "kind": "commit"
+                }
+              },
+              {
+                "id": "calendar:event:demoev001",
+                "type": "calendar",
+                "title": "PR #14 review sync with Minji",
+                "url": "https://calendar.google.com/calendar/event?eid=demoev001",
+                "timestamp": "2026-10-02T05:00:00.000Z",
+                "metadata": {
+                  "kind": "event"
                 }
               },
               {
@@ -1403,7 +1377,7 @@
                 "type": "gmail",
                 "title": "[Action required] Google OAuth consent screen verification",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0002",
-                "timestamp": "2026-10-01T07:12:21.907Z",
+                "timestamp": "2026-10-02T03:10:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -1413,7 +1387,7 @@
                 "type": "github",
                 "title": "test(agent-core): cover source-grounded report validation",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/c3d4e5f6a1b2",
-                "timestamp": "2026-10-01T04:48:21.009Z",
+                "timestamp": "2026-10-02T00:46:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1423,19 +1397,9 @@
                 "type": "github",
                 "title": "Agent exceeds tool-call budget on broad prompts",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
-                "timestamp": "2026-10-01T04:48:21.009Z",
+                "timestamp": "2026-10-02T00:46:43.827Z",
                 "metadata": {
                   "kind": "issue"
-                }
-              },
-              {
-                "id": "calendar:event:demoev001",
-                "type": "calendar",
-                "title": "PR #14 review sync with Minji",
-                "url": "https://calendar.google.com/calendar/event?eid=demoev001",
-                "timestamp": "2026-10-01T02:24:22.012Z",
-                "metadata": {
-                  "kind": "event"
                 }
               },
               {
@@ -1443,7 +1407,7 @@
                 "type": "gmail",
                 "title": "Capstone weekly check-in: agenda for Thursday",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0003",
-                "timestamp": "2026-09-30T19:12:21.907Z",
+                "timestamp": "2026-10-01T15:10:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -1453,7 +1417,7 @@
                 "type": "github",
                 "title": "feat(web): agent activity timeline with SSE streaming",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/d4e5f6a1b2c3",
-                "timestamp": "2026-09-30T16:48:21.009Z",
+                "timestamp": "2026-10-01T12:46:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1463,7 +1427,7 @@
                 "type": "github",
                 "title": "fix(api): propagate mode into every agent event",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/e5f6a1b2c3d4",
-                "timestamp": "2026-09-30T07:12:21.009Z",
+                "timestamp": "2026-10-01T03:10:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1473,7 +1437,7 @@
                 "type": "gmail",
                 "title": "Re: Calendar MCP — token refresh bug",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0004",
-                "timestamp": "2026-09-30T04:48:21.907Z",
+                "timestamp": "2026-10-01T00:46:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -1483,7 +1447,7 @@
                 "type": "github",
                 "title": "feat: MCP servers for GitHub, Gmail, Calendar (demo mode)",
                 "url": "https://github.com/demo-user/my-ai-work-agent/pull/12",
-                "timestamp": "2026-09-30T00:00:21.009Z",
+                "timestamp": "2026-09-30T19:58:43.827Z",
                 "metadata": {
                   "kind": "pr"
                 }
@@ -1493,7 +1457,7 @@
                 "type": "github",
                 "title": "feat(mcp): calendar server with get_events / search_events",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/f6a1b2c3d4e5",
-                "timestamp": "2026-09-29T21:36:21.009Z",
+                "timestamp": "2026-09-30T17:34:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1503,7 +1467,7 @@
                 "type": "gmail",
                 "title": "QueryPie AX Engineer internship — application received",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0005",
-                "timestamp": "2026-09-29T16:48:21.907Z",
+                "timestamp": "2026-09-30T12:46:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -1513,7 +1477,7 @@
                 "type": "github",
                 "title": "Portfolio: presentation mode keyboard navigation",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
-                "timestamp": "2026-09-29T16:48:21.009Z",
+                "timestamp": "2026-09-30T12:46:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -1523,7 +1487,7 @@
                 "type": "github",
                 "title": "feat(mcp): gmail server with search_project_emails",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/0a1b2c3d4e5f",
-                "timestamp": "2026-09-29T09:36:21.009Z",
+                "timestamp": "2026-09-30T05:34:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1533,7 +1497,7 @@
                 "type": "github",
                 "title": "Week 6: graph problems set",
                 "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
-                "timestamp": "2026-09-29T07:12:21.009Z",
+                "timestamp": "2026-09-30T03:10:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -1543,7 +1507,7 @@
                 "type": "gmail",
                 "title": "GitHub: Dependabot alert on my-ai-work-agent",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0006",
-                "timestamp": "2026-09-29T00:00:21.907Z",
+                "timestamp": "2026-09-29T19:58:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -1553,7 +1517,7 @@
                 "type": "github",
                 "title": "docs: architecture and decision log",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/1b2c3d4e5f60",
-                "timestamp": "2026-09-28T19:12:21.009Z",
+                "timestamp": "2026-09-29T15:10:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1563,7 +1527,7 @@
                 "type": "gmail",
                 "title": "Algorithm study: week 6 problem set",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0007",
-                "timestamp": "2026-09-28T07:12:21.907Z",
+                "timestamp": "2026-09-29T03:10:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -1573,7 +1537,7 @@
                 "type": "github",
                 "title": "chore: workspace scaffold and shared schemas",
                 "url": "https://github.com/demo-user/my-ai-work-agent/pull/11",
-                "timestamp": "2026-09-28T04:48:21.009Z",
+                "timestamp": "2026-09-29T00:46:43.827Z",
                 "metadata": {
                   "kind": "pr"
                 }
@@ -1583,7 +1547,7 @@
                 "type": "github",
                 "title": "chore: scaffold npm workspaces, eslint, vitest",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/2c3d4e5f6a01",
-                "timestamp": "2026-09-28T02:24:21.009Z",
+                "timestamp": "2026-09-28T22:22:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1593,7 +1557,7 @@
                 "type": "github",
                 "title": "solve: week 5 dp problems (knapsack, LIS)",
                 "url": "https://github.com/demo-user/cbnu-algorithms/commit/3d4e5f6a0b1c",
-                "timestamp": "2026-09-27T09:36:21.009Z",
+                "timestamp": "2026-09-28T05:34:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1603,7 +1567,7 @@
                 "type": "github",
                 "title": "demo-user/cbnu-algorithms",
                 "url": "https://github.com/demo-user/cbnu-algorithms",
-                "timestamp": "2026-09-27T09:36:21.009Z",
+                "timestamp": "2026-09-28T05:34:43.827Z",
                 "metadata": {
                   "kind": "repo"
                 }
@@ -1613,7 +1577,7 @@
                 "type": "gmail",
                 "title": "Re: Demo day slot confirmed — Oct 10",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0008",
-                "timestamp": "2026-09-27T02:24:21.907Z",
+                "timestamp": "2026-09-27T22:22:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -1623,7 +1587,7 @@
                 "type": "github",
                 "title": "solve: dijkstra with priority queue",
                 "url": "https://github.com/demo-user/cbnu-algorithms/commit/4e5f6a0b1c2d",
-                "timestamp": "2026-09-26T16:48:21.009Z",
+                "timestamp": "2026-09-27T12:46:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1633,7 +1597,7 @@
                 "type": "github",
                 "title": "refactor: shared fast io template",
                 "url": "https://github.com/demo-user/cbnu-algorithms/commit/5f6a0b1c2d3e",
-                "timestamp": "2026-09-26T00:00:21.009Z",
+                "timestamp": "2026-09-26T19:58:43.827Z",
                 "metadata": {
                   "kind": "commit"
                 }
@@ -1646,7 +1610,7 @@
                 "items": [
                   {
                     "id": "item_1",
-                    "text": "이번 주 활동: 저장소 2곳에서 커밋 12개, PR 3개, 열린 이슈 4개, 일정 5건, 관련 메일 8건.",
+                    "text": "이번 주 활동: 저장소 2곳에서 커밋 12개, PR 3개, 열린 이슈 4개, 일정 5건, 업무 메일 7건.",
                     "confidence": "observed",
                     "sources": [
                       "github:commit:demo-user/my-ai-work-agent@a1b2c3d4e5f6",
@@ -1719,7 +1683,7 @@
                 "items": [
                   {
                     "id": "item_5",
-                    "text": "PR #14 (열림) · my-ai-work-agent: feat: agent-core with provider abstraction and report validation · 리뷰 코멘트 3개.",
+                    "text": "PR #14 (열림) · my-ai-work-agent: feat: agent-core with provider abstraction and report validation · 리뷰 코멘트 3개",
                     "confidence": "observed",
                     "sources": [
                       "github:pr:demo-user/my-ai-work-agent#14"
@@ -1727,7 +1691,7 @@
                   },
                   {
                     "id": "item_6",
-                    "text": "PR #12 (병합됨) · my-ai-work-agent: feat: MCP servers for GitHub, Gmail, Calendar (demo mode) · 리뷰 코멘트 5개.",
+                    "text": "PR #12 (병합됨) · my-ai-work-agent: feat: MCP servers for GitHub, Gmail, Calendar (demo mode) · 리뷰 코멘트 5개",
                     "confidence": "observed",
                     "sources": [
                       "github:pr:demo-user/my-ai-work-agent#12"
@@ -1735,26 +1699,10 @@
                   },
                   {
                     "id": "item_7",
-                    "text": "PR #11 (병합됨) · my-ai-work-agent: chore: workspace scaffold and shared schemas · 리뷰 코멘트 1개.",
+                    "text": "PR #11 (병합됨) · my-ai-work-agent: chore: workspace scaffold and shared schemas · 리뷰 코멘트 1개",
                     "confidence": "observed",
                     "sources": [
                       "github:pr:demo-user/my-ai-work-agent#11"
-                    ]
-                  },
-                  {
-                    "id": "item_8",
-                    "text": "my-ai-work-agent: 이번 기간 커밋 9개, 열린 이슈 3개.",
-                    "confidence": "observed",
-                    "sources": [
-                      "github:repo:demo-user/my-ai-work-agent"
-                    ]
-                  },
-                  {
-                    "id": "item_9",
-                    "text": "cbnu-algorithms: 이번 기간 커밋 3개, 열린 이슈 1개.",
-                    "confidence": "observed",
-                    "sources": [
-                      "github:repo:demo-user/cbnu-algorithms"
                     ]
                   }
                 ]
@@ -1764,16 +1712,32 @@
                 "title": "Schedule",
                 "items": [
                   {
-                    "id": "item_10",
-                    "text": "10월 10일 오후 04:12 · Demo day — My AI Work Agent (Innovation Hall).",
+                    "id": "item_8",
+                    "text": "10월 2일 (금) 오후 02:00 · PR #14 review sync with Minji (Google Meet) · 지남",
                     "confidence": "observed",
                     "sources": [
-                      "calendar:event:demoev005"
+                      "calendar:event:demoev001"
+                    ]
+                  },
+                  {
+                    "id": "item_9",
+                    "text": "10월 4일 (일) 오전 10:00 · Deep work: Google OAuth refresh fix (#17)",
+                    "confidence": "observed",
+                    "sources": [
+                      "calendar:event:demoev004"
+                    ]
+                  },
+                  {
+                    "id": "item_10",
+                    "text": "10월 5일 (월) 오후 03:00 · Capstone weekly check-in (S4-1 309)",
+                    "confidence": "observed",
+                    "sources": [
+                      "calendar:event:demoev002"
                     ]
                   },
                   {
                     "id": "item_11",
-                    "text": "10월 5일 오전 06:36 · Algorithm study — week 6 graphs (Library group room B).",
+                    "text": "10월 6일 (화) 오후 07:00 · Algorithm study — week 6 graphs (Library group room B)",
                     "confidence": "observed",
                     "sources": [
                       "calendar:event:demoev003"
@@ -1781,26 +1745,10 @@
                   },
                   {
                     "id": "item_12",
-                    "text": "10월 3일 오후 11:24 · Capstone weekly check-in (S4-1 309).",
+                    "text": "10월 11일 (일) 오후 02:00 · Demo day — My AI Work Agent (Innovation Hall)",
                     "confidence": "observed",
                     "sources": [
-                      "calendar:event:demoev002"
-                    ]
-                  },
-                  {
-                    "id": "item_13",
-                    "text": "10월 3일 오전 01:48 · Deep work: Google OAuth refresh fix (#17).",
-                    "confidence": "observed",
-                    "sources": [
-                      "calendar:event:demoev004"
-                    ]
-                  },
-                  {
-                    "id": "item_14",
-                    "text": "10월 1일 오전 11:24 · PR #14 review sync with Minji (Google Meet).",
-                    "confidence": "observed",
-                    "sources": [
-                      "calendar:event:demoev001"
+                      "calendar:event:demoev005"
                     ]
                   }
                 ]
@@ -1810,48 +1758,48 @@
                 "title": "Relevant Emails",
                 "items": [
                   {
-                    "id": "item_15",
-                    "text": "10월 2일 · Kim Minji: Re: my-ai-work-agent PR #14 review — Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry l…",
+                    "id": "item_13",
+                    "text": "10월 3일 · Kim Minji: my-ai-work-agent PR #14 review — Left 3 comments on the provider abstraction.",
                     "confidence": "observed",
                     "sources": [
                       "gmail:msg:demo0001"
                     ]
                   },
                   {
-                    "id": "item_16",
-                    "text": "10월 1일 · Google Cloud Platform: [Action required] Google OAuth consent screen verification — Your OAuth consent screen for project my-ai-work-agent needs verification before you can u…",
+                    "id": "item_14",
+                    "text": "10월 2일 · Google Cloud Platform: [Action required] Google OAuth consent screen verification — Your OAuth consent screen for project my-ai-work-agent needs verification…",
                     "confidence": "observed",
                     "sources": [
                       "gmail:msg:demo0002"
                     ]
                   },
                   {
-                    "id": "item_17",
-                    "text": "10월 1일 · Prof. Park: Capstone weekly check-in: agenda for Thursday — Please prepare a 5-minute update on your project architecture. Focus on how MCP differs fr…",
+                    "id": "item_15",
+                    "text": "10월 2일 · Prof. Park: Capstone weekly check-in: agenda for Thursday — Please prepare a 5-minute update on your project architecture.",
                     "confidence": "observed",
                     "sources": [
                       "gmail:msg:demo0003"
                     ]
                   },
                   {
-                    "id": "item_18",
-                    "text": "9월 30일 · Kim Minji: Re: Calendar MCP — token refresh bug — Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issu…",
+                    "id": "item_16",
+                    "text": "10월 1일 · Kim Minji: Calendar MCP — token refresh bug — Reproduced it. Refresh token is dropped when the access token expires mid-run.",
                     "confidence": "observed",
                     "sources": [
                       "gmail:msg:demo0004"
                     ]
                   },
                   {
-                    "id": "item_19",
-                    "text": "9월 30일 · Recruiting: QueryPie AX Engineer internship — application received — Thank you for applying. We will review your portfolio and get back within two weeks.",
+                    "id": "item_17",
+                    "text": "9월 30일 · Recruiting: QueryPie AX Engineer internship — application received — Thank you for applying. We will review your portfolio and get back within two…",
                     "confidence": "observed",
                     "sources": [
                       "gmail:msg:demo0005"
                     ]
                   },
                   {
-                    "id": "item_20",
-                    "text": "9월 29일 · GitHub: GitHub: Dependabot alert on my-ai-work-agent — 1 moderate severity vulnerability in a transitive dependency of vitest.",
+                    "id": "item_18",
+                    "text": "9월 30일 · GitHub: Dependabot alert on my-ai-work-agent — 1 moderate severity vulnerability in a transitive dependency of vitest.",
                     "confidence": "observed",
                     "sources": [
                       "gmail:msg:demo0006"
@@ -1864,52 +1812,67 @@
                 "title": "Potential Risks",
                 "items": [
                   {
-                    "id": "item_21",
-                    "text": "이슈 #17 \"Google OAuth refresh token is not rotated after expiry\" (bug, auth, priority:high)가 열려 있어 일정에 영향을 줄 수 있습니다.",
+                    "id": "item_19",
+                    "text": "이슈 #17 Google OAuth refresh token is not rotated after expiry — 버그, 인증, 우선순위 높음 · 담당 demo-user · 1일째 열림",
                     "confidence": "inferred",
                     "sources": [
                       "github:issue:demo-user/my-ai-work-agent#17"
-                    ]
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_22",
-                    "text": "이슈 #16 \"Agent exceeds tool-call budget on broad prompts\" (agent, enhancement)가 열려 있어 일정에 영향을 줄 수 있습니다.",
-                    "confidence": "inferred",
-                    "sources": [
-                      "github:issue:demo-user/my-ai-work-agent#16"
-                    ]
-                  },
-                  {
-                    "id": "item_23",
-                    "text": "Google Cloud Platform의 메일 \"[Action required] Google OAuth consent screen verification\"은 조치가 필요해 보입니다.",
+                    "id": "item_20",
+                    "text": "Google Cloud Platform 메일 \"[Action required] Google OAuth consent screen verification\" — Your OAuth consent screen for project my-ai-work-agent needs…",
                     "confidence": "inferred",
                     "sources": [
                       "gmail:msg:demo0002"
-                    ]
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_24",
-                    "text": "Kim Minji의 메일 \"Re: Calendar MCP — token refresh bug\"은 조치가 필요해 보입니다.",
+                    "id": "item_21",
+                    "text": "이슈 #15 Portfolio: presentation mode keyboard navigation — 포트폴리오 · 담당자 없음 · 2일째 열림",
+                    "confidence": "inferred",
+                    "sources": [
+                      "github:issue:demo-user/my-ai-work-agent#15"
+                    ],
+                    "priority": "medium"
+                  },
+                  {
+                    "id": "item_22",
+                    "text": "이슈 #3 Week 6: graph problems set — 주간 과제 · 담당 demo-user · 3일째 열림",
+                    "confidence": "inferred",
+                    "sources": [
+                      "github:issue:demo-user/cbnu-algorithms#3"
+                    ],
+                    "priority": "medium"
+                  },
+                  {
+                    "id": "item_23",
+                    "text": "Kim Minji 메일 \"Calendar MCP — token refresh bug\" — Reproduced it. Refresh token is dropped when the access token expires…",
                     "confidence": "inferred",
                     "sources": [
                       "gmail:msg:demo0004"
-                    ]
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_25",
-                    "text": "GitHub의 메일 \"GitHub: Dependabot alert on my-ai-work-agent\"은 조치가 필요해 보입니다.",
+                    "id": "item_24",
+                    "text": "GitHub 메일 \"Dependabot alert on my-ai-work-agent\" — 1 moderate severity vulnerability in a transitive dependency of…",
                     "confidence": "inferred",
                     "sources": [
                       "gmail:msg:demo0006"
-                    ]
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_26",
-                    "text": "열린 PR 1개가 리뷰를 기다리고 있습니다. 오래 열려 있을수록 병합 충돌 위험이 커집니다.",
+                    "id": "item_25",
+                    "text": "PR #14 feat: agent-core with provider abstraction and report validation — 리뷰 대기 · 코멘트 3개 미반영 · 1일째",
                     "confidence": "inferred",
                     "sources": [
                       "github:pr:demo-user/my-ai-work-agent#14"
-                    ]
+                    ],
+                    "priority": "medium"
                   }
                 ]
               },
@@ -1918,52 +1881,58 @@
                 "title": "Next Actions",
                 "items": [
                   {
-                    "id": "item_27",
+                    "id": "item_26",
                     "text": "이슈 #17 해결: Google OAuth refresh token is not rotated after expiry",
                     "confidence": "inferred",
                     "sources": [
                       "github:issue:demo-user/my-ai-work-agent#17"
-                    ]
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_28",
-                    "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
-                    "confidence": "inferred",
-                    "sources": [
-                      "github:issue:demo-user/my-ai-work-agent#16"
-                    ]
-                  },
-                  {
-                    "id": "item_29",
+                    "id": "item_27",
                     "text": "이슈 #15 해결: Portfolio: presentation mode keyboard navigation",
                     "confidence": "inferred",
                     "sources": [
                       "github:issue:demo-user/my-ai-work-agent#15"
-                    ]
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_30",
+                    "id": "item_28",
                     "text": "PR #14 리뷰 코멘트 반영 후 병합 요청",
                     "confidence": "inferred",
                     "sources": [
                       "github:pr:demo-user/my-ai-work-agent#14"
-                    ]
+                    ],
+                    "priority": "medium"
+                  },
+                  {
+                    "id": "item_29",
+                    "text": "10월 4일 Deep work: Google OAuth refresh fix (#17) 준비",
+                    "confidence": "inferred",
+                    "sources": [
+                      "calendar:event:demoev004"
+                    ],
+                    "priority": "medium"
+                  },
+                  {
+                    "id": "item_30",
+                    "text": "10월 5일 Capstone weekly check-in 준비",
+                    "confidence": "inferred",
+                    "sources": [
+                      "calendar:event:demoev002"
+                    ],
+                    "priority": "medium"
                   },
                   {
                     "id": "item_31",
-                    "text": "10월 10일 Demo day — My AI Work Agent 준비",
+                    "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
                     "confidence": "inferred",
                     "sources": [
-                      "calendar:event:demoev005"
-                    ]
-                  },
-                  {
-                    "id": "item_32",
-                    "text": "10월 5일 Algorithm study — week 6 graphs 준비",
-                    "confidence": "inferred",
-                    "sources": [
-                      "calendar:event:demoev003"
-                    ]
+                      "github:issue:demo-user/my-ai-work-agent#16"
+                    ],
+                    "priority": "low"
                   }
                 ]
               }
@@ -1973,17 +1942,17 @@
         },
         {
           "type": "agent_run_completed",
-          "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
-          "timestamp": "2026-10-02T07:12:22.272Z",
+          "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
+          "timestamp": "2026-10-03T03:10:44.620Z",
           "mode": "demo",
           "status": "success",
-          "durationMs": 89
+          "durationMs": 41
         }
       ],
       "report": {
-        "runId": "run_81ee7c1e-917a-40ef-ad37-5dceb950ff14",
+        "runId": "run_481a0175-b20e-427d-a5db-0088c52b46dc",
         "mode": "demo",
-        "generatedAt": "2026-10-02T07:12:22.217Z",
+        "generatedAt": "2026-10-03T03:10:44.601Z",
         "period": {
           "start": "2026-09-28T00:00:00.000Z",
           "end": "2026-10-05T00:00:00.000Z"
@@ -1995,7 +1964,7 @@
             "type": "calendar",
             "title": "Demo day — My AI Work Agent",
             "url": "https://calendar.google.com/calendar/event?eid=demoev005",
-            "timestamp": "2026-10-10T07:12:22.012Z",
+            "timestamp": "2026-10-11T05:00:00.000Z",
             "metadata": {
               "kind": "event"
             }
@@ -2005,7 +1974,7 @@
             "type": "calendar",
             "title": "Algorithm study — week 6 graphs",
             "url": "https://calendar.google.com/calendar/event?eid=demoev003",
-            "timestamp": "2026-10-04T21:36:22.012Z",
+            "timestamp": "2026-10-06T10:00:00.000Z",
             "metadata": {
               "kind": "event"
             }
@@ -2015,7 +1984,7 @@
             "type": "calendar",
             "title": "Capstone weekly check-in",
             "url": "https://calendar.google.com/calendar/event?eid=demoev002",
-            "timestamp": "2026-10-03T14:24:22.012Z",
+            "timestamp": "2026-10-05T06:00:00.000Z",
             "metadata": {
               "kind": "event"
             }
@@ -2025,7 +1994,7 @@
             "type": "calendar",
             "title": "Deep work: Google OAuth refresh fix (#17)",
             "url": "https://calendar.google.com/calendar/event?eid=demoev004",
-            "timestamp": "2026-10-02T16:48:22.012Z",
+            "timestamp": "2026-10-04T01:00:00.000Z",
             "metadata": {
               "kind": "event"
             }
@@ -2035,7 +2004,7 @@
             "type": "github",
             "title": "feat(agent): add LLM provider abstraction with Anthropic and OpenAI adapters",
             "url": "https://github.com/demo-user/my-ai-work-agent/commit/a1b2c3d4e5f6",
-            "timestamp": "2026-10-02T00:00:21.009Z",
+            "timestamp": "2026-10-02T19:58:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2045,7 +2014,7 @@
             "type": "github",
             "title": "feat: agent-core with provider abstraction and report validation",
             "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
-            "timestamp": "2026-10-02T00:00:21.009Z",
+            "timestamp": "2026-10-02T19:58:43.827Z",
             "metadata": {
               "kind": "pr"
             }
@@ -2055,7 +2024,7 @@
             "type": "github",
             "title": "demo-user/my-ai-work-agent",
             "url": "https://github.com/demo-user/my-ai-work-agent",
-            "timestamp": "2026-10-02T00:00:21.009Z",
+            "timestamp": "2026-10-02T19:58:43.827Z",
             "metadata": {
               "kind": "repo"
             }
@@ -2065,7 +2034,7 @@
             "type": "gmail",
             "title": "Re: my-ai-work-agent PR #14 review",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0001",
-            "timestamp": "2026-10-01T21:36:21.907Z",
+            "timestamp": "2026-10-02T17:34:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -2075,7 +2044,7 @@
             "type": "github",
             "title": "Google OAuth refresh token is not rotated after expiry",
             "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
-            "timestamp": "2026-10-01T19:12:21.009Z",
+            "timestamp": "2026-10-02T15:10:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -2085,9 +2054,19 @@
             "type": "github",
             "title": "feat(mcp): wire GitHub MCP server over stdio transport",
             "url": "https://github.com/demo-user/my-ai-work-agent/commit/b2c3d4e5f6a1",
-            "timestamp": "2026-10-01T12:00:21.009Z",
+            "timestamp": "2026-10-02T07:58:43.827Z",
             "metadata": {
               "kind": "commit"
+            }
+          },
+          {
+            "id": "calendar:event:demoev001",
+            "type": "calendar",
+            "title": "PR #14 review sync with Minji",
+            "url": "https://calendar.google.com/calendar/event?eid=demoev001",
+            "timestamp": "2026-10-02T05:00:00.000Z",
+            "metadata": {
+              "kind": "event"
             }
           },
           {
@@ -2095,7 +2074,7 @@
             "type": "gmail",
             "title": "[Action required] Google OAuth consent screen verification",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0002",
-            "timestamp": "2026-10-01T07:12:21.907Z",
+            "timestamp": "2026-10-02T03:10:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -2105,7 +2084,7 @@
             "type": "github",
             "title": "test(agent-core): cover source-grounded report validation",
             "url": "https://github.com/demo-user/my-ai-work-agent/commit/c3d4e5f6a1b2",
-            "timestamp": "2026-10-01T04:48:21.009Z",
+            "timestamp": "2026-10-02T00:46:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2115,19 +2094,9 @@
             "type": "github",
             "title": "Agent exceeds tool-call budget on broad prompts",
             "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
-            "timestamp": "2026-10-01T04:48:21.009Z",
+            "timestamp": "2026-10-02T00:46:43.827Z",
             "metadata": {
               "kind": "issue"
-            }
-          },
-          {
-            "id": "calendar:event:demoev001",
-            "type": "calendar",
-            "title": "PR #14 review sync with Minji",
-            "url": "https://calendar.google.com/calendar/event?eid=demoev001",
-            "timestamp": "2026-10-01T02:24:22.012Z",
-            "metadata": {
-              "kind": "event"
             }
           },
           {
@@ -2135,7 +2104,7 @@
             "type": "gmail",
             "title": "Capstone weekly check-in: agenda for Thursday",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0003",
-            "timestamp": "2026-09-30T19:12:21.907Z",
+            "timestamp": "2026-10-01T15:10:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -2145,7 +2114,7 @@
             "type": "github",
             "title": "feat(web): agent activity timeline with SSE streaming",
             "url": "https://github.com/demo-user/my-ai-work-agent/commit/d4e5f6a1b2c3",
-            "timestamp": "2026-09-30T16:48:21.009Z",
+            "timestamp": "2026-10-01T12:46:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2155,7 +2124,7 @@
             "type": "github",
             "title": "fix(api): propagate mode into every agent event",
             "url": "https://github.com/demo-user/my-ai-work-agent/commit/e5f6a1b2c3d4",
-            "timestamp": "2026-09-30T07:12:21.009Z",
+            "timestamp": "2026-10-01T03:10:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2165,7 +2134,7 @@
             "type": "gmail",
             "title": "Re: Calendar MCP — token refresh bug",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0004",
-            "timestamp": "2026-09-30T04:48:21.907Z",
+            "timestamp": "2026-10-01T00:46:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -2175,7 +2144,7 @@
             "type": "github",
             "title": "feat: MCP servers for GitHub, Gmail, Calendar (demo mode)",
             "url": "https://github.com/demo-user/my-ai-work-agent/pull/12",
-            "timestamp": "2026-09-30T00:00:21.009Z",
+            "timestamp": "2026-09-30T19:58:43.827Z",
             "metadata": {
               "kind": "pr"
             }
@@ -2185,7 +2154,7 @@
             "type": "github",
             "title": "feat(mcp): calendar server with get_events / search_events",
             "url": "https://github.com/demo-user/my-ai-work-agent/commit/f6a1b2c3d4e5",
-            "timestamp": "2026-09-29T21:36:21.009Z",
+            "timestamp": "2026-09-30T17:34:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2195,7 +2164,7 @@
             "type": "gmail",
             "title": "QueryPie AX Engineer internship — application received",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0005",
-            "timestamp": "2026-09-29T16:48:21.907Z",
+            "timestamp": "2026-09-30T12:46:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -2205,7 +2174,7 @@
             "type": "github",
             "title": "Portfolio: presentation mode keyboard navigation",
             "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
-            "timestamp": "2026-09-29T16:48:21.009Z",
+            "timestamp": "2026-09-30T12:46:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -2215,7 +2184,7 @@
             "type": "github",
             "title": "feat(mcp): gmail server with search_project_emails",
             "url": "https://github.com/demo-user/my-ai-work-agent/commit/0a1b2c3d4e5f",
-            "timestamp": "2026-09-29T09:36:21.009Z",
+            "timestamp": "2026-09-30T05:34:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2225,7 +2194,7 @@
             "type": "github",
             "title": "Week 6: graph problems set",
             "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
-            "timestamp": "2026-09-29T07:12:21.009Z",
+            "timestamp": "2026-09-30T03:10:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -2235,7 +2204,7 @@
             "type": "gmail",
             "title": "GitHub: Dependabot alert on my-ai-work-agent",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0006",
-            "timestamp": "2026-09-29T00:00:21.907Z",
+            "timestamp": "2026-09-29T19:58:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -2245,7 +2214,7 @@
             "type": "github",
             "title": "docs: architecture and decision log",
             "url": "https://github.com/demo-user/my-ai-work-agent/commit/1b2c3d4e5f60",
-            "timestamp": "2026-09-28T19:12:21.009Z",
+            "timestamp": "2026-09-29T15:10:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2255,7 +2224,7 @@
             "type": "gmail",
             "title": "Algorithm study: week 6 problem set",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0007",
-            "timestamp": "2026-09-28T07:12:21.907Z",
+            "timestamp": "2026-09-29T03:10:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -2265,7 +2234,7 @@
             "type": "github",
             "title": "chore: workspace scaffold and shared schemas",
             "url": "https://github.com/demo-user/my-ai-work-agent/pull/11",
-            "timestamp": "2026-09-28T04:48:21.009Z",
+            "timestamp": "2026-09-29T00:46:43.827Z",
             "metadata": {
               "kind": "pr"
             }
@@ -2275,7 +2244,7 @@
             "type": "github",
             "title": "chore: scaffold npm workspaces, eslint, vitest",
             "url": "https://github.com/demo-user/my-ai-work-agent/commit/2c3d4e5f6a01",
-            "timestamp": "2026-09-28T02:24:21.009Z",
+            "timestamp": "2026-09-28T22:22:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2285,7 +2254,7 @@
             "type": "github",
             "title": "solve: week 5 dp problems (knapsack, LIS)",
             "url": "https://github.com/demo-user/cbnu-algorithms/commit/3d4e5f6a0b1c",
-            "timestamp": "2026-09-27T09:36:21.009Z",
+            "timestamp": "2026-09-28T05:34:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2295,7 +2264,7 @@
             "type": "github",
             "title": "demo-user/cbnu-algorithms",
             "url": "https://github.com/demo-user/cbnu-algorithms",
-            "timestamp": "2026-09-27T09:36:21.009Z",
+            "timestamp": "2026-09-28T05:34:43.827Z",
             "metadata": {
               "kind": "repo"
             }
@@ -2305,7 +2274,7 @@
             "type": "gmail",
             "title": "Re: Demo day slot confirmed — Oct 10",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0008",
-            "timestamp": "2026-09-27T02:24:21.907Z",
+            "timestamp": "2026-09-27T22:22:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -2315,7 +2284,7 @@
             "type": "github",
             "title": "solve: dijkstra with priority queue",
             "url": "https://github.com/demo-user/cbnu-algorithms/commit/4e5f6a0b1c2d",
-            "timestamp": "2026-09-26T16:48:21.009Z",
+            "timestamp": "2026-09-27T12:46:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2325,7 +2294,7 @@
             "type": "github",
             "title": "refactor: shared fast io template",
             "url": "https://github.com/demo-user/cbnu-algorithms/commit/5f6a0b1c2d3e",
-            "timestamp": "2026-09-26T00:00:21.009Z",
+            "timestamp": "2026-09-26T19:58:43.827Z",
             "metadata": {
               "kind": "commit"
             }
@@ -2338,7 +2307,7 @@
             "items": [
               {
                 "id": "item_1",
-                "text": "이번 주 활동: 저장소 2곳에서 커밋 12개, PR 3개, 열린 이슈 4개, 일정 5건, 관련 메일 8건.",
+                "text": "이번 주 활동: 저장소 2곳에서 커밋 12개, PR 3개, 열린 이슈 4개, 일정 5건, 업무 메일 7건.",
                 "confidence": "observed",
                 "sources": [
                   "github:commit:demo-user/my-ai-work-agent@a1b2c3d4e5f6",
@@ -2411,7 +2380,7 @@
             "items": [
               {
                 "id": "item_5",
-                "text": "PR #14 (열림) · my-ai-work-agent: feat: agent-core with provider abstraction and report validation · 리뷰 코멘트 3개.",
+                "text": "PR #14 (열림) · my-ai-work-agent: feat: agent-core with provider abstraction and report validation · 리뷰 코멘트 3개",
                 "confidence": "observed",
                 "sources": [
                   "github:pr:demo-user/my-ai-work-agent#14"
@@ -2419,7 +2388,7 @@
               },
               {
                 "id": "item_6",
-                "text": "PR #12 (병합됨) · my-ai-work-agent: feat: MCP servers for GitHub, Gmail, Calendar (demo mode) · 리뷰 코멘트 5개.",
+                "text": "PR #12 (병합됨) · my-ai-work-agent: feat: MCP servers for GitHub, Gmail, Calendar (demo mode) · 리뷰 코멘트 5개",
                 "confidence": "observed",
                 "sources": [
                   "github:pr:demo-user/my-ai-work-agent#12"
@@ -2427,26 +2396,10 @@
               },
               {
                 "id": "item_7",
-                "text": "PR #11 (병합됨) · my-ai-work-agent: chore: workspace scaffold and shared schemas · 리뷰 코멘트 1개.",
+                "text": "PR #11 (병합됨) · my-ai-work-agent: chore: workspace scaffold and shared schemas · 리뷰 코멘트 1개",
                 "confidence": "observed",
                 "sources": [
                   "github:pr:demo-user/my-ai-work-agent#11"
-                ]
-              },
-              {
-                "id": "item_8",
-                "text": "my-ai-work-agent: 이번 기간 커밋 9개, 열린 이슈 3개.",
-                "confidence": "observed",
-                "sources": [
-                  "github:repo:demo-user/my-ai-work-agent"
-                ]
-              },
-              {
-                "id": "item_9",
-                "text": "cbnu-algorithms: 이번 기간 커밋 3개, 열린 이슈 1개.",
-                "confidence": "observed",
-                "sources": [
-                  "github:repo:demo-user/cbnu-algorithms"
                 ]
               }
             ]
@@ -2456,16 +2409,32 @@
             "title": "Schedule",
             "items": [
               {
-                "id": "item_10",
-                "text": "10월 10일 오후 04:12 · Demo day — My AI Work Agent (Innovation Hall).",
+                "id": "item_8",
+                "text": "10월 2일 (금) 오후 02:00 · PR #14 review sync with Minji (Google Meet) · 지남",
                 "confidence": "observed",
                 "sources": [
-                  "calendar:event:demoev005"
+                  "calendar:event:demoev001"
+                ]
+              },
+              {
+                "id": "item_9",
+                "text": "10월 4일 (일) 오전 10:00 · Deep work: Google OAuth refresh fix (#17)",
+                "confidence": "observed",
+                "sources": [
+                  "calendar:event:demoev004"
+                ]
+              },
+              {
+                "id": "item_10",
+                "text": "10월 5일 (월) 오후 03:00 · Capstone weekly check-in (S4-1 309)",
+                "confidence": "observed",
+                "sources": [
+                  "calendar:event:demoev002"
                 ]
               },
               {
                 "id": "item_11",
-                "text": "10월 5일 오전 06:36 · Algorithm study — week 6 graphs (Library group room B).",
+                "text": "10월 6일 (화) 오후 07:00 · Algorithm study — week 6 graphs (Library group room B)",
                 "confidence": "observed",
                 "sources": [
                   "calendar:event:demoev003"
@@ -2473,26 +2442,10 @@
               },
               {
                 "id": "item_12",
-                "text": "10월 3일 오후 11:24 · Capstone weekly check-in (S4-1 309).",
+                "text": "10월 11일 (일) 오후 02:00 · Demo day — My AI Work Agent (Innovation Hall)",
                 "confidence": "observed",
                 "sources": [
-                  "calendar:event:demoev002"
-                ]
-              },
-              {
-                "id": "item_13",
-                "text": "10월 3일 오전 01:48 · Deep work: Google OAuth refresh fix (#17).",
-                "confidence": "observed",
-                "sources": [
-                  "calendar:event:demoev004"
-                ]
-              },
-              {
-                "id": "item_14",
-                "text": "10월 1일 오전 11:24 · PR #14 review sync with Minji (Google Meet).",
-                "confidence": "observed",
-                "sources": [
-                  "calendar:event:demoev001"
+                  "calendar:event:demoev005"
                 ]
               }
             ]
@@ -2502,48 +2455,48 @@
             "title": "Relevant Emails",
             "items": [
               {
-                "id": "item_15",
-                "text": "10월 2일 · Kim Minji: Re: my-ai-work-agent PR #14 review — Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry l…",
+                "id": "item_13",
+                "text": "10월 3일 · Kim Minji: my-ai-work-agent PR #14 review — Left 3 comments on the provider abstraction.",
                 "confidence": "observed",
                 "sources": [
                   "gmail:msg:demo0001"
                 ]
               },
               {
-                "id": "item_16",
-                "text": "10월 1일 · Google Cloud Platform: [Action required] Google OAuth consent screen verification — Your OAuth consent screen for project my-ai-work-agent needs verification before you can u…",
+                "id": "item_14",
+                "text": "10월 2일 · Google Cloud Platform: [Action required] Google OAuth consent screen verification — Your OAuth consent screen for project my-ai-work-agent needs verification…",
                 "confidence": "observed",
                 "sources": [
                   "gmail:msg:demo0002"
                 ]
               },
               {
-                "id": "item_17",
-                "text": "10월 1일 · Prof. Park: Capstone weekly check-in: agenda for Thursday — Please prepare a 5-minute update on your project architecture. Focus on how MCP differs fr…",
+                "id": "item_15",
+                "text": "10월 2일 · Prof. Park: Capstone weekly check-in: agenda for Thursday — Please prepare a 5-minute update on your project architecture.",
                 "confidence": "observed",
                 "sources": [
                   "gmail:msg:demo0003"
                 ]
               },
               {
-                "id": "item_18",
-                "text": "9월 30일 · Kim Minji: Re: Calendar MCP — token refresh bug — Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issu…",
+                "id": "item_16",
+                "text": "10월 1일 · Kim Minji: Calendar MCP — token refresh bug — Reproduced it. Refresh token is dropped when the access token expires mid-run.",
                 "confidence": "observed",
                 "sources": [
                   "gmail:msg:demo0004"
                 ]
               },
               {
-                "id": "item_19",
-                "text": "9월 30일 · Recruiting: QueryPie AX Engineer internship — application received — Thank you for applying. We will review your portfolio and get back within two weeks.",
+                "id": "item_17",
+                "text": "9월 30일 · Recruiting: QueryPie AX Engineer internship — application received — Thank you for applying. We will review your portfolio and get back within two…",
                 "confidence": "observed",
                 "sources": [
                   "gmail:msg:demo0005"
                 ]
               },
               {
-                "id": "item_20",
-                "text": "9월 29일 · GitHub: GitHub: Dependabot alert on my-ai-work-agent — 1 moderate severity vulnerability in a transitive dependency of vitest.",
+                "id": "item_18",
+                "text": "9월 30일 · GitHub: Dependabot alert on my-ai-work-agent — 1 moderate severity vulnerability in a transitive dependency of vitest.",
                 "confidence": "observed",
                 "sources": [
                   "gmail:msg:demo0006"
@@ -2556,52 +2509,67 @@
             "title": "Potential Risks",
             "items": [
               {
-                "id": "item_21",
-                "text": "이슈 #17 \"Google OAuth refresh token is not rotated after expiry\" (bug, auth, priority:high)가 열려 있어 일정에 영향을 줄 수 있습니다.",
+                "id": "item_19",
+                "text": "이슈 #17 Google OAuth refresh token is not rotated after expiry — 버그, 인증, 우선순위 높음 · 담당 demo-user · 1일째 열림",
                 "confidence": "inferred",
                 "sources": [
                   "github:issue:demo-user/my-ai-work-agent#17"
-                ]
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_22",
-                "text": "이슈 #16 \"Agent exceeds tool-call budget on broad prompts\" (agent, enhancement)가 열려 있어 일정에 영향을 줄 수 있습니다.",
-                "confidence": "inferred",
-                "sources": [
-                  "github:issue:demo-user/my-ai-work-agent#16"
-                ]
-              },
-              {
-                "id": "item_23",
-                "text": "Google Cloud Platform의 메일 \"[Action required] Google OAuth consent screen verification\"은 조치가 필요해 보입니다.",
+                "id": "item_20",
+                "text": "Google Cloud Platform 메일 \"[Action required] Google OAuth consent screen verification\" — Your OAuth consent screen for project my-ai-work-agent needs…",
                 "confidence": "inferred",
                 "sources": [
                   "gmail:msg:demo0002"
-                ]
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_24",
-                "text": "Kim Minji의 메일 \"Re: Calendar MCP — token refresh bug\"은 조치가 필요해 보입니다.",
+                "id": "item_21",
+                "text": "이슈 #15 Portfolio: presentation mode keyboard navigation — 포트폴리오 · 담당자 없음 · 2일째 열림",
+                "confidence": "inferred",
+                "sources": [
+                  "github:issue:demo-user/my-ai-work-agent#15"
+                ],
+                "priority": "medium"
+              },
+              {
+                "id": "item_22",
+                "text": "이슈 #3 Week 6: graph problems set — 주간 과제 · 담당 demo-user · 3일째 열림",
+                "confidence": "inferred",
+                "sources": [
+                  "github:issue:demo-user/cbnu-algorithms#3"
+                ],
+                "priority": "medium"
+              },
+              {
+                "id": "item_23",
+                "text": "Kim Minji 메일 \"Calendar MCP — token refresh bug\" — Reproduced it. Refresh token is dropped when the access token expires…",
                 "confidence": "inferred",
                 "sources": [
                   "gmail:msg:demo0004"
-                ]
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_25",
-                "text": "GitHub의 메일 \"GitHub: Dependabot alert on my-ai-work-agent\"은 조치가 필요해 보입니다.",
+                "id": "item_24",
+                "text": "GitHub 메일 \"Dependabot alert on my-ai-work-agent\" — 1 moderate severity vulnerability in a transitive dependency of…",
                 "confidence": "inferred",
                 "sources": [
                   "gmail:msg:demo0006"
-                ]
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_26",
-                "text": "열린 PR 1개가 리뷰를 기다리고 있습니다. 오래 열려 있을수록 병합 충돌 위험이 커집니다.",
+                "id": "item_25",
+                "text": "PR #14 feat: agent-core with provider abstraction and report validation — 리뷰 대기 · 코멘트 3개 미반영 · 1일째",
                 "confidence": "inferred",
                 "sources": [
                   "github:pr:demo-user/my-ai-work-agent#14"
-                ]
+                ],
+                "priority": "medium"
               }
             ]
           },
@@ -2610,52 +2578,58 @@
             "title": "Next Actions",
             "items": [
               {
-                "id": "item_27",
+                "id": "item_26",
                 "text": "이슈 #17 해결: Google OAuth refresh token is not rotated after expiry",
                 "confidence": "inferred",
                 "sources": [
                   "github:issue:demo-user/my-ai-work-agent#17"
-                ]
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_28",
-                "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
-                "confidence": "inferred",
-                "sources": [
-                  "github:issue:demo-user/my-ai-work-agent#16"
-                ]
-              },
-              {
-                "id": "item_29",
+                "id": "item_27",
                 "text": "이슈 #15 해결: Portfolio: presentation mode keyboard navigation",
                 "confidence": "inferred",
                 "sources": [
                   "github:issue:demo-user/my-ai-work-agent#15"
-                ]
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_30",
+                "id": "item_28",
                 "text": "PR #14 리뷰 코멘트 반영 후 병합 요청",
                 "confidence": "inferred",
                 "sources": [
                   "github:pr:demo-user/my-ai-work-agent#14"
-                ]
+                ],
+                "priority": "medium"
+              },
+              {
+                "id": "item_29",
+                "text": "10월 4일 Deep work: Google OAuth refresh fix (#17) 준비",
+                "confidence": "inferred",
+                "sources": [
+                  "calendar:event:demoev004"
+                ],
+                "priority": "medium"
+              },
+              {
+                "id": "item_30",
+                "text": "10월 5일 Capstone weekly check-in 준비",
+                "confidence": "inferred",
+                "sources": [
+                  "calendar:event:demoev002"
+                ],
+                "priority": "medium"
               },
               {
                 "id": "item_31",
-                "text": "10월 10일 Demo day — My AI Work Agent 준비",
+                "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
                 "confidence": "inferred",
                 "sources": [
-                  "calendar:event:demoev005"
-                ]
-              },
-              {
-                "id": "item_32",
-                "text": "10월 5일 Algorithm study — week 6 graphs 준비",
-                "confidence": "inferred",
-                "sources": [
-                  "calendar:event:demoev003"
-                ]
+                  "github:issue:demo-user/my-ai-work-agent#16"
+                ],
+                "priority": "low"
               }
             ]
           }
@@ -2673,15 +2647,15 @@
       "events": [
         {
           "type": "agent_run_started",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.273Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.620Z",
           "mode": "demo",
           "prompt": "이번 주 가장 중요한 작업과 다음 액션을 알려줘."
         },
         {
           "type": "tool_discovery_started",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.273Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.620Z",
           "mode": "demo",
           "servers": [
             "github",
@@ -2691,8 +2665,8 @@
         },
         {
           "type": "tool_discovered",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.273Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.620Z",
           "mode": "demo",
           "tools": [
             {
@@ -2991,8 +2965,8 @@
         },
         {
           "type": "tool_call_started",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.273Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.620Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_1",
@@ -3003,8 +2977,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.278Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.623Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_1",
@@ -3025,8 +2999,8 @@
                   "title": "feat: agent-core with provider abstraction and report validation",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-10-01T02:24:21.009Z",
-                  "updatedAt": "2026-10-02T00:00:21.009Z",
+                  "createdAt": "2026-10-01T22:22:43.827Z",
+                  "updatedAt": "2026-10-02T19:58:43.827Z",
                   "mergedAt": null,
                   "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
                   "reviewComments": 3,
@@ -3042,9 +3016,9 @@
                   "title": "feat: MCP servers for GitHub, Gmail, Calendar (demo mode)",
                   "state": "merged",
                   "author": "demo-user",
-                  "createdAt": "2026-09-29T02:24:21.009Z",
-                  "updatedAt": "2026-09-30T00:00:21.009Z",
-                  "mergedAt": "2026-09-30T00:00:21.009Z",
+                  "createdAt": "2026-09-29T22:22:43.827Z",
+                  "updatedAt": "2026-09-30T19:58:43.827Z",
+                  "mergedAt": "2026-09-30T19:58:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/pull/12",
                   "reviewComments": 5,
                   "labels": [
@@ -3058,9 +3032,9 @@
                   "title": "chore: workspace scaffold and shared schemas",
                   "state": "merged",
                   "author": "demo-user",
-                  "createdAt": "2026-09-27T19:12:21.009Z",
-                  "updatedAt": "2026-09-28T04:48:21.009Z",
-                  "mergedAt": "2026-09-28T04:48:21.009Z",
+                  "createdAt": "2026-09-28T15:10:43.827Z",
+                  "updatedAt": "2026-09-29T00:46:43.827Z",
+                  "mergedAt": "2026-09-29T00:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/pull/11",
                   "reviewComments": 1,
                   "labels": [
@@ -3069,13 +3043,13 @@
                 }
               ]
             },
-            "durationMs": 5
+            "durationMs": 3
           }
         },
         {
           "type": "tool_call_started",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.278Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.623Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_2",
@@ -3086,8 +3060,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.279Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.624Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_2",
@@ -3108,8 +3082,8 @@
                   "title": "Google OAuth refresh token is not rotated after expiry",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-10-01T07:12:21.009Z",
-                  "updatedAt": "2026-10-01T19:12:21.009Z",
+                  "createdAt": "2026-10-02T03:10:43.827Z",
+                  "updatedAt": "2026-10-02T15:10:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
                   "labels": [
                     "bug",
@@ -3127,8 +3101,8 @@
                   "title": "Agent exceeds tool-call budget on broad prompts",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-09-30T12:00:21.009Z",
-                  "updatedAt": "2026-10-01T04:48:21.009Z",
+                  "createdAt": "2026-10-01T07:58:43.827Z",
+                  "updatedAt": "2026-10-02T00:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
                   "labels": [
                     "agent",
@@ -3145,8 +3119,8 @@
                   "title": "Portfolio: presentation mode keyboard navigation",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-09-29T16:48:21.009Z",
-                  "updatedAt": "2026-09-29T16:48:21.009Z",
+                  "createdAt": "2026-09-30T12:46:43.827Z",
+                  "updatedAt": "2026-09-30T12:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
                   "labels": [
                     "portfolio"
@@ -3160,8 +3134,8 @@
                   "title": "Week 6: graph problems set",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-09-29T07:12:21.009Z",
-                  "updatedAt": "2026-09-29T07:12:21.009Z",
+                  "createdAt": "2026-09-30T03:10:43.827Z",
+                  "updatedAt": "2026-09-30T03:10:43.827Z",
                   "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
                   "labels": [
                     "weekly"
@@ -3177,8 +3151,8 @@
         },
         {
           "type": "tool_call_started",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.279Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.624Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_3",
@@ -3191,8 +3165,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.281Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.625Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_3",
@@ -3214,8 +3188,8 @@
                   "calendar": "primary",
                   "title": "Deep work: Google OAuth refresh fix (#17)",
                   "description": "Blocked time to fix refresh-token rotation before demo day.",
-                  "start": "2026-10-02T16:48:22.012Z",
-                  "end": "2026-10-02T19:48:22.012Z",
+                  "start": "2026-10-04T01:00:00.000Z",
+                  "end": "2026-10-04T04:00:00.000Z",
                   "allDay": false,
                   "location": null,
                   "attendees": [
@@ -3231,8 +3205,8 @@
                   "calendar": "primary",
                   "title": "Capstone weekly check-in",
                   "description": "5-minute architecture update: MCP vs direct API integration.",
-                  "start": "2026-10-03T14:24:22.012Z",
-                  "end": "2026-10-03T15:24:22.012Z",
+                  "start": "2026-10-05T06:00:00.000Z",
+                  "end": "2026-10-05T07:00:00.000Z",
                   "allDay": false,
                   "location": "S4-1 309",
                   "attendees": [
@@ -3249,8 +3223,8 @@
                   "calendar": "primary",
                   "title": "Algorithm study — week 6 graphs",
                   "description": "BFS/DFS, Dijkstra, MST review.",
-                  "start": "2026-10-04T21:36:22.012Z",
-                  "end": "2026-10-04T23:36:22.012Z",
+                  "start": "2026-10-06T10:00:00.000Z",
+                  "end": "2026-10-06T12:00:00.000Z",
                   "allDay": false,
                   "location": "Library group room B",
                   "attendees": [
@@ -3263,13 +3237,13 @@
                 }
               ]
             },
-            "durationMs": 2
+            "durationMs": 1
           }
         },
         {
           "type": "tool_call_started",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.281Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.625Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_4",
@@ -3290,8 +3264,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.284Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.627Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_4",
@@ -3324,7 +3298,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-10-01T21:36:21.907Z",
+                  "date": "2026-10-02T17:34:44.471Z",
                   "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
                   "labels": [
                     "INBOX"
@@ -3340,7 +3314,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-10-01T07:12:21.907Z",
+                  "date": "2026-10-02T03:10:44.471Z",
                   "snippet": "Your OAuth consent screen for project my-ai-work-agent needs verification before you can use sensitive scopes with external users.",
                   "labels": [
                     "INBOX"
@@ -3356,7 +3330,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-30T19:12:21.907Z",
+                  "date": "2026-10-01T15:10:44.471Z",
                   "snippet": "Please prepare a 5-minute update on your project architecture. Focus on how MCP differs from direct API calls.",
                   "labels": [
                     "INBOX"
@@ -3372,7 +3346,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-30T04:48:21.907Z",
+                  "date": "2026-10-01T00:46:44.471Z",
                   "snippet": "Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issue #17.",
                   "labels": [
                     "INBOX"
@@ -3388,7 +3362,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-29T00:00:21.907Z",
+                  "date": "2026-09-29T19:58:44.471Z",
                   "snippet": "1 moderate severity vulnerability in a transitive dependency of vitest.",
                   "labels": [
                     "INBOX"
@@ -3404,7 +3378,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-28T07:12:21.907Z",
+                  "date": "2026-09-29T03:10:44.471Z",
                   "snippet": "Week 6 covers graphs: BFS/DFS, Dijkstra, MST. Solutions due Sunday.",
                   "labels": [
                     "INBOX"
@@ -3420,7 +3394,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-27T02:24:21.907Z",
+                  "date": "2026-09-27T22:22:44.471Z",
                   "snippet": "Your demo slot is confirmed for Oct 10, 14:00. Projector supports HDMI only.",
                   "labels": [
                     "INBOX"
@@ -3429,13 +3403,13 @@
                 }
               ]
             },
-            "durationMs": 3
+            "durationMs": 2
           }
         },
         {
           "type": "context_aggregated",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.284Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.627Z",
           "mode": "demo",
           "counts": {
             "calendar": 3,
@@ -3446,13 +3420,13 @@
         },
         {
           "type": "report_generated",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.288Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.629Z",
           "mode": "demo",
           "report": {
-            "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
+            "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
             "mode": "demo",
-            "generatedAt": "2026-10-02T07:12:22.284Z",
+            "generatedAt": "2026-10-03T03:10:44.627Z",
             "period": {
               "start": "2026-09-28T00:00:00.000Z",
               "end": "2026-10-05T00:00:00.000Z"
@@ -3464,7 +3438,7 @@
                 "type": "calendar",
                 "title": "Algorithm study — week 6 graphs",
                 "url": "https://calendar.google.com/calendar/event?eid=demoev003",
-                "timestamp": "2026-10-04T21:36:22.012Z",
+                "timestamp": "2026-10-06T10:00:00.000Z",
                 "metadata": {
                   "kind": "event"
                 }
@@ -3474,7 +3448,7 @@
                 "type": "calendar",
                 "title": "Capstone weekly check-in",
                 "url": "https://calendar.google.com/calendar/event?eid=demoev002",
-                "timestamp": "2026-10-03T14:24:22.012Z",
+                "timestamp": "2026-10-05T06:00:00.000Z",
                 "metadata": {
                   "kind": "event"
                 }
@@ -3484,7 +3458,7 @@
                 "type": "calendar",
                 "title": "Deep work: Google OAuth refresh fix (#17)",
                 "url": "https://calendar.google.com/calendar/event?eid=demoev004",
-                "timestamp": "2026-10-02T16:48:22.012Z",
+                "timestamp": "2026-10-04T01:00:00.000Z",
                 "metadata": {
                   "kind": "event"
                 }
@@ -3494,7 +3468,7 @@
                 "type": "github",
                 "title": "feat: agent-core with provider abstraction and report validation",
                 "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
-                "timestamp": "2026-10-02T00:00:21.009Z",
+                "timestamp": "2026-10-02T19:58:43.827Z",
                 "metadata": {
                   "kind": "pr"
                 }
@@ -3504,7 +3478,7 @@
                 "type": "gmail",
                 "title": "Re: my-ai-work-agent PR #14 review",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0001",
-                "timestamp": "2026-10-01T21:36:21.907Z",
+                "timestamp": "2026-10-02T17:34:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -3514,7 +3488,7 @@
                 "type": "github",
                 "title": "Google OAuth refresh token is not rotated after expiry",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
-                "timestamp": "2026-10-01T19:12:21.009Z",
+                "timestamp": "2026-10-02T15:10:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -3524,7 +3498,7 @@
                 "type": "gmail",
                 "title": "[Action required] Google OAuth consent screen verification",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0002",
-                "timestamp": "2026-10-01T07:12:21.907Z",
+                "timestamp": "2026-10-02T03:10:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -3534,7 +3508,7 @@
                 "type": "github",
                 "title": "Agent exceeds tool-call budget on broad prompts",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
-                "timestamp": "2026-10-01T04:48:21.009Z",
+                "timestamp": "2026-10-02T00:46:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -3544,7 +3518,7 @@
                 "type": "gmail",
                 "title": "Capstone weekly check-in: agenda for Thursday",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0003",
-                "timestamp": "2026-09-30T19:12:21.907Z",
+                "timestamp": "2026-10-01T15:10:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -3554,7 +3528,7 @@
                 "type": "gmail",
                 "title": "Re: Calendar MCP — token refresh bug",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0004",
-                "timestamp": "2026-09-30T04:48:21.907Z",
+                "timestamp": "2026-10-01T00:46:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -3564,7 +3538,7 @@
                 "type": "github",
                 "title": "feat: MCP servers for GitHub, Gmail, Calendar (demo mode)",
                 "url": "https://github.com/demo-user/my-ai-work-agent/pull/12",
-                "timestamp": "2026-09-30T00:00:21.009Z",
+                "timestamp": "2026-09-30T19:58:43.827Z",
                 "metadata": {
                   "kind": "pr"
                 }
@@ -3574,7 +3548,7 @@
                 "type": "github",
                 "title": "Portfolio: presentation mode keyboard navigation",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
-                "timestamp": "2026-09-29T16:48:21.009Z",
+                "timestamp": "2026-09-30T12:46:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -3584,7 +3558,7 @@
                 "type": "github",
                 "title": "Week 6: graph problems set",
                 "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
-                "timestamp": "2026-09-29T07:12:21.009Z",
+                "timestamp": "2026-09-30T03:10:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -3594,7 +3568,7 @@
                 "type": "gmail",
                 "title": "GitHub: Dependabot alert on my-ai-work-agent",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0006",
-                "timestamp": "2026-09-29T00:00:21.907Z",
+                "timestamp": "2026-09-29T19:58:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -3604,7 +3578,7 @@
                 "type": "gmail",
                 "title": "Algorithm study: week 6 problem set",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0007",
-                "timestamp": "2026-09-28T07:12:21.907Z",
+                "timestamp": "2026-09-29T03:10:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -3614,7 +3588,7 @@
                 "type": "github",
                 "title": "chore: workspace scaffold and shared schemas",
                 "url": "https://github.com/demo-user/my-ai-work-agent/pull/11",
-                "timestamp": "2026-09-28T04:48:21.009Z",
+                "timestamp": "2026-09-29T00:46:43.827Z",
                 "metadata": {
                   "kind": "pr"
                 }
@@ -3624,7 +3598,7 @@
                 "type": "gmail",
                 "title": "Re: Demo day slot confirmed — Oct 10",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0008",
-                "timestamp": "2026-09-27T02:24:21.907Z",
+                "timestamp": "2026-09-27T22:22:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -3637,51 +3611,19 @@
                 "items": [
                   {
                     "id": "item_1",
-                    "text": "이번 주 활동: 저장소 0곳에서 커밋 0개, PR 3개, 열린 이슈 4개, 일정 3건, 관련 메일 7건.",
-                    "confidence": "observed",
+                    "text": "이번 주 우선순위 1순위는 이슈 #17 Google OAuth refresh token is not rotated after expiry입니다.",
+                    "confidence": "inferred",
                     "sources": [
-                      "github:pr:demo-user/my-ai-work-agent#14",
-                      "github:pr:demo-user/my-ai-work-agent#12",
-                      "github:pr:demo-user/my-ai-work-agent#11",
-                      "github:issue:demo-user/my-ai-work-agent#17",
-                      "github:issue:demo-user/my-ai-work-agent#16",
-                      "github:issue:demo-user/my-ai-work-agent#15",
-                      "github:issue:demo-user/cbnu-algorithms#3",
-                      "calendar:event:demoev003",
-                      "calendar:event:demoev002",
-                      "calendar:event:demoev004",
-                      "gmail:msg:demo0001",
-                      "gmail:msg:demo0002"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "project_progress",
-                "title": "Project Progress",
-                "items": [
+                      "github:issue:demo-user/my-ai-work-agent#17"
+                    ],
+                    "priority": "high"
+                  },
                   {
                     "id": "item_2",
-                    "text": "PR #14 (열림) · my-ai-work-agent: feat: agent-core with provider abstraction and report validation · 리뷰 코멘트 3개.",
+                    "text": "가장 가까운 일정은 10월 4일 (일) 오전 10:00 Deep work: Google OAuth refresh fix (#17)입니다.",
                     "confidence": "observed",
                     "sources": [
-                      "github:pr:demo-user/my-ai-work-agent#14"
-                    ]
-                  },
-                  {
-                    "id": "item_3",
-                    "text": "PR #12 (병합됨) · my-ai-work-agent: feat: MCP servers for GitHub, Gmail, Calendar (demo mode) · 리뷰 코멘트 5개.",
-                    "confidence": "observed",
-                    "sources": [
-                      "github:pr:demo-user/my-ai-work-agent#12"
-                    ]
-                  },
-                  {
-                    "id": "item_4",
-                    "text": "PR #11 (병합됨) · my-ai-work-agent: chore: workspace scaffold and shared schemas · 리뷰 코멘트 1개.",
-                    "confidence": "observed",
-                    "sources": [
-                      "github:pr:demo-user/my-ai-work-agent#11"
+                      "calendar:event:demoev004"
                     ]
                   }
                 ]
@@ -3691,81 +3633,27 @@
                 "title": "Schedule",
                 "items": [
                   {
-                    "id": "item_5",
-                    "text": "10월 5일 오전 06:36 · Algorithm study — week 6 graphs (Library group room B).",
+                    "id": "item_15",
+                    "text": "10월 4일 (일) 오전 10:00 · Deep work: Google OAuth refresh fix (#17)",
                     "confidence": "observed",
                     "sources": [
-                      "calendar:event:demoev003"
+                      "calendar:event:demoev004"
                     ]
                   },
                   {
-                    "id": "item_6",
-                    "text": "10월 3일 오후 11:24 · Capstone weekly check-in (S4-1 309).",
+                    "id": "item_16",
+                    "text": "10월 5일 (월) 오후 03:00 · Capstone weekly check-in (S4-1 309)",
                     "confidence": "observed",
                     "sources": [
                       "calendar:event:demoev002"
                     ]
                   },
                   {
-                    "id": "item_7",
-                    "text": "10월 3일 오전 01:48 · Deep work: Google OAuth refresh fix (#17).",
+                    "id": "item_17",
+                    "text": "10월 6일 (화) 오후 07:00 · Algorithm study — week 6 graphs (Library group room B)",
                     "confidence": "observed",
                     "sources": [
-                      "calendar:event:demoev004"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "relevant_emails",
-                "title": "Relevant Emails",
-                "items": [
-                  {
-                    "id": "item_8",
-                    "text": "10월 2일 · Kim Minji: Re: my-ai-work-agent PR #14 review — Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry l…",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0001"
-                    ]
-                  },
-                  {
-                    "id": "item_9",
-                    "text": "10월 1일 · Google Cloud Platform: [Action required] Google OAuth consent screen verification — Your OAuth consent screen for project my-ai-work-agent needs verification before you can u…",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0002"
-                    ]
-                  },
-                  {
-                    "id": "item_10",
-                    "text": "10월 1일 · Prof. Park: Capstone weekly check-in: agenda for Thursday — Please prepare a 5-minute update on your project architecture. Focus on how MCP differs fr…",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0003"
-                    ]
-                  },
-                  {
-                    "id": "item_11",
-                    "text": "9월 30일 · Kim Minji: Re: Calendar MCP — token refresh bug — Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issu…",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0004"
-                    ]
-                  },
-                  {
-                    "id": "item_12",
-                    "text": "9월 29일 · GitHub: GitHub: Dependabot alert on my-ai-work-agent — 1 moderate severity vulnerability in a transitive dependency of vitest.",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0006"
-                    ]
-                  },
-                  {
-                    "id": "item_13",
-                    "text": "9월 28일 · Study Group: Algorithm study: week 6 problem set — Week 6 covers graphs: BFS/DFS, Dijkstra, MST. Solutions due Sunday.",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0007"
+                      "calendar:event:demoev003"
                     ]
                   }
                 ]
@@ -3775,52 +3663,49 @@
                 "title": "Potential Risks",
                 "items": [
                   {
-                    "id": "item_14",
-                    "text": "이슈 #17 \"Google OAuth refresh token is not rotated after expiry\" (bug, auth, priority:high)가 열려 있어 일정에 영향을 줄 수 있습니다.",
+                    "id": "item_10",
+                    "text": "이슈 #17 Google OAuth refresh token is not rotated after expiry — 버그, 인증, 우선순위 높음 · 담당 demo-user · 1일째 열림",
                     "confidence": "inferred",
                     "sources": [
                       "github:issue:demo-user/my-ai-work-agent#17"
-                    ]
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_15",
-                    "text": "이슈 #16 \"Agent exceeds tool-call budget on broad prompts\" (agent, enhancement)가 열려 있어 일정에 영향을 줄 수 있습니다.",
-                    "confidence": "inferred",
-                    "sources": [
-                      "github:issue:demo-user/my-ai-work-agent#16"
-                    ]
-                  },
-                  {
-                    "id": "item_16",
-                    "text": "Google Cloud Platform의 메일 \"[Action required] Google OAuth consent screen verification\"은 조치가 필요해 보입니다.",
+                    "id": "item_11",
+                    "text": "Google Cloud Platform 메일 \"[Action required] Google OAuth consent screen verification\" — Your OAuth consent screen for project my-ai-work-agent needs…",
                     "confidence": "inferred",
                     "sources": [
                       "gmail:msg:demo0002"
-                    ]
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_17",
-                    "text": "Kim Minji의 메일 \"Re: Calendar MCP — token refresh bug\"은 조치가 필요해 보입니다.",
+                    "id": "item_12",
+                    "text": "이슈 #15 Portfolio: presentation mode keyboard navigation — 포트폴리오 · 담당자 없음 · 2일째 열림",
                     "confidence": "inferred",
                     "sources": [
-                      "gmail:msg:demo0004"
-                    ]
+                      "github:issue:demo-user/my-ai-work-agent#15"
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_18",
-                    "text": "GitHub의 메일 \"GitHub: Dependabot alert on my-ai-work-agent\"은 조치가 필요해 보입니다.",
+                    "id": "item_13",
+                    "text": "이슈 #3 Week 6: graph problems set — 주간 과제 · 담당 demo-user · 3일째 열림",
                     "confidence": "inferred",
                     "sources": [
-                      "gmail:msg:demo0006"
-                    ]
+                      "github:issue:demo-user/cbnu-algorithms#3"
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_19",
-                    "text": "열린 PR 1개가 리뷰를 기다리고 있습니다. 오래 열려 있을수록 병합 충돌 위험이 커집니다.",
+                    "id": "item_14",
+                    "text": "PR #14 feat: agent-core with provider abstraction and report validation — 리뷰 대기 · 코멘트 3개 미반영 · 1일째",
                     "confidence": "inferred",
                     "sources": [
                       "github:pr:demo-user/my-ai-work-agent#14"
-                    ]
+                    ],
+                    "priority": "medium"
                   }
                 ]
               },
@@ -3829,52 +3714,67 @@
                 "title": "Next Actions",
                 "items": [
                   {
-                    "id": "item_20",
+                    "id": "item_3",
                     "text": "이슈 #17 해결: Google OAuth refresh token is not rotated after expiry",
                     "confidence": "inferred",
                     "sources": [
                       "github:issue:demo-user/my-ai-work-agent#17"
-                    ]
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_21",
-                    "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
-                    "confidence": "inferred",
-                    "sources": [
-                      "github:issue:demo-user/my-ai-work-agent#16"
-                    ]
-                  },
-                  {
-                    "id": "item_22",
+                    "id": "item_4",
                     "text": "이슈 #15 해결: Portfolio: presentation mode keyboard navigation",
                     "confidence": "inferred",
                     "sources": [
                       "github:issue:demo-user/my-ai-work-agent#15"
-                    ]
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_23",
+                    "id": "item_5",
+                    "text": "이슈 #3 해결: Week 6: graph problems set",
+                    "confidence": "inferred",
+                    "sources": [
+                      "github:issue:demo-user/cbnu-algorithms#3"
+                    ],
+                    "priority": "medium"
+                  },
+                  {
+                    "id": "item_6",
                     "text": "PR #14 리뷰 코멘트 반영 후 병합 요청",
                     "confidence": "inferred",
                     "sources": [
                       "github:pr:demo-user/my-ai-work-agent#14"
-                    ]
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_24",
-                    "text": "10월 5일 Algorithm study — week 6 graphs 준비",
+                    "id": "item_7",
+                    "text": "10월 4일 Deep work: Google OAuth refresh fix (#17) 준비",
                     "confidence": "inferred",
                     "sources": [
-                      "calendar:event:demoev003"
-                    ]
+                      "calendar:event:demoev004"
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_25",
-                    "text": "10월 3일 Capstone weekly check-in 준비",
+                    "id": "item_8",
+                    "text": "10월 5일 Capstone weekly check-in 준비",
                     "confidence": "inferred",
                     "sources": [
                       "calendar:event:demoev002"
-                    ]
+                    ],
+                    "priority": "medium"
+                  },
+                  {
+                    "id": "item_9",
+                    "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
+                    "confidence": "inferred",
+                    "sources": [
+                      "github:issue:demo-user/my-ai-work-agent#16"
+                    ],
+                    "priority": "low"
                   }
                 ]
               }
@@ -3884,17 +3784,17 @@
         },
         {
           "type": "agent_run_completed",
-          "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
-          "timestamp": "2026-10-02T07:12:22.288Z",
+          "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
+          "timestamp": "2026-10-03T03:10:44.629Z",
           "mode": "demo",
           "status": "success",
-          "durationMs": 15
+          "durationMs": 9
         }
       ],
       "report": {
-        "runId": "run_79846c01-9372-4692-b7fa-8ed8752179c3",
+        "runId": "run_a8833623-e676-41f9-9287-741aaf64609b",
         "mode": "demo",
-        "generatedAt": "2026-10-02T07:12:22.284Z",
+        "generatedAt": "2026-10-03T03:10:44.627Z",
         "period": {
           "start": "2026-09-28T00:00:00.000Z",
           "end": "2026-10-05T00:00:00.000Z"
@@ -3906,7 +3806,7 @@
             "type": "calendar",
             "title": "Algorithm study — week 6 graphs",
             "url": "https://calendar.google.com/calendar/event?eid=demoev003",
-            "timestamp": "2026-10-04T21:36:22.012Z",
+            "timestamp": "2026-10-06T10:00:00.000Z",
             "metadata": {
               "kind": "event"
             }
@@ -3916,7 +3816,7 @@
             "type": "calendar",
             "title": "Capstone weekly check-in",
             "url": "https://calendar.google.com/calendar/event?eid=demoev002",
-            "timestamp": "2026-10-03T14:24:22.012Z",
+            "timestamp": "2026-10-05T06:00:00.000Z",
             "metadata": {
               "kind": "event"
             }
@@ -3926,7 +3826,7 @@
             "type": "calendar",
             "title": "Deep work: Google OAuth refresh fix (#17)",
             "url": "https://calendar.google.com/calendar/event?eid=demoev004",
-            "timestamp": "2026-10-02T16:48:22.012Z",
+            "timestamp": "2026-10-04T01:00:00.000Z",
             "metadata": {
               "kind": "event"
             }
@@ -3936,7 +3836,7 @@
             "type": "github",
             "title": "feat: agent-core with provider abstraction and report validation",
             "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
-            "timestamp": "2026-10-02T00:00:21.009Z",
+            "timestamp": "2026-10-02T19:58:43.827Z",
             "metadata": {
               "kind": "pr"
             }
@@ -3946,7 +3846,7 @@
             "type": "gmail",
             "title": "Re: my-ai-work-agent PR #14 review",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0001",
-            "timestamp": "2026-10-01T21:36:21.907Z",
+            "timestamp": "2026-10-02T17:34:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -3956,7 +3856,7 @@
             "type": "github",
             "title": "Google OAuth refresh token is not rotated after expiry",
             "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
-            "timestamp": "2026-10-01T19:12:21.009Z",
+            "timestamp": "2026-10-02T15:10:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -3966,7 +3866,7 @@
             "type": "gmail",
             "title": "[Action required] Google OAuth consent screen verification",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0002",
-            "timestamp": "2026-10-01T07:12:21.907Z",
+            "timestamp": "2026-10-02T03:10:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -3976,7 +3876,7 @@
             "type": "github",
             "title": "Agent exceeds tool-call budget on broad prompts",
             "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
-            "timestamp": "2026-10-01T04:48:21.009Z",
+            "timestamp": "2026-10-02T00:46:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -3986,7 +3886,7 @@
             "type": "gmail",
             "title": "Capstone weekly check-in: agenda for Thursday",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0003",
-            "timestamp": "2026-09-30T19:12:21.907Z",
+            "timestamp": "2026-10-01T15:10:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -3996,7 +3896,7 @@
             "type": "gmail",
             "title": "Re: Calendar MCP — token refresh bug",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0004",
-            "timestamp": "2026-09-30T04:48:21.907Z",
+            "timestamp": "2026-10-01T00:46:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -4006,7 +3906,7 @@
             "type": "github",
             "title": "feat: MCP servers for GitHub, Gmail, Calendar (demo mode)",
             "url": "https://github.com/demo-user/my-ai-work-agent/pull/12",
-            "timestamp": "2026-09-30T00:00:21.009Z",
+            "timestamp": "2026-09-30T19:58:43.827Z",
             "metadata": {
               "kind": "pr"
             }
@@ -4016,7 +3916,7 @@
             "type": "github",
             "title": "Portfolio: presentation mode keyboard navigation",
             "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
-            "timestamp": "2026-09-29T16:48:21.009Z",
+            "timestamp": "2026-09-30T12:46:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -4026,7 +3926,7 @@
             "type": "github",
             "title": "Week 6: graph problems set",
             "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
-            "timestamp": "2026-09-29T07:12:21.009Z",
+            "timestamp": "2026-09-30T03:10:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -4036,7 +3936,7 @@
             "type": "gmail",
             "title": "GitHub: Dependabot alert on my-ai-work-agent",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0006",
-            "timestamp": "2026-09-29T00:00:21.907Z",
+            "timestamp": "2026-09-29T19:58:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -4046,7 +3946,7 @@
             "type": "gmail",
             "title": "Algorithm study: week 6 problem set",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0007",
-            "timestamp": "2026-09-28T07:12:21.907Z",
+            "timestamp": "2026-09-29T03:10:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -4056,7 +3956,7 @@
             "type": "github",
             "title": "chore: workspace scaffold and shared schemas",
             "url": "https://github.com/demo-user/my-ai-work-agent/pull/11",
-            "timestamp": "2026-09-28T04:48:21.009Z",
+            "timestamp": "2026-09-29T00:46:43.827Z",
             "metadata": {
               "kind": "pr"
             }
@@ -4066,7 +3966,7 @@
             "type": "gmail",
             "title": "Re: Demo day slot confirmed — Oct 10",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0008",
-            "timestamp": "2026-09-27T02:24:21.907Z",
+            "timestamp": "2026-09-27T22:22:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -4079,51 +3979,19 @@
             "items": [
               {
                 "id": "item_1",
-                "text": "이번 주 활동: 저장소 0곳에서 커밋 0개, PR 3개, 열린 이슈 4개, 일정 3건, 관련 메일 7건.",
-                "confidence": "observed",
+                "text": "이번 주 우선순위 1순위는 이슈 #17 Google OAuth refresh token is not rotated after expiry입니다.",
+                "confidence": "inferred",
                 "sources": [
-                  "github:pr:demo-user/my-ai-work-agent#14",
-                  "github:pr:demo-user/my-ai-work-agent#12",
-                  "github:pr:demo-user/my-ai-work-agent#11",
-                  "github:issue:demo-user/my-ai-work-agent#17",
-                  "github:issue:demo-user/my-ai-work-agent#16",
-                  "github:issue:demo-user/my-ai-work-agent#15",
-                  "github:issue:demo-user/cbnu-algorithms#3",
-                  "calendar:event:demoev003",
-                  "calendar:event:demoev002",
-                  "calendar:event:demoev004",
-                  "gmail:msg:demo0001",
-                  "gmail:msg:demo0002"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "project_progress",
-            "title": "Project Progress",
-            "items": [
+                  "github:issue:demo-user/my-ai-work-agent#17"
+                ],
+                "priority": "high"
+              },
               {
                 "id": "item_2",
-                "text": "PR #14 (열림) · my-ai-work-agent: feat: agent-core with provider abstraction and report validation · 리뷰 코멘트 3개.",
+                "text": "가장 가까운 일정은 10월 4일 (일) 오전 10:00 Deep work: Google OAuth refresh fix (#17)입니다.",
                 "confidence": "observed",
                 "sources": [
-                  "github:pr:demo-user/my-ai-work-agent#14"
-                ]
-              },
-              {
-                "id": "item_3",
-                "text": "PR #12 (병합됨) · my-ai-work-agent: feat: MCP servers for GitHub, Gmail, Calendar (demo mode) · 리뷰 코멘트 5개.",
-                "confidence": "observed",
-                "sources": [
-                  "github:pr:demo-user/my-ai-work-agent#12"
-                ]
-              },
-              {
-                "id": "item_4",
-                "text": "PR #11 (병합됨) · my-ai-work-agent: chore: workspace scaffold and shared schemas · 리뷰 코멘트 1개.",
-                "confidence": "observed",
-                "sources": [
-                  "github:pr:demo-user/my-ai-work-agent#11"
+                  "calendar:event:demoev004"
                 ]
               }
             ]
@@ -4133,81 +4001,27 @@
             "title": "Schedule",
             "items": [
               {
-                "id": "item_5",
-                "text": "10월 5일 오전 06:36 · Algorithm study — week 6 graphs (Library group room B).",
+                "id": "item_15",
+                "text": "10월 4일 (일) 오전 10:00 · Deep work: Google OAuth refresh fix (#17)",
                 "confidence": "observed",
                 "sources": [
-                  "calendar:event:demoev003"
+                  "calendar:event:demoev004"
                 ]
               },
               {
-                "id": "item_6",
-                "text": "10월 3일 오후 11:24 · Capstone weekly check-in (S4-1 309).",
+                "id": "item_16",
+                "text": "10월 5일 (월) 오후 03:00 · Capstone weekly check-in (S4-1 309)",
                 "confidence": "observed",
                 "sources": [
                   "calendar:event:demoev002"
                 ]
               },
               {
-                "id": "item_7",
-                "text": "10월 3일 오전 01:48 · Deep work: Google OAuth refresh fix (#17).",
+                "id": "item_17",
+                "text": "10월 6일 (화) 오후 07:00 · Algorithm study — week 6 graphs (Library group room B)",
                 "confidence": "observed",
                 "sources": [
-                  "calendar:event:demoev004"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "relevant_emails",
-            "title": "Relevant Emails",
-            "items": [
-              {
-                "id": "item_8",
-                "text": "10월 2일 · Kim Minji: Re: my-ai-work-agent PR #14 review — Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry l…",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0001"
-                ]
-              },
-              {
-                "id": "item_9",
-                "text": "10월 1일 · Google Cloud Platform: [Action required] Google OAuth consent screen verification — Your OAuth consent screen for project my-ai-work-agent needs verification before you can u…",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0002"
-                ]
-              },
-              {
-                "id": "item_10",
-                "text": "10월 1일 · Prof. Park: Capstone weekly check-in: agenda for Thursday — Please prepare a 5-minute update on your project architecture. Focus on how MCP differs fr…",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0003"
-                ]
-              },
-              {
-                "id": "item_11",
-                "text": "9월 30일 · Kim Minji: Re: Calendar MCP — token refresh bug — Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issu…",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0004"
-                ]
-              },
-              {
-                "id": "item_12",
-                "text": "9월 29일 · GitHub: GitHub: Dependabot alert on my-ai-work-agent — 1 moderate severity vulnerability in a transitive dependency of vitest.",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0006"
-                ]
-              },
-              {
-                "id": "item_13",
-                "text": "9월 28일 · Study Group: Algorithm study: week 6 problem set — Week 6 covers graphs: BFS/DFS, Dijkstra, MST. Solutions due Sunday.",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0007"
+                  "calendar:event:demoev003"
                 ]
               }
             ]
@@ -4217,52 +4031,49 @@
             "title": "Potential Risks",
             "items": [
               {
-                "id": "item_14",
-                "text": "이슈 #17 \"Google OAuth refresh token is not rotated after expiry\" (bug, auth, priority:high)가 열려 있어 일정에 영향을 줄 수 있습니다.",
+                "id": "item_10",
+                "text": "이슈 #17 Google OAuth refresh token is not rotated after expiry — 버그, 인증, 우선순위 높음 · 담당 demo-user · 1일째 열림",
                 "confidence": "inferred",
                 "sources": [
                   "github:issue:demo-user/my-ai-work-agent#17"
-                ]
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_15",
-                "text": "이슈 #16 \"Agent exceeds tool-call budget on broad prompts\" (agent, enhancement)가 열려 있어 일정에 영향을 줄 수 있습니다.",
-                "confidence": "inferred",
-                "sources": [
-                  "github:issue:demo-user/my-ai-work-agent#16"
-                ]
-              },
-              {
-                "id": "item_16",
-                "text": "Google Cloud Platform의 메일 \"[Action required] Google OAuth consent screen verification\"은 조치가 필요해 보입니다.",
+                "id": "item_11",
+                "text": "Google Cloud Platform 메일 \"[Action required] Google OAuth consent screen verification\" — Your OAuth consent screen for project my-ai-work-agent needs…",
                 "confidence": "inferred",
                 "sources": [
                   "gmail:msg:demo0002"
-                ]
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_17",
-                "text": "Kim Minji의 메일 \"Re: Calendar MCP — token refresh bug\"은 조치가 필요해 보입니다.",
+                "id": "item_12",
+                "text": "이슈 #15 Portfolio: presentation mode keyboard navigation — 포트폴리오 · 담당자 없음 · 2일째 열림",
                 "confidence": "inferred",
                 "sources": [
-                  "gmail:msg:demo0004"
-                ]
+                  "github:issue:demo-user/my-ai-work-agent#15"
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_18",
-                "text": "GitHub의 메일 \"GitHub: Dependabot alert on my-ai-work-agent\"은 조치가 필요해 보입니다.",
+                "id": "item_13",
+                "text": "이슈 #3 Week 6: graph problems set — 주간 과제 · 담당 demo-user · 3일째 열림",
                 "confidence": "inferred",
                 "sources": [
-                  "gmail:msg:demo0006"
-                ]
+                  "github:issue:demo-user/cbnu-algorithms#3"
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_19",
-                "text": "열린 PR 1개가 리뷰를 기다리고 있습니다. 오래 열려 있을수록 병합 충돌 위험이 커집니다.",
+                "id": "item_14",
+                "text": "PR #14 feat: agent-core with provider abstraction and report validation — 리뷰 대기 · 코멘트 3개 미반영 · 1일째",
                 "confidence": "inferred",
                 "sources": [
                   "github:pr:demo-user/my-ai-work-agent#14"
-                ]
+                ],
+                "priority": "medium"
               }
             ]
           },
@@ -4271,52 +4082,67 @@
             "title": "Next Actions",
             "items": [
               {
-                "id": "item_20",
+                "id": "item_3",
                 "text": "이슈 #17 해결: Google OAuth refresh token is not rotated after expiry",
                 "confidence": "inferred",
                 "sources": [
                   "github:issue:demo-user/my-ai-work-agent#17"
-                ]
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_21",
-                "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
-                "confidence": "inferred",
-                "sources": [
-                  "github:issue:demo-user/my-ai-work-agent#16"
-                ]
-              },
-              {
-                "id": "item_22",
+                "id": "item_4",
                 "text": "이슈 #15 해결: Portfolio: presentation mode keyboard navigation",
                 "confidence": "inferred",
                 "sources": [
                   "github:issue:demo-user/my-ai-work-agent#15"
-                ]
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_23",
+                "id": "item_5",
+                "text": "이슈 #3 해결: Week 6: graph problems set",
+                "confidence": "inferred",
+                "sources": [
+                  "github:issue:demo-user/cbnu-algorithms#3"
+                ],
+                "priority": "medium"
+              },
+              {
+                "id": "item_6",
                 "text": "PR #14 리뷰 코멘트 반영 후 병합 요청",
                 "confidence": "inferred",
                 "sources": [
                   "github:pr:demo-user/my-ai-work-agent#14"
-                ]
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_24",
-                "text": "10월 5일 Algorithm study — week 6 graphs 준비",
+                "id": "item_7",
+                "text": "10월 4일 Deep work: Google OAuth refresh fix (#17) 준비",
                 "confidence": "inferred",
                 "sources": [
-                  "calendar:event:demoev003"
-                ]
+                  "calendar:event:demoev004"
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_25",
-                "text": "10월 3일 Capstone weekly check-in 준비",
+                "id": "item_8",
+                "text": "10월 5일 Capstone weekly check-in 준비",
                 "confidence": "inferred",
                 "sources": [
                   "calendar:event:demoev002"
-                ]
+                ],
+                "priority": "medium"
+              },
+              {
+                "id": "item_9",
+                "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
+                "confidence": "inferred",
+                "sources": [
+                  "github:issue:demo-user/my-ai-work-agent#16"
+                ],
+                "priority": "low"
               }
             ]
           }
@@ -4334,15 +4160,15 @@
       "events": [
         {
           "type": "agent_run_started",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.288Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.630Z",
           "mode": "demo",
           "prompt": "최근 프로젝트에서 막히고 있는 부분을 찾아줘."
         },
         {
           "type": "tool_discovery_started",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.288Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.630Z",
           "mode": "demo",
           "servers": [
             "github",
@@ -4352,8 +4178,8 @@
         },
         {
           "type": "tool_discovered",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.288Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.630Z",
           "mode": "demo",
           "tools": [
             {
@@ -4652,8 +4478,8 @@
         },
         {
           "type": "tool_call_started",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.288Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.630Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_1",
@@ -4664,8 +4490,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.290Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.631Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_1",
@@ -4686,8 +4512,8 @@
                   "title": "Google OAuth refresh token is not rotated after expiry",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-10-01T07:12:21.009Z",
-                  "updatedAt": "2026-10-01T19:12:21.009Z",
+                  "createdAt": "2026-10-02T03:10:43.827Z",
+                  "updatedAt": "2026-10-02T15:10:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
                   "labels": [
                     "bug",
@@ -4705,8 +4531,8 @@
                   "title": "Agent exceeds tool-call budget on broad prompts",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-09-30T12:00:21.009Z",
-                  "updatedAt": "2026-10-01T04:48:21.009Z",
+                  "createdAt": "2026-10-01T07:58:43.827Z",
+                  "updatedAt": "2026-10-02T00:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
                   "labels": [
                     "agent",
@@ -4723,8 +4549,8 @@
                   "title": "Portfolio: presentation mode keyboard navigation",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-09-29T16:48:21.009Z",
-                  "updatedAt": "2026-09-29T16:48:21.009Z",
+                  "createdAt": "2026-09-30T12:46:43.827Z",
+                  "updatedAt": "2026-09-30T12:46:43.827Z",
                   "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
                   "labels": [
                     "portfolio"
@@ -4738,8 +4564,8 @@
                   "title": "Week 6: graph problems set",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-09-29T07:12:21.009Z",
-                  "updatedAt": "2026-09-29T07:12:21.009Z",
+                  "createdAt": "2026-09-30T03:10:43.827Z",
+                  "updatedAt": "2026-09-30T03:10:43.827Z",
                   "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
                   "labels": [
                     "weekly"
@@ -4750,13 +4576,13 @@
                 }
               ]
             },
-            "durationMs": 2
+            "durationMs": 1
           }
         },
         {
           "type": "tool_call_started",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.290Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.631Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_2",
@@ -4769,8 +4595,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.291Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.631Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_2",
@@ -4793,8 +4619,8 @@
                   "title": "feat: agent-core with provider abstraction and report validation",
                   "state": "open",
                   "author": "demo-user",
-                  "createdAt": "2026-10-01T02:24:21.009Z",
-                  "updatedAt": "2026-10-02T00:00:21.009Z",
+                  "createdAt": "2026-10-01T22:22:43.827Z",
+                  "updatedAt": "2026-10-02T19:58:43.827Z",
                   "mergedAt": null,
                   "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
                   "reviewComments": 3,
@@ -4805,13 +4631,13 @@
                 }
               ]
             },
-            "durationMs": 1
+            "durationMs": 0
           }
         },
         {
           "type": "tool_call_started",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.291Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.631Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_3",
@@ -4824,8 +4650,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.293Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.633Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_3",
@@ -4850,7 +4676,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-10-01T21:36:21.907Z",
+                  "date": "2026-10-02T17:34:44.471Z",
                   "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
                   "labels": [
                     "INBOX"
@@ -4866,7 +4692,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-10-01T07:12:21.907Z",
+                  "date": "2026-10-02T03:10:44.471Z",
                   "snippet": "Your OAuth consent screen for project my-ai-work-agent needs verification before you can use sensitive scopes with external users.",
                   "labels": [
                     "INBOX"
@@ -4882,7 +4708,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-30T04:48:21.907Z",
+                  "date": "2026-10-01T00:46:44.471Z",
                   "snippet": "Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issue #17.",
                   "labels": [
                     "INBOX"
@@ -4896,8 +4722,8 @@
         },
         {
           "type": "tool_call_started",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.293Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.633Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_4",
@@ -4918,8 +4744,8 @@
         },
         {
           "type": "tool_call_completed",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.295Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.634Z",
           "mode": "demo",
           "call": {
             "id": "scripted_call_4",
@@ -4952,7 +4778,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-10-01T21:36:21.907Z",
+                  "date": "2026-10-02T17:34:44.471Z",
                   "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
                   "labels": [
                     "INBOX"
@@ -4968,7 +4794,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-10-01T07:12:21.907Z",
+                  "date": "2026-10-02T03:10:44.471Z",
                   "snippet": "Your OAuth consent screen for project my-ai-work-agent needs verification before you can use sensitive scopes with external users.",
                   "labels": [
                     "INBOX"
@@ -4984,7 +4810,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-30T19:12:21.907Z",
+                  "date": "2026-10-01T15:10:44.471Z",
                   "snippet": "Please prepare a 5-minute update on your project architecture. Focus on how MCP differs from direct API calls.",
                   "labels": [
                     "INBOX"
@@ -5000,7 +4826,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-30T04:48:21.907Z",
+                  "date": "2026-10-01T00:46:44.471Z",
                   "snippet": "Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issue #17.",
                   "labels": [
                     "INBOX"
@@ -5016,7 +4842,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-29T00:00:21.907Z",
+                  "date": "2026-09-29T19:58:44.471Z",
                   "snippet": "1 moderate severity vulnerability in a transitive dependency of vitest.",
                   "labels": [
                     "INBOX"
@@ -5032,7 +4858,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-28T07:12:21.907Z",
+                  "date": "2026-09-29T03:10:44.471Z",
                   "snippet": "Week 6 covers graphs: BFS/DFS, Dijkstra, MST. Solutions due Sunday.",
                   "labels": [
                     "INBOX"
@@ -5048,7 +4874,7 @@
                   "to": [
                     "demo-user@example.com"
                   ],
-                  "date": "2026-09-27T02:24:21.907Z",
+                  "date": "2026-09-27T22:22:44.471Z",
                   "snippet": "Your demo slot is confirmed for Oct 10, 14:00. Projector supports HDMI only.",
                   "labels": [
                     "INBOX"
@@ -5057,13 +4883,13 @@
                 }
               ]
             },
-            "durationMs": 2
+            "durationMs": 1
           }
         },
         {
           "type": "context_aggregated",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.295Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.634Z",
           "mode": "demo",
           "counts": {
             "github": 5,
@@ -5073,13 +4899,13 @@
         },
         {
           "type": "report_generated",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.298Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.635Z",
           "mode": "demo",
           "report": {
-            "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
+            "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
             "mode": "demo",
-            "generatedAt": "2026-10-02T07:12:22.295Z",
+            "generatedAt": "2026-10-03T03:10:44.634Z",
             "period": {
               "start": "2026-09-28T00:00:00.000Z",
               "end": "2026-10-05T00:00:00.000Z"
@@ -5091,7 +4917,7 @@
                 "type": "github",
                 "title": "feat: agent-core with provider abstraction and report validation",
                 "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
-                "timestamp": "2026-10-02T00:00:21.009Z",
+                "timestamp": "2026-10-02T19:58:43.827Z",
                 "metadata": {
                   "kind": "pr"
                 }
@@ -5101,7 +4927,7 @@
                 "type": "gmail",
                 "title": "Re: my-ai-work-agent PR #14 review",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0001",
-                "timestamp": "2026-10-01T21:36:21.907Z",
+                "timestamp": "2026-10-02T17:34:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -5111,7 +4937,7 @@
                 "type": "github",
                 "title": "Google OAuth refresh token is not rotated after expiry",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
-                "timestamp": "2026-10-01T19:12:21.009Z",
+                "timestamp": "2026-10-02T15:10:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -5121,7 +4947,7 @@
                 "type": "gmail",
                 "title": "[Action required] Google OAuth consent screen verification",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0002",
-                "timestamp": "2026-10-01T07:12:21.907Z",
+                "timestamp": "2026-10-02T03:10:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -5131,7 +4957,7 @@
                 "type": "github",
                 "title": "Agent exceeds tool-call budget on broad prompts",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
-                "timestamp": "2026-10-01T04:48:21.009Z",
+                "timestamp": "2026-10-02T00:46:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -5141,7 +4967,7 @@
                 "type": "gmail",
                 "title": "Capstone weekly check-in: agenda for Thursday",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0003",
-                "timestamp": "2026-09-30T19:12:21.907Z",
+                "timestamp": "2026-10-01T15:10:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -5151,7 +4977,7 @@
                 "type": "gmail",
                 "title": "Re: Calendar MCP — token refresh bug",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0004",
-                "timestamp": "2026-09-30T04:48:21.907Z",
+                "timestamp": "2026-10-01T00:46:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -5161,7 +4987,7 @@
                 "type": "github",
                 "title": "Portfolio: presentation mode keyboard navigation",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
-                "timestamp": "2026-09-29T16:48:21.009Z",
+                "timestamp": "2026-09-30T12:46:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -5171,7 +4997,7 @@
                 "type": "github",
                 "title": "Week 6: graph problems set",
                 "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
-                "timestamp": "2026-09-29T07:12:21.009Z",
+                "timestamp": "2026-09-30T03:10:43.827Z",
                 "metadata": {
                   "kind": "issue"
                 }
@@ -5181,7 +5007,7 @@
                 "type": "gmail",
                 "title": "GitHub: Dependabot alert on my-ai-work-agent",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0006",
-                "timestamp": "2026-09-29T00:00:21.907Z",
+                "timestamp": "2026-09-29T19:58:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -5191,7 +5017,7 @@
                 "type": "gmail",
                 "title": "Algorithm study: week 6 problem set",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0007",
-                "timestamp": "2026-09-28T07:12:21.907Z",
+                "timestamp": "2026-09-29T03:10:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -5201,7 +5027,7 @@
                 "type": "gmail",
                 "title": "Re: Demo day slot confirmed — Oct 10",
                 "url": "https://mail.google.com/mail/u/0/#inbox/demo0008",
-                "timestamp": "2026-09-27T02:24:21.907Z",
+                "timestamp": "2026-09-27T22:22:44.471Z",
                 "metadata": {
                   "kind": "msg"
                 }
@@ -5214,89 +5040,16 @@
                 "items": [
                   {
                     "id": "item_1",
-                    "text": "이번 주 활동: 저장소 0곳에서 커밋 0개, PR 1개, 열린 이슈 4개, 관련 메일 7건.",
-                    "confidence": "observed",
+                    "text": "막힌 항목 후보 7건, 그중 우선순위 높음 2건입니다. 열린 이슈와 리뷰 대기 PR, 조치가 필요한 메일에서 찾았습니다.",
+                    "confidence": "inferred",
                     "sources": [
-                      "github:pr:demo-user/my-ai-work-agent#14",
                       "github:issue:demo-user/my-ai-work-agent#17",
-                      "github:issue:demo-user/my-ai-work-agent#16",
+                      "gmail:msg:demo0002",
                       "github:issue:demo-user/my-ai-work-agent#15",
                       "github:issue:demo-user/cbnu-algorithms#3",
-                      "gmail:msg:demo0001",
-                      "gmail:msg:demo0002",
-                      "gmail:msg:demo0003",
+                      "github:pr:demo-user/my-ai-work-agent#14",
                       "gmail:msg:demo0004",
-                      "gmail:msg:demo0006",
-                      "gmail:msg:demo0007",
-                      "gmail:msg:demo0008"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "project_progress",
-                "title": "Project Progress",
-                "items": [
-                  {
-                    "id": "item_2",
-                    "text": "PR #14 (열림) · my-ai-work-agent: feat: agent-core with provider abstraction and report validation · 리뷰 코멘트 3개.",
-                    "confidence": "observed",
-                    "sources": [
-                      "github:pr:demo-user/my-ai-work-agent#14"
-                    ]
-                  }
-                ]
-              },
-              {
-                "id": "relevant_emails",
-                "title": "Relevant Emails",
-                "items": [
-                  {
-                    "id": "item_3",
-                    "text": "10월 2일 · Kim Minji: Re: my-ai-work-agent PR #14 review — Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry l…",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0001"
-                    ]
-                  },
-                  {
-                    "id": "item_4",
-                    "text": "10월 1일 · Google Cloud Platform: [Action required] Google OAuth consent screen verification — Your OAuth consent screen for project my-ai-work-agent needs verification before you can u…",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0002"
-                    ]
-                  },
-                  {
-                    "id": "item_5",
-                    "text": "10월 1일 · Prof. Park: Capstone weekly check-in: agenda for Thursday — Please prepare a 5-minute update on your project architecture. Focus on how MCP differs fr…",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0003"
-                    ]
-                  },
-                  {
-                    "id": "item_6",
-                    "text": "9월 30일 · Kim Minji: Re: Calendar MCP — token refresh bug — Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issu…",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0004"
-                    ]
-                  },
-                  {
-                    "id": "item_7",
-                    "text": "9월 29일 · GitHub: GitHub: Dependabot alert on my-ai-work-agent — 1 moderate severity vulnerability in a transitive dependency of vitest.",
-                    "confidence": "observed",
-                    "sources": [
                       "gmail:msg:demo0006"
-                    ]
-                  },
-                  {
-                    "id": "item_8",
-                    "text": "9월 28일 · Study Group: Algorithm study: week 6 problem set — Week 6 covers graphs: BFS/DFS, Dijkstra, MST. Solutions due Sunday.",
-                    "confidence": "observed",
-                    "sources": [
-                      "gmail:msg:demo0007"
                     ]
                   }
                 ]
@@ -5306,52 +5059,67 @@
                 "title": "Potential Risks",
                 "items": [
                   {
-                    "id": "item_9",
-                    "text": "이슈 #17 \"Google OAuth refresh token is not rotated after expiry\" (bug, auth, priority:high)가 열려 있어 일정에 영향을 줄 수 있습니다.",
+                    "id": "item_2",
+                    "text": "이슈 #17 Google OAuth refresh token is not rotated after expiry — 버그, 인증, 우선순위 높음 · 담당 demo-user · 1일째 열림",
                     "confidence": "inferred",
                     "sources": [
                       "github:issue:demo-user/my-ai-work-agent#17"
-                    ]
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_10",
-                    "text": "이슈 #16 \"Agent exceeds tool-call budget on broad prompts\" (agent, enhancement)가 열려 있어 일정에 영향을 줄 수 있습니다.",
-                    "confidence": "inferred",
-                    "sources": [
-                      "github:issue:demo-user/my-ai-work-agent#16"
-                    ]
-                  },
-                  {
-                    "id": "item_11",
-                    "text": "Google Cloud Platform의 메일 \"[Action required] Google OAuth consent screen verification\"은 조치가 필요해 보입니다.",
+                    "id": "item_3",
+                    "text": "Google Cloud Platform 메일 \"[Action required] Google OAuth consent screen verification\" — Your OAuth consent screen for project my-ai-work-agent needs…",
                     "confidence": "inferred",
                     "sources": [
                       "gmail:msg:demo0002"
-                    ]
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_12",
-                    "text": "Kim Minji의 메일 \"Re: Calendar MCP — token refresh bug\"은 조치가 필요해 보입니다.",
+                    "id": "item_4",
+                    "text": "이슈 #15 Portfolio: presentation mode keyboard navigation — 포트폴리오 · 담당자 없음 · 2일째 열림",
                     "confidence": "inferred",
                     "sources": [
-                      "gmail:msg:demo0004"
-                    ]
+                      "github:issue:demo-user/my-ai-work-agent#15"
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_13",
-                    "text": "GitHub의 메일 \"GitHub: Dependabot alert on my-ai-work-agent\"은 조치가 필요해 보입니다.",
+                    "id": "item_5",
+                    "text": "이슈 #3 Week 6: graph problems set — 주간 과제 · 담당 demo-user · 3일째 열림",
                     "confidence": "inferred",
                     "sources": [
-                      "gmail:msg:demo0006"
-                    ]
+                      "github:issue:demo-user/cbnu-algorithms#3"
+                    ],
+                    "priority": "medium"
                   },
                   {
-                    "id": "item_14",
-                    "text": "열린 PR 1개가 리뷰를 기다리고 있습니다. 오래 열려 있을수록 병합 충돌 위험이 커집니다.",
+                    "id": "item_6",
+                    "text": "PR #14 feat: agent-core with provider abstraction and report validation — 리뷰 대기 · 코멘트 3개 미반영 · 1일째",
                     "confidence": "inferred",
                     "sources": [
                       "github:pr:demo-user/my-ai-work-agent#14"
-                    ]
+                    ],
+                    "priority": "medium"
+                  },
+                  {
+                    "id": "item_7",
+                    "text": "Kim Minji 메일 \"Calendar MCP — token refresh bug\" — Reproduced it. Refresh token is dropped when the access token expires…",
+                    "confidence": "inferred",
+                    "sources": [
+                      "gmail:msg:demo0004"
+                    ],
+                    "priority": "medium"
+                  },
+                  {
+                    "id": "item_8",
+                    "text": "GitHub 메일 \"Dependabot alert on my-ai-work-agent\" — 1 moderate severity vulnerability in a transitive dependency of…",
+                    "confidence": "inferred",
+                    "sources": [
+                      "gmail:msg:demo0006"
+                    ],
+                    "priority": "medium"
                   }
                 ]
               },
@@ -5360,36 +5128,31 @@
                 "title": "Next Actions",
                 "items": [
                   {
-                    "id": "item_15",
-                    "text": "이슈 #17 해결: Google OAuth refresh token is not rotated after expiry",
+                    "id": "item_9",
+                    "text": "이슈 #17 먼저 해결: Google OAuth refresh token is not rotated after expiry",
                     "confidence": "inferred",
                     "sources": [
                       "github:issue:demo-user/my-ai-work-agent#17"
-                    ]
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_16",
-                    "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
+                    "id": "item_10",
+                    "text": "처리 필요: [Action required] Google OAuth consent screen verification (Google Cloud Platform)",
                     "confidence": "inferred",
                     "sources": [
-                      "github:issue:demo-user/my-ai-work-agent#16"
-                    ]
+                      "gmail:msg:demo0002"
+                    ],
+                    "priority": "high"
                   },
                   {
-                    "id": "item_17",
-                    "text": "이슈 #15 해결: Portfolio: presentation mode keyboard navigation",
-                    "confidence": "inferred",
-                    "sources": [
-                      "github:issue:demo-user/my-ai-work-agent#15"
-                    ]
-                  },
-                  {
-                    "id": "item_18",
-                    "text": "PR #14 리뷰 코멘트 반영 후 병합 요청",
+                    "id": "item_11",
+                    "text": "PR #14 리뷰 코멘트 반영 후 재리뷰 요청",
                     "confidence": "inferred",
                     "sources": [
                       "github:pr:demo-user/my-ai-work-agent#14"
-                    ]
+                    ],
+                    "priority": "medium"
                   }
                 ]
               }
@@ -5399,17 +5162,17 @@
         },
         {
           "type": "agent_run_completed",
-          "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
-          "timestamp": "2026-10-02T07:12:22.298Z",
+          "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
+          "timestamp": "2026-10-03T03:10:44.635Z",
           "mode": "demo",
           "status": "success",
-          "durationMs": 10
+          "durationMs": 5
         }
       ],
       "report": {
-        "runId": "run_bba0dc87-8b9c-4e74-b13d-6d302106f95d",
+        "runId": "run_b0b15280-5ea2-4960-90ea-4dbede5a9c8c",
         "mode": "demo",
-        "generatedAt": "2026-10-02T07:12:22.295Z",
+        "generatedAt": "2026-10-03T03:10:44.634Z",
         "period": {
           "start": "2026-09-28T00:00:00.000Z",
           "end": "2026-10-05T00:00:00.000Z"
@@ -5421,7 +5184,7 @@
             "type": "github",
             "title": "feat: agent-core with provider abstraction and report validation",
             "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
-            "timestamp": "2026-10-02T00:00:21.009Z",
+            "timestamp": "2026-10-02T19:58:43.827Z",
             "metadata": {
               "kind": "pr"
             }
@@ -5431,7 +5194,7 @@
             "type": "gmail",
             "title": "Re: my-ai-work-agent PR #14 review",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0001",
-            "timestamp": "2026-10-01T21:36:21.907Z",
+            "timestamp": "2026-10-02T17:34:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -5441,7 +5204,7 @@
             "type": "github",
             "title": "Google OAuth refresh token is not rotated after expiry",
             "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
-            "timestamp": "2026-10-01T19:12:21.009Z",
+            "timestamp": "2026-10-02T15:10:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -5451,7 +5214,7 @@
             "type": "gmail",
             "title": "[Action required] Google OAuth consent screen verification",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0002",
-            "timestamp": "2026-10-01T07:12:21.907Z",
+            "timestamp": "2026-10-02T03:10:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -5461,7 +5224,7 @@
             "type": "github",
             "title": "Agent exceeds tool-call budget on broad prompts",
             "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
-            "timestamp": "2026-10-01T04:48:21.009Z",
+            "timestamp": "2026-10-02T00:46:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -5471,7 +5234,7 @@
             "type": "gmail",
             "title": "Capstone weekly check-in: agenda for Thursday",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0003",
-            "timestamp": "2026-09-30T19:12:21.907Z",
+            "timestamp": "2026-10-01T15:10:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -5481,7 +5244,7 @@
             "type": "gmail",
             "title": "Re: Calendar MCP — token refresh bug",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0004",
-            "timestamp": "2026-09-30T04:48:21.907Z",
+            "timestamp": "2026-10-01T00:46:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -5491,7 +5254,7 @@
             "type": "github",
             "title": "Portfolio: presentation mode keyboard navigation",
             "url": "https://github.com/demo-user/my-ai-work-agent/issues/15",
-            "timestamp": "2026-09-29T16:48:21.009Z",
+            "timestamp": "2026-09-30T12:46:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -5501,7 +5264,7 @@
             "type": "github",
             "title": "Week 6: graph problems set",
             "url": "https://github.com/demo-user/cbnu-algorithms/issues/3",
-            "timestamp": "2026-09-29T07:12:21.009Z",
+            "timestamp": "2026-09-30T03:10:43.827Z",
             "metadata": {
               "kind": "issue"
             }
@@ -5511,7 +5274,7 @@
             "type": "gmail",
             "title": "GitHub: Dependabot alert on my-ai-work-agent",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0006",
-            "timestamp": "2026-09-29T00:00:21.907Z",
+            "timestamp": "2026-09-29T19:58:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -5521,7 +5284,7 @@
             "type": "gmail",
             "title": "Algorithm study: week 6 problem set",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0007",
-            "timestamp": "2026-09-28T07:12:21.907Z",
+            "timestamp": "2026-09-29T03:10:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -5531,7 +5294,7 @@
             "type": "gmail",
             "title": "Re: Demo day slot confirmed — Oct 10",
             "url": "https://mail.google.com/mail/u/0/#inbox/demo0008",
-            "timestamp": "2026-09-27T02:24:21.907Z",
+            "timestamp": "2026-09-27T22:22:44.471Z",
             "metadata": {
               "kind": "msg"
             }
@@ -5544,89 +5307,16 @@
             "items": [
               {
                 "id": "item_1",
-                "text": "이번 주 활동: 저장소 0곳에서 커밋 0개, PR 1개, 열린 이슈 4개, 관련 메일 7건.",
-                "confidence": "observed",
+                "text": "막힌 항목 후보 7건, 그중 우선순위 높음 2건입니다. 열린 이슈와 리뷰 대기 PR, 조치가 필요한 메일에서 찾았습니다.",
+                "confidence": "inferred",
                 "sources": [
-                  "github:pr:demo-user/my-ai-work-agent#14",
                   "github:issue:demo-user/my-ai-work-agent#17",
-                  "github:issue:demo-user/my-ai-work-agent#16",
+                  "gmail:msg:demo0002",
                   "github:issue:demo-user/my-ai-work-agent#15",
                   "github:issue:demo-user/cbnu-algorithms#3",
-                  "gmail:msg:demo0001",
-                  "gmail:msg:demo0002",
-                  "gmail:msg:demo0003",
+                  "github:pr:demo-user/my-ai-work-agent#14",
                   "gmail:msg:demo0004",
-                  "gmail:msg:demo0006",
-                  "gmail:msg:demo0007",
-                  "gmail:msg:demo0008"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "project_progress",
-            "title": "Project Progress",
-            "items": [
-              {
-                "id": "item_2",
-                "text": "PR #14 (열림) · my-ai-work-agent: feat: agent-core with provider abstraction and report validation · 리뷰 코멘트 3개.",
-                "confidence": "observed",
-                "sources": [
-                  "github:pr:demo-user/my-ai-work-agent#14"
-                ]
-              }
-            ]
-          },
-          {
-            "id": "relevant_emails",
-            "title": "Relevant Emails",
-            "items": [
-              {
-                "id": "item_3",
-                "text": "10월 2일 · Kim Minji: Re: my-ai-work-agent PR #14 review — Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry l…",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0001"
-                ]
-              },
-              {
-                "id": "item_4",
-                "text": "10월 1일 · Google Cloud Platform: [Action required] Google OAuth consent screen verification — Your OAuth consent screen for project my-ai-work-agent needs verification before you can u…",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0002"
-                ]
-              },
-              {
-                "id": "item_5",
-                "text": "10월 1일 · Prof. Park: Capstone weekly check-in: agenda for Thursday — Please prepare a 5-minute update on your project architecture. Focus on how MCP differs fr…",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0003"
-                ]
-              },
-              {
-                "id": "item_6",
-                "text": "9월 30일 · Kim Minji: Re: Calendar MCP — token refresh bug — Reproduced it. Refresh token is dropped when the access token expires mid-run. Opened issu…",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0004"
-                ]
-              },
-              {
-                "id": "item_7",
-                "text": "9월 29일 · GitHub: GitHub: Dependabot alert on my-ai-work-agent — 1 moderate severity vulnerability in a transitive dependency of vitest.",
-                "confidence": "observed",
-                "sources": [
                   "gmail:msg:demo0006"
-                ]
-              },
-              {
-                "id": "item_8",
-                "text": "9월 28일 · Study Group: Algorithm study: week 6 problem set — Week 6 covers graphs: BFS/DFS, Dijkstra, MST. Solutions due Sunday.",
-                "confidence": "observed",
-                "sources": [
-                  "gmail:msg:demo0007"
                 ]
               }
             ]
@@ -5636,52 +5326,67 @@
             "title": "Potential Risks",
             "items": [
               {
-                "id": "item_9",
-                "text": "이슈 #17 \"Google OAuth refresh token is not rotated after expiry\" (bug, auth, priority:high)가 열려 있어 일정에 영향을 줄 수 있습니다.",
+                "id": "item_2",
+                "text": "이슈 #17 Google OAuth refresh token is not rotated after expiry — 버그, 인증, 우선순위 높음 · 담당 demo-user · 1일째 열림",
                 "confidence": "inferred",
                 "sources": [
                   "github:issue:demo-user/my-ai-work-agent#17"
-                ]
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_10",
-                "text": "이슈 #16 \"Agent exceeds tool-call budget on broad prompts\" (agent, enhancement)가 열려 있어 일정에 영향을 줄 수 있습니다.",
-                "confidence": "inferred",
-                "sources": [
-                  "github:issue:demo-user/my-ai-work-agent#16"
-                ]
-              },
-              {
-                "id": "item_11",
-                "text": "Google Cloud Platform의 메일 \"[Action required] Google OAuth consent screen verification\"은 조치가 필요해 보입니다.",
+                "id": "item_3",
+                "text": "Google Cloud Platform 메일 \"[Action required] Google OAuth consent screen verification\" — Your OAuth consent screen for project my-ai-work-agent needs…",
                 "confidence": "inferred",
                 "sources": [
                   "gmail:msg:demo0002"
-                ]
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_12",
-                "text": "Kim Minji의 메일 \"Re: Calendar MCP — token refresh bug\"은 조치가 필요해 보입니다.",
+                "id": "item_4",
+                "text": "이슈 #15 Portfolio: presentation mode keyboard navigation — 포트폴리오 · 담당자 없음 · 2일째 열림",
                 "confidence": "inferred",
                 "sources": [
-                  "gmail:msg:demo0004"
-                ]
+                  "github:issue:demo-user/my-ai-work-agent#15"
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_13",
-                "text": "GitHub의 메일 \"GitHub: Dependabot alert on my-ai-work-agent\"은 조치가 필요해 보입니다.",
+                "id": "item_5",
+                "text": "이슈 #3 Week 6: graph problems set — 주간 과제 · 담당 demo-user · 3일째 열림",
                 "confidence": "inferred",
                 "sources": [
-                  "gmail:msg:demo0006"
-                ]
+                  "github:issue:demo-user/cbnu-algorithms#3"
+                ],
+                "priority": "medium"
               },
               {
-                "id": "item_14",
-                "text": "열린 PR 1개가 리뷰를 기다리고 있습니다. 오래 열려 있을수록 병합 충돌 위험이 커집니다.",
+                "id": "item_6",
+                "text": "PR #14 feat: agent-core with provider abstraction and report validation — 리뷰 대기 · 코멘트 3개 미반영 · 1일째",
                 "confidence": "inferred",
                 "sources": [
                   "github:pr:demo-user/my-ai-work-agent#14"
-                ]
+                ],
+                "priority": "medium"
+              },
+              {
+                "id": "item_7",
+                "text": "Kim Minji 메일 \"Calendar MCP — token refresh bug\" — Reproduced it. Refresh token is dropped when the access token expires…",
+                "confidence": "inferred",
+                "sources": [
+                  "gmail:msg:demo0004"
+                ],
+                "priority": "medium"
+              },
+              {
+                "id": "item_8",
+                "text": "GitHub 메일 \"Dependabot alert on my-ai-work-agent\" — 1 moderate severity vulnerability in a transitive dependency of…",
+                "confidence": "inferred",
+                "sources": [
+                  "gmail:msg:demo0006"
+                ],
+                "priority": "medium"
               }
             ]
           },
@@ -5690,36 +5395,31 @@
             "title": "Next Actions",
             "items": [
               {
-                "id": "item_15",
-                "text": "이슈 #17 해결: Google OAuth refresh token is not rotated after expiry",
+                "id": "item_9",
+                "text": "이슈 #17 먼저 해결: Google OAuth refresh token is not rotated after expiry",
                 "confidence": "inferred",
                 "sources": [
                   "github:issue:demo-user/my-ai-work-agent#17"
-                ]
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_16",
-                "text": "이슈 #16 해결: Agent exceeds tool-call budget on broad prompts",
+                "id": "item_10",
+                "text": "처리 필요: [Action required] Google OAuth consent screen verification (Google Cloud Platform)",
                 "confidence": "inferred",
                 "sources": [
-                  "github:issue:demo-user/my-ai-work-agent#16"
-                ]
+                  "gmail:msg:demo0002"
+                ],
+                "priority": "high"
               },
               {
-                "id": "item_17",
-                "text": "이슈 #15 해결: Portfolio: presentation mode keyboard navigation",
-                "confidence": "inferred",
-                "sources": [
-                  "github:issue:demo-user/my-ai-work-agent#15"
-                ]
-              },
-              {
-                "id": "item_18",
-                "text": "PR #14 리뷰 코멘트 반영 후 병합 요청",
+                "id": "item_11",
+                "text": "PR #14 리뷰 코멘트 반영 후 재리뷰 요청",
                 "confidence": "inferred",
                 "sources": [
                   "github:pr:demo-user/my-ai-work-agent#14"
-                ]
+                ],
+                "priority": "medium"
               }
             ]
           }

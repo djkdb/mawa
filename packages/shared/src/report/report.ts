@@ -12,6 +12,10 @@ import { SourceSchema } from './source.js';
 export const ConfidenceSchema = z.enum(['observed', 'inferred']);
 export type Confidence = z.infer<typeof ConfidenceSchema>;
 
+/** Optional urgency of an item (risks, blockers, next actions). Orthogonal to confidence. */
+export const PrioritySchema = z.enum(['high', 'medium', 'low']);
+export type Priority = z.infer<typeof PrioritySchema>;
+
 export const ReportItemSchema = z
   .object({
     id: z.string().min(1),
@@ -19,6 +23,7 @@ export const ReportItemSchema = z
     confidence: ConfidenceSchema,
     /** Ids of `Source`s in `WeeklyWorkReport.sources`. Validated for existence. */
     sources: z.array(z.string().min(1)).default([]),
+    priority: PrioritySchema.optional(),
   })
   .refine((item) => item.confidence !== 'observed' || item.sources.length > 0, {
     message: 'An "observed" report item must cite at least one source.',

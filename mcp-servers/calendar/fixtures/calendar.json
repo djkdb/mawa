@@ -8,10 +8,12 @@
       "title": "PR #14 review sync with Minji",
       "description": "Walk through provider abstraction comments; decide on retry strategy for OpenAI-compatible provider.",
       "start": {
-        "$daysAgo": 1.2
+        "$daysAgo": 1,
+        "$time": "14:00"
       },
       "end": {
-        "$daysAgo": 1.1791666666666667
+        "$daysAgo": 1,
+        "$time": "14:30"
       },
       "allDay": false,
       "location": "Google Meet",
@@ -30,10 +32,12 @@
       "title": "Capstone weekly check-in",
       "description": "5-minute architecture update: MCP vs direct API integration.",
       "start": {
-        "$daysAgo": -1.3
+        "$daysAgo": -2,
+        "$time": "15:00"
       },
       "end": {
-        "$daysAgo": -1.3416666666666668
+        "$daysAgo": -2,
+        "$time": "16:00"
       },
       "allDay": false,
       "location": "S4-1 309",
@@ -52,10 +56,12 @@
       "title": "Algorithm study — week 6 graphs",
       "description": "BFS/DFS, Dijkstra, MST review.",
       "start": {
-        "$daysAgo": -2.6
+        "$daysAgo": -3,
+        "$time": "19:00"
       },
       "end": {
-        "$daysAgo": -2.6833333333333336
+        "$daysAgo": -3,
+        "$time": "21:00"
       },
       "allDay": false,
       "location": "Library group room B",
@@ -74,10 +80,12 @@
       "title": "Deep work: Google OAuth refresh fix (#17)",
       "description": "Blocked time to fix refresh-token rotation before demo day.",
       "start": {
-        "$daysAgo": -0.4
+        "$daysAgo": -1,
+        "$time": "10:00"
       },
       "end": {
-        "$daysAgo": -0.525
+        "$daysAgo": -1,
+        "$time": "13:00"
       },
       "allDay": false,
       "location": null,
@@ -95,10 +103,12 @@
       "title": "Demo day — My AI Work Agent",
       "description": "10 min demo + 5 min Q&A. HDMI only.",
       "start": {
-        "$daysAgo": -8.0
+        "$daysAgo": -8,
+        "$time": "14:00"
       },
       "end": {
-        "$daysAgo": -8.010416666666666
+        "$daysAgo": -8,
+        "$time": "14:15"
       },
       "allDay": false,
       "location": "Innovation Hall",

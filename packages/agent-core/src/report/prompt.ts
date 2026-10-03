@@ -18,6 +18,7 @@ export const LLMReportItemSchema = z.object({
   text: z.string().min(1),
   confidence: z.enum(['observed', 'inferred']),
   sources: z.array(z.string()),
+  priority: z.enum(['high', 'medium', 'low']).optional(),
 });
 export const LLMReportSchema = z.object({
   sections: z.array(
@@ -36,6 +37,7 @@ export function llmReportJsonSchema(): Record<string, unknown> {
 export function buildAnalysisPrompt(context: AggregatedContext, userPrompt: string): string {
   const sectionList = REPORT_SECTION_ORDER.map((id) => `- ${id}: ${REPORT_SECTION_TITLES[id]}`).join('\n');
   const payload = {
+    request: userPrompt,
     period: context.period,
     sources: context.sources.map((s) => ({ id: s.id, type: s.type, title: s.title, timestamp: s.timestamp })),
     items: context.items.map((i) => ({ sourceId: i.sourceId, kind: i.kind, title: i.title, timestamp: i.timestamp, summary: i.summary, fields: pickFields(i.raw) })),
@@ -50,7 +52,7 @@ Hard rules:
 1. Every item has "confidence": "observed" when the statement is directly supported by the cited sources, or "inferred" when it is your interpretation, estimate, or suggestion.
 2. "sources" must contain only ids that appear in the sources list below. An "observed" item needs at least one source. Never invent ids.
 3. Group work by project (repository name) where possible. Be concrete: numbers, titles, dates.
-4. potential_risks and next_actions are usually "inferred"; still cite the sources you reasoned from.
+4. potential_risks and next_actions are usually "inferred"; still cite the sources you reasoned from, and set "priority" (high | medium | low).
 5. Write items in the same language as the user's request.
 
 ${CONTEXT_BLOCK_START}
@@ -58,7 +60,7 @@ ${JSON.stringify(payload)}
 ${CONTEXT_BLOCK_END}`;
 }
 
-const FIELD_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'from', 'snippet', 'start', 'end', 'location', 'reviewComments', 'commitsInPeriod', 'openIssues', 'mergedAt', 'allDay'] as const;
+const FIELD_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'assignees', 'createdAt', 'updatedAt', 'from', 'snippet', 'start', 'end', 'location', 'reviewComments', 'commitsInPeriod', 'openIssues', 'mergedAt', 'allDay'] as const;
 /** A small, stable subset of each item's raw fields; enough to write concrete sentences without dumping payloads. */
 export function pickFields(raw: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {};
