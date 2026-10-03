@@ -1,10 +1,11 @@
 import { useEffect, useRef } from 'react';
 import { CircleHelp, Code2, FileText, History, Home, Monitor, Moon, Plug, ScrollText, Settings, Sun, X } from 'lucide-react';
 import { IS_DEMO_BUILD, REPO_URL, type Status } from '../lib/client.js';
-import { DEMO_PERSONA } from '../lib/copy.js';
 import { useTheme, type ThemePref } from '../lib/theme.js';
 import { hrefFor, type Route } from '../lib/useHashRoute.js';
 import { HowItWorks } from './HowItWorks.js';
+import { PersonaSwitcher } from './PersonaSwitcher.js';
+import { PERSONAS, type PersonaId } from '../lib/persona.js';
 import { ModeBadge } from './ModeBadge.js';
 
 const NAV: Array<{ id: Route; label: string; icon: typeof Home }> = [
@@ -36,15 +37,18 @@ function ThemeToggle() {
   );
 }
 
-export function Shell({ route, reportHref, navigate, status, children }: { route: Route; reportHref: string; navigate: (r: Route) => void; status: Status | null; children: React.ReactNode }) {
+export function Shell({ route, reportHref, navigate, status, children, persona: pid, onPersona }: { route: Route; reportHref: string; navigate: (r: Route) => void; status: Status | null; children: React.ReactNode; persona: PersonaId; onPersona: (id: PersonaId) => void }) {
+  const P = PERSONAS[pid];
+  const nav = NAV.map((n) => (n.id === 'audit' ? { ...n, label: P.auditLabel } : n));
+  const title = (r: Route) => (r === 'audit' ? P.auditLabel : r === 'home' && pid === 'admin' ? '데이터 사용 현황' : ROUTE_TITLE[r]);
   const h1 = useRef<HTMLHeadingElement>(null);
   const dialog = useRef<HTMLDialogElement>(null);
   const first = useRef(true);
-  const workspace = IS_DEMO_BUILD ? `${DEMO_PERSONA.name} (샘플)` : (status?.integrations.github.account ?? status?.integrations.google.account ?? '내 워크스페이스');
+  const workspace = IS_DEMO_BUILD ? `${P.name} (샘플)` : (status?.integrations.github.account ?? status?.integrations.google.account ?? '내 워크스페이스');
 
   // Announce route changes: update the document title and move focus to the page heading (not on first load).
   useEffect(() => {
-    document.title = `${ROUTE_TITLE[route]} · My AI Work Agent`;
+    document.title = `${title(route)} · My AI Work Agent`;
     if (first.current) { first.current = false; return; }
     h1.current?.focus();
   }, [route]);
@@ -63,10 +67,12 @@ export function Shell({ route, reportHref, navigate, status, children }: { route
         <div className="mx-3 mb-2 rounded-lg bg-surface-2 px-3 py-2">
           <div className="text-xs text-text-3">워크스페이스</div>
           <div className="truncate text-sm font-medium">{workspace}</div>
+          {IS_DEMO_BUILD && <div className="truncate text-xs text-text-3" title={P.role}>{P.role}</div>}
         </div>
+        {IS_DEMO_BUILD && <div className="mx-3 mb-3"><PersonaSwitcher value={pid} onChange={onPersona} compact /></div>}
         <nav aria-label="주 메뉴" className="rail flex-1 px-3">
           <ul className="space-y-0.5">
-            {NAV.map((n) => (
+            {nav.map((n) => (
               <li key={n.id}>
                 <a href={href(n.id)} aria-current={route === n.id ? 'page' : undefined} onClick={(e) => go(e, n.id)}>
                   <n.icon className="h-4 w-4" aria-hidden /> {n.label}
@@ -88,7 +94,7 @@ export function Shell({ route, reportHref, navigate, status, children }: { route
               <img src="/favicon.svg" alt="" className="h-6 w-6 lg:hidden" />
               <span className="whitespace-nowrap text-[15px] font-semibold max-[479px]:hidden lg:hidden" aria-hidden>My AI Work Agent</span>
               <span className="text-text-3 max-[479px]:hidden lg:hidden" aria-hidden>/</span>
-              <h1 ref={h1} tabIndex={-1} className="truncate text-[15px] font-semibold outline-none">{ROUTE_TITLE[route]}</h1>
+              <h1 ref={h1} tabIndex={-1} className="truncate text-[15px] font-semibold outline-none">{title(route)}</h1>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="lg:hidden"><ModeBadge mode={status?.defaultMode ?? 'demo'} /></span>
@@ -99,10 +105,13 @@ export function Shell({ route, reportHref, navigate, status, children }: { route
           </div>
         </header>
 
-        <main id="main" tabIndex={-1} className="flex-1 px-4 py-5 pb-28 outline-none sm:px-6 lg:pb-10">{children}</main>
+        <main id="main" tabIndex={-1} className="flex-1 px-4 py-5 pb-28 outline-none sm:px-6 lg:pb-10">
+          {IS_DEMO_BUILD && <div className="mx-auto mb-4 max-w-5xl lg:hidden"><PersonaSwitcher value={pid} onChange={onPersona} compact /></div>}
+          {children}
+        </main>
 
         <nav aria-label="주 메뉴" className="fixed inset-x-0 bottom-0 z-30 flex border-t border-line bg-surface lg:hidden" style={{ paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}>
-          {NAV.map((n) => (
+          {nav.map((n) => (
             <a key={n.id} href={href(n.id)} onClick={(e) => go(e, n.id)} aria-current={route === n.id ? 'page' : undefined} className={`flex min-h-14 flex-1 flex-col items-center justify-center gap-1 text-[11px] ${route === n.id ? 'font-semibold text-accent' : 'text-text-3'}`}>
               <n.icon className="h-5 w-5" aria-hidden /> {n.label}
             </a>

@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
-import { DEMO_EXAMPLES, getClient, type RunSummary } from '../lib/client.js';
+import { exampleOf, getClient, recordedIdOf, recordedPersona, type RunSummary } from '../lib/client.js';
+import { persona } from '../lib/persona.js';
 import { EXAMPLE_META, SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 import { hrefFor } from '../lib/useHashRoute.js';
 
 function titleFor(prompt: string, kind?: string, runId?: string) {
   if (kind === 'validation') return '출처 검증 시연';
-  if (kind === 'policy') return runId?.endsWith('policy-strict') ? '정책 비교 · 엄격한 정책' : '정책 비교 · 정책 없음';
-  const ex = DEMO_EXAMPLES.find((e) => e.prompt === prompt);
+  if (kind === 'policy') return `${runId?.includes('worker') ? '주간 보고' : '이번 주 정리'} · ${runId?.endsWith('policy-strict') ? '엄격한 정책' : '정책 없음'}`;
+  const ex = exampleOf(prompt);
   const base = ex ? (EXAMPLE_META[ex.id]?.title ?? prompt) : prompt;
   return kind === 'llm' ? `${base} — AI가 고른 도구로` : base;
 }
@@ -14,7 +15,9 @@ function titleFor(prompt: string, kind?: string, runId?: string) {
 export function RunsPage({ currentRunId, refreshKey }: { currentRunId: string | null; refreshKey: number }) {
   const [runs, setRuns] = useState<RunSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  useEffect(() => { getClient().listRuns().then(setRuns).catch((e: Error) => setError(e.message)); }, [refreshKey]);
+  // Demo: the active persona's runs only (the admin sees the worker's company).
+  const mine = (r: RunSummary) => { const id = recordedIdOf(r.runId); const owner = id ? recordedPersona(id) : null; return !owner || owner === persona().data; };
+  useEffect(() => { getClient().listRuns().then((l) => setRuns(l.filter(mine))).catch((e: Error) => setError(e.message)); }, [refreshKey]);
   return (
     <div className="mx-auto max-w-5xl">
       <p className="mb-4 text-sm text-text-2">에이전트가 만든 리포트 목록입니다. 질문을 누르면 그 실행의 리포트와 활동 기록을 엽니다.</p>

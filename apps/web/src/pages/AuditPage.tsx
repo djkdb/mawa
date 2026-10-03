@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Ban, Download, EyeOff, FileSearch, Link2, Send, ShieldAlert, ShieldCheck, TriangleAlert, Upload } from 'lucide-react';
 import { parseJsonl, verifyChain, type AgentEvent, type ChainCheck } from '@mawa/shared';
-import { getClient, type RunSummary } from '../lib/client.js';
+import { getClient, recordedPersona, type RunSummary } from '../lib/client.js';
+import { persona } from '../lib/persona.js';
 import type { AuditLog } from '../lib/types.js';
 import { downloadText, type AuditAction, type AuditRow } from '../lib/audit.js';
 import { SERVER_COLOR, SERVER_NAME, piiBreakdown } from '../lib/copy.js';
@@ -55,7 +56,9 @@ export function AuditPage() {
 
   // Rows come from the stored, hash-chained log; runs only supply the question for each runId.
   const byRun = useMemo(() => new Map((runs ?? []).map((r) => [r.events[0]!.runId, r.summary])), [runs]);
-  const all = useMemo(() => (log?.entries ?? []).map((row) => ({ row: row as AuditRow, run: byRun.get(row.runId) })), [log, byRun]);
+  // Demo: only this persona's runs (the admin sees the worker's company); a server log is shown whole.
+  const mine = (row: { runId: string }) => log?.source === 'server' || (() => { const s = byRun.get(row.runId); const id = s?.runId.replace(/^recorded_/, '').replace(/^demo_(.+)_[a-z0-9]+$/, '$1'); return id ? recordedPersona(id) === persona().data : false; })();
+  const all = useMemo(() => (log?.entries ?? []).filter(mine).map((row) => ({ row: row as AuditRow, run: byRun.get(row.runId) })), [log, byRun]);
   const rows = all.filter(({ row }) => (filter === 'all' || row.action === filter) && (runFilter === 'all' || row.runId === runFilter));
   const count = (a: AuditAction) => all.filter(({ row }) => row.action === a && (runFilter === 'all' || row.runId === runFilter)).length;
   const sent = all.filter(({ row }) => row.action === 'llm' && (runFilter === 'all' || row.runId === runFilter)).map(({ row }) => row);
@@ -66,7 +69,7 @@ export function AuditPage() {
       <p className="mb-4 max-w-3xl text-sm text-text-2">에이전트가 MCP로 읽은 데이터, 정책이 거절하거나 뺀 것, LLM에 보낸 요청을 한 줄씩 남깁니다. {log?.source === 'server' ? 'API 서버가 실행이 끝날 때마다 파일에 이어 쓴 로그입니다.' : '데모를 기록할 때 한 번 써 둔 로그입니다.'} 화면을 열 때 다시 만들지 않고, 저장된 해시를 그대로 검증합니다.</p>
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
       {!runs && !error && <p className="text-sm text-text-3">불러오는 중…</p>}
-      {log && <SecuritySummary entries={log.entries as Array<AuditRow & { prev: string; hash: string }>} start={log.entries[0]?.prev} />}
+      {log && runs && <SecuritySummary entries={log.entries.filter(mine) as Array<AuditRow & { prev: string; hash: string }>} chain={log.entries as unknown as Array<Record<string, unknown>>} />}
       {runs && log && (
         <section aria-labelledby="audit-heading" className="surface p-4 sm:p-5">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
@@ -75,6 +78,7 @@ export function AuditPage() {
             <button type="button" onClick={() => downloadText(log.entries.map((x) => JSON.stringify(x)).join('\n'), 'audit-log.chained.jsonl')} className="ml-auto inline-flex min-h-9 items-center gap-1 rounded-md px-2 text-sm text-text-2 hover:text-text"><Download className="h-3.5 w-3.5" aria-hidden />JSONL 내려받기 (해시 체인)</button>
           </div>
           <IntegrityPanel entries={log.entries as unknown as Array<Record<string, unknown>>} serverCheck={log.check} />
+          {log.source === 'recorded' && <p className="mt-2 text-xs text-text-3">표는 {persona().name}의 실행만 보여줍니다. 무결성 검증은 데모 전체 로그({log.entries.length}줄)에 대해 합니다.</p>}
           <div className="mt-3 flex flex-wrap items-center gap-1.5">
             <div role="group" aria-label="동작" className="flex flex-wrap gap-1.5">
               {FILTERS.map((f) => (
@@ -104,7 +108,7 @@ export function AuditPage() {
           </div>
         </section>
       )}
-      <GatewayRun />
+      <div className="mt-5"><GatewayRun /></div>
     </div>
   );
 }

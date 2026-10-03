@@ -77,17 +77,20 @@ function isoOf(month: number, day: number, now: number): string {
 
 /** What area of a student's (or worker's) week an item belongs to. */
 const AREAS: Array<[string, RegExp]> = [
+  // Work: data exposure and access expiry are security tasks, not suspicious mail.
+  ['보안', /주민번호 컬럼|DB 접근 권한|권한 만료|security-team/i],
   ['팀플', /캡스톤|팀플|team-mate|capstone|중간발표/i],
   ['취업', /인턴|채용|코딩테스트|면접|recruit|intern|interview|이력서/i],
-  ['과제', /운영체제|데이터베이스|네트워크|과제|퀴즈|시험|중간고사|기말|eCampus|조교|homework|os-hw|보고서/i],
-  ['공부', /스터디|BOJ|백준|baekjoon|알고리즘|algorithm/i],
-  ['개발', /my-ai-work-agent|portfolio|포트폴리오|deploy|배포|cloudflare/i],
-  ['학사', /장학금|학부|학생 포털|등록금|수강신청/i],
+  ['과제', /운영체제|데이터베이스|네트워크|과제|퀴즈|시험|중간고사|기말|eCampus|조교|homework|os-hw|보고서|정산 금액|불일치|고객|장애|incident|p99|회신/i],
+  ['공부', /스터디|BOJ|백준|baekjoon|알고리즘|algorithm|세미나|Kafka|\btil\b/i],
+  ['개발', /my-ai-work-agent|portfolio|포트폴리오|deploy|배포|cloudflare|payments-api|admin-web|release/i],
+  ['학사', /장학금|학부|학생 포털|등록금|수강신청|연차|급여|인사팀|평가/i],
+  ['모임', /1:1|스탠드업|플래닝|회고/i],
 ];
 /** Gatherings on the calendar (team meetings, study sessions) are their own category. */
 const MEETING = /회의|스터디|모임|미팅|sync|세미나|MT\b|면담/i;
 const areaOf = (text: string) => AREAS.find(([, re]) => re.test(text))?.[0] ?? null;
-const DEADLINE = /마감|제출|시험|퀴즈|중간고사|기말|발표|코딩테스트|면접|due|deadline|exam|quiz|interview/i;
+const DEADLINE = /마감|제출|시험|퀴즈|중간고사|기말|발표|코딩테스트|면접|회신|만료|등록|due|deadline|exam|quiz|interview/i;
 const SUBMISSION_KO: Record<string, string> = { draft: '임시저장만 됨 (미제출)', new: '미제출', submitted: '제출 완료' };
 
 export function intentOf(request?: string): ScriptedIntent {
@@ -292,7 +295,7 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
   const actions = byPriority([...topics.filter((t) => !coveredByPrep.has(t.item.sourceId)).map(topicAction), ...preps, ...conflicts.map(conflictAction), ...standaloneMail.filter((m) => mailScore(m).priority === 'high').map(mailAction)]);
   const eventLine = (e: Item, mark = false): Out => {
     const past = new Date(startOf(e)).getTime() < now;
-    return { text: `${dt(startOf(e))} · ${e.title ?? ''}${f(e, 'location') ? ` (${f(e, 'location')})` : ''}${mark && past ? ' · 지남' : ''}`, confidence: 'observed', sources: [e.sourceId] };
+    return { text: `${f(e, 'allDay') === true ? `${dw(startOf(e))} 종일` : dt(startOf(e))} · ${e.title ?? ''}${f(e, 'location') ? ` (${f(e, 'location')})` : ''}${mark && past ? ' · 지남' : ''}`, confidence: 'observed', sources: [e.sourceId] };
   };
   const skipped = [promo.length ? `광고 메일 ${promo.length}건` : '', suspicious.length ? `의심 메일 ${suspicious.length}건` : ''].filter(Boolean).join(', ');
   const solved = commits.filter((c) => /BOJ\s*\d+|백준/i.test(c.title ?? ''));

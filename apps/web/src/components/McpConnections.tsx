@@ -1,3 +1,4 @@
+import { persona } from '../lib/persona.js';
 import { CalendarDays, GraduationCap, GitBranch, Mail, Link2, Unlink } from 'lucide-react';
 import type { AgentEvent, McpServerId } from '@mawa/shared';
 import catalog from '@mawa/shared/demo/mcp-catalog.json';
@@ -21,7 +22,7 @@ export function McpConnections({ status, events, onDisconnect, onConnectLms }: {
       <h2 id="mcp-heading" className="text-[15px] font-semibold">연결된 소스</h2>
       <p className="mt-0.5 text-[13px] text-text-3">소스마다 독립된 MCP 서버가 붙습니다.</p>
       <ul className="mt-3 divide-y divide-line/70">
-        {SERVERS.map((id) => {
+        {SERVERS.filter((id) => !IS_DEMO_BUILD || persona().servers.includes(id)).map((id) => {
           const tools = CATALOG.servers[id]?.tools.length ?? 0;
           const used = calls.get(id) ?? 0;
           const provider = id === 'github' ? 'github' : id === 'lms' ? 'lms' : 'google';

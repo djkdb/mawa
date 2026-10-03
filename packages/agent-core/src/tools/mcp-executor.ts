@@ -36,6 +36,8 @@ export interface McpToolExecutorOptions {
   clientName?: string;
   /** Demo mode only: the instant the servers treat as now (default DEMO_NOW, or MAWA_NOW from the environment). */
   demoNow?: string;
+  /** Demo mode only: whose synthetic workspace the servers serve (MAWA_PERSONA), e.g. "worker". */
+  persona?: string;
 }
 
 /**
@@ -64,7 +66,7 @@ export class McpToolExecutor implements ToolExecutor {
           const stdio = new StdioClientTransport({
             command: spec.command,
             args,
-            env: { ...filteredProcessEnv(), ...(this.options.mode === 'demo' ? { MAWA_NOW: this.options.demoNow ?? process.env['MAWA_NOW'] ?? DEMO_NOW } : {}), ...(spec.env ?? {}) },
+            env: { ...filteredProcessEnv(), ...(this.options.mode === 'demo' ? { MAWA_NOW: this.options.demoNow ?? process.env['MAWA_NOW'] ?? DEMO_NOW, ...(this.options.persona ? { MAWA_PERSONA: this.options.persona } : {}) } : {}), ...(spec.env ?? {}) },
             stderr: 'pipe',
           });
           const tap = new TapTransport(stdio, spec.id, (e) => this.notify(e));

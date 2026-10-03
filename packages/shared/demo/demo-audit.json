@@ -1,10 +1,10 @@
 {
   "note": "Hash-chained audit of the shipped demo runs, written by scripts/export-portfolio-data.mjs / record-llm-run.mjs. Synthetic data.",
-  "head": "b5225e797e515b38bca123c9da5207097f49f62fa7d3609400795dbe354a85a9",
+  "head": "1b82512deafd2b5f158421df1ac151c1b15acab928481128b2e46a90cc3004d7",
   "entries": [
     {
-      "at": "2026-10-03T03:00:01.162Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.059Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -17,11 +17,11 @@
       "sentToLlm": true,
       "seq": 1,
       "prev": "0000000000000000000000000000000000000000000000000000000000000000",
-      "hash": "8c3fb9a5c6596043f9ec1e2897596d120a0499ff8228eca0954086ec8be1c0eb"
+      "hash": "48a81ccfdad4ea344dd1f5ca6687ffef81b083cede5e0e025e1be5a85842e52c"
     },
     {
-      "at": "2026-10-03T03:00:01.168Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.065Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -45,12 +45,12 @@
       "durationMs": 5,
       "sentToLlm": true,
       "seq": 2,
-      "prev": "8c3fb9a5c6596043f9ec1e2897596d120a0499ff8228eca0954086ec8be1c0eb",
-      "hash": "7e1f33f3df10a9915806abe1824a1f48a18d3e52d3fd7812ae22fa6bf79e9a74"
+      "prev": "48a81ccfdad4ea344dd1f5ca6687ffef81b083cede5e0e025e1be5a85842e52c",
+      "hash": "e39ef0166fdef0b86fb0a166399f2c825d128ad939259762e0c9c1a7d8070dd4"
     },
     {
-      "at": "2026-10-03T03:00:01.173Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.069Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -65,12 +65,12 @@
       "durationMs": 3,
       "sentToLlm": true,
       "seq": 3,
-      "prev": "7e1f33f3df10a9915806abe1824a1f48a18d3e52d3fd7812ae22fa6bf79e9a74",
-      "hash": "2ba5a23c4e08ccaa986702960c7a979d69fbdb626311dee1f915b6c12569a6e9"
+      "prev": "e39ef0166fdef0b86fb0a166399f2c825d128ad939259762e0c9c1a7d8070dd4",
+      "hash": "dfd4414bef4a8f2981306b8e4c31ee43b9ffca3020397440187b5d610e73f304"
     },
     {
-      "at": "2026-10-03T03:00:01.177Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.071Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -83,15 +83,15 @@
         "github:issue:seongjun/os-hw#2",
         "github:issue:seongjun/my-ai-work-agent#18"
       ],
-      "durationMs": 3,
+      "durationMs": 2,
       "sentToLlm": true,
       "seq": 4,
-      "prev": "2ba5a23c4e08ccaa986702960c7a979d69fbdb626311dee1f915b6c12569a6e9",
-      "hash": "e4fea0cf48906503fe58caf6fb2cd66eeaf06d4b7fe98c2dfd479b65935ffdaa"
+      "prev": "dfd4414bef4a8f2981306b8e4c31ee43b9ffca3020397440187b5d610e73f304",
+      "hash": "8c73d28c59fa57ed0a50fc3b23f6a0193c2524a5d8fc0c777c8b5f3e93971453"
     },
     {
-      "at": "2026-10-03T03:00:01.179Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.073Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -107,12 +107,12 @@
       "durationMs": 2,
       "sentToLlm": true,
       "seq": 5,
-      "prev": "e4fea0cf48906503fe58caf6fb2cd66eeaf06d4b7fe98c2dfd479b65935ffdaa",
-      "hash": "14f6e97cb7497561f52ef561d9d0133998a060f213d3fc7878063c460c774be3"
+      "prev": "8c73d28c59fa57ed0a50fc3b23f6a0193c2524a5d8fc0c777c8b5f3e93971453",
+      "hash": "a3766a2742e26e20eb82598ee29ecacc446321f8ca243a7914cee43c1dd19b6c"
     },
     {
-      "at": "2026-10-03T03:00:01.186Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.079Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "read",
       "server": "gmail",
@@ -147,12 +147,12 @@
       "durationMs": 6,
       "sentToLlm": true,
       "seq": 6,
-      "prev": "14f6e97cb7497561f52ef561d9d0133998a060f213d3fc7878063c460c774be3",
-      "hash": "01df377489629957cff92ad4ef471415624fa01ace1814c6a54a09856746452b"
+      "prev": "a3766a2742e26e20eb82598ee29ecacc446321f8ca243a7914cee43c1dd19b6c",
+      "hash": "9e092fb8b3251b907fce2dfb0a9bf5f6666b3afcf45b58ecff571f56d96d40a9"
     },
     {
-      "at": "2026-10-03T03:00:01.199Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.092Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -166,12 +166,12 @@
       "durationMs": 12,
       "sentToLlm": true,
       "seq": 7,
-      "prev": "01df377489629957cff92ad4ef471415624fa01ace1814c6a54a09856746452b",
-      "hash": "c3f57deca49c6c65ecfbfbfb86c796f06b68013f86aea27b5220cbfab3028767"
+      "prev": "9e092fb8b3251b907fce2dfb0a9bf5f6666b3afcf45b58ecff571f56d96d40a9",
+      "hash": "a6d17c2aee6571f59fd0886975a7bebb0a06d1c66a80785733ad36bdf07237eb"
     },
     {
-      "at": "2026-10-03T03:00:01.201Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.094Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -191,12 +191,12 @@
       "durationMs": 2,
       "sentToLlm": true,
       "seq": 8,
-      "prev": "c3f57deca49c6c65ecfbfbfb86c796f06b68013f86aea27b5220cbfab3028767",
-      "hash": "ae7dcc3f354a6912882d58bef864c03fe32bc63742b39519cbd3867fc464b867"
+      "prev": "a6d17c2aee6571f59fd0886975a7bebb0a06d1c66a80785733ad36bdf07237eb",
+      "hash": "6c2b3158302bd53292f234dcd269d208cf07409a16ee6c2bac761bb24759691f"
     },
     {
-      "at": "2026-10-03T03:00:01.214Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.105Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "read",
       "server": "lms",
@@ -211,15 +211,15 @@
         "lms:due:9003",
         "lms:due:9004"
       ],
-      "durationMs": 12,
+      "durationMs": 11,
       "sentToLlm": true,
       "seq": 9,
-      "prev": "ae7dcc3f354a6912882d58bef864c03fe32bc63742b39519cbd3867fc464b867",
-      "hash": "45853ecac383bfcbc5c7e65b6311abe05696553be88f6b5c966a64cdd8de281a"
+      "prev": "6c2b3158302bd53292f234dcd269d208cf07409a16ee6c2bac761bb24759691f",
+      "hash": "c158ff935510e601f91162aebe94e8bcff4cd1ed03186fbd4e8968838989ee78"
     },
     {
-      "at": "2026-10-03T03:00:01.214Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.105Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -238,12 +238,12 @@
       ],
       "sentToLlm": true,
       "seq": 10,
-      "prev": "45853ecac383bfcbc5c7e65b6311abe05696553be88f6b5c966a64cdd8de281a",
-      "hash": "622ecbc7a70c90c180600076982977beda5b1288d6a2796fe6498c77e5937731"
+      "prev": "c158ff935510e601f91162aebe94e8bcff4cd1ed03186fbd4e8968838989ee78",
+      "hash": "4809a787190d5e093a376fe715ff2867ed174abebccf88ecae79b25d3b08261b"
     },
     {
-      "at": "2026-10-03T03:00:01.214Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.106Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "excluded",
       "sourceIds": [
@@ -251,17 +251,17 @@
       ],
       "detail": "규칙 “엄마”",
       "seq": 11,
-      "prev": "622ecbc7a70c90c180600076982977beda5b1288d6a2796fe6498c77e5937731",
-      "hash": "90f183ba5e1e7db7c6f52730c1693d199f92d381e360ef50e4c51456854ed6da"
+      "prev": "4809a787190d5e093a376fe715ff2867ed174abebccf88ecae79b25d3b08261b",
+      "hash": "3d5b72edc16f3440becc915d2728b6b421734f78047cb6eab168223ca0d6a39c"
     },
     {
-      "at": "2026-10-03T03:00:01.228Z",
-      "runId": "run_40e977b9-c97d-4d71-a994-74828b2aa258",
+      "at": "2026-10-03T03:00:01.115Z",
+      "runId": "run_f45ce71b-b03f-4ff2-baba-a8a794512ee0",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
       "detail": "리포트 작성 · 사용자 질문 · 출처 45건의 요약과 필드 · 리포트 JSON 스키마",
-      "bytes": 30943,
+      "bytes": 31188,
       "maskedEmails": 18,
       "maskedPii": 8,
       "piiKinds": {
@@ -275,12 +275,12 @@
       ],
       "sentToLlm": true,
       "seq": 12,
-      "prev": "90f183ba5e1e7db7c6f52730c1693d199f92d381e360ef50e4c51456854ed6da",
-      "hash": "fb5baf76dd5e35b1766257a50a45e61372b7ce0c351455e8e9d8a5228b05591d"
+      "prev": "3d5b72edc16f3440becc915d2728b6b421734f78047cb6eab168223ca0d6a39c",
+      "hash": "92058f5b95cf68a22cc9f42461a63cb7ec64c6da9103e369f5bcabd01b8f5596"
     },
     {
-      "at": "2026-10-03T03:00:01.165Z",
-      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "at": "2026-10-03T03:00:00.962Z",
+      "runId": "run_5a63e65d-bf65-42cf-a75c-7c858b868835",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -292,12 +292,12 @@
       "flagged": [],
       "sentToLlm": true,
       "seq": 13,
-      "prev": "fb5baf76dd5e35b1766257a50a45e61372b7ce0c351455e8e9d8a5228b05591d",
-      "hash": "1d038257efb3f34c46f601dd45d6aa894c79dbca6db7e5366b8672cafebe3888"
+      "prev": "92058f5b95cf68a22cc9f42461a63cb7ec64c6da9103e369f5bcabd01b8f5596",
+      "hash": "8d7dc3c2b66b8e1f159e6147eed65865cb6f86fdd0f32cf7e3b5872c84ac6ddd"
     },
     {
-      "at": "2026-10-03T03:00:01.182Z",
-      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "at": "2026-10-03T03:00:00.976Z",
+      "runId": "run_5a63e65d-bf65-42cf-a75c-7c858b868835",
       "mode": "demo",
       "action": "read",
       "server": "lms",
@@ -312,15 +312,15 @@
         "lms:due:9003",
         "lms:due:9004"
       ],
-      "durationMs": 17,
+      "durationMs": 13,
       "sentToLlm": true,
       "seq": 14,
-      "prev": "1d038257efb3f34c46f601dd45d6aa894c79dbca6db7e5366b8672cafebe3888",
-      "hash": "cb3e275266c225214d0192b106f73c4bf62d2ec06f6a97de9e5a5f1eb58948da"
+      "prev": "8d7dc3c2b66b8e1f159e6147eed65865cb6f86fdd0f32cf7e3b5872c84ac6ddd",
+      "hash": "6721c125a66032e20737cc1e2a4ce7630d22967526e4f8a86fae911dc8a0404b"
     },
     {
-      "at": "2026-10-03T03:00:01.186Z",
-      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "at": "2026-10-03T03:00:00.979Z",
+      "runId": "run_5a63e65d-bf65-42cf-a75c-7c858b868835",
       "mode": "demo",
       "action": "read",
       "server": "lms",
@@ -337,12 +337,12 @@
       "durationMs": 3,
       "sentToLlm": true,
       "seq": 15,
-      "prev": "cb3e275266c225214d0192b106f73c4bf62d2ec06f6a97de9e5a5f1eb58948da",
-      "hash": "d999fa792ea30c8bea29096e4bae54e3bc4ef4d4bc463f4a7b41fd042d6dedf1"
+      "prev": "6721c125a66032e20737cc1e2a4ce7630d22967526e4f8a86fae911dc8a0404b",
+      "hash": "fcb8d5b259ee0dc0dfb503d078fd23a76f65545fd637c51508acf10c3a700671"
     },
     {
-      "at": "2026-10-03T03:00:01.199Z",
-      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "at": "2026-10-03T03:00:00.991Z",
+      "runId": "run_5a63e65d-bf65-42cf-a75c-7c858b868835",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -359,15 +359,15 @@
         "calendar:event:demoev007",
         "calendar:event:demoev008"
       ],
-      "durationMs": 12,
+      "durationMs": 11,
       "sentToLlm": true,
       "seq": 16,
-      "prev": "d999fa792ea30c8bea29096e4bae54e3bc4ef4d4bc463f4a7b41fd042d6dedf1",
-      "hash": "02073bd2266bb9cc646f0d4894d255ed197ea4783cf6edf7fc31935aa326f858"
+      "prev": "fcb8d5b259ee0dc0dfb503d078fd23a76f65545fd637c51508acf10c3a700671",
+      "hash": "54245ca08ce6650ef1ce0b68999f1b7cff0527c7ab48bc3fb5bfb9c422049899"
     },
     {
-      "at": "2026-10-03T03:00:01.205Z",
-      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "at": "2026-10-03T03:00:00.997Z",
+      "runId": "run_5a63e65d-bf65-42cf-a75c-7c858b868835",
       "mode": "demo",
       "action": "read",
       "server": "gmail",
@@ -385,12 +385,12 @@
       "durationMs": 6,
       "sentToLlm": true,
       "seq": 17,
-      "prev": "02073bd2266bb9cc646f0d4894d255ed197ea4783cf6edf7fc31935aa326f858",
-      "hash": "a96a26cb75b06432e4fa9a08b7df54df032e1dc98e341b3cb0c11e2325c97348"
+      "prev": "54245ca08ce6650ef1ce0b68999f1b7cff0527c7ab48bc3fb5bfb9c422049899",
+      "hash": "020ab53bcf405ab0094158caa50dfd8ffd128f201a0e616e2e315d1eb2e180f0"
     },
     {
-      "at": "2026-10-03T03:00:01.210Z",
-      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "at": "2026-10-03T03:00:01.003Z",
+      "runId": "run_5a63e65d-bf65-42cf-a75c-7c858b868835",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -403,15 +403,15 @@
         "github:issue:seongjun/os-hw#2",
         "github:issue:seongjun/my-ai-work-agent#18"
       ],
-      "durationMs": 5,
+      "durationMs": 6,
       "sentToLlm": true,
       "seq": 18,
-      "prev": "a96a26cb75b06432e4fa9a08b7df54df032e1dc98e341b3cb0c11e2325c97348",
-      "hash": "4b8c720c98679930ded0589ecdc3560553873918cdcc644ee95157152c9d036f"
+      "prev": "020ab53bcf405ab0094158caa50dfd8ffd128f201a0e616e2e315d1eb2e180f0",
+      "hash": "7fad2e29a1b33317879dcec5f15189727ef15209edc871593e34d5acea14d599"
     },
     {
-      "at": "2026-10-03T03:00:01.211Z",
-      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "at": "2026-10-03T03:00:01.003Z",
+      "runId": "run_5a63e65d-bf65-42cf-a75c-7c858b868835",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -426,12 +426,12 @@
       "flagged": [],
       "sentToLlm": true,
       "seq": 19,
-      "prev": "4b8c720c98679930ded0589ecdc3560553873918cdcc644ee95157152c9d036f",
-      "hash": "301c069dc05274e6e5e778effeae1e5dd866697e68aa7f942378f689f7266c78"
+      "prev": "7fad2e29a1b33317879dcec5f15189727ef15209edc871593e34d5acea14d599",
+      "hash": "152ab84caa54b20dad869095d1cf388fab73c6b628343012f62ba91d3cc8fc47"
     },
     {
-      "at": "2026-10-03T03:00:01.211Z",
-      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "at": "2026-10-03T03:00:01.003Z",
+      "runId": "run_5a63e65d-bf65-42cf-a75c-7c858b868835",
       "mode": "demo",
       "action": "excluded",
       "sourceIds": [
@@ -439,17 +439,17 @@
       ],
       "detail": "규칙 “엄마”",
       "seq": 20,
-      "prev": "301c069dc05274e6e5e778effeae1e5dd866697e68aa7f942378f689f7266c78",
-      "hash": "a79bb6b7b4c549d58c12a5695173c946fc07144f5bc52b438637e5c1be76b61d"
+      "prev": "152ab84caa54b20dad869095d1cf388fab73c6b628343012f62ba91d3cc8fc47",
+      "hash": "feb900e823e96fddf43742821914a2aea400d6032cdca8c7d844a100533687f9"
     },
     {
-      "at": "2026-10-03T03:00:01.212Z",
-      "runId": "run_8ed75aed-2c39-408e-9d95-d77633be3e54",
+      "at": "2026-10-03T03:00:01.004Z",
+      "runId": "run_5a63e65d-bf65-42cf-a75c-7c858b868835",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
       "detail": "리포트 작성 · 사용자 질문 · 출처 21건의 요약과 필드 · 리포트 JSON 스키마",
-      "bytes": 16295,
+      "bytes": 16540,
       "maskedEmails": 6,
       "maskedPii": 4,
       "piiKinds": {
@@ -459,12 +459,12 @@
       "flagged": [],
       "sentToLlm": true,
       "seq": 21,
-      "prev": "a79bb6b7b4c549d58c12a5695173c946fc07144f5bc52b438637e5c1be76b61d",
-      "hash": "6aaff551adf7eb71f8454dc8c37bf18ea05a67fc6981a81958499bc2327c779b"
+      "prev": "feb900e823e96fddf43742821914a2aea400d6032cdca8c7d844a100533687f9",
+      "hash": "83598be5d5a8556aea83227283bb195cb1d27ef8e0ff7ee78e5b7630c4faa1a4"
     },
     {
-      "at": "2026-10-03T03:00:01.154Z",
-      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "at": "2026-10-03T03:00:00.973Z",
+      "runId": "run_379b952c-7371-465d-af69-9b08699d389e",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -476,12 +476,12 @@
       "flagged": [],
       "sentToLlm": true,
       "seq": 22,
-      "prev": "6aaff551adf7eb71f8454dc8c37bf18ea05a67fc6981a81958499bc2327c779b",
-      "hash": "362347dad76996f482657ac28fe0d7244f5bcbba06a919d4bd6ee0e812d0c855"
+      "prev": "83598be5d5a8556aea83227283bb195cb1d27ef8e0ff7ee78e5b7630c4faa1a4",
+      "hash": "da0f4ae30b2f4e0fa266757d6ff18d2d9063b573dd2622317f149c5dda3c5265"
     },
     {
-      "at": "2026-10-03T03:00:01.159Z",
-      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "at": "2026-10-03T03:00:00.978Z",
+      "runId": "run_379b952c-7371-465d-af69-9b08699d389e",
       "mode": "demo",
       "action": "read",
       "server": "gmail",
@@ -493,15 +493,15 @@
       "sourceIds": [
         "gmail:msg:demo0004"
       ],
-      "durationMs": 5,
+      "durationMs": 4,
       "sentToLlm": true,
       "seq": 23,
-      "prev": "362347dad76996f482657ac28fe0d7244f5bcbba06a919d4bd6ee0e812d0c855",
-      "hash": "ebf1959f00f97e56d9fcee31e12d33439592b9cf8f465888c5466659c7a50cb1"
+      "prev": "da0f4ae30b2f4e0fa266757d6ff18d2d9063b573dd2622317f149c5dda3c5265",
+      "hash": "e68300b76c52ff0a9132231b7b67dd34cbfb92cc9324ffd41cdb29e1185b98a7"
     },
     {
-      "at": "2026-10-03T03:00:01.166Z",
-      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "at": "2026-10-03T03:00:00.984Z",
+      "runId": "run_379b952c-7371-465d-af69-9b08699d389e",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -513,15 +513,15 @@
       "sourceIds": [
         "calendar:event:demoev006"
       ],
-      "durationMs": 7,
+      "durationMs": 6,
       "sentToLlm": true,
       "seq": 24,
-      "prev": "ebf1959f00f97e56d9fcee31e12d33439592b9cf8f465888c5466659c7a50cb1",
-      "hash": "769af27171e951918bb70193793c2c83c5fbce7e23c79b4ba1741a7282faa6b8"
+      "prev": "e68300b76c52ff0a9132231b7b67dd34cbfb92cc9324ffd41cdb29e1185b98a7",
+      "hash": "3a2d6c34e21884a90bd00d099f2383fd204cbfee553701e47a00caef7d92f6c4"
     },
     {
-      "at": "2026-10-03T03:00:01.172Z",
-      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "at": "2026-10-03T03:00:00.989Z",
+      "runId": "run_379b952c-7371-465d-af69-9b08699d389e",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -542,15 +542,15 @@
         "github:commit:seongjun/baekjoon@e1f2a7b8c9d0",
         "github:commit:seongjun/os-hw@f2a7b8c9d0e1"
       ],
-      "durationMs": 6,
+      "durationMs": 5,
       "sentToLlm": true,
       "seq": 25,
-      "prev": "769af27171e951918bb70193793c2c83c5fbce7e23c79b4ba1741a7282faa6b8",
-      "hash": "5b34b8dc8e63e92fd48187c8fca2e975e6db26856fae1959e7b6675ebcb5b02b"
+      "prev": "3a2d6c34e21884a90bd00d099f2383fd204cbfee553701e47a00caef7d92f6c4",
+      "hash": "749f0f0f9335b0614425501ce9bd8e3500e1cbd965cbb2e1318d0133b5a5876d"
     },
     {
-      "at": "2026-10-03T03:00:01.174Z",
-      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "at": "2026-10-03T03:00:00.991Z",
+      "runId": "run_379b952c-7371-465d-af69-9b08699d389e",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -563,15 +563,15 @@
         "github:issue:seongjun/os-hw#2",
         "github:issue:seongjun/my-ai-work-agent#18"
       ],
-      "durationMs": 2,
+      "durationMs": 1,
       "sentToLlm": true,
       "seq": 26,
-      "prev": "5b34b8dc8e63e92fd48187c8fca2e975e6db26856fae1959e7b6675ebcb5b02b",
-      "hash": "eca509a3a285651f7c83d0f878a2e8f0abe7b17626f76b98457843ced429279e"
+      "prev": "749f0f0f9335b0614425501ce9bd8e3500e1cbd965cbb2e1318d0133b5a5876d",
+      "hash": "1f9152c1748314bb881320d7d5e6246a9f1e78fe5b58cb9654adc8d749e40d9e"
     },
     {
-      "at": "2026-10-03T03:00:01.174Z",
-      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "at": "2026-10-03T03:00:00.991Z",
+      "runId": "run_379b952c-7371-465d-af69-9b08699d389e",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -583,29 +583,29 @@
       "flagged": [],
       "sentToLlm": true,
       "seq": 27,
-      "prev": "eca509a3a285651f7c83d0f878a2e8f0abe7b17626f76b98457843ced429279e",
-      "hash": "91e8828e9a255ecd21d18db9719bc72c199bc4c96fa1a1f3e7bf95433ebdaa17"
+      "prev": "1f9152c1748314bb881320d7d5e6246a9f1e78fe5b58cb9654adc8d749e40d9e",
+      "hash": "430d8884f5f5ad9b800d154afa22b9c7d1655d7dda70b2ea77585eb7c9192b21"
     },
     {
-      "at": "2026-10-03T03:00:01.175Z",
-      "runId": "run_c7c8ce9b-c25c-4c14-be1d-69b57b90167e",
+      "at": "2026-10-03T03:00:00.992Z",
+      "runId": "run_379b952c-7371-465d-af69-9b08699d389e",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
       "detail": "리포트 작성 · 사용자 질문 · 출처 18건의 요약과 필드 · 리포트 JSON 스키마",
-      "bytes": 13578,
+      "bytes": 13823,
       "maskedEmails": 2,
       "maskedPii": 0,
       "piiKinds": {},
       "flagged": [],
       "sentToLlm": true,
       "seq": 28,
-      "prev": "91e8828e9a255ecd21d18db9719bc72c199bc4c96fa1a1f3e7bf95433ebdaa17",
-      "hash": "7251b0fe961ccbd95f07cdc978ba5eddf3aaf4793d60fb6c641962dc9b8f00a3"
+      "prev": "430d8884f5f5ad9b800d154afa22b9c7d1655d7dda70b2ea77585eb7c9192b21",
+      "hash": "1ddbd6b3502fd47f938efbf762092f060c009386aa784bad1c00dfa1b8bcb7a0"
     },
     {
-      "at": "2026-10-03T03:00:01.206Z",
-      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "at": "2026-10-03T03:00:01.034Z",
+      "runId": "run_55d95578-13f1-43f7-b6e5-a4f5d66786e2",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -617,12 +617,12 @@
       "flagged": [],
       "sentToLlm": true,
       "seq": 29,
-      "prev": "7251b0fe961ccbd95f07cdc978ba5eddf3aaf4793d60fb6c641962dc9b8f00a3",
-      "hash": "4f08e8bb332cccdbf4641e9d4a8f2791a22d6fc0c362d072368aa69ceedbc27b"
+      "prev": "1ddbd6b3502fd47f938efbf762092f060c009386aa784bad1c00dfa1b8bcb7a0",
+      "hash": "b8593443a28220299f90ba4aaadb75dfd42f5cc08df01f83918f517cce300088"
     },
     {
-      "at": "2026-10-03T03:00:01.212Z",
-      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "at": "2026-10-03T03:00:01.040Z",
+      "runId": "run_55d95578-13f1-43f7-b6e5-a4f5d66786e2",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -635,15 +635,15 @@
         "github:issue:seongjun/os-hw#2",
         "github:issue:seongjun/my-ai-work-agent#18"
       ],
-      "durationMs": 6,
+      "durationMs": 5,
       "sentToLlm": true,
       "seq": 30,
-      "prev": "4f08e8bb332cccdbf4641e9d4a8f2791a22d6fc0c362d072368aa69ceedbc27b",
-      "hash": "c7054276da374417eb83742f100eb5a477fc3a782819bbd3a59a2ab59fc51db8"
+      "prev": "b8593443a28220299f90ba4aaadb75dfd42f5cc08df01f83918f517cce300088",
+      "hash": "4331af310e11cbd4c08e331ec18617bbe0454304967efccb7073ade34e0a249b"
     },
     {
-      "at": "2026-10-03T03:00:01.215Z",
-      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "at": "2026-10-03T03:00:01.043Z",
+      "runId": "run_55d95578-13f1-43f7-b6e5-a4f5d66786e2",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -656,15 +656,15 @@
         "github:pr:seongjun/my-ai-work-agent#21",
         "github:pr:cbnu-capstone/team-mate#8"
       ],
-      "durationMs": 3,
+      "durationMs": 2,
       "sentToLlm": true,
       "seq": 31,
-      "prev": "c7054276da374417eb83742f100eb5a477fc3a782819bbd3a59a2ab59fc51db8",
-      "hash": "48fd0fb3cba413745e78ed30e0121b7e08acc64b0c9d776df507bfde191fe9de"
+      "prev": "4331af310e11cbd4c08e331ec18617bbe0454304967efccb7073ade34e0a249b",
+      "hash": "2b85ba11e4d833ab7b2551a9eb2bb9e0a03faf92e8c6519c9e3c9575e8d80043"
     },
     {
-      "at": "2026-10-03T03:00:01.221Z",
-      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "at": "2026-10-03T03:00:01.052Z",
+      "runId": "run_55d95578-13f1-43f7-b6e5-a4f5d66786e2",
       "mode": "demo",
       "action": "read",
       "server": "gmail",
@@ -696,15 +696,15 @@
         "gmail:msg:demo0010",
         "gmail:msg:demo0012"
       ],
-      "durationMs": 6,
+      "durationMs": 9,
       "sentToLlm": true,
       "seq": 32,
-      "prev": "48fd0fb3cba413745e78ed30e0121b7e08acc64b0c9d776df507bfde191fe9de",
-      "hash": "975691dada2d3d92fdaf691d2d46e8279ca0793e00585dd8f9954ab6c769a872"
+      "prev": "2b85ba11e4d833ab7b2551a9eb2bb9e0a03faf92e8c6519c9e3c9575e8d80043",
+      "hash": "4533f44f3e1c1fbf8885d0f47cc93dce0fc6b471d2348738d34b17bcf29d3af7"
     },
     {
-      "at": "2026-10-03T03:00:01.234Z",
-      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "at": "2026-10-03T03:00:01.066Z",
+      "runId": "run_55d95578-13f1-43f7-b6e5-a4f5d66786e2",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -721,15 +721,15 @@
         "calendar:event:demoev007",
         "calendar:event:demoev008"
       ],
-      "durationMs": 13,
+      "durationMs": 14,
       "sentToLlm": true,
       "seq": 33,
-      "prev": "975691dada2d3d92fdaf691d2d46e8279ca0793e00585dd8f9954ab6c769a872",
-      "hash": "208528432f61ef536aa8b462514dae3aa22a4cd4d180e805ca682d8f6695f4e0"
+      "prev": "4533f44f3e1c1fbf8885d0f47cc93dce0fc6b471d2348738d34b17bcf29d3af7",
+      "hash": "f7794e59ae605675ad873c65093967a010f2a6095bd34e633efad94a5e81915c"
     },
     {
-      "at": "2026-10-03T03:00:01.247Z",
-      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "at": "2026-10-03T03:00:01.081Z",
+      "runId": "run_55d95578-13f1-43f7-b6e5-a4f5d66786e2",
       "mode": "demo",
       "action": "read",
       "server": "lms",
@@ -743,15 +743,15 @@
         "lms:assign:8003",
         "lms:assign:8004"
       ],
-      "durationMs": 12,
+      "durationMs": 15,
       "sentToLlm": true,
       "seq": 34,
-      "prev": "208528432f61ef536aa8b462514dae3aa22a4cd4d180e805ca682d8f6695f4e0",
-      "hash": "6d33d493ce36fcbd5eacaacab2f6331f7e7c4692b21183eb3e52340467fa2eb0"
+      "prev": "f7794e59ae605675ad873c65093967a010f2a6095bd34e633efad94a5e81915c",
+      "hash": "0f7e85af2ae18b599389ddc053eefaa31789d114b461674af59f89bfeeda58bc"
     },
     {
-      "at": "2026-10-03T03:00:01.247Z",
-      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "at": "2026-10-03T03:00:01.081Z",
+      "runId": "run_55d95578-13f1-43f7-b6e5-a4f5d66786e2",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -770,12 +770,12 @@
       ],
       "sentToLlm": true,
       "seq": 35,
-      "prev": "6d33d493ce36fcbd5eacaacab2f6331f7e7c4692b21183eb3e52340467fa2eb0",
-      "hash": "0e6b2b5ad36c19fe6837f229388892418b5879c30b1fa1df7230c26b79e247c0"
+      "prev": "0f7e85af2ae18b599389ddc053eefaa31789d114b461674af59f89bfeeda58bc",
+      "hash": "647c3d2e3022ed6a263eeb1bbcb0a80571bcac1b6bc8bc8fc33f2fd80999b93e"
     },
     {
-      "at": "2026-10-03T03:00:01.247Z",
-      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "at": "2026-10-03T03:00:01.081Z",
+      "runId": "run_55d95578-13f1-43f7-b6e5-a4f5d66786e2",
       "mode": "demo",
       "action": "excluded",
       "sourceIds": [
@@ -783,17 +783,17 @@
       ],
       "detail": "규칙 “엄마”",
       "seq": 36,
-      "prev": "0e6b2b5ad36c19fe6837f229388892418b5879c30b1fa1df7230c26b79e247c0",
-      "hash": "6d8e886bc6fb8ee5546b1b2a7e07b86f143c74182867fa13ed38c218bb63a8c8"
+      "prev": "647c3d2e3022ed6a263eeb1bbcb0a80571bcac1b6bc8bc8fc33f2fd80999b93e",
+      "hash": "f26eeb294ab910450418765da52588cb436caedf8d3a19ed000b996166c9fc70"
     },
     {
-      "at": "2026-10-03T03:00:01.248Z",
-      "runId": "run_ccbe008b-5459-42fc-a7fc-6ff8c551e6bb",
+      "at": "2026-10-03T03:00:01.082Z",
+      "runId": "run_55d95578-13f1-43f7-b6e5-a4f5d66786e2",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
       "detail": "리포트 작성 · 사용자 질문 · 출처 25건의 요약과 필드 · 리포트 JSON 스키마",
-      "bytes": 20365,
+      "bytes": 20610,
       "maskedEmails": 18,
       "maskedPii": 8,
       "piiKinds": {
@@ -807,12 +807,690 @@
       ],
       "sentToLlm": true,
       "seq": 37,
-      "prev": "6d8e886bc6fb8ee5546b1b2a7e07b86f143c74182867fa13ed38c218bb63a8c8",
-      "hash": "2c4ef3e46d2374da95bd770b60623d110066a17d52f8e4b0b06a0188e62adc96"
+      "prev": "f26eeb294ab910450418765da52588cb436caedf8d3a19ed000b996166c9fc70",
+      "hash": "7b4e03c31dbf275ee2004fc925b8575b684ba9b8c445a585e8855bb4575c60f8"
     },
     {
-      "at": "2026-10-03T03:00:01.045Z",
-      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "at": "2026-10-03T03:00:01.051Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개",
+      "bytes": 9167,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 38,
+      "prev": "7b4e03c31dbf275ee2004fc925b8575b684ba9b8c445a585e8855bb4575c60f8",
+      "hash": "58bd6cf192733e180c3245a689c16e94f08d538bb549afa6a0a8b077a4e07d79"
+    },
+    {
+      "at": "2026-10-03T03:00:01.056Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_recent_commits",
+      "input": {},
+      "rows": 7,
+      "sourceIds": [
+        "github:commit:b-company/payments-api@c1a2b3c4d5e6",
+        "github:commit:b-company/payments-api@c2b3c4d5e6f7",
+        "github:commit:b-company/payments-api@c3c4d5e6f7a8",
+        "github:commit:b-company/payments-api@c4d5e6f7a8b9",
+        "github:commit:b-company/admin-web@c5e6f7a8b9c0",
+        "github:commit:haeun/til@c6f7a8b9c0d1",
+        "github:commit:haeun/til@c7a8b9c0d1e2"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 39,
+      "prev": "58bd6cf192733e180c3245a689c16e94f08d538bb549afa6a0a8b077a4e07d79",
+      "hash": "9b7dc1cd6255af535a7fcc9006ca0b3178992cfd44b9f93d7d7b82c1bec2c67b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.057Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:pr:b-company/payments-api#142",
+        "github:pr:b-company/payments-api#139",
+        "github:pr:b-company/admin-web#87"
+      ],
+      "durationMs": 1,
+      "sentToLlm": true,
+      "seq": 40,
+      "prev": "9b7dc1cd6255af535a7fcc9006ca0b3178992cfd44b9f93d7d7b82c1bec2c67b",
+      "hash": "07edc6b4aea396ad876ac32fbd980f660fd029452f85fa20ca82571a8b12743a"
+    },
+    {
+      "at": "2026-10-03T03:00:01.059Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:issue:b-company/payments-api#145",
+        "github:issue:b-company/admin-web#90",
+        "github:issue:b-company/payments-api#140"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 41,
+      "prev": "07edc6b4aea396ad876ac32fbd980f660fd029452f85fa20ca82571a8b12743a",
+      "hash": "70249b5ca065fe179edc1e92aecd62b0df766b4a9fd5b26d80fbf5c93b5956a7"
+    },
+    {
+      "at": "2026-10-03T03:00:01.061Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_repository_activity",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:repo:b-company/payments-api",
+        "github:repo:b-company/admin-web",
+        "github:repo:haeun/til"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 42,
+      "prev": "70249b5ca065fe179edc1e92aecd62b0df766b4a9fd5b26d80fbf5c93b5956a7",
+      "hash": "a5f3ce90181e9e257c8744c30ddb9e0394d124444854eb520f4adc9c9456f7ea"
+    },
+    {
+      "at": "2026-10-03T03:00:01.066Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "payments-api",
+          "admin-web",
+          "정산",
+          "장애",
+          "1:1",
+          "권한",
+          "연차",
+          "리뷰",
+          "세미나",
+          "회신"
+        ]
+      },
+      "rows": 7,
+      "sourceIds": [
+        "gmail:msg:wk0001",
+        "gmail:msg:wk0002",
+        "gmail:msg:wk0003",
+        "gmail:msg:wk0004",
+        "gmail:msg:wk0005",
+        "gmail:msg:wk0007",
+        "gmail:msg:wk0008"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 43,
+      "prev": "a5f3ce90181e9e257c8744c30ddb9e0394d124444854eb520f4adc9c9456f7ea",
+      "hash": "f6c6c32d35c2432126dc51da735f96557d92d6ff9562c2bac0f759b174dab92b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.077Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_events",
+      "input": {},
+      "rows": 2,
+      "sourceIds": [
+        "calendar:event:wkev001",
+        "calendar:event:wkev002"
+      ],
+      "durationMs": 11,
+      "sentToLlm": true,
+      "seq": 44,
+      "prev": "f6c6c32d35c2432126dc51da735f96557d92d6ff9562c2bac0f759b174dab92b",
+      "hash": "71f55ae1ac7b4992123ea2bd5debb00a3ce27f3ff2ebecc1c34cc3e0875e4c6b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.078Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:wkev003",
+        "calendar:event:wkev004",
+        "calendar:event:wkev005",
+        "calendar:event:wkev006",
+        "calendar:event:wkev008",
+        "calendar:event:wkev007"
+      ],
+      "durationMs": 1,
+      "sentToLlm": true,
+      "seq": 45,
+      "prev": "71f55ae1ac7b4992123ea2bd5debb00a3ce27f3ff2ebecc1c34cc3e0875e4c6b",
+      "hash": "2b39fceec31a9fc7d3c9dfce6282460f4af78ef9ed61da3e3304ec5dd6cc615a"
+    },
+    {
+      "at": "2026-10-03T03:00:01.079Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개 · 도구 결과 7건",
+      "bytes": 24447,
+      "maskedEmails": 28,
+      "maskedPii": 2,
+      "piiKinds": {
+        "account": 1,
+        "phone": 1
+      },
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 46,
+      "prev": "2b39fceec31a9fc7d3c9dfce6282460f4af78ef9ed61da3e3304ec5dd6cc615a",
+      "hash": "32f7ca242004965af5aa5f5b9543b473572be1e5a906104e7674eeb43637e0a6"
+    },
+    {
+      "at": "2026-10-03T03:00:01.080Z",
+      "runId": "run_029692a8-85ac-4c85-bce6-302c80930ff1",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 31건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 22489,
+      "maskedEmails": 10,
+      "maskedPii": 4,
+      "piiKinds": {
+        "account": 2,
+        "phone": 2
+      },
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 47,
+      "prev": "32f7ca242004965af5aa5f5b9543b473572be1e5a906104e7674eeb43637e0a6",
+      "hash": "039cb7639478326e609873dfbedb62e3c120de698617bfbce25216e58642fadf"
+    },
+    {
+      "at": "2026-10-03T03:00:01.076Z",
+      "runId": "run_4a97ade0-283a-40a5-b4f1-cf5bf4de528f",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개",
+      "bytes": 9155,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 48,
+      "prev": "039cb7639478326e609873dfbedb62e3c120de698617bfbce25216e58642fadf",
+      "hash": "b27a8e9fe471ded772131a7c405888e8b86c357f902ed32f74f7bb59cd19b656"
+    },
+    {
+      "at": "2026-10-03T03:00:01.089Z",
+      "runId": "run_4a97ade0-283a-40a5-b4f1-cf5bf4de528f",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:wkev003",
+        "calendar:event:wkev004",
+        "calendar:event:wkev005",
+        "calendar:event:wkev006",
+        "calendar:event:wkev008",
+        "calendar:event:wkev007"
+      ],
+      "durationMs": 13,
+      "sentToLlm": true,
+      "seq": 49,
+      "prev": "b27a8e9fe471ded772131a7c405888e8b86c357f902ed32f74f7bb59cd19b656",
+      "hash": "e612851311320376ce2c9ec0c00975c38e7232f3afc7bd2b0ce05a3ac33cc417"
+    },
+    {
+      "at": "2026-10-03T03:00:01.096Z",
+      "runId": "run_4a97ade0-283a-40a5-b4f1-cf5bf4de528f",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_emails",
+      "input": {
+        "query": "마감 OR 까지 OR 만료 OR 회신 OR 배포 OR 등록"
+      },
+      "rows": 4,
+      "sourceIds": [
+        "gmail:msg:wk0002",
+        "gmail:msg:wk0003",
+        "gmail:msg:wk0004",
+        "gmail:msg:wk0006"
+      ],
+      "durationMs": 7,
+      "sentToLlm": true,
+      "seq": 50,
+      "prev": "e612851311320376ce2c9ec0c00975c38e7232f3afc7bd2b0ce05a3ac33cc417",
+      "hash": "02c6f7ca299f09886b5679cc6ed407a3784552bf11ea6f134d326e7e13eaaff7"
+    },
+    {
+      "at": "2026-10-03T03:00:01.101Z",
+      "runId": "run_4a97ade0-283a-40a5-b4f1-cf5bf4de528f",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:issue:b-company/payments-api#145",
+        "github:issue:b-company/admin-web#90",
+        "github:issue:b-company/payments-api#140"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 51,
+      "prev": "02c6f7ca299f09886b5679cc6ed407a3784552bf11ea6f134d326e7e13eaaff7",
+      "hash": "87f67276745c28a911387633fdbab49df8f430dccf6e01cadf9f754966e35db0"
+    },
+    {
+      "at": "2026-10-03T03:00:01.101Z",
+      "runId": "run_4a97ade0-283a-40a5-b4f1-cf5bf4de528f",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개 · 도구 결과 3건",
+      "bytes": 16208,
+      "maskedEmails": 19,
+      "maskedPii": 2,
+      "piiKinds": {
+        "account": 1,
+        "phone": 1
+      },
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 52,
+      "prev": "87f67276745c28a911387633fdbab49df8f430dccf6e01cadf9f754966e35db0",
+      "hash": "02523d58f2fa9937f407d2bef57b81b952f6c16efc72180bfb4c7e78c239cfae"
+    },
+    {
+      "at": "2026-10-03T03:00:01.102Z",
+      "runId": "run_4a97ade0-283a-40a5-b4f1-cf5bf4de528f",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 13건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 12033,
+      "maskedEmails": 6,
+      "maskedPii": 4,
+      "piiKinds": {
+        "account": 2,
+        "phone": 2
+      },
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 53,
+      "prev": "02523d58f2fa9937f407d2bef57b81b952f6c16efc72180bfb4c7e78c239cfae",
+      "hash": "af2fe82ebf527105c1e972cbc393cab0ec12e0dfaebbe6f2fb48bba5e2c7806b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.001Z",
+      "runId": "run_7deb1f10-46e0-46c5-9192-ab65df422b16",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개",
+      "bytes": 9134,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 54,
+      "prev": "af2fe82ebf527105c1e972cbc393cab0ec12e0dfaebbe6f2fb48bba5e2c7806b",
+      "hash": "d3b4cb683525977aadd40cfa4a628e5fab587578056dd9a9da151af96133b371"
+    },
+    {
+      "at": "2026-10-03T03:00:01.006Z",
+      "runId": "run_7deb1f10-46e0-46c5-9192-ab65df422b16",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:issue:b-company/payments-api#145",
+        "github:issue:b-company/admin-web#90",
+        "github:issue:b-company/payments-api#140"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 55,
+      "prev": "d3b4cb683525977aadd40cfa4a628e5fab587578056dd9a9da151af96133b371",
+      "hash": "122fea82bd2da8ade7b64fc8097eb97ff64b21c94126a52a311f0248dba88334"
+    },
+    {
+      "at": "2026-10-03T03:00:01.007Z",
+      "runId": "run_7deb1f10-46e0-46c5-9192-ab65df422b16",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {
+        "state": "open"
+      },
+      "rows": 2,
+      "sourceIds": [
+        "github:pr:b-company/payments-api#142",
+        "github:pr:b-company/admin-web#87"
+      ],
+      "durationMs": 1,
+      "sentToLlm": true,
+      "seq": 56,
+      "prev": "122fea82bd2da8ade7b64fc8097eb97ff64b21c94126a52a311f0248dba88334",
+      "hash": "aff4071b497773091a4f393c4731e673ab1b0cb37d976382ad9ab470d7e16f54"
+    },
+    {
+      "at": "2026-10-03T03:00:01.013Z",
+      "runId": "run_7deb1f10-46e0-46c5-9192-ab65df422b16",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "payments-api",
+          "admin-web",
+          "정산",
+          "장애",
+          "1:1",
+          "권한",
+          "연차",
+          "리뷰",
+          "세미나",
+          "회신"
+        ]
+      },
+      "rows": 7,
+      "sourceIds": [
+        "gmail:msg:wk0001",
+        "gmail:msg:wk0002",
+        "gmail:msg:wk0003",
+        "gmail:msg:wk0004",
+        "gmail:msg:wk0005",
+        "gmail:msg:wk0007",
+        "gmail:msg:wk0008"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 57,
+      "prev": "aff4071b497773091a4f393c4731e673ab1b0cb37d976382ad9ab470d7e16f54",
+      "hash": "0637a2436370c79492b634b64c7d7ae87af8bececa15a7e1229d6cf2bdd8f06b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.026Z",
+      "runId": "run_7deb1f10-46e0-46c5-9192-ab65df422b16",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:wkev003",
+        "calendar:event:wkev004",
+        "calendar:event:wkev005",
+        "calendar:event:wkev006",
+        "calendar:event:wkev008",
+        "calendar:event:wkev007"
+      ],
+      "durationMs": 13,
+      "sentToLlm": true,
+      "seq": 58,
+      "prev": "0637a2436370c79492b634b64c7d7ae87af8bececa15a7e1229d6cf2bdd8f06b",
+      "hash": "ef6cad79e9baa53f80947c8d8529e8f5bdbb51f5980f1f8537b7ed0eb4bec7e3"
+    },
+    {
+      "at": "2026-10-03T03:00:01.026Z",
+      "runId": "run_7deb1f10-46e0-46c5-9192-ab65df422b16",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개 · 도구 결과 4건",
+      "bytes": 18875,
+      "maskedEmails": 24,
+      "maskedPii": 2,
+      "piiKinds": {
+        "account": 1,
+        "phone": 1
+      },
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 59,
+      "prev": "ef6cad79e9baa53f80947c8d8529e8f5bdbb51f5980f1f8537b7ed0eb4bec7e3",
+      "hash": "94acd32793d51d35248a0a521059249951907879085e4eacba7b6af76442ac8f"
+    },
+    {
+      "at": "2026-10-03T03:00:01.027Z",
+      "runId": "run_7deb1f10-46e0-46c5-9192-ab65df422b16",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 18건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 15874,
+      "maskedEmails": 10,
+      "maskedPii": 4,
+      "piiKinds": {
+        "account": 2,
+        "phone": 2
+      },
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 60,
+      "prev": "94acd32793d51d35248a0a521059249951907879085e4eacba7b6af76442ac8f",
+      "hash": "35a633db8fa755d53f77091550e9677932b2131235ec9a348b521dd19dfa2a5c"
+    },
+    {
+      "at": "2026-10-03T03:00:01.109Z",
+      "runId": "run_4461d279-c516-496a-a706-b60302953b92",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개",
+      "bytes": 9163,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 61,
+      "prev": "35a633db8fa755d53f77091550e9677932b2131235ec9a348b521dd19dfa2a5c",
+      "hash": "f51de529c6278013a2c0d3b2a57c248875ba329bf6c7a5386bf395186e35167e"
+    },
+    {
+      "at": "2026-10-03T03:00:01.114Z",
+      "runId": "run_4461d279-c516-496a-a706-b60302953b92",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:issue:b-company/payments-api#145",
+        "github:issue:b-company/admin-web#90",
+        "github:issue:b-company/payments-api#140"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 62,
+      "prev": "f51de529c6278013a2c0d3b2a57c248875ba329bf6c7a5386bf395186e35167e",
+      "hash": "a0e9e0195c7936f5757294b794a9dd6dce1b36bc7a190411c4da5736930b0d31"
+    },
+    {
+      "at": "2026-10-03T03:00:01.116Z",
+      "runId": "run_4461d279-c516-496a-a706-b60302953b92",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:pr:b-company/payments-api#142",
+        "github:pr:b-company/payments-api#139",
+        "github:pr:b-company/admin-web#87"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 63,
+      "prev": "a0e9e0195c7936f5757294b794a9dd6dce1b36bc7a190411c4da5736930b0d31",
+      "hash": "c478fe5243c76ed13b7ba9554ce9fbdb5de8e0a9d5676eb61f1f72d930554e63"
+    },
+    {
+      "at": "2026-10-03T03:00:01.124Z",
+      "runId": "run_4461d279-c516-496a-a706-b60302953b92",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "payments-api",
+          "admin-web",
+          "정산",
+          "장애",
+          "1:1",
+          "권한",
+          "연차",
+          "리뷰",
+          "세미나",
+          "회신"
+        ]
+      },
+      "rows": 7,
+      "sourceIds": [
+        "gmail:msg:wk0001",
+        "gmail:msg:wk0002",
+        "gmail:msg:wk0003",
+        "gmail:msg:wk0004",
+        "gmail:msg:wk0005",
+        "gmail:msg:wk0007",
+        "gmail:msg:wk0008"
+      ],
+      "durationMs": 8,
+      "sentToLlm": true,
+      "seq": 64,
+      "prev": "c478fe5243c76ed13b7ba9554ce9fbdb5de8e0a9d5676eb61f1f72d930554e63",
+      "hash": "62b291856fe258a6d54252a8e128da6ae5d45036229ef82f91d5262003392e09"
+    },
+    {
+      "at": "2026-10-03T03:00:01.136Z",
+      "runId": "run_4461d279-c516-496a-a706-b60302953b92",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 7
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:wkev003",
+        "calendar:event:wkev004",
+        "calendar:event:wkev005",
+        "calendar:event:wkev006",
+        "calendar:event:wkev008",
+        "calendar:event:wkev007"
+      ],
+      "durationMs": 12,
+      "sentToLlm": true,
+      "seq": 65,
+      "prev": "62b291856fe258a6d54252a8e128da6ae5d45036229ef82f91d5262003392e09",
+      "hash": "25d376aecd155dbd6cdb43f8510634db57629242493f842ea93ebb3feed1938b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.136Z",
+      "runId": "run_4461d279-c516-496a-a706-b60302953b92",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개 · 도구 결과 4건",
+      "bytes": 19321,
+      "maskedEmails": 24,
+      "maskedPii": 2,
+      "piiKinds": {
+        "account": 1,
+        "phone": 1
+      },
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 66,
+      "prev": "25d376aecd155dbd6cdb43f8510634db57629242493f842ea93ebb3feed1938b",
+      "hash": "6effb6a10426d865121392d495fd470dc0c815899d2cced101ef1ec3917aea96"
+    },
+    {
+      "at": "2026-10-03T03:00:01.137Z",
+      "runId": "run_4461d279-c516-496a-a706-b60302953b92",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 19건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 16600,
+      "maskedEmails": 10,
+      "maskedPii": 4,
+      "piiKinds": {
+        "account": 2,
+        "phone": 2
+      },
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 67,
+      "prev": "6effb6a10426d865121392d495fd470dc0c815899d2cced101ef1ec3917aea96",
+      "hash": "bef8e8d559db7e714c81962adb719ca99f5c60e0c651f321e2a2a508b6aa5efd"
+    },
+    {
+      "at": "2026-10-03T03:00:01.048Z",
+      "runId": "run_a64dbabc-4d6b-4cbb-a984-d75102f97704",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -823,13 +1501,13 @@
       "piiKinds": {},
       "flagged": [],
       "sentToLlm": true,
-      "seq": 38,
-      "prev": "2c4ef3e46d2374da95bd770b60623d110066a17d52f8e4b0b06a0188e62adc96",
-      "hash": "e793599878e969e8ac11a28c0204eac8431b8d709b5d461e7dc4a1038e672056"
+      "seq": 68,
+      "prev": "bef8e8d559db7e714c81962adb719ca99f5c60e0c651f321e2a2a508b6aa5efd",
+      "hash": "a18ba70fe420fe846a6b8004eb078fa35820c6c0b16c094d0d754db74cb31712"
     },
     {
-      "at": "2026-10-03T03:00:01.050Z",
-      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "at": "2026-10-03T03:00:01.052Z",
+      "runId": "run_a64dbabc-4d6b-4cbb-a984-d75102f97704",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -842,15 +1520,15 @@
         "github:issue:seongjun/os-hw#2",
         "github:issue:seongjun/my-ai-work-agent#18"
       ],
-      "durationMs": 5,
+      "durationMs": 4,
       "sentToLlm": true,
-      "seq": 39,
-      "prev": "e793599878e969e8ac11a28c0204eac8431b8d709b5d461e7dc4a1038e672056",
-      "hash": "edc69f006621a179d8cb40b6ffe5d1e08385b3db7e0c85a9ea03aa918f3f5bd4"
+      "seq": 69,
+      "prev": "a18ba70fe420fe846a6b8004eb078fa35820c6c0b16c094d0d754db74cb31712",
+      "hash": "6cbd957590a05cdd2ecb075f76f04f2c0a56d8f3afbadd061b62a9497932259f"
     },
     {
-      "at": "2026-10-03T03:00:01.052Z",
-      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "at": "2026-10-03T03:00:01.054Z",
+      "runId": "run_a64dbabc-4d6b-4cbb-a984-d75102f97704",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -863,15 +1541,15 @@
         "github:pr:seongjun/my-ai-work-agent#21",
         "github:pr:cbnu-capstone/team-mate#8"
       ],
-      "durationMs": 2,
+      "durationMs": 1,
       "sentToLlm": true,
-      "seq": 40,
-      "prev": "edc69f006621a179d8cb40b6ffe5d1e08385b3db7e0c85a9ea03aa918f3f5bd4",
-      "hash": "3ada6353f099edbcf5eb44bd7ba311994ba2bb7338aef0ae70b3bdea90ac6d21"
+      "seq": 70,
+      "prev": "6cbd957590a05cdd2ecb075f76f04f2c0a56d8f3afbadd061b62a9497932259f",
+      "hash": "72b7c563bdb0107ca312b962e724962939b36a440a29f13c08bfbcaf545573aa"
     },
     {
       "at": "2026-10-03T03:00:01.059Z",
-      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "runId": "run_a64dbabc-4d6b-4cbb-a984-d75102f97704",
       "mode": "demo",
       "action": "read",
       "server": "gmail",
@@ -904,15 +1582,15 @@
         "gmail:msg:demo0011",
         "gmail:msg:demo0012"
       ],
-      "durationMs": 7,
+      "durationMs": 5,
       "sentToLlm": true,
-      "seq": 41,
-      "prev": "3ada6353f099edbcf5eb44bd7ba311994ba2bb7338aef0ae70b3bdea90ac6d21",
-      "hash": "18f0238f397708c7ed65e9fbb5b06bb24322b6055c10dd4ad17b1a55eeca682e"
+      "seq": 71,
+      "prev": "72b7c563bdb0107ca312b962e724962939b36a440a29f13c08bfbcaf545573aa",
+      "hash": "5b542cdb78bf209f887dd78b800996098ac2f293e904e17ccb5fd7215e9b5658"
     },
     {
-      "at": "2026-10-03T03:00:01.072Z",
-      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "at": "2026-10-03T03:00:01.071Z",
+      "runId": "run_a64dbabc-4d6b-4cbb-a984-d75102f97704",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -929,15 +1607,15 @@
         "calendar:event:demoev007",
         "calendar:event:demoev008"
       ],
-      "durationMs": 13,
+      "durationMs": 11,
       "sentToLlm": true,
-      "seq": 42,
-      "prev": "18f0238f397708c7ed65e9fbb5b06bb24322b6055c10dd4ad17b1a55eeca682e",
-      "hash": "ed4877b599106905beafb3996504c074a87933e4e5666729f44b6ecea45d916b"
+      "seq": 72,
+      "prev": "5b542cdb78bf209f887dd78b800996098ac2f293e904e17ccb5fd7215e9b5658",
+      "hash": "31c1b53dec7557fc1deddafe32a577266a418acf28f5ffd1c362228dec03dab0"
     },
     {
-      "at": "2026-10-03T03:00:01.084Z",
-      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "at": "2026-10-03T03:00:01.082Z",
+      "runId": "run_a64dbabc-4d6b-4cbb-a984-d75102f97704",
       "mode": "demo",
       "action": "read",
       "server": "lms",
@@ -951,15 +1629,15 @@
         "lms:assign:8003",
         "lms:assign:8004"
       ],
-      "durationMs": 12,
+      "durationMs": 11,
       "sentToLlm": true,
-      "seq": 43,
-      "prev": "ed4877b599106905beafb3996504c074a87933e4e5666729f44b6ecea45d916b",
-      "hash": "a6afa047c4a585da7fed37e78c43d63d856e98325a5653947e32eb2f8403e805"
+      "seq": 73,
+      "prev": "31c1b53dec7557fc1deddafe32a577266a418acf28f5ffd1c362228dec03dab0",
+      "hash": "7c97b20781be74f8b438330af8bab2ff9ac8e8c7c4dfee7ee4bea6bb2f1d52b7"
     },
     {
-      "at": "2026-10-03T03:00:01.084Z",
-      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "at": "2026-10-03T03:00:01.082Z",
+      "runId": "run_a64dbabc-4d6b-4cbb-a984-d75102f97704",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -977,18 +1655,18 @@
         "gmail:msg:demo0010"
       ],
       "sentToLlm": true,
-      "seq": 44,
-      "prev": "a6afa047c4a585da7fed37e78c43d63d856e98325a5653947e32eb2f8403e805",
-      "hash": "459aa8d2a838fcc1aa5941a7ae46fdf6788e277cd49c32036c8a1f73d3614ddb"
+      "seq": 74,
+      "prev": "7c97b20781be74f8b438330af8bab2ff9ac8e8c7c4dfee7ee4bea6bb2f1d52b7",
+      "hash": "7472f2c08b8f1559a00076260870d958511b3bc3b47d9f744f7796e98e5ca8c4"
     },
     {
-      "at": "2026-10-03T03:00:01.085Z",
-      "runId": "run_fb8d35ee-5cd1-4e06-b71a-680b81228f75",
+      "at": "2026-10-03T03:00:01.083Z",
+      "runId": "run_a64dbabc-4d6b-4cbb-a984-d75102f97704",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
       "detail": "리포트 작성 · 사용자 질문 · 출처 26건의 요약과 필드 · 리포트 JSON 스키마",
-      "bytes": 20992,
+      "bytes": 21237,
       "maskedEmails": 20,
       "maskedPii": 8,
       "piiKinds": {
@@ -1001,13 +1679,13 @@
         "gmail:msg:demo0010"
       ],
       "sentToLlm": true,
-      "seq": 45,
-      "prev": "459aa8d2a838fcc1aa5941a7ae46fdf6788e277cd49c32036c8a1f73d3614ddb",
-      "hash": "70f468d80cc853753d9ba8fd1638cfb491ba661382304bdd99b1a00f337f49d9"
+      "seq": 75,
+      "prev": "7472f2c08b8f1559a00076260870d958511b3bc3b47d9f744f7796e98e5ca8c4",
+      "hash": "3250af5152acb1f4593cc00f611c2cebf454df37ba7c3e2b27feffac0791dbf2"
     },
     {
-      "at": "2026-10-03T03:00:01.111Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:00.996Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -1018,13 +1696,13 @@
       "piiKinds": {},
       "flagged": [],
       "sentToLlm": true,
-      "seq": 46,
-      "prev": "70f468d80cc853753d9ba8fd1638cfb491ba661382304bdd99b1a00f337f49d9",
-      "hash": "fe6f5172f7fbadc2e1920cc26cc18606dc4656acdb5571e6cb1c5996e9d13f83"
+      "seq": 76,
+      "prev": "3250af5152acb1f4593cc00f611c2cebf454df37ba7c3e2b27feffac0791dbf2",
+      "hash": "dca3365a996655363e4bedae86c673b6700f4cb41a5bfdd03e1a588adc39aded"
     },
     {
-      "at": "2026-10-03T03:00:01.117Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.000Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -1045,15 +1723,15 @@
         "github:commit:seongjun/baekjoon@e1f2a7b8c9d0",
         "github:commit:seongjun/os-hw@f2a7b8c9d0e1"
       ],
-      "durationMs": 6,
+      "durationMs": 4,
       "sentToLlm": true,
-      "seq": 47,
-      "prev": "fe6f5172f7fbadc2e1920cc26cc18606dc4656acdb5571e6cb1c5996e9d13f83",
-      "hash": "0bac23a1830471c96cc390aa874797c1d42b04d209f18f8645dc3ce2a4606d10"
+      "seq": 77,
+      "prev": "dca3365a996655363e4bedae86c673b6700f4cb41a5bfdd03e1a588adc39aded",
+      "hash": "65c9bc2ff0a6ea1a21c8408b7fa992c1e9cac5fe326cdede7b07aa5d63feb7b0"
     },
     {
-      "at": "2026-10-03T03:00:01.119Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.002Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -1067,13 +1745,13 @@
       ],
       "durationMs": 2,
       "sentToLlm": true,
-      "seq": 48,
-      "prev": "0bac23a1830471c96cc390aa874797c1d42b04d209f18f8645dc3ce2a4606d10",
-      "hash": "7f06e1626f2bad2d2c234b2bdcd3faa948f294bdf8cd43a4115cb8a79a1e653e"
+      "seq": 78,
+      "prev": "65c9bc2ff0a6ea1a21c8408b7fa992c1e9cac5fe326cdede7b07aa5d63feb7b0",
+      "hash": "8a1816661461d817e7882abe3834e7a4d1807c034a481e37fd68755e7ed51c9e"
     },
     {
-      "at": "2026-10-03T03:00:01.121Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.003Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -1086,15 +1764,15 @@
         "github:issue:seongjun/os-hw#2",
         "github:issue:seongjun/my-ai-work-agent#18"
       ],
-      "durationMs": 2,
+      "durationMs": 1,
       "sentToLlm": true,
-      "seq": 49,
-      "prev": "7f06e1626f2bad2d2c234b2bdcd3faa948f294bdf8cd43a4115cb8a79a1e653e",
-      "hash": "fbef2c6c2a5a52e517329161483ffc6ad18ae9aee6e71dc2d5da91dcbf54cc9b"
+      "seq": 79,
+      "prev": "8a1816661461d817e7882abe3834e7a4d1807c034a481e37fd68755e7ed51c9e",
+      "hash": "4c773279fa1afe8c6a4371c98807ec62bc08e2d280ef33d7a481990caa5c5271"
     },
     {
-      "at": "2026-10-03T03:00:01.123Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.005Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -1109,13 +1787,13 @@
       ],
       "durationMs": 2,
       "sentToLlm": true,
-      "seq": 50,
-      "prev": "fbef2c6c2a5a52e517329161483ffc6ad18ae9aee6e71dc2d5da91dcbf54cc9b",
-      "hash": "7d68c5aef987a2e1fce9ac0abfdf7b7270c67ec117ff5436ccbca854ab41bf8f"
+      "seq": 80,
+      "prev": "4c773279fa1afe8c6a4371c98807ec62bc08e2d280ef33d7a481990caa5c5271",
+      "hash": "9895898a7f7641d3e698d1d7aca491b8836ff12c04e439e8b9d0126035eb9bf2"
     },
     {
-      "at": "2026-10-03T03:00:01.129Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.010Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "read",
       "server": "gmail",
@@ -1148,15 +1826,15 @@
         "gmail:msg:demo0011",
         "gmail:msg:demo0012"
       ],
-      "durationMs": 6,
+      "durationMs": 5,
       "sentToLlm": true,
-      "seq": 51,
-      "prev": "7d68c5aef987a2e1fce9ac0abfdf7b7270c67ec117ff5436ccbca854ab41bf8f",
-      "hash": "7d4e18499ad72dd64eb9b144c20b2aa2ad4ad4e4830eccb7490cad949e3ea9ae"
+      "seq": 81,
+      "prev": "9895898a7f7641d3e698d1d7aca491b8836ff12c04e439e8b9d0126035eb9bf2",
+      "hash": "93405da44697db975903d67e5c4346c7108a61301429a4d7256e29ad305ee6a6"
     },
     {
-      "at": "2026-10-03T03:00:01.143Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.022Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -1167,15 +1845,15 @@
         "calendar:event:demoev001",
         "calendar:event:demoev002"
       ],
-      "durationMs": 14,
+      "durationMs": 12,
       "sentToLlm": true,
-      "seq": 52,
-      "prev": "7d4e18499ad72dd64eb9b144c20b2aa2ad4ad4e4830eccb7490cad949e3ea9ae",
-      "hash": "51e580cc2c2c3ffd0aac6575b2b6c46646d6ba95f564cb94ac832f3e81a625fa"
+      "seq": 82,
+      "prev": "93405da44697db975903d67e5c4346c7108a61301429a4d7256e29ad305ee6a6",
+      "hash": "3ac2dbebe93a4ba0b2da2ddbca6fb74c42b1a79e58b33b9da2cdd889e0d7f6ff"
     },
     {
-      "at": "2026-10-03T03:00:01.145Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.024Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -1194,13 +1872,13 @@
       ],
       "durationMs": 2,
       "sentToLlm": true,
-      "seq": 53,
-      "prev": "51e580cc2c2c3ffd0aac6575b2b6c46646d6ba95f564cb94ac832f3e81a625fa",
-      "hash": "597216c198f7faa1eed7958d6df21125cb00ec1b3c2793c820b0e53cc8ab7cd5"
+      "seq": 83,
+      "prev": "3ac2dbebe93a4ba0b2da2ddbca6fb74c42b1a79e58b33b9da2cdd889e0d7f6ff",
+      "hash": "15e835ec738e5cacc1ea5c16b0c86405847128f480c146db86e630e0cd14e436"
     },
     {
-      "at": "2026-10-03T03:00:01.158Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.035Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "read",
       "server": "lms",
@@ -1215,15 +1893,15 @@
         "lms:due:9003",
         "lms:due:9004"
       ],
-      "durationMs": 13,
+      "durationMs": 11,
       "sentToLlm": true,
-      "seq": 54,
-      "prev": "597216c198f7faa1eed7958d6df21125cb00ec1b3c2793c820b0e53cc8ab7cd5",
-      "hash": "465b592a2e838c2e6c86bb4759f3c52c874511cce211850f6b493b9cf69de362"
+      "seq": 84,
+      "prev": "15e835ec738e5cacc1ea5c16b0c86405847128f480c146db86e630e0cd14e436",
+      "hash": "58c7d54c86ce8e3fb14212be6d32800d38fa1fd33025f7c99132d9b0dfd7f075"
     },
     {
-      "at": "2026-10-03T03:00:01.158Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.035Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -1236,18 +1914,18 @@
         "gmail:msg:demo0010"
       ],
       "sentToLlm": true,
-      "seq": 55,
-      "prev": "465b592a2e838c2e6c86bb4759f3c52c874511cce211850f6b493b9cf69de362",
-      "hash": "d96dd633799e4f86e1bd55ae828631c706c77587ab2cb60b162f49ab885350d2"
+      "seq": 85,
+      "prev": "58c7d54c86ce8e3fb14212be6d32800d38fa1fd33025f7c99132d9b0dfd7f075",
+      "hash": "ae2333686637677cfdcf8e6eac6941fa67ed23b759688f9ad611030a0f109c7f"
     },
     {
-      "at": "2026-10-03T03:00:01.158Z",
-      "runId": "run_aeabac75-3d7a-48c8-88d0-f6461de82772",
+      "at": "2026-10-03T03:00:01.036Z",
+      "runId": "run_6246e413-0944-4740-a0df-fd6fcbd4df57",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
       "detail": "리포트 작성 · 사용자 질문 · 출처 46건의 요약과 필드 · 리포트 JSON 스키마",
-      "bytes": 31618,
+      "bytes": 31863,
       "maskedEmails": 0,
       "maskedPii": 0,
       "piiKinds": {},
@@ -1255,13 +1933,13 @@
         "gmail:msg:demo0010"
       ],
       "sentToLlm": true,
-      "seq": 56,
-      "prev": "d96dd633799e4f86e1bd55ae828631c706c77587ab2cb60b162f49ab885350d2",
-      "hash": "76df5fbb8315c5a5425ba4e8a8393b429d95286c1d44c646670fd535fd131c89"
+      "seq": 86,
+      "prev": "ae2333686637677cfdcf8e6eac6941fa67ed23b759688f9ad611030a0f109c7f",
+      "hash": "4db83ddb5d7e2078e4ddc40ae6bf7a6ffd09c454c660d940b66a8afe8e228159"
     },
     {
       "at": "2026-10-03T03:00:00.000Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -1272,13 +1950,13 @@
       "piiKinds": {},
       "flagged": [],
       "sentToLlm": true,
-      "seq": 57,
-      "prev": "76df5fbb8315c5a5425ba4e8a8393b429d95286c1d44c646670fd535fd131c89",
-      "hash": "3fe53cbc0d42a5ec15684c73c0407efaf535b5200d7184f1dc5cbf80ebe8f0b0"
+      "seq": 87,
+      "prev": "4db83ddb5d7e2078e4ddc40ae6bf7a6ffd09c454c660d940b66a8afe8e228159",
+      "hash": "2ae48a451529d31142fd34e5163e94bf50753bfa3c806121b531e775cf4c9212"
     },
     {
       "at": "2026-10-03T03:00:00.005Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -1301,13 +1979,13 @@
       ],
       "durationMs": 5,
       "sentToLlm": true,
-      "seq": 58,
-      "prev": "3fe53cbc0d42a5ec15684c73c0407efaf535b5200d7184f1dc5cbf80ebe8f0b0",
-      "hash": "ebf29aadb4558ca815b2fb271a873f387a19ce6c957061c1105a805125ac567c"
+      "seq": 88,
+      "prev": "2ae48a451529d31142fd34e5163e94bf50753bfa3c806121b531e775cf4c9212",
+      "hash": "07ad0d053b0df4e63c6d025db4f1b7ecab8e0e05abd32e5ae34130b27185a5e3"
     },
     {
-      "at": "2026-10-03T03:00:00.008Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.007Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -1321,13 +1999,13 @@
       ],
       "durationMs": 2,
       "sentToLlm": true,
-      "seq": 59,
-      "prev": "ebf29aadb4558ca815b2fb271a873f387a19ce6c957061c1105a805125ac567c",
-      "hash": "d7c83670f27770c731618d802f9134c46aa41ea02e93018ecdfec2eb3f15cd56"
+      "seq": 89,
+      "prev": "07ad0d053b0df4e63c6d025db4f1b7ecab8e0e05abd32e5ae34130b27185a5e3",
+      "hash": "296aa3f3da9a2c47073f9a2a27693d87c11a7d88bd01306c2f9d480b5664cb0c"
     },
     {
       "at": "2026-10-03T03:00:00.009Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -1340,15 +2018,15 @@
         "github:issue:seongjun/os-hw#2",
         "github:issue:seongjun/my-ai-work-agent#18"
       ],
-      "durationMs": 1,
+      "durationMs": 2,
       "sentToLlm": true,
-      "seq": 60,
-      "prev": "d7c83670f27770c731618d802f9134c46aa41ea02e93018ecdfec2eb3f15cd56",
-      "hash": "3fae38e99e04187e8d9acc5872c665c320a7104323799e075b507d84badf056a"
+      "seq": 90,
+      "prev": "296aa3f3da9a2c47073f9a2a27693d87c11a7d88bd01306c2f9d480b5664cb0c",
+      "hash": "6021190e03dcdf8527b1bc82e8c018d3c96fc97a21ececd71ae3344b9e8bf3be"
     },
     {
-      "at": "2026-10-03T03:00:00.011Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.010Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "read",
       "server": "github",
@@ -1361,15 +2039,15 @@
         "github:repo:seongjun/baekjoon",
         "github:repo:seongjun/os-hw"
       ],
-      "durationMs": 2,
+      "durationMs": 1,
       "sentToLlm": true,
-      "seq": 61,
-      "prev": "3fae38e99e04187e8d9acc5872c665c320a7104323799e075b507d84badf056a",
-      "hash": "6a11716311bb01df169050e620cb6af484d07679b19efbb644a0c053c5baec61"
+      "seq": 91,
+      "prev": "6021190e03dcdf8527b1bc82e8c018d3c96fc97a21ececd71ae3344b9e8bf3be",
+      "hash": "075d3310f193ae5892e0d0c20cabda691aec7b1da00517f76d657d4dc2cd3d71"
     },
     {
-      "at": "2026-10-03T03:00:00.018Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.016Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "read",
       "server": "gmail",
@@ -1401,15 +2079,15 @@
         "gmail:msg:demo0010",
         "gmail:msg:demo0012"
       ],
-      "durationMs": 7,
+      "durationMs": 6,
       "sentToLlm": true,
-      "seq": 62,
-      "prev": "6a11716311bb01df169050e620cb6af484d07679b19efbb644a0c053c5baec61",
-      "hash": "c1c5dba7460f20ba89c1828814005adf6e4a1f23d3f3a12ea561e324f4191010"
+      "seq": 92,
+      "prev": "075d3310f193ae5892e0d0c20cabda691aec7b1da00517f76d657d4dc2cd3d71",
+      "hash": "8c60eb504119ab944dde66337835733b9f0e51939167f6c0ea723c7046cc496b"
     },
     {
-      "at": "2026-10-03T03:00:00.037Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.029Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -1420,15 +2098,15 @@
         "calendar:event:demoev001",
         "calendar:event:demoev002"
       ],
-      "durationMs": 18,
+      "durationMs": 12,
       "sentToLlm": true,
-      "seq": 63,
-      "prev": "c1c5dba7460f20ba89c1828814005adf6e4a1f23d3f3a12ea561e324f4191010",
-      "hash": "589f3109191850a59d0ae5f119994f547dbb86d4e21fa02935638761b127980e"
+      "seq": 93,
+      "prev": "8c60eb504119ab944dde66337835733b9f0e51939167f6c0ea723c7046cc496b",
+      "hash": "b1f50b4af3762b9e37f90d0459bca52285147c34b01ae2596c37cc4304012c74"
     },
     {
-      "at": "2026-10-03T03:00:00.040Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.031Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "read",
       "server": "calendar",
@@ -1445,15 +2123,15 @@
         "calendar:event:demoev007",
         "calendar:event:demoev008"
       ],
-      "durationMs": 3,
+      "durationMs": 2,
       "sentToLlm": true,
-      "seq": 64,
-      "prev": "589f3109191850a59d0ae5f119994f547dbb86d4e21fa02935638761b127980e",
-      "hash": "de49f66f09e3b009fe70d1023c7f1cc13c83789cdc8c793f17a1ef9aaaa688b0"
+      "seq": 94,
+      "prev": "b1f50b4af3762b9e37f90d0459bca52285147c34b01ae2596c37cc4304012c74",
+      "hash": "f15004373a970f677f6d86539cc36a4e198976c7be1d5ee8901a078f24da07c7"
     },
     {
-      "at": "2026-10-03T03:00:00.053Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.042Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "read",
       "server": "lms",
@@ -1468,15 +2146,15 @@
         "lms:due:9003",
         "lms:due:9004"
       ],
-      "durationMs": 13,
+      "durationMs": 11,
       "sentToLlm": true,
-      "seq": 65,
-      "prev": "de49f66f09e3b009fe70d1023c7f1cc13c83789cdc8c793f17a1ef9aaaa688b0",
-      "hash": "15784d33400a7a013af590c56f8137acaa498a342f4eb3c41f69ed23909c31ad"
+      "seq": 95,
+      "prev": "f15004373a970f677f6d86539cc36a4e198976c7be1d5ee8901a078f24da07c7",
+      "hash": "744c0b162da27866e336b5995b9713ba2bb32001adfb8353b922fa8ed6e87709"
     },
     {
-      "at": "2026-10-03T03:00:00.053Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.042Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "denied",
       "server": "gmail",
@@ -1485,13 +2163,13 @@
         "messageId": "demo0011"
       },
       "detail": "허용 목록에 없는 도구",
-      "seq": 66,
-      "prev": "15784d33400a7a013af590c56f8137acaa498a342f4eb3c41f69ed23909c31ad",
-      "hash": "747c7181b9dfa3942d53d6cbd42e3f0fe8080d7763bdee8300a3eb22489887e4"
+      "seq": 96,
+      "prev": "744c0b162da27866e336b5995b9713ba2bb32001adfb8353b922fa8ed6e87709",
+      "hash": "0082b194b374ca57a794cf77cb361ef8045da93f4009b955f8471b3aa6855f16"
     },
     {
-      "at": "2026-10-03T03:00:00.053Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.042Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
@@ -1509,31 +2187,31 @@
         "gmail:msg:demo0010"
       ],
       "sentToLlm": true,
-      "seq": 67,
-      "prev": "747c7181b9dfa3942d53d6cbd42e3f0fe8080d7763bdee8300a3eb22489887e4",
-      "hash": "385321ec015e6a74c0e216aad90424375fe1e8e5adc283e148d85c146bc4b170"
+      "seq": 97,
+      "prev": "0082b194b374ca57a794cf77cb361ef8045da93f4009b955f8471b3aa6855f16",
+      "hash": "c623cba88678b9e6a2724ae86eb8e7fcfe268c570a837639af3137148c5411bd"
     },
     {
-      "at": "2026-10-03T03:00:00.053Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.042Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "excluded",
       "sourceIds": [
         "gmail:msg:demo0011"
       ],
       "detail": "규칙 “엄마”",
-      "seq": 68,
-      "prev": "385321ec015e6a74c0e216aad90424375fe1e8e5adc283e148d85c146bc4b170",
-      "hash": "a4106af10f41b176a9ae53736ef298103a241fa7f59089494b7288a09e816a10"
+      "seq": 98,
+      "prev": "c623cba88678b9e6a2724ae86eb8e7fcfe268c570a837639af3137148c5411bd",
+      "hash": "6eff26e5b26b66f344fcc3c55013f222a0b0cd791440d497ef9ffc554153e5b6"
     },
     {
-      "at": "2026-10-03T03:00:00.056Z",
-      "runId": "run_bae4970b-dd57-4918-ba59-e73d1a609213",
+      "at": "2026-10-03T03:00:00.044Z",
+      "runId": "run_3b230178-9db1-4dd5-a433-1d60d564e39c",
       "mode": "demo",
       "action": "llm",
       "provider": "scripted/scripted-heuristics-v1",
       "detail": "리포트 작성 · 사용자 질문 · 출처 45건의 요약과 필드 · 리포트 JSON 스키마",
-      "bytes": 30951,
+      "bytes": 31196,
       "maskedEmails": 18,
       "maskedPii": 8,
       "piiKinds": {
@@ -1546,9 +2224,470 @@
         "gmail:msg:demo0010"
       ],
       "sentToLlm": true,
-      "seq": 69,
-      "prev": "a4106af10f41b176a9ae53736ef298103a241fa7f59089494b7288a09e816a10",
-      "hash": "0ece78319ca10b1b0fc41d92dca871e13dc9ffe06a35195b95cf296396acf645"
+      "seq": 99,
+      "prev": "6eff26e5b26b66f344fcc3c55013f222a0b0cd791440d497ef9ffc554153e5b6",
+      "hash": "feb4b93aec041737776986110af3d509d76e1b2edb400b6820b35ad397596800"
+    },
+    {
+      "at": "2026-10-03T03:00:00.996Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개",
+      "bytes": 9167,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 100,
+      "prev": "feb4b93aec041737776986110af3d509d76e1b2edb400b6820b35ad397596800",
+      "hash": "38cd38001fd1e5a7dead9629f345f8db2b6e57ff48f1364327c4864ef448c7d9"
+    },
+    {
+      "at": "2026-10-03T03:00:01.002Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_recent_commits",
+      "input": {},
+      "rows": 7,
+      "sourceIds": [
+        "github:commit:b-company/payments-api@c1a2b3c4d5e6",
+        "github:commit:b-company/payments-api@c2b3c4d5e6f7",
+        "github:commit:b-company/payments-api@c3c4d5e6f7a8",
+        "github:commit:b-company/payments-api@c4d5e6f7a8b9",
+        "github:commit:b-company/admin-web@c5e6f7a8b9c0",
+        "github:commit:haeun/til@c6f7a8b9c0d1",
+        "github:commit:haeun/til@c7a8b9c0d1e2"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 101,
+      "prev": "38cd38001fd1e5a7dead9629f345f8db2b6e57ff48f1364327c4864ef448c7d9",
+      "hash": "d9b5a08ce6466cd0abcd3e6ff208f1d06550319571aaeb11d8b314a8e40634fe"
+    },
+    {
+      "at": "2026-10-03T03:00:01.003Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:pr:b-company/payments-api#142",
+        "github:pr:b-company/payments-api#139",
+        "github:pr:b-company/admin-web#87"
+      ],
+      "durationMs": 1,
+      "sentToLlm": true,
+      "seq": 102,
+      "prev": "d9b5a08ce6466cd0abcd3e6ff208f1d06550319571aaeb11d8b314a8e40634fe",
+      "hash": "6e3d4d42bf59387d9d459087ee3064506852f7d3e55b594f9e77bc30068c9d9e"
+    },
+    {
+      "at": "2026-10-03T03:00:01.005Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:issue:b-company/payments-api#145",
+        "github:issue:b-company/admin-web#90",
+        "github:issue:b-company/payments-api#140"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 103,
+      "prev": "6e3d4d42bf59387d9d459087ee3064506852f7d3e55b594f9e77bc30068c9d9e",
+      "hash": "3457ccbca4c4abcc6334c6d007678e0009ed855b1a961bb7d3b69acc462e7c9f"
+    },
+    {
+      "at": "2026-10-03T03:00:01.007Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_repository_activity",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:repo:b-company/payments-api",
+        "github:repo:b-company/admin-web",
+        "github:repo:haeun/til"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 104,
+      "prev": "3457ccbca4c4abcc6334c6d007678e0009ed855b1a961bb7d3b69acc462e7c9f",
+      "hash": "2900b9f5ff19c0a3fc81498ed5efb758de45aa03119ae9b840e5069cc0bb3015"
+    },
+    {
+      "at": "2026-10-03T03:00:01.012Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "payments-api",
+          "admin-web",
+          "정산",
+          "장애",
+          "1:1",
+          "권한",
+          "연차",
+          "리뷰",
+          "세미나",
+          "회신"
+        ]
+      },
+      "rows": 7,
+      "sourceIds": [
+        "gmail:msg:wk0001",
+        "gmail:msg:wk0002",
+        "gmail:msg:wk0003",
+        "gmail:msg:wk0004",
+        "gmail:msg:wk0005",
+        "gmail:msg:wk0007",
+        "gmail:msg:wk0008"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 105,
+      "prev": "2900b9f5ff19c0a3fc81498ed5efb758de45aa03119ae9b840e5069cc0bb3015",
+      "hash": "38a6447cd74137d6a36d475e617b34a0e115bbf44472ff7accd580570b7fb988"
+    },
+    {
+      "at": "2026-10-03T03:00:01.023Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_events",
+      "input": {},
+      "rows": 2,
+      "sourceIds": [
+        "calendar:event:wkev001",
+        "calendar:event:wkev002"
+      ],
+      "durationMs": 11,
+      "sentToLlm": true,
+      "seq": 106,
+      "prev": "38a6447cd74137d6a36d475e617b34a0e115bbf44472ff7accd580570b7fb988",
+      "hash": "ba2c7b3f983bc38c6d20dd2d21a4c04520b03b66fd680a23c12a5dc4ad5bc5d4"
+    },
+    {
+      "at": "2026-10-03T03:00:01.025Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:wkev003",
+        "calendar:event:wkev004",
+        "calendar:event:wkev005",
+        "calendar:event:wkev006",
+        "calendar:event:wkev008",
+        "calendar:event:wkev007"
+      ],
+      "durationMs": 1,
+      "sentToLlm": true,
+      "seq": 107,
+      "prev": "ba2c7b3f983bc38c6d20dd2d21a4c04520b03b66fd680a23c12a5dc4ad5bc5d4",
+      "hash": "713bb12aab13025b2c4c1fceb789ef78f5a8015fc263d0f1d3e28808779a648b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.026Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개 · 도구 결과 7건",
+      "bytes": 24477,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 108,
+      "prev": "713bb12aab13025b2c4c1fceb789ef78f5a8015fc263d0f1d3e28808779a648b",
+      "hash": "e9a727045811ca407cceb1031505c3b688b50ac05653901c85aed82568978650"
+    },
+    {
+      "at": "2026-10-03T03:00:01.026Z",
+      "runId": "run_37456ff3-e4d5-4667-8065-a2eaf7b4b129",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 31건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 22503,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 109,
+      "prev": "e9a727045811ca407cceb1031505c3b688b50ac05653901c85aed82568978650",
+      "hash": "32925e055314cfa4eccbd61c78ec70428aea94bb7bc2cee81540af7c124be8a3"
+    },
+    {
+      "at": "2026-10-03T03:00:00.000Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 8개",
+      "bytes": 7921,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 110,
+      "prev": "32925e055314cfa4eccbd61c78ec70428aea94bb7bc2cee81540af7c124be8a3",
+      "hash": "10e0912c0b0598bb83e330a1305d364a2fb1f97948ed64bb26e714db892e61aa"
+    },
+    {
+      "at": "2026-10-03T03:00:00.005Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_recent_commits",
+      "input": {},
+      "rows": 7,
+      "sourceIds": [
+        "github:commit:b-company/payments-api@c1a2b3c4d5e6",
+        "github:commit:b-company/payments-api@c2b3c4d5e6f7",
+        "github:commit:b-company/payments-api@c3c4d5e6f7a8",
+        "github:commit:b-company/payments-api@c4d5e6f7a8b9",
+        "github:commit:b-company/admin-web@c5e6f7a8b9c0",
+        "github:commit:haeun/til@c6f7a8b9c0d1",
+        "github:commit:haeun/til@c7a8b9c0d1e2"
+      ],
+      "durationMs": 4,
+      "sentToLlm": true,
+      "seq": 111,
+      "prev": "10e0912c0b0598bb83e330a1305d364a2fb1f97948ed64bb26e714db892e61aa",
+      "hash": "7186d6b74fa02aa629df6cb0d867cc368f38be07541fb123c63c8febe8d7b2b8"
+    },
+    {
+      "at": "2026-10-03T03:00:00.007Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:pr:b-company/payments-api#142",
+        "github:pr:b-company/payments-api#139",
+        "github:pr:b-company/admin-web#87"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 112,
+      "prev": "7186d6b74fa02aa629df6cb0d867cc368f38be07541fb123c63c8febe8d7b2b8",
+      "hash": "5bae4709cf851510151c9e3f3512eb3ef894fe49cde2a53456c029dc2f55f32d"
+    },
+    {
+      "at": "2026-10-03T03:00:00.009Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:issue:b-company/payments-api#145",
+        "github:issue:b-company/admin-web#90",
+        "github:issue:b-company/payments-api#140"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 113,
+      "prev": "5bae4709cf851510151c9e3f3512eb3ef894fe49cde2a53456c029dc2f55f32d",
+      "hash": "f170ae4406df846f4c769e1a9c141d38a6aa7abe46f014f64a14676b5bb2b5dc"
+    },
+    {
+      "at": "2026-10-03T03:00:00.010Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_repository_activity",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:repo:b-company/payments-api",
+        "github:repo:b-company/admin-web",
+        "github:repo:haeun/til"
+      ],
+      "durationMs": 1,
+      "sentToLlm": true,
+      "seq": 114,
+      "prev": "f170ae4406df846f4c769e1a9c141d38a6aa7abe46f014f64a14676b5bb2b5dc",
+      "hash": "3ebb4c7e27c2b94f995eb0ba622500495c48b19e05d9d4bda16b0b45c72c5e3f"
+    },
+    {
+      "at": "2026-10-03T03:00:00.015Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_project_emails",
+      "input": {
+        "keywords": [
+          "payments-api",
+          "admin-web",
+          "정산",
+          "장애",
+          "1:1",
+          "권한",
+          "연차",
+          "리뷰",
+          "세미나",
+          "회신"
+        ]
+      },
+      "rows": 7,
+      "sourceIds": [
+        "gmail:msg:wk0001",
+        "gmail:msg:wk0002",
+        "gmail:msg:wk0003",
+        "gmail:msg:wk0004",
+        "gmail:msg:wk0005",
+        "gmail:msg:wk0007",
+        "gmail:msg:wk0008"
+      ],
+      "durationMs": 5,
+      "sentToLlm": true,
+      "seq": 115,
+      "prev": "3ebb4c7e27c2b94f995eb0ba622500495c48b19e05d9d4bda16b0b45c72c5e3f",
+      "hash": "23d185bb106d039ac2db14be8d84e4fae3acf74a9a8213c505489941c80d1685"
+    },
+    {
+      "at": "2026-10-03T03:00:00.028Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_events",
+      "input": {},
+      "rows": 2,
+      "sourceIds": [
+        "calendar:event:wkev001",
+        "calendar:event:wkev002"
+      ],
+      "durationMs": 12,
+      "sentToLlm": true,
+      "seq": 116,
+      "prev": "23d185bb106d039ac2db14be8d84e4fae3acf74a9a8213c505489941c80d1685",
+      "hash": "bd84939ac525cbe0a35186b97a5084d07090defe43126e1d52521a6b3b2fe731"
+    },
+    {
+      "at": "2026-10-03T03:00:00.030Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_upcoming_events",
+      "input": {
+        "days": 14
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:wkev003",
+        "calendar:event:wkev004",
+        "calendar:event:wkev005",
+        "calendar:event:wkev006",
+        "calendar:event:wkev008",
+        "calendar:event:wkev007"
+      ],
+      "durationMs": 2,
+      "sentToLlm": true,
+      "seq": 117,
+      "prev": "bd84939ac525cbe0a35186b97a5084d07090defe43126e1d52521a6b3b2fe731",
+      "hash": "aea864d29bc4472178010096d7f5f99306e680133106a98091e87719468131d7"
+    },
+    {
+      "at": "2026-10-03T03:00:00.030Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "denied",
+      "server": "gmail",
+      "tool": "get_email",
+      "input": {
+        "messageId": "demo0011"
+      },
+      "detail": "허용 목록에 없는 도구",
+      "seq": 118,
+      "prev": "aea864d29bc4472178010096d7f5f99306e680133106a98091e87719468131d7",
+      "hash": "715bc081dc036cf6b35a83f1f8fffd97e3cd358bd337eb8104bf286be7fbd0a0"
+    },
+    {
+      "at": "2026-10-03T03:00:00.031Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "계획 · 사용자 질문 · 도구 정의 8개 · 도구 결과 8건",
+      "bytes": 23469,
+      "maskedEmails": 28,
+      "maskedPii": 2,
+      "piiKinds": {
+        "account": 1,
+        "phone": 1
+      },
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 119,
+      "prev": "715bc081dc036cf6b35a83f1f8fffd97e3cd358bd337eb8104bf286be7fbd0a0",
+      "hash": "0ccef1bd04cef5cc3f50bd4886b53dc4633f0a30776b20c7d8000adf6f2764c6"
+    },
+    {
+      "at": "2026-10-03T03:00:00.032Z",
+      "runId": "run_95adc812-a244-469a-b1e7-c7cdc252caea",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "scripted/scripted-heuristics-v1",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 31건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 22479,
+      "maskedEmails": 10,
+      "maskedPii": 4,
+      "piiKinds": {
+        "account": 2,
+        "phone": 2
+      },
+      "flagged": [
+        "gmail:msg:wk0008"
+      ],
+      "sentToLlm": true,
+      "seq": 120,
+      "prev": "0ccef1bd04cef5cc3f50bd4886b53dc4633f0a30776b20c7d8000adf6f2764c6",
+      "hash": "dfee3348ab9d02d04ba69be02d9363aea9c3a6e60387a21bb5bf0b3511cb707f"
     },
     {
       "at": "2026-10-03T03:00:01.099Z",
@@ -1563,9 +2702,9 @@
       "piiKinds": {},
       "flagged": [],
       "sentToLlm": true,
-      "seq": 70,
-      "prev": "0ece78319ca10b1b0fc41d92dca871e13dc9ffe06a35195b95cf296396acf645",
-      "hash": "e8da068ea40cbade818dd914d3d77260adf737c40455d5ca462be88435cbd95c"
+      "seq": 121,
+      "prev": "dfee3348ab9d02d04ba69be02d9363aea9c3a6e60387a21bb5bf0b3511cb707f",
+      "hash": "b58fdda83fca459e2dd125c56ec86cdc623234f490e9f9555faa25ff21717fd9"
     },
     {
       "at": "2026-10-03T03:00:07.633Z",
@@ -1586,9 +2725,9 @@
       ],
       "durationMs": 20,
       "sentToLlm": true,
-      "seq": 71,
-      "prev": "e8da068ea40cbade818dd914d3d77260adf737c40455d5ca462be88435cbd95c",
-      "hash": "d6ddedd42f3288fbb20317233412fe2c0e6caf68624db48939dd2e66f15bc5ce"
+      "seq": 122,
+      "prev": "b58fdda83fca459e2dd125c56ec86cdc623234f490e9f9555faa25ff21717fd9",
+      "hash": "1947cc500747bd895b7b4e10343a2a5a2ccda72c48749adb65cdf16da87bc4bd"
     },
     {
       "at": "2026-10-03T03:00:07.639Z",
@@ -1610,9 +2749,9 @@
       ],
       "durationMs": 4,
       "sentToLlm": true,
-      "seq": 72,
-      "prev": "d6ddedd42f3288fbb20317233412fe2c0e6caf68624db48939dd2e66f15bc5ce",
-      "hash": "98cf4b75abc5da2c6c801832fc31f775299a65e3c3694339a08cd0f022b5436a"
+      "seq": 123,
+      "prev": "1947cc500747bd895b7b4e10343a2a5a2ccda72c48749adb65cdf16da87bc4bd",
+      "hash": "01fc3875ef4913c139258e5701173bdf061dcb05e4a5e92d5d0a9b07e34cd059"
     },
     {
       "at": "2026-10-03T03:00:07.655Z",
@@ -1636,9 +2775,9 @@
       ],
       "durationMs": 16,
       "sentToLlm": true,
-      "seq": 73,
-      "prev": "98cf4b75abc5da2c6c801832fc31f775299a65e3c3694339a08cd0f022b5436a",
-      "hash": "07f727bee85a9c972945ea7b18bfcbd8dd45357f2543b1ec0fca264d924a77e2"
+      "seq": 124,
+      "prev": "01fc3875ef4913c139258e5701173bdf061dcb05e4a5e92d5d0a9b07e34cd059",
+      "hash": "b783f7e361dc81a7d785672bee42fe320b074b63e2a0442af461bb7f377bcafd"
     },
     {
       "at": "2026-10-03T03:00:07.663Z",
@@ -1667,9 +2806,9 @@
       ],
       "durationMs": 6,
       "sentToLlm": true,
-      "seq": 74,
-      "prev": "07f727bee85a9c972945ea7b18bfcbd8dd45357f2543b1ec0fca264d924a77e2",
-      "hash": "a3b6402f5d348886512c70fd6558f02fc0df1fa362de23c1916333ec74d74b6d"
+      "seq": 125,
+      "prev": "b783f7e361dc81a7d785672bee42fe320b074b63e2a0442af461bb7f377bcafd",
+      "hash": "18a24f87bc3383d84839d96553c9acbe53b78f3a470021bd93016ece6d0a833a"
     },
     {
       "at": "2026-10-03T03:00:07.663Z",
@@ -1691,9 +2830,9 @@
         "gmail:msg:demo0010"
       ],
       "sentToLlm": true,
-      "seq": 75,
-      "prev": "a3b6402f5d348886512c70fd6558f02fc0df1fa362de23c1916333ec74d74b6d",
-      "hash": "5483793c51ecb8846cfa09e0c22d2944851516bad1c814f4802b79e6b577f68b"
+      "seq": 126,
+      "prev": "18a24f87bc3383d84839d96553c9acbe53b78f3a470021bd93016ece6d0a833a",
+      "hash": "2e761dfedcdb8b7caa41aac3b26f13836c421a67670e11ef472da642dab18f59"
     },
     {
       "at": "2026-10-03T03:00:11.942Z",
@@ -1704,9 +2843,9 @@
         "gmail:msg:demo0009"
       ],
       "detail": "규칙 “쿠폰”",
-      "seq": 76,
-      "prev": "5483793c51ecb8846cfa09e0c22d2944851516bad1c814f4802b79e6b577f68b",
-      "hash": "bf477d81400386a338e8418d7615320326ea4708ae502df35a90f1bcebc5e7fd"
+      "seq": 127,
+      "prev": "2e761dfedcdb8b7caa41aac3b26f13836c421a67670e11ef472da642dab18f59",
+      "hash": "1a667db61ac59d14bab82fd4b43b448cd52e079d73ce5876550db40b71efb431"
     },
     {
       "at": "2026-10-03T03:00:11.942Z",
@@ -1717,9 +2856,9 @@
         "gmail:msg:demo0011"
       ],
       "detail": "규칙 “엄마”",
-      "seq": 77,
-      "prev": "bf477d81400386a338e8418d7615320326ea4708ae502df35a90f1bcebc5e7fd",
-      "hash": "16a9dae8ce926829a512d24f965acedd79b87777a6ef8449cee0268c513fbc5f"
+      "seq": 128,
+      "prev": "1a667db61ac59d14bab82fd4b43b448cd52e079d73ce5876550db40b71efb431",
+      "hash": "0a7f97c17532a396a4a1ade338d722c1fab2f5fee3e1ad835eea45eb1a9f5ee7"
     },
     {
       "at": "2026-10-03T03:00:11.954Z",
@@ -1741,9 +2880,150 @@
         "gmail:msg:demo0010"
       ],
       "sentToLlm": true,
-      "seq": 78,
-      "prev": "16a9dae8ce926829a512d24f965acedd79b87777a6ef8449cee0268c513fbc5f",
-      "hash": "b5225e797e515b38bca123c9da5207097f49f62fa7d3609400795dbe354a85a9"
+      "seq": 129,
+      "prev": "0a7f97c17532a396a4a1ade338d722c1fab2f5fee3e1ad835eea45eb1a9f5ee7",
+      "hash": "aeb1f4210dfc93781f493a5a19dbf197425307f55d45dfa158cc09965f67404b"
+    },
+    {
+      "at": "2026-10-03T03:00:01.051Z",
+      "runId": "run_fecd4ebf-e0ce-41cd-a645-39a70c4605b2",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "claude-cli/claude-cli-default",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개",
+      "bytes": 9187,
+      "maskedEmails": 0,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 130,
+      "prev": "aeb1f4210dfc93781f493a5a19dbf197425307f55d45dfa158cc09965f67404b",
+      "hash": "0d1049eb1e5f181b302ac7534aef63f3fb584c54534d37ac28114cf218873ba0"
+    },
+    {
+      "at": "2026-10-03T03:00:09.501Z",
+      "runId": "run_fecd4ebf-e0ce-41cd-a645-39a70c4605b2",
+      "mode": "demo",
+      "action": "read",
+      "server": "calendar",
+      "tool": "get_events",
+      "input": {
+        "timeMin": "2026-10-04T15:00:00Z",
+        "timeMax": "2026-10-11T15:00:00Z"
+      },
+      "rows": 6,
+      "sourceIds": [
+        "calendar:event:wkev003",
+        "calendar:event:wkev004",
+        "calendar:event:wkev005",
+        "calendar:event:wkev006",
+        "calendar:event:wkev008",
+        "calendar:event:wkev007"
+      ],
+      "durationMs": 28,
+      "sentToLlm": true,
+      "seq": 131,
+      "prev": "0d1049eb1e5f181b302ac7534aef63f3fb584c54534d37ac28114cf218873ba0",
+      "hash": "bdf0e130735c2f2f44f61f15dc65c23c3fe83291a2fd1f891ea23beb9ed3ced5"
+    },
+    {
+      "at": "2026-10-03T03:00:09.509Z",
+      "runId": "run_fecd4ebf-e0ce-41cd-a645-39a70c4605b2",
+      "mode": "demo",
+      "action": "read",
+      "server": "gmail",
+      "tool": "search_emails",
+      "input": {
+        "query": "마감 OR 기한 OR deadline OR due OR 배포 OR deploy OR 회의 OR meeting OR 일정 변경",
+        "since": "2026-09-26T15:00:00Z",
+        "limit": 30
+      },
+      "rows": 1,
+      "sourceIds": [
+        "gmail:msg:wk0006"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 132,
+      "prev": "bdf0e130735c2f2f44f61f15dc65c23c3fe83291a2fd1f891ea23beb9ed3ced5",
+      "hash": "de82ad44f8b9584f21c78a1c3e02655bd008f3c3a9b7319aef36e2d01d0be33e"
+    },
+    {
+      "at": "2026-10-03T03:00:09.515Z",
+      "runId": "run_fecd4ebf-e0ce-41cd-a645-39a70c4605b2",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_open_issues",
+      "input": {},
+      "rows": 3,
+      "sourceIds": [
+        "github:issue:b-company/payments-api#145",
+        "github:issue:b-company/admin-web#90",
+        "github:issue:b-company/payments-api#140"
+      ],
+      "durationMs": 6,
+      "sentToLlm": true,
+      "seq": 133,
+      "prev": "de82ad44f8b9584f21c78a1c3e02655bd008f3c3a9b7319aef36e2d01d0be33e",
+      "hash": "effd19f3e65d1c6289771509443d0a206eb9c5ffa5a38215f7a79d099bdaafe5"
+    },
+    {
+      "at": "2026-10-03T03:00:09.519Z",
+      "runId": "run_fecd4ebf-e0ce-41cd-a645-39a70c4605b2",
+      "mode": "demo",
+      "action": "read",
+      "server": "github",
+      "tool": "get_pull_requests",
+      "input": {
+        "state": "open",
+        "since": "2026-09-20T00:00:00Z"
+      },
+      "rows": 2,
+      "sourceIds": [
+        "github:pr:b-company/payments-api#142",
+        "github:pr:b-company/admin-web#87"
+      ],
+      "durationMs": 4,
+      "sentToLlm": true,
+      "seq": 134,
+      "prev": "effd19f3e65d1c6289771509443d0a206eb9c5ffa5a38215f7a79d099bdaafe5",
+      "hash": "0965dc6574e814815d61bebb0fdc2e2ff33e2b25e161da6b1e70e35263db157a"
+    },
+    {
+      "at": "2026-10-03T03:00:09.519Z",
+      "runId": "run_fecd4ebf-e0ce-41cd-a645-39a70c4605b2",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "claude-cli/claude-sonnet-5-5",
+      "detail": "계획 · 사용자 질문 · 도구 정의 10개 · 도구 결과 4건",
+      "bytes": 15885,
+      "maskedEmails": 14,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 135,
+      "prev": "0965dc6574e814815d61bebb0fdc2e2ff33e2b25e161da6b1e70e35263db157a",
+      "hash": "6a318d59c07eb3167ae49f07c4f35093ef792bbeb7ede33d9fec374b430e0893"
+    },
+    {
+      "at": "2026-10-03T03:00:15.497Z",
+      "runId": "run_fecd4ebf-e0ce-41cd-a645-39a70c4605b2",
+      "mode": "demo",
+      "action": "llm",
+      "provider": "claude-cli/claude-sonnet-5-5",
+      "detail": "리포트 작성 · 사용자 질문 · 출처 12건의 요약과 필드 · 리포트 JSON 스키마",
+      "bytes": 10850,
+      "maskedEmails": 2,
+      "maskedPii": 0,
+      "piiKinds": {},
+      "flagged": [],
+      "sentToLlm": true,
+      "seq": 136,
+      "prev": "6a318d59c07eb3167ae49f07c4f35093ef792bbeb7ede33d9fec374b430e0893",
+      "hash": "1b82512deafd2b5f158421df1ac151c1b15acab928481128b2e46a90cc3004d7"
     }
   ]
 }

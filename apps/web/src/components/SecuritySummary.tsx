@@ -8,9 +8,9 @@ import { kb } from './McpWire.js';
  * The security reviewer's first screen: what the policy did and whether the log is intact, in a few
  * lines, before the full table. Built from the stored audit log; the chain is verified on load.
  */
-export function SecuritySummary({ entries, start }: { entries: Array<AuditRow & { prev: string; hash: string }>; start?: string | undefined }) {
+export function SecuritySummary({ entries, chain }: { entries: Array<AuditRow & { prev: string; hash: string }>; /** The whole stored log, verified as one chain (entries may be a filtered view of it). */ chain: Array<Record<string, unknown>> }) {
   const [check, setCheck] = useState<ChainCheck | null>(null);
-  useEffect(() => { void verifyChain(entries as unknown as Array<Record<string, unknown>>, start).then(setCheck); }, [entries, start]);
+  useEffect(() => { const start = typeof chain[0]?.['prev'] === 'string' ? (chain[0]!['prev'] as string) : undefined; void verifyChain(chain, start).then(setCheck); }, [chain]);
   const of = (a: AuditRow['action']) => entries.filter((e) => e.action === a);
   const denied = of('denied');
   const llm = of('llm');
@@ -30,7 +30,7 @@ export function SecuritySummary({ entries, start }: { entries: Array<AuditRow & 
     { Icon: TriangleAlert, tone: flagged.size ? 'text-warn' : 'text-text-3', title: `지시문이 섞인 외부 데이터 ${flagged.size}건`, detail: flagged.size ? `${[...flagged].slice(0, 3).join(', ')} · 데이터로만 다루고 따르지 않음` : '감지 없음' },
     { Icon: EyeOff, tone: 'text-inferred', title: `모델에 보내기 전 가림 · 개인정보 ${pii} · 메일 주소 ${emails}`, detail: pii ? piiBreakdown(kinds) : '가린 개인정보 없음' },
     { Icon: EyeOff, tone: 'text-text-2', title: `정책으로 뺀 항목 ${of('excluded').length}건`, detail: [...new Set(of('excluded').map((e) => e.detail))].join(', ') || '없음' },
-    { Icon: Send, tone: 'text-accent', title: `LLM 요청 ${llm.length}회 · ${kb(llm.reduce((n, e) => n + (e.bytes ?? 0), 0))}`, detail: external.length ? `외부 모델: ${[...new Set(external.map((e) => e.provider))].join(', ')}` : '모두 스크립트(외부로 나간 데이터 없음)' },
+    { Icon: Send, tone: 'text-accent', title: `LLM 요청 ${llm.length}회 · ${kb(llm.reduce((n, e) => n + (e.bytes ?? 0), 0))}`, detail: external.length ? `외부 모델: ${[...new Set(external.map((e) => e.provider).filter((x) => !x?.endsWith('-default')))].join(', ') || external[0]!.provider}` : '모두 스크립트(외부로 나간 데이터 없음)' },
   ];
   return (
     <section aria-labelledby="sec-summary" className="surface mb-5 p-4 sm:p-5">

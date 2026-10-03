@@ -19,7 +19,7 @@ test('API-backed workspace runs the agent and shows a source-grounded report', a
   await page.getByRole('link', { name: '리포트' }).first().click();
   await expect(page.getByRole('heading', { level: 2, name: '이번 주 정리' })).toBeVisible();
   expect(await page.getByText('데모 워크스페이스 · 샘플 데이터').count()).toBeGreaterThanOrEqual(1);
-  await expect(page.getByText(/가상의 샘플 데이터로 만든 리포트이며, 실제 계정·메일이 아닙니다/)).toBeVisible();
+  await expect(page.getByText(/가상의 샘플 데이터입니다\. 실제 계정·메일이 아니며/)).toBeVisible();
   const chips = page.getByRole('button', { name: /^(PR #|이슈 #|커밋 |메일 · |일정 · )/ });
   expect(await chips.count()).toBeGreaterThan(10);
   await chips.first().click();

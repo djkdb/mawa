@@ -1,3 +1,4 @@
+import { persona } from './persona.js';
 import type { McpServerId, ReportSectionId, Source } from '@mawa/shared';
 
 /** Korean-first product copy. Technical identifiers stay as they are in the data. */
@@ -12,7 +13,8 @@ export const SECTION_TITLE: Record<ReportSectionId, string> = {
 };
 
 /** The demo workspace: a fictional week shaped after the author's (CBNU Software student) life. */
-export const DEMO_PERSONA = { name: '이성준', short: '성준', school: '충북대 소프트웨어학부' };
+/** The demo workspace's person; follows the persona switch (see lib/persona.ts). */
+export const DEMO_PERSONA = { get name() { return persona().name; }, get short() { return persona().short; }, get school() { return persona().role; } };
 
 export const PRIORITY_KO = { high: '높음', medium: '보통', low: '낮음' } as const;
 
@@ -52,6 +54,10 @@ export const EXAMPLE_META: Record<string, { title: string; hint: string; uses: M
   deadlines: { title: '마감 순서', hint: 'eCampus 과제·퀴즈와 제출 상태, 발표·신청 마감을 D-day 순으로', uses: ['lms', 'calendar', 'gmail', 'github'] },
   career: { title: '취업 준비 현황', hint: '인턴 전형 일정, 코딩테스트 대비, 포트폴리오 작업', uses: ['gmail', 'calendar', 'github'] },
   blockers: { title: '놓친 것·막힌 것', hint: '내 차례인 리뷰, 팀원 부탁, 어긋난 일정, 미제출 과제', uses: ['github', 'gmail', 'calendar', 'lms'] },
+  'worker-weekly': { title: '주간 보고', hint: '커밋·PR·장애·고객 문의·회의를 팀장님께 보낼 보고로', uses: ['github', 'gmail', 'calendar'] },
+  'worker-deadlines': { title: '다음 주 일정', hint: '회신 마감·권한 만료·배포·회의를 D-day 순으로', uses: ['calendar', 'gmail', 'github'] },
+  'worker-blockers': { title: '막힌 것', hint: '내 리뷰 대기, 장애 이슈, 어긋난 일정', uses: ['github', 'gmail', 'calendar'] },
+  'worker-1on1': { title: '1:1 준비', hint: '팀장님 1:1 전에 우선순위만', uses: ['github', 'gmail', 'calendar'] },
 };
 
 /** "Searching → Searched" style verb pairs per tool, with the result summary translated where it is a known shape. */
@@ -143,7 +149,9 @@ export const CATEGORIES: Array<{ key: string; label: string; color: string }> = 
   { key: '보안', label: '보안', color: 'var(--color-cat-security)' },
   { key: '기타', label: '기타', color: 'var(--color-cat-other)' },
 ];
-export const categoryOf = (key: string | undefined) => CATEGORIES.find((c) => c.key === key) ?? CATEGORIES[CATEGORIES.length - 1]!;
+export const categoryOf = (key: string | undefined) => { const c = CATEGORIES.find((x) => x.key === key) ?? CATEGORIES[CATEGORIES.length - 1]!; return { ...c, label: persona().categoryLabel[c.key] ?? c.label }; };
+/** Categories in display order with the active persona's labels. */
+export const categoriesFor = () => CATEGORIES.map((c) => ({ ...c, label: persona().categoryLabel[c.key] ?? c.label }));
 
 /** Kinds of personal identifiers the agent masks for the LLM (DLP-style detection). */
 export const PII_LABEL: Record<string, string> = { phone: '전화번호', studentNo: '학번', rrn: '주민등록번호', account: '계좌번호', card: '카드번호' };

@@ -1,3 +1,4 @@
+import { persona } from '../lib/persona.js';
 import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 import type { AgentEvent, McpServerId } from '@mawa/shared';
@@ -107,7 +108,7 @@ export function ConnectionsPage({ status, events, onDisconnect, onConnected }: {
     <div className="mx-auto grid max-w-5xl gap-5 lg:grid-cols-[320px_minmax(0,1fr)]">
       <div className="min-w-0">
         <McpConnections status={status} events={events} onDisconnect={onDisconnect} onConnectLms={() => setLmsOpen(true)} />
-        {(lmsOpen || IS_DEMO_BUILD) && <LmsConnect status={status} onConnected={() => { setLmsOpen(false); onConnected?.(); }} />}
+        {(lmsOpen || (IS_DEMO_BUILD && persona().servers.includes('lms'))) && <LmsConnect status={status} onConnected={() => { setLmsOpen(false); onConnected?.(); }} />}
         <section aria-labelledby="scopes-heading" className="surface mt-4 p-5">
           <h2 id="scopes-heading" className="text-[15px] font-semibold">연결할 때 요청하는 권한</h2>
           <p className="mt-0.5 text-[13px] text-text-3">연결 버튼을 누르기 전에 확인하세요. 토큰은 서버에만 저장되고 브라우저로 오지 않습니다.</p>
@@ -131,7 +132,7 @@ export function ConnectionsPage({ status, events, onDisconnect, onConnected }: {
         <p className="mt-3 text-[13px] text-text-3">{IS_DEMO_BUILD ? '데모 워크스페이스에서는 MCP 서버가 샘플 데이터 모드(--mode=demo)로 실행됩니다. 실제 계정 연결은 API 서버와 OAuth 설정이 필요합니다.' : '읽기 전용 API만 사용합니다. 토큰은 서버에서 암호화해 보관하고, MCP 서버 프로세스에는 환경 변수로만 전달합니다.'}</p>
       </div>
       <div className="flex min-w-0 flex-col gap-4">
-        {SERVERS.map((id) => {
+        {SERVERS.filter((id) => !IS_DEMO_BUILD || persona().servers.includes(id)).map((id) => {
           const { c, from } = connectionFor(id, events);
           const tools = CATALOG.servers[id]?.tools ?? [];
           return (

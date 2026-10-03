@@ -6,13 +6,14 @@ import { CategoryBoard } from '../components/CategoryBoard.js';
 import { FocusCard } from '../components/FocusCard.js';
 import { PromptPanel } from '../components/PromptPanel.js';
 import { StatStrip, reportTitle } from '../components/ReportView.js';
-import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
-import { periodKo, DEMO_PERSONA } from '../lib/copy.js';
+import { IS_DEMO_BUILD, demoExamples, type Status } from '../lib/client.js';
+import { persona } from '../lib/persona.js';
+import { periodKo, DEMO_PERSONA, SERVER_NAME } from '../lib/copy.js';
 import type { AgentRunState } from '../lib/useAgentRun.js';
 import { getRecordedRun } from '../lib/demo-client.js';
 import { hrefFor } from '../lib/useHashRoute.js';
 
-const LLM_RUN = IS_DEMO_BUILD ? getRecordedRun('llm-run') : null;
+
 
 /** "도구 3/4" while running: done calls over what the plan asked for. */
 function progressOf(state: AgentRunState): string {
@@ -26,6 +27,8 @@ function progressOf(state: AgentRunState): string {
 /** Dashboard: what matters this week first (risks, actions, deadlines), then the composer and the run. */
 export function HomePage({ status, state, busy, onRun, reportHref }: { status: Status | null; state: AgentRunState; busy: boolean; onRun: (p: string, m: AgentMode) => void; reportHref: string }) {
   const report = state.report;
+  const LLM_RUN = IS_DEMO_BUILD ? getRecordedRun(persona().llmRun) : null;
+  const DEMO_EXAMPLES = demoExamples();
   const who = IS_DEMO_BUILD ? DEMO_PERSONA.short : (status?.integrations.github.account ?? '');
   const activityHeading = useRef<HTMLHeadingElement>(null);
   const prev = useRef(state.phase);
@@ -55,8 +58,8 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
         <div className="flex min-w-0 flex-1 items-start gap-3">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
           <p className="text-sm leading-relaxed text-text-2">
-            <b className="font-semibold text-text">GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.</b>
-            {IS_DEMO_BUILD && <> 지금은 <span className="font-medium text-warn">데모</span>입니다. 성준님의 한 주를 가정한 가상 샘플 데이터로 기록된 실행을 재생하고, 실제 계정에는 접속하지 않습니다.</>}
+            <b className="font-semibold text-text">{persona().servers.map((s) => SERVER_NAME[s]).join('·')}를 읽고 출처가 달린 리포트를 써 주는 AI 업무 에이전트입니다.</b>
+            {IS_DEMO_BUILD && <> 지금은 <span className="font-medium text-warn">데모</span>입니다. {persona().intro}를 가정한 가상 샘플 데이터로 기록된 실행을 재생하고, 실제 계정에는 접속하지 않습니다.</>}
             {LLM_RUN && <> <a href={hrefFor('report', `recorded_${LLM_RUN.id}`)} className="inline-flex items-center gap-1 font-medium text-accent underline-offset-2 hover:underline"><Sparkles className="h-3.5 w-3.5" aria-hidden />실제 LLM({LLM_RUN.llm.model})이 도구를 고른 기록 보기</a></>}
           </p>
         </div>

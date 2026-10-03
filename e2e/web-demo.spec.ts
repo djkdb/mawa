@@ -15,7 +15,7 @@ async function collect(page: Page) {
 test('dashboard explains itself, shows risks/actions/deadlines, and replays a run with a visible trace', async ({ page }) => {
   const { errors, api } = await collect(page);
   await page.goto(DEMO);
-  await expect(page.getByText('GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.')).toBeVisible();
+  await expect(page.getByText('GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 리포트를 써 주는 AI 업무 에이전트입니다.')).toBeVisible();
   await expect(page.getByRole('heading', { name: /성준님, 이번 주/ })).toBeVisible();
   await expect(page.getByRole('heading', { name: '카테고리별 이번 주' })).toBeVisible();
   for (const c of ['수업·과제', '팀플', '개발', '모임', '취업']) await expect(page.getByRole('region', { name: c, exact: true })).toBeVisible();
@@ -281,6 +281,33 @@ test('audit log lists reads, LLM payloads and the refused call; the policy demo 
   await page.goto(`${DEMO}#/report/recorded_policy-strict`);
   await page.getByRole('button', { name: /단계 보기/ }).click();
   await expect(page.getByText(/정책이 gmail\.get_email 호출을 거절함/)).toBeVisible();
+  expect(errors).toEqual([]);
+  expect(api).toEqual([]);
+});
+
+test('personas: the same service as a student, a worker and the admin', async ({ page }) => {
+  const { errors, api } = await collect(page);
+  await page.goto(`${DEMO}#/`);
+  const sw = page.getByRole('radiogroup', { name: '누구의 하루로 볼까요' }).first();
+  await sw.getByRole('radio', { name: /학생/ }).click();
+  await expect(page.getByRole('heading', { name: /성준님, 이번 주/ })).toBeVisible();
+  await expect(page.getByRole('region', { name: '수업·과제', exact: true })).toBeVisible();
+
+  await sw.getByRole('radio', { name: /직장인/ }).click();
+  await expect(page.getByRole('heading', { name: /하은님, 이번 주/ })).toBeVisible();
+  await expect(page.getByRole('region', { name: '업무·마감', exact: true })).toBeVisible();
+  await expect(page.getByRole('radiogroup', { name: '질문 선택' })).toContainText('1:1 준비');
+  await expect(page.getByText('eCampus를 읽고')).toHaveCount(0);
+
+  await sw.getByRole('radio', { name: /관리자/ }).click();
+  await expect(page.getByRole('heading', { name: /구성원 AI 데이터 사용 현황/ })).toBeVisible();
+  await expect(page.getByRole('region', { name: '보안 요약' })).toContainText('감사 로그 무결성 정상');
+  await expect(page.getByRole('region', { name: /정책 비교/ })).toContainText('호출 단계에서 거절');
+  await expect(page.getByRole('link', { name: '감사 로그', exact: true }).first()).toBeVisible();
+  // The choice sticks across reloads.
+  await page.reload();
+  await expect(page.getByRole('heading', { name: /구성원 AI 데이터 사용 현황/ })).toBeVisible();
+  await page.getByRole('radiogroup', { name: '누구의 하루로 볼까요' }).first().getByRole('radio', { name: /학생/ }).click();
   expect(errors).toEqual([]);
   expect(api).toEqual([]);
 });

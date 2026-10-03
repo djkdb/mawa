@@ -12,6 +12,8 @@ export interface StartRunInput {
   prompt: string;
   mode: AgentMode;
   policy?: Partial<DataPolicy>;
+  /** Demo mode only: whose synthetic week the servers serve. */
+  persona?: 'student' | 'worker';
 }
 
 /**
@@ -35,8 +37,8 @@ export class RunManager {
   }
 
   /** Which servers would run in each mode, and why some are unavailable. */
-  async availableServers(mode: AgentMode): Promise<{ servers: McpServerSpec[]; skipped: Array<{ id: McpServerId; reason: string }> }> {
-    const all: McpServerId[] = ['github', 'gmail', 'calendar', 'lms'];
+  async availableServers(mode: AgentMode, persona?: 'student' | 'worker'): Promise<{ servers: McpServerSpec[]; skipped: Array<{ id: McpServerId; reason: string }> }> {
+    const all: McpServerId[] = persona === 'worker' ? ['github', 'gmail', 'calendar'] : ['github', 'gmail', 'calendar', 'lms'];
     if (mode === 'demo') return { servers: all.map((id) => ({ id, command: process.execPath, args: [SERVER_ENTRY(id)] })), skipped: [] };
 
     const servers: McpServerSpec[] = [];
@@ -67,7 +69,7 @@ export class RunManager {
   }
 
   async start(input: StartRunInput): Promise<RunRecord> {
-    const { servers, skipped } = await this.availableServers(input.mode);
+    const { servers, skipped } = await this.availableServers(input.mode, input.persona);
     if (input.mode === 'real' && servers.length === 0) {
       throw new Error(`Real mode needs at least one connected integration (${skipped.map((s) => s.reason).join('; ')}). Connect a service or run in demo mode.`);
     }
@@ -85,7 +87,7 @@ export class RunManager {
     };
     await this.store.create(record);
 
-    const executor = new McpToolExecutor({ servers, mode: input.mode, clientName: 'mawa-api' });
+    const executor = new McpToolExecutor({ servers, mode: input.mode, clientName: 'mawa-api', ...(input.mode === 'demo' && input.persona && input.persona !== 'student' ? { persona: input.persona } : {}) });
     void runAgent({
       runId,
       prompt: input.prompt,

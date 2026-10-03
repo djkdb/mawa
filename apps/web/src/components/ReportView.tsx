@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { CheckSquare, ChevronDown, ClipboardCopy, RotateCcw, ShieldCheck, TriangleAlert } from 'lucide-react';
 import type { AgentEvent, ReportSectionId, Source, WeeklyWorkReport } from '@mawa/shared';
-import { DEMO_EXAMPLES } from '../lib/client.js';
-import { CATEGORIES, EXAMPLE_META, KIND_NAME, KIND_SERVER, SERVER_COLOR, SOURCE_TYPE_NAME, categoryOf, periodKo, sectionTitle, timeKo } from '../lib/copy.js';
+import { exampleOf } from '../lib/client.js';
+import { persona } from '../lib/persona.js';
+import { categoriesFor, EXAMPLE_META, KIND_NAME, KIND_SERVER, SERVER_COLOR, SOURCE_TYPE_NAME, categoryOf, periodKo, sectionTitle, timeKo } from '../lib/copy.js';
 import { SECTION_ICON, categoryIcon } from '../lib/icons.js';
 import { hashQuery } from '../lib/useHashRoute.js';
 import { copyText, exportReport } from '../lib/export.js';
@@ -11,7 +12,7 @@ import { PreviousRun } from './PreviousRun.js';
 import { SectionBody, type BlockCtx } from './ReportBlocks.js';
 
 export function reportTitle(prompt: string | null): string {
-  const ex = DEMO_EXAMPLES.find((e) => e.prompt === prompt);
+  const ex = exampleOf(prompt);
   return ex ? (EXAMPLE_META[ex.id]?.title ?? '주간 업무 리포트') : prompt ? prompt.replace(/[.?]$/, '') : '주간 업무 리포트';
 }
 
@@ -133,13 +134,13 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
       <Verification warnings={warnings} events={events} />
       {!note && <PreviousRun report={report} runId={runId} prompt={prompt} />}
 
-      {demo && <p className="mt-3 text-[13px] text-text-3">{recorded ? '기록된 실행을 재생한 결과입니다. ' : ''}성준님의 한 주를 가정해 만든 가상의 샘플 데이터로 만든 리포트이며, 실제 계정·메일이 아닙니다. A사는 가상의 회사입니다.</p>}
+      {demo && <p className="mt-3 text-[13px] text-text-3">{recorded ? '기록된 실행을 재생한 결과입니다. ' : ''}{persona().demoNote}</p>}
 
       {catCounts.size > 1 && (
         <div role="group" aria-label="카테고리" className="mt-4 flex flex-wrap items-center gap-1.5">
           <span className="mr-1 text-xs text-text-3">카테고리</span>
           <button type="button" aria-pressed={cat === null} onClick={() => pick(null)} className={`inline-flex min-h-8 items-center rounded-full px-3 text-xs ${cat === null ? 'bg-accent-2 text-text' : 'bg-surface-2 text-text-2 hover:text-text'}`}>전체</button>
-          {CATEGORIES.filter((c) => catCounts.has(c.key)).map((c) => (
+          {categoriesFor().filter((c) => catCounts.has(c.key)).map((c) => (
             <button key={c.key} type="button" aria-pressed={cat === c.key} onClick={() => pick(cat === c.key ? null : c.key)} className={`inline-flex min-h-8 items-center gap-1.5 rounded-full px-3 text-xs ${cat === c.key ? 'text-text' : 'bg-surface-2 text-text-2 hover:text-text'}`} style={cat === c.key ? { background: `color-mix(in srgb, ${c.color} 28%, transparent)` } : undefined}>
               {(() => { const Icon = categoryIcon(c.key); return <Icon className="h-3.5 w-3.5" style={{ color: c.color }} aria-hidden />; })()}{c.label} <span className="tnum text-text-3">{catCounts.get(c.key)}</span>
             </button>

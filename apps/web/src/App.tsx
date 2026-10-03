@@ -6,7 +6,9 @@ import { PolicyCompare } from './components/PolicyCompare.js';
 import { AuditPage } from './pages/AuditPage.js';
 import { Shell } from './components/Shell.js';
 import { IS_DEMO_BUILD, getClient, type Status } from './lib/client.js';
-import { getRecordedRun, recordedIdOf } from './lib/demo-client.js';
+import { getRecordedRun, recordedIdOf, recordedPersona } from './lib/demo-client.js';
+import { PERSONAS, persona, setPersona, type PersonaId } from './lib/persona.js';
+import { AdminHome } from './pages/AdminHome.js';
 import { setApiToken } from './lib/http-client.js';
 import { useAgentRun } from './lib/useAgentRun.js';
 import { hrefFor, useHashRoute } from './lib/useHashRoute.js';
@@ -24,6 +26,20 @@ export default function App() {
   const { state, run, showRecorded, openRun, busy } = useAgentRun();
   const refresh = () => getClient().getStatus().then(setStatus).catch((e: Error) => setStatusError(e.message));
   const requested = useRef<string | null>(null);
+  const [pid, setPid] = useState<PersonaId>(persona().id);
+  const switchPersona = (id: PersonaId) => {
+    if (id === pid) return;
+    setPersona(id);
+    setPid(id);
+    navigate('home');
+    if (IS_DEMO_BUILD) showRecorded(PERSONAS[id].defaultRun);
+  };
+  // Opening a recording of the other user's data (a shared link) switches to that user.
+  useEffect(() => {
+    const id = IS_DEMO_BUILD && state.runId ? recordedIdOf(state.runId) : null;
+    const owner = id ? recordedPersona(id) : null;
+    if (owner && owner !== persona().data) { setPersona(owner); setPid(owner); }
+  }, [state.runId]);
 
   useEffect(() => {
     void refresh();
@@ -63,17 +79,13 @@ export default function App() {
   const recId = IS_DEMO_BUILD && state.runId ? recordedIdOf(state.runId) : null;
   const rec = recId ? getRecordedRun(recId) : null;
   // The weekly question is recorded under three policies; on any of them, show the comparison and a switcher.
-  const POLICY_SET = [
-    { id: 'policy-off', label: '정책 없음', hint: '가리기·제외·도구 제한 끔' },
-    { id: 'weekly-progress', label: '기본 정책', hint: '가족·광고 메일 제외, 가리기' },
-    { id: 'policy-strict', label: '엄격한 정책', hint: '메일 전체 검색·본문 도구 차단' },
-  ];
+  const POLICY_SET = PERSONAS[pid].policySet;
   const comparison = rec && POLICY_SET.some((p) => p.id === rec.id)
     ? { current: rec.id, columns: POLICY_SET.flatMap((p) => { const r = getRecordedRun(p.id); return r ? [{ ...p, events: r.events }] : []; }) }
     : null;
 
   return (
-    <Shell route={route} reportHref={reportHref} navigate={(r) => navigate(r)} status={status}>
+    <Shell route={route} reportHref={reportHref} navigate={(r) => navigate(r)} status={status} persona={pid} onPersona={switchPersona}>
       <div className="sr-only" aria-live="polite" role="status">{announce}</div>
       {statusError?.startsWith('401') && !IS_DEMO_BUILD && (
         <form className="surface mx-auto mb-4 flex max-w-5xl flex-wrap items-center gap-2 px-4 py-3 text-sm" onSubmit={(e) => { e.preventDefault(); const v = new FormData(e.currentTarget).get('token'); setApiToken(typeof v === 'string' && v ? v : null); setStatusError(null); void refresh(); }}>
@@ -87,12 +99,12 @@ export default function App() {
       )}
       {notice && <p role="status" className="surface mx-auto mb-4 max-w-5xl px-4 py-3 text-sm">{notice} <button type="button" className="ml-2 text-text-2 underline" onClick={() => setNotice(null)}>닫기</button></p>}
 
-      {route === 'home' && <HomePage status={status} state={state} busy={busy} onRun={startRun} reportHref={reportHref} />}
+      {route === 'home' && (pid === 'admin' ? <AdminHome key={pid} /> : <HomePage key={pid} status={status} state={state} busy={busy} onRun={startRun} reportHref={reportHref} />)}
       {route === 'report' && (
         <div className="mx-auto flex max-w-5xl flex-col gap-5">
           {state.report ? (
             <>
-              {comparison && comparison.columns.length > 1 && <PolicyCompare key={comparison.current} columns={comparison.columns} current={comparison.current} defaultOpen={comparison.current !== 'weekly-progress'} />}
+              {comparison && comparison.columns.length > 1 && <PolicyCompare key={comparison.current} columns={comparison.columns} current={comparison.current} defaultOpen={!comparison.current.endsWith('weekly-progress') && comparison.current !== 'worker-weekly'} />}
               <ReportView key={state.runId ?? 'none'} report={state.report} warnings={state.warnings} recorded={recorded} prompt={state.prompt} onAnnounce={setAnnounce} events={state.events} note={state.note ?? null} runId={state.runId} />
               <DataUsePanel events={state.events} runId={state.runId} />
               <ActivityTimeline events={state.events} phase={state.phase} recorded={recorded} runId={state.runId} />
@@ -106,8 +118,8 @@ export default function App() {
           )}
         </div>
       )}
-      {route === 'runs' && <RunsPage currentRunId={state.runId} refreshKey={state.events.length + (state.runId?.length ?? 0) + (state.phase === 'completed' ? 1 : 0)} />}
-      {route === 'audit' && <AuditPage />}
+      {route === 'runs' && <RunsPage key={pid} currentRunId={state.runId} refreshKey={state.events.length + (state.runId?.length ?? 0) + (state.phase === 'completed' ? 1 : 0)} />}
+      {route === 'audit' && <AuditPage key={pid} />}
       {route === 'connections' && <ConnectionsPage status={status} events={state.events} onDisconnect={(p) => getClient().disconnect(p).then(refresh)} onConnected={() => { setNotice('eCampus 연결됨'); void refresh(); }} />}
       {route === 'settings' && <SettingsPage status={status} />}
     </Shell>

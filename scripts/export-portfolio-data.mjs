@@ -70,7 +70,39 @@ const EXAMPLES = [
   ] },
 ];
 
-const newExecutor = () => new McpToolExecutor({ servers: ['github', 'gmail', 'calendar', 'lms'].map(server), mode: 'demo', clientName: 'mawa-agent' });
+/** The worker persona (fictional fintech startup B사): same agent, same servers, a different week. */
+const WORKER_KEYWORDS = ['payments-api', 'admin-web', '정산', '장애', '1:1', '권한', '연차', '리뷰', '세미나', '회신'];
+const WORKER_EXAMPLES = [
+  { id: 'worker-weekly', prompt: '이번 주 업무 정리해서 팀장님께 보낼 주간 보고로 만들어줘.', plan: [
+    { name: 'github__get_recent_commits', input: {} },
+    { name: 'github__get_pull_requests', input: {} },
+    { name: 'github__get_open_issues', input: {} },
+    { name: 'github__get_repository_activity', input: {} },
+    { name: 'gmail__search_project_emails', input: { keywords: WORKER_KEYWORDS } },
+    { name: 'calendar__get_events', input: {} },
+    { name: 'calendar__get_upcoming_events', input: { days: 14 } },
+  ] },
+  { id: 'worker-deadlines', prompt: '다음 주 마감이랑 배포·회의 일정 순서대로 알려줘.', plan: [
+    { name: 'calendar__get_upcoming_events', input: { days: 14 } },
+    { name: 'gmail__search_emails', input: { query: '마감 OR 까지 OR 만료 OR 회신 OR 배포 OR 등록' } },
+    { name: 'github__get_open_issues', input: {} },
+  ] },
+  { id: 'worker-blockers', prompt: '리뷰 대기나 장애처럼 막힌 거 있어?', plan: [
+    { name: 'github__get_open_issues', input: {} },
+    { name: 'github__get_pull_requests', input: { state: 'open' } },
+    { name: 'gmail__search_project_emails', input: { keywords: WORKER_KEYWORDS } },
+    { name: 'calendar__get_upcoming_events', input: { days: 14 } },
+  ] },
+  { id: 'worker-1on1', prompt: '목요일 팀장님 1:1 전에 중요한 것만 우선순위로 정리해줘.', plan: [
+    { name: 'github__get_open_issues', input: {} },
+    { name: 'github__get_pull_requests', input: {} },
+    { name: 'gmail__search_project_emails', input: { keywords: WORKER_KEYWORDS } },
+    { name: 'calendar__get_upcoming_events', input: { days: 7 } },
+  ] },
+];
+const PERSONA_SERVERS = { student: ['github', 'gmail', 'calendar', 'lms'], worker: ['github', 'gmail', 'calendar'] };
+
+const newExecutor = (persona = 'student') => new McpToolExecutor({ servers: PERSONA_SERVERS[persona].map(server), mode: 'demo', clientName: 'mawa-agent', ...(persona === 'student' ? {} : { persona }) });
 /**
  * Fault injection for the validation demo: the scripted report plus two items a careless model might write —
  * one citing a source id that no tool returned, one claiming "observed" with no source. The run is labelled as such.
@@ -123,7 +155,14 @@ try {
     const runExecutor = newExecutor();
     const run = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new ScriptedProvider(ex.plan), executor: runExecutor, dataPolicy: DEMO_POLICY }).finally(() => runExecutor.close());
     if (run.error) throw new Error(`${ex.id}: ${run.error}`);
-    runs.push({ id: ex.id, prompt: ex.prompt, llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, events: run.events, report: run.report, warnings: run.warnings });
+    runs.push({ id: ex.id, persona: 'student', prompt: ex.prompt, llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, events: run.events, report: run.report, warnings: run.warnings });
+    console.log(`run ${ex.id}: ${run.events.length} events, ${run.report.sources.length} sources, ${run.report.sections.length} sections`);
+  }
+  for (const ex of WORKER_EXAMPLES) {
+    const runExecutor = newExecutor('worker');
+    const run = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new ScriptedProvider(ex.plan), executor: runExecutor, dataPolicy: DEMO_POLICY }).finally(() => runExecutor.close());
+    if (run.error) throw new Error(`${ex.id}: ${run.error}`);
+    runs.push({ id: ex.id, persona: 'worker', prompt: ex.prompt, llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, events: run.events, report: run.report, warnings: run.warnings });
     console.log(`run ${ex.id}: ${run.events.length} events, ${run.report.sources.length} sources, ${run.report.sections.length} sections`);
   }
   {
@@ -131,27 +170,26 @@ try {
     const runExecutor = newExecutor();
     const run = await runAgent({ prompt, mode: 'demo', llm: new FabricatingProvider(EXAMPLES[3].plan), executor: runExecutor }).finally(() => runExecutor.close());
     if (run.error) throw new Error(`validation-demo: ${run.error}`);
-    runs.push({ id: 'validation-demo', kind: 'validation', prompt, note: '출처 검증 시연: 리포트 단계에 존재하지 않는 출처를 인용한 항목 1건과 출처 없는 "확인됨" 항목 1건을 일부러 주입한 기록입니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + fault injection' }, events: run.events, report: run.report, warnings: run.warnings });
+    runs.push({ id: 'validation-demo', kind: 'validation', persona: 'student', prompt, note: '출처 검증 시연: 리포트 단계에 존재하지 않는 출처를 인용한 항목 1건과 출처 없는 "확인됨" 항목 1건을 일부러 주입한 기록입니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + fault injection' }, events: run.events, report: run.report, warnings: run.warnings });
     console.log(`run validation-demo: dropped ${run.events.find((e) => e.type === 'report_generated')?.droppedItems}`);
   }
-  {
-    const ex = EXAMPLES[0];
-    const base = newExecutor();
+  for (const [persona, ex, prefix] of [['student', EXAMPLES[0], ''], ['worker', WORKER_EXAMPLES[0], 'worker-']]) {
+    const base = newExecutor(persona);
     const off = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new ScriptedProvider(ex.plan), executor: base, dataPolicy: NO_POLICY }).finally(() => base.close());
-    if (off.error) throw new Error(`policy-off: ${off.error}`);
-    runs.push({ id: 'policy-off', kind: 'policy', prompt: ex.prompt, note: '정책 비교의 기준 실행입니다. 제외 규칙, 메일 주소·전화번호 가리기, 도구 제한을 모두 끄고 같은 질문을 실행했습니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, policyLabel: '정책 없음', events: off.events, report: off.report, warnings: off.warnings });
-    const strictExec = newExecutor();
+    if (off.error) throw new Error(`${prefix}policy-off: ${off.error}`);
+    runs.push({ id: `${prefix}policy-off`, kind: 'policy', persona, prompt: ex.prompt, note: '정책 비교의 기준 실행입니다. 제외 규칙, 메일 주소·개인정보 가리기, 도구 제한을 모두 끄고 같은 질문을 실행했습니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, policyLabel: '정책 없음', events: off.events, report: off.report, warnings: off.warnings });
+    const strictExec = newExecutor(persona);
     const tools = (await strictExec.listTools()).map((t) => `${t.server}__${t.name}`);
     const strict = { ...DEMO_POLICY, pseudonymize: true, allowedTools: tools.filter((t) => t !== 'gmail__get_email' && t !== 'gmail__search_emails') };
     const on = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new GuessingProvider(ex.plan), executor: strictExec, dataPolicy: strict }).finally(() => strictExec.close());
-    if (on.error) throw new Error(`policy-strict: ${on.error}`);
-    runs.push({ id: 'policy-strict', kind: 'policy', baseline: 'policy-off', prompt: ex.prompt, note: '정책 시연: 메일 전체 검색·본문 읽기 도구를 막고 제외 규칙, 가리기, 이름 가명 처리를 켠 실행입니다. 플래너가 막힌 도구(gmail.get_email)를 일부러 요청하도록 주입했고, 호출 단계에서 거절됐습니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + blocked-tool request' }, policyLabel: '엄격한 정책', events: on.events, report: on.report, warnings: on.warnings });
-    console.log(`policy demo: denied ${on.events.filter((e) => e.type === 'tool_call_denied').length}`);
+    if (on.error) throw new Error(`${prefix}policy-strict: ${on.error}`);
+    runs.push({ id: `${prefix}policy-strict`, kind: 'policy', persona, prompt: ex.prompt, note: '정책 시연: 메일 전체 검색·본문 읽기 도구를 막고 제외 규칙, 가리기, 이름 가명 처리를 켠 실행입니다. 플래너가 막힌 도구(gmail.get_email)를 일부러 요청하도록 주입했고, 호출 단계에서 거절됐습니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + blocked-tool request' }, policyLabel: '엄격한 정책', events: on.events, report: on.report, warnings: on.warnings });
+    console.log(`policy demo (${persona}): denied ${on.events.filter((e) => e.type === 'tool_call_denied').length}`);
   }
   // Keep a real-LLM recording made with `npm run record:llm-run`; this script never fabricates one.
   try {
     const prev = JSON.parse(await readFile(new URL('packages/shared/demo/demo-runs.json', root), 'utf8'));
-    runs.push(...prev.runs.filter((r) => r.kind === 'llm'));
+    runs.push(...prev.runs.filter((r) => r.kind === 'llm').map((r) => ({ persona: 'student', ...r })));
   } catch { /* first export */ }
   const out = { recordedAt: new Date().toISOString(), policy: DEMO_POLICY, note: 'Recorded demo runs (DEMO MODE, scripted provider, real MCP servers over stdio, synthetic fixtures). Replayed by apps/web in demo mode and by the portfolio. Not live, not real data.', runs };
   await writeFile(new URL('packages/shared/demo/demo-runs.json', root), JSON.stringify(out, null, 2));

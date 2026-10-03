@@ -7,6 +7,7 @@
  *   LLM_PROVIDER=anthropic LLM_API_KEY=... npm run ask -- "놓친 거나 막힌 거 있어?"
  *   npm run ask -- --json "..."      # print the report JSON instead
  *
+ * --persona=worker serves the fictional worker's week (B사) instead of the student's.
  * Servers run in demo mode (synthetic data) unless --mode=real (then GITHUB_TOKEN / GOOGLE_ACCESS_TOKEN / LMS_TOKEN are needed).
  */
 import { fileURLToPath } from 'node:url';
@@ -15,9 +16,10 @@ import { McpToolExecutor, createLLMProvider, llmConfigFromEnv, runAgent } from '
 const args = process.argv.slice(2);
 const json = args.includes('--json');
 const mode = args.find((a) => a.startsWith('--mode='))?.split('=')[1] ?? 'demo';
+const persona = args.find((a) => a.startsWith('--persona='))?.split('=')[1];
 const prompt = args.filter((a) => !a.startsWith('--')).join(' ') || '이번 주 공부·개발이랑 팀플 진행 상황 정리해줘.';
 const root = new URL('../', import.meta.url);
-const ids = ['github', 'gmail', 'calendar', 'lms'];
+const ids = persona === 'worker' ? ['github', 'gmail', 'calendar'] : ['github', 'gmail', 'calendar', 'lms'];
 const env = { github: ['GITHUB_TOKEN'], gmail: ['GOOGLE_ACCESS_TOKEN'], calendar: ['GOOGLE_ACCESS_TOKEN'], lms: ['LMS_TOKEN', 'LMS_BASE_URL'] };
 const servers = ids
   .filter((id) => mode === 'demo' || env[id].some((k) => process.env[k]))
@@ -30,7 +32,7 @@ const log = (s) => { if (!json) console.log(s); };
 log(`${bold('My AI Work Agent')} ${dim(`· ${mode} data · LLM ${llm.id}${llm.id === 'scripted' ? ' (no model)' : ''}`)}`);
 log(`${dim('질문')} ${prompt}\n`);
 const t0 = Date.now();
-const executor = new McpToolExecutor({ servers, mode, clientName: 'mawa-cli' });
+const executor = new McpToolExecutor({ servers, mode, clientName: 'mawa-cli', ...(persona ? { persona } : {}) });
 const run = await runAgent({
   prompt, mode, llm, executor,
   onEvent: (e) => {

@@ -33,7 +33,7 @@ export async function createDeps(config: AppConfig): Promise<AppDeps> {
   return { config, oauth, runs, store };
 }
 
-const RunBody = z.object({ prompt: z.string().trim().min(1).max(2000), mode: AgentModeSchema.optional(), policy: DataPolicySchema.partial().optional() });
+const RunBody = z.object({ prompt: z.string().trim().min(1).max(2000), mode: AgentModeSchema.optional(), policy: DataPolicySchema.partial().optional(), /** Demo mode only: whose synthetic week (student | worker). */ persona: z.enum(['student', 'worker']).optional() });
 
 export function createApp(deps: AppDeps) {
   const { config, oauth, runs } = deps;
@@ -104,7 +104,7 @@ export function createApp(deps: AppDeps) {
       // The server owns the policy; the request may only tighten it.
       const { policy, refused } = tightenPolicy(config.policy.base, parsed.data.policy ?? undefined);
       if (refused.length) return c.json({ error: 'The data policy can only be made stricter by a request.', refused }, 403);
-      const record = await runs.start({ prompt: parsed.data.prompt, mode: parsed.data.mode ?? config.defaultMode, policy });
+      const record = await runs.start({ prompt: parsed.data.prompt, mode: parsed.data.mode ?? config.defaultMode, policy, ...(parsed.data.persona ? { persona: parsed.data.persona } : {}) });
       return c.json({ runId: record.runId, mode: record.mode, llm: record.llm, warnings: record.warnings }, 202);
     } catch (err) {
       return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);

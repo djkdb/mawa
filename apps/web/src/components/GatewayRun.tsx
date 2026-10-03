@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { ChevronDown, Network, ShieldAlert, ShieldCheck } from 'lucide-react';
-import gatewayRun from '@mawa/shared/demo/gateway-run.json';
+import gatewayStudent from '@mawa/shared/demo/gateway-run.json';
+import gatewayWorker from '@mawa/shared/demo/gateway-run-worker.json';
+import { persona } from '../lib/persona.js';
 import { verifyChain, type ChainCheck } from '@mawa/shared';
 import { piiBreakdown } from '../lib/copy.js';
 
 type Entry = { seq: number; at: string; client: string; action: string; server?: string; tool?: string; input?: Record<string, unknown>; rows?: number; detail?: string; maskedEmails?: number; maskedPii?: number; piiKinds?: Record<string, number>; prev: string; hash: string };
-const RUN = gatewayRun as unknown as { recordedAt: string; model: string; prompt: string; answer: string; policy: { allowedTools?: string[] }; audit: Entry[] };
+type GatewayRecording = { recordedAt: string; model: string; prompt: string; answer: string; policy: { allowedTools?: string[] }; audit: Entry[] };
 
 /**
  * A recorded run of another MCP client — Claude Code — going through the policy gateway instead of
@@ -13,14 +15,15 @@ const RUN = gatewayRun as unknown as { recordedAt: string; model: string; prompt
  * hash-chained audit lines (with the client name from the MCP handshake).
  */
 export function GatewayRun() {
+  const RUN = (persona().gatewayRun === 'gateway-run-worker' ? gatewayWorker : gatewayStudent) as unknown as GatewayRecording;
   const [open, setOpen] = useState(false);
   const [check, setCheck] = useState<ChainCheck | null>(null);
   return (
-    <section aria-labelledby="gw-heading" className="surface mt-5 p-4 sm:p-5">
+    <section aria-labelledby="gw-heading" className="surface p-4 sm:p-5">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
         <Network className="h-[18px] w-[18px] text-accent" aria-hidden />
         <h2 id="gw-heading" className="text-[15px] font-semibold">게이트웨이 기록 · 다른 MCP 클라이언트</h2>
-        <span className="text-xs text-text-3">Claude Code({RUN.model}) → mawa-gateway → MCP 서버 4개 · 샘플 데이터</span>
+        <span className="text-xs text-text-3">Claude Code({RUN.model}) → mawa-gateway → MCP 서버 {persona().servers.length}개 · 샘플 데이터</span>
         <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} aria-controls="gw-body" className="ml-auto inline-flex min-h-9 items-center gap-1 rounded-md px-2 text-sm text-text-2 hover:text-text">{open ? '접기' : '자세히'}<ChevronDown className={`h-4 w-4 transition ${open ? 'rotate-180' : ''}`} aria-hidden /></button>
       </div>
       <p className="mt-1 max-w-3xl text-sm text-text-2">정책을 에이전트 밖의 MCP 서버(게이트웨이)로 분리했습니다. Claude Code가 이 게이트웨이에 붙으면 허용 목록 밖 도구는 보이지 않고, 결과는 가려진 채로 전달되며, 호출마다 클라이언트 이름과 함께 해시 체인 감사 로그가 남습니다.</p>

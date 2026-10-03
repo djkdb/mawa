@@ -359,3 +359,17 @@ docs/ENTERPRISE.md (no user identity, the chain head is not anchored externally,
 **Why.** Each answers a question a reviewer would ask of the previous version: "what stops
 someone re-chaining edited events", "what stops the client turning masking off", "who is the
 user", "do names go to the model".
+
+## ADR-021 — Personas: student, worker, admin
+
+**Decision.** The demo is shown as one of three personas. Student and worker are users with
+their own synthetic week (`fixtures/<persona>/` per MCP server, selected by `MAWA_PERSONA`,
+which the MCP client sets in demo mode); the admin is the policy owner of the worker's fictional
+company and lands on the security summary, policy comparison and gateway record. Category keys
+stay the same for the agent; their labels follow the persona. The worker's runs (4 examples,
+three policies, a real-LLM run, a gateway run) are recorded like the student's.
+
+**Why.** Data control is not a company-only concern dressed up for a student: a student's mail
+holds their 주민등록번호 and friends' numbers; a worker's holds customers'. Showing the same
+controls from the user's side and the policy owner's side makes that concrete without
+pretending a student needs RBAC.

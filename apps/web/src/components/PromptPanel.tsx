@@ -1,12 +1,16 @@
 import { useRef, useState } from 'react';
 import { AlarmClock, ArrowRight, Briefcase, CalendarDays, CircleAlert, ClipboardList, GraduationCap, GitBranch, Mail, type LucideIcon } from 'lucide-react';
 import type { AgentMode, McpServerId } from '@mawa/shared';
-import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
+import { IS_DEMO_BUILD, demoExamples, type Status } from '../lib/client.js';
 import { EXAMPLE_META, SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 
 const ICON: Record<McpServerId, React.ReactNode> = { github: <GitBranch className="h-3.5 w-3.5" aria-hidden />, gmail: <Mail className="h-3.5 w-3.5" aria-hidden />, calendar: <CalendarDays className="h-3.5 w-3.5" aria-hidden />, lms: <GraduationCap className="h-3.5 w-3.5" aria-hidden /> };
 
 const EX_ICON: Record<string, { Icon: LucideIcon; color: string }> = {
+  'worker-weekly': { Icon: ClipboardList, color: 'var(--color-accent)' },
+  'worker-deadlines': { Icon: AlarmClock, color: 'var(--color-calendar)' },
+  'worker-blockers': { Icon: CircleAlert, color: 'var(--color-pri-high)' },
+  'worker-1on1': { Icon: Briefcase, color: 'var(--color-cat-job)' },
   'weekly-progress': { Icon: ClipboardList, color: 'var(--color-accent)' },
   deadlines: { Icon: AlarmClock, color: 'var(--color-calendar)' },
   career: { Icon: Briefcase, color: 'var(--color-cat-job)' },
@@ -14,6 +18,7 @@ const EX_ICON: Record<string, { Icon: LucideIcon; color: string }> = {
 };
 
 export function PromptPanel({ status, busy, onRun, progress = null }: { status: Status | null; busy: boolean; onRun: (prompt: string, mode: AgentMode) => void; progress?: string | null }) {
+  const DEMO_EXAMPLES = demoExamples();
   const [selected, setSelected] = useState<string>(DEMO_EXAMPLES[0]?.id ?? '');
   const [custom, setCustom] = useState('');
   const [mode, setMode] = useState<AgentMode>('demo');

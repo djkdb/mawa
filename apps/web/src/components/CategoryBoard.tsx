@@ -1,6 +1,6 @@
 import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, NotebookPen } from 'lucide-react';
 import type { ReportItem, WeeklyWorkReport } from '@mawa/shared';
-import { CATEGORIES, PRIORITY_KO } from '../lib/copy.js';
+import { categoriesFor, PRIORITY_KO } from '../lib/copy.js';
 import { categoryIcon } from '../lib/icons.js';
 import { hrefFor } from '../lib/useHashRoute.js';
 import { ItemText } from './ItemText.js';
@@ -36,7 +36,7 @@ export function CategoryBoard({ report, runId }: { report: WeeklyWorkReport; run
   [...sec('potential_risks')].sort((a, b) => rank[a.priority ?? 'low'] - rank[b.priority ?? 'low']).forEach((i) => add(i, '주의'));
   sec('schedule').filter(future).forEach((i) => add(i, '일정'));
   sec('major_activities').forEach((i) => add(i, '기록'));
-  const cats = CATEGORIES.filter((c) => groups.has(c.key));
+  const cats = categoriesFor().filter((c) => groups.has(c.key));
   if (!cats.length) return null;
 
   return (

@@ -3,7 +3,7 @@ import { IS_DEMO_BUILD, REPO_URL } from '../lib/client.js';
 import { getRecordedRun } from '../lib/demo-client.js';
 import { hrefFor } from '../lib/useHashRoute.js';
 
-const LLM_RUN = IS_DEMO_BUILD ? getRecordedRun('llm-run') : null;
+import { persona } from '../lib/persona.js';
 
 const STEPS: Array<[string, string]> = [
   ['소스를 MCP로 연결', 'MCP(Model Context Protocol)는 AI가 외부 도구를 쓰는 표준 규격입니다. GitHub, Gmail, Google Calendar, eCampus가 각각 독립된 MCP 서버로 붙고, 에이전트는 서버가 공개한 도구 목록만 봅니다.'],
@@ -13,6 +13,7 @@ const STEPS: Array<[string, string]> = [
 ];
 
 export function HowItWorks() {
+  const LLM_RUN = IS_DEMO_BUILD ? getRecordedRun(persona().llmRun) : null;
   return (
     <section id="how" aria-labelledby="how-heading" className="surface p-5 sm:p-7">
       <h2 id="how-heading" className="text-lg font-semibold">어떻게 동작하나요</h2>
@@ -29,7 +30,7 @@ export function HowItWorks() {
       </ol>
       {IS_DEMO_BUILD && (
         <p className="mt-5 rounded-lg bg-caution/10 px-4 py-3 text-sm leading-relaxed text-text-2">
-          예시 질문 4개의 기록은 LLM 대신 <b className="text-text">질문별로 정해 둔 실행 계획(scripted-heuristics-v1)</b>으로 만들었습니다. MCP 서버 호출, 출처 수집, 출처 검증은 실제 코드 그대로 거쳤고, 데이터는 성준님의 한 주(수업·팀플·인턴 준비)를 가정한 가상의 샘플입니다.
+          예시 질문의 기록은 LLM 대신 <b className="text-text">질문별로 정해 둔 실행 계획(scripted-heuristics-v1)</b>으로 만들었습니다. MCP 서버 호출, 출처 수집, 출처 검증은 실제 코드 그대로 거쳤고, {persona().demoNote}
           {LLM_RUN && <> 별도로 <a href={hrefFor('report', `recorded_${LLM_RUN.id}`)} className="font-medium text-accent underline-offset-2 hover:underline">실제 LLM 기록</a> 1건이 있습니다. {LLM_RUN.llm.model}(Claude Code CLI)가 도구를 직접 고르고 리포트를 쓴 실행이며, 데이터는 같은 샘플입니다.</>}
         </p>
       )}

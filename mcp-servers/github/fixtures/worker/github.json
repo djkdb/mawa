@@ -1,0 +1,270 @@
+{
+  "_note": "SYNTHETIC DEMO DATA for a fictional week of 정하은, backend developer (3rd year) at the fictional fintech startup \"B사\". Not a real GitHub account or company. Dates are relative via {\"$daysAgo\": n}.",
+  "commits": [
+    {
+      "sourceId": "github:commit:b-company/payments-api@c1a2b3c4d5e6",
+      "repo": "b-company/payments-api",
+      "sha": "c1a2b3c4d5e60000000000000000000000000000",
+      "message": "fix: 환불 API 멱등성 키 검증",
+      "author": "haeun",
+      "date": {
+        "$daysAgo": 0.9
+      },
+      "url": "https://github.com/b-company/payments-api/commit/c1a2b3c4d5e6",
+      "additions": 120,
+      "deletions": 18
+    },
+    {
+      "sourceId": "github:commit:b-company/payments-api@c2b3c4d5e6f7",
+      "repo": "b-company/payments-api",
+      "sha": "c2b3c4d5e6f70000000000000000000000000000",
+      "message": "test: 환불 동시 요청 경합 테스트",
+      "author": "haeun",
+      "date": {
+        "$daysAgo": 1.1
+      },
+      "url": "https://github.com/b-company/payments-api/commit/c2b3c4d5e6f7",
+      "additions": 210,
+      "deletions": 4
+    },
+    {
+      "sourceId": "github:commit:b-company/payments-api@c3c4d5e6f7a8",
+      "repo": "b-company/payments-api",
+      "sha": "c3c4d5e6f7a80000000000000000000000000000",
+      "message": "feat: 정산 배치 재시도와 지수 백오프",
+      "author": "haeun",
+      "date": {
+        "$daysAgo": 2.2
+      },
+      "url": "https://github.com/b-company/payments-api/commit/c3c4d5e6f7a8",
+      "additions": 340,
+      "deletions": 61
+    },
+    {
+      "sourceId": "github:commit:b-company/payments-api@c4d5e6f7a8b9",
+      "repo": "b-company/payments-api",
+      "sha": "c4d5e6f7a8b90000000000000000000000000000",
+      "message": "chore: 로그에서 카드번호·계좌 마스킹",
+      "author": "haeun",
+      "date": {
+        "$daysAgo": 3.3
+      },
+      "url": "https://github.com/b-company/payments-api/commit/c4d5e6f7a8b9",
+      "additions": 74,
+      "deletions": 22
+    },
+    {
+      "sourceId": "github:commit:b-company/admin-web@c5e6f7a8b9c0",
+      "repo": "b-company/admin-web",
+      "sha": "c5e6f7a8b9c00000000000000000000000000000",
+      "message": "fix: 정산 CSV 내보내기 컬럼 정리",
+      "author": "haeun",
+      "date": {
+        "$daysAgo": 1.6
+      },
+      "url": "https://github.com/b-company/admin-web/commit/c5e6f7a8b9c0",
+      "additions": 35,
+      "deletions": 12
+    },
+    {
+      "sourceId": "github:commit:haeun/til@c6f7a8b9c0d1",
+      "repo": "haeun/til",
+      "sha": "c6f7a8b9c0d10000000000000000000000000000",
+      "message": "docs: Kafka consumer lag 원인과 대응 정리",
+      "author": "haeun",
+      "date": {
+        "$daysAgo": 1.8
+      },
+      "url": "https://github.com/haeun/til/commit/c6f7a8b9c0d1",
+      "additions": 96,
+      "deletions": 0
+    },
+    {
+      "sourceId": "github:commit:haeun/til@c7a8b9c0d1e2",
+      "repo": "haeun/til",
+      "sha": "c7a8b9c0d1e20000000000000000000000000000",
+      "message": "docs: 멱등성 키 설계 메모",
+      "author": "haeun",
+      "date": {
+        "$daysAgo": 0.7
+      },
+      "url": "https://github.com/haeun/til/commit/c7a8b9c0d1e2",
+      "additions": 54,
+      "deletions": 3
+    }
+  ],
+  "pullRequests": [
+    {
+      "sourceId": "github:pr:b-company/payments-api#142",
+      "repo": "b-company/payments-api",
+      "number": 142,
+      "title": "feat: 정산 배치 재시도와 지수 백오프",
+      "state": "open",
+      "author": "haeun",
+      "createdAt": {
+        "$daysAgo": 2.1
+      },
+      "updatedAt": {
+        "$daysAgo": 0.6
+      },
+      "mergedAt": null,
+      "url": "https://github.com/b-company/payments-api/pull/142",
+      "reviewComments": 4,
+      "labels": [
+        "needs-review"
+      ]
+    },
+    {
+      "sourceId": "github:pr:b-company/payments-api#139",
+      "repo": "b-company/payments-api",
+      "number": 139,
+      "title": "fix: 환불 API 멱등성 키 검증",
+      "state": "merged",
+      "author": "haeun",
+      "createdAt": {
+        "$daysAgo": 1.4
+      },
+      "updatedAt": {
+        "$daysAgo": 0.8
+      },
+      "mergedAt": {
+        "$daysAgo": 0.8
+      },
+      "url": "https://github.com/b-company/payments-api/pull/139",
+      "reviewComments": 2,
+      "labels": [
+        "bug"
+      ]
+    },
+    {
+      "sourceId": "github:pr:b-company/admin-web#87",
+      "repo": "b-company/admin-web",
+      "number": 87,
+      "title": "feat: 가맹점 정산 내역 화면",
+      "state": "open",
+      "author": "dohyun",
+      "createdAt": {
+        "$daysAgo": 1.2
+      },
+      "updatedAt": {
+        "$daysAgo": 0.5
+      },
+      "mergedAt": null,
+      "url": "https://github.com/b-company/admin-web/pull/87",
+      "reviewComments": 1,
+      "labels": [
+        "review-requested"
+      ]
+    }
+  ],
+  "issues": [
+    {
+      "sourceId": "github:issue:b-company/payments-api#145",
+      "repo": "b-company/payments-api",
+      "number": 145,
+      "title": "결제 승인 지연 (p99 2.1s) 원인 조사",
+      "state": "open",
+      "author": "seoyun",
+      "createdAt": {
+        "$daysAgo": 2.5
+      },
+      "updatedAt": {
+        "$daysAgo": 0.4
+      },
+      "url": "https://github.com/b-company/payments-api/issues/145",
+      "labels": [
+        "incident",
+        "priority:high"
+      ],
+      "assignees": [
+        "haeun"
+      ]
+    },
+    {
+      "sourceId": "github:issue:b-company/admin-web#90",
+      "repo": "b-company/admin-web",
+      "number": 90,
+      "title": "정산 CSV 다운로드에 주민번호 컬럼 노출",
+      "state": "open",
+      "author": "security-team",
+      "createdAt": {
+        "$daysAgo": 1.3
+      },
+      "updatedAt": {
+        "$daysAgo": 0.5
+      },
+      "url": "https://github.com/b-company/admin-web/issues/90",
+      "labels": [
+        "security",
+        "priority:high"
+      ],
+      "assignees": [
+        "haeun",
+        "dohyun"
+      ]
+    },
+    {
+      "sourceId": "github:issue:b-company/payments-api#140",
+      "repo": "b-company/payments-api",
+      "number": 140,
+      "title": "환불 API 문서 업데이트",
+      "state": "open",
+      "author": "haeun",
+      "createdAt": {
+        "$daysAgo": 4.2
+      },
+      "updatedAt": {
+        "$daysAgo": 3.9
+      },
+      "url": "https://github.com/b-company/payments-api/issues/140",
+      "labels": [
+        "docs"
+      ],
+      "assignees": []
+    }
+  ],
+  "repositories": [
+    {
+      "sourceId": "github:repo:b-company/payments-api",
+      "repo": "b-company/payments-api",
+      "url": "https://github.com/b-company/payments-api",
+      "description": "결제·환불·정산 API (가상의 B사)",
+      "defaultBranch": "main",
+      "lastPushedAt": {
+        "$daysAgo": 0.9
+      },
+      "openIssues": 2,
+      "openPullRequests": 1,
+      "commitsInPeriod": 4,
+      "language": "Kotlin"
+    },
+    {
+      "sourceId": "github:repo:b-company/admin-web",
+      "repo": "b-company/admin-web",
+      "url": "https://github.com/b-company/admin-web",
+      "description": "가맹점 관리자 웹",
+      "defaultBranch": "main",
+      "lastPushedAt": {
+        "$daysAgo": 1.6
+      },
+      "openIssues": 1,
+      "openPullRequests": 1,
+      "commitsInPeriod": 1,
+      "language": "TypeScript"
+    },
+    {
+      "sourceId": "github:repo:haeun/til",
+      "repo": "haeun/til",
+      "url": "https://github.com/haeun/til",
+      "description": "Today I Learned",
+      "defaultBranch": "main",
+      "lastPushedAt": {
+        "$daysAgo": 0.7
+      },
+      "openIssues": 0,
+      "openPullRequests": 0,
+      "commitsInPeriod": 2,
+      "language": "Markdown"
+    }
+  ]
+}

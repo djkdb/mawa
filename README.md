@@ -41,6 +41,8 @@ One agent, connected context. Integrations are not hard-coded into the agent: ea
 
 ## What You Can Do With It
 
+**Three personas, one service.** The demo switches between a **student** (이성준, CBNU: classes, a capstone team, internship prep — GitHub, Gmail, Calendar, eCampus), a **worker** (정하은, backend developer at the fictional fintech B사: reviews, an incident, a customer request, a 1:1 — GitHub, Gmail, Calendar) and the **admin** who sets the policy for B사 and reads the audit (first screen: a security summary, the policy comparison, Claude Code through the gateway). Same agent, servers and controls; each user's own synthetic week, vocabulary (수업·과제 ↔ 업무·마감, 학사 ↔ 인사·행정) and example questions. `--persona=worker` selects the worker's fixtures for the MCP servers (`MAWA_PERSONA`), `npm run ask`, the gateway and the recorders.
+
 Built for my own week as a CBNU software student (classes, a capstone team, internship applications, algorithm study) and designed around one question a data-access company would ask: *what did the agent read, what did it send to the model, and can I prove it?*
 
 | Situation | What the agent does |

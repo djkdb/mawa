@@ -27,14 +27,15 @@ async function main() {
   }
   const mode = arg('mode') === 'real' ? 'real' : 'demo';
   const policy = arg('policy') ? JSON.parse(await readFile(arg('policy')!, 'utf8')) : {};
-  const ids = (arg('servers') ?? 'github,gmail,calendar,lms').split(',').filter((id) => ENV[id] && (mode === 'demo' || ENV[id]!.some((k) => process.env[k])));
+  const persona = arg('persona');
+  const ids = (arg('servers') ?? (persona === 'worker' ? 'github,gmail,calendar' : 'github,gmail,calendar,lms')).split(',').filter((id) => ENV[id] && (mode === 'demo' || ENV[id]!.some((k) => process.env[k])));
   const servers = ids.map((id) => ({
     id: id as 'github' | 'gmail' | 'calendar' | 'lms',
     command: process.execPath,
     args: [fileURLToPath(new URL(`../../${id}/dist/index.js`, import.meta.url))],
     env: Object.fromEntries(ENV[id]!.filter((k) => process.env[k]).map((k) => [k, process.env[k]!])),
   }));
-  const executor = new McpToolExecutor({ servers, mode, clientName: 'mawa-gateway' });
+  const executor = new McpToolExecutor({ servers, mode, clientName: 'mawa-gateway', ...(persona && mode === 'demo' ? { persona } : {}) });
   const auditPath = arg('audit');
   const close = () => { void executor.close().finally(() => process.exit(0)); };
   process.on('SIGINT', close);

@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 import { z } from 'zod';
 import { rebaseDates } from '../rebase-dates.js';
 import { EmailSchema, type Email, type EmailSummary, type GmailProvider } from '../types.js';
@@ -10,7 +11,7 @@ const FixtureSchema = z.object({ emails: z.array(EmailSchema) });
 export class DemoGmailProvider implements GmailProvider {
   private emails: Promise<Email[]>;
 
-  constructor(fixturePath = fileURLToPath(new URL('../../fixtures/gmail.json', import.meta.url))) {
+  constructor(fixturePath = fixtureFor('gmail')) {
     this.emails = readFile(fixturePath, 'utf8').then((raw) => FixtureSchema.parse(rebaseDates(JSON.parse(raw))).emails);
   }
 
@@ -38,4 +39,14 @@ export class DemoGmailProvider implements GmailProvider {
     const truncated = email.body.length > bodyMaxChars;
     return { ...email, body: truncated ? email.body.slice(0, bodyMaxChars) : email.body, truncated };
   }
+}
+
+/** The demo persona's fixture (MAWA_PERSONA, set by the MCP client): fixtures/<persona>/gmail.json, else the default (student) week. */
+function fixtureFor(name: string): string {
+  const persona = process.env['MAWA_PERSONA'];
+  if (persona && /^[a-z]+$/.test(persona)) {
+    const p = fileURLToPath(new URL(`../../fixtures/${persona}/${name}.json`, import.meta.url));
+    if (existsSync(p)) return p;
+  }
+  return fileURLToPath(new URL(`../../fixtures/${name}.json`, import.meta.url));
 }

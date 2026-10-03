@@ -1,0 +1,189 @@
+{
+  "_note": "SYNTHETIC DEMO DATA for the fictional worker persona (B사).",
+  "events": [
+    {
+      "sourceId": "calendar:event:wkev001",
+      "eventId": "wkev001",
+      "calendar": "primary",
+      "title": "데일리 스탠드업",
+      "description": "결제팀",
+      "start": {
+        "$daysAgo": 3,
+        "$time": "10:00"
+      },
+      "end": {
+        "$daysAgo": 3,
+        "$time": "10:15"
+      },
+      "allDay": false,
+      "location": "회의실 A",
+      "attendees": [
+        "haeun@b-company.example.com"
+      ],
+      "organizer": "haeun@b-company.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=wkev001"
+    },
+    {
+      "sourceId": "calendar:event:wkev002",
+      "eventId": "wkev002",
+      "calendar": "primary",
+      "title": "#145 장애 회고",
+      "description": "결제 승인 지연 원인과 재발 방지",
+      "start": {
+        "$daysAgo": 1,
+        "$time": "16:00"
+      },
+      "end": {
+        "$daysAgo": 1,
+        "$time": "17:00"
+      },
+      "allDay": false,
+      "location": "회의실 B",
+      "attendees": [
+        "haeun@b-company.example.com"
+      ],
+      "organizer": "haeun@b-company.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=wkev002"
+    },
+    {
+      "sourceId": "calendar:event:wkev003",
+      "eventId": "wkev003",
+      "calendar": "primary",
+      "title": "스프린트 플래닝",
+      "description": "결제팀 스프린트 23",
+      "start": {
+        "$daysAgo": -2,
+        "$time": "10:00"
+      },
+      "end": {
+        "$daysAgo": -2,
+        "$time": "11:00"
+      },
+      "allDay": false,
+      "location": "회의실 A",
+      "attendees": [
+        "haeun@b-company.example.com"
+      ],
+      "organizer": "haeun@b-company.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=wkev003"
+    },
+    {
+      "sourceId": "calendar:event:wkev004",
+      "eventId": "wkev004",
+      "calendar": "primary",
+      "title": "정기 배포 (payments-api, admin-web)",
+      "description": "화요일 정기 배포 창",
+      "start": {
+        "$daysAgo": -3,
+        "$time": "14:00"
+      },
+      "end": {
+        "$daysAgo": -3,
+        "$time": "15:00"
+      },
+      "allDay": false,
+      "location": "배포 채널",
+      "attendees": [
+        "haeun@b-company.example.com"
+      ],
+      "organizer": "haeun@b-company.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=wkev004"
+    },
+    {
+      "sourceId": "calendar:event:wkev005",
+      "eventId": "wkev005",
+      "calendar": "primary",
+      "title": "C쇼핑 정산 미팅",
+      "description": "10/1 정산 불일치 원인 공유",
+      "start": {
+        "$daysAgo": -4,
+        "$time": "11:00"
+      },
+      "end": {
+        "$daysAgo": -4,
+        "$time": "12:00"
+      },
+      "allDay": false,
+      "location": "화상 회의",
+      "attendees": [
+        "haeun@b-company.example.com"
+      ],
+      "organizer": "haeun@b-company.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=wkev005"
+    },
+    {
+      "sourceId": "calendar:event:wkev006",
+      "eventId": "wkev006",
+      "calendar": "primary",
+      "title": "1:1 (박서윤 팀장)",
+      "description": "분기 목표, 장애 회고",
+      "start": {
+        "$daysAgo": -5,
+        "$time": "15:00"
+      },
+      "end": {
+        "$daysAgo": -5,
+        "$time": "15:30"
+      },
+      "allDay": false,
+      "location": "회의실 C",
+      "attendees": [
+        "haeun@b-company.example.com"
+      ],
+      "organizer": "haeun@b-company.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=wkev006"
+    },
+    {
+      "sourceId": "calendar:event:wkev007",
+      "eventId": "wkev007",
+      "calendar": "primary",
+      "title": "사내 세미나: Kafka 운영 사례",
+      "description": "발표: 정하은",
+      "start": {
+        "$daysAgo": -6,
+        "$time": "17:00"
+      },
+      "end": {
+        "$daysAgo": -6,
+        "$time": "18:00"
+      },
+      "allDay": false,
+      "location": "라운지",
+      "attendees": [
+        "haeun@b-company.example.com"
+      ],
+      "organizer": "haeun@b-company.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=wkev007"
+    },
+    {
+      "sourceId": "calendar:event:wkev008",
+      "eventId": "wkev008",
+      "calendar": "primary",
+      "title": "연차",
+      "description": null,
+      "start": {
+        "$daysAgo": -6,
+        "$time": "00:00"
+      },
+      "end": {
+        "$daysAgo": -6,
+        "$time": "23:59"
+      },
+      "allDay": true,
+      "location": null,
+      "attendees": [
+        "haeun@b-company.example.com"
+      ],
+      "organizer": "haeun@b-company.example.com",
+      "status": "confirmed",
+      "url": "https://calendar.google.com/calendar/event?eid=wkev008"
+    }
+  ]
+}

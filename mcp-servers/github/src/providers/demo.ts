@@ -1,5 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
+import { existsSync } from 'node:fs';
 import { z } from 'zod';
 import { CommitSchema, IssueSchema, PullRequestSchema, RepositoryActivitySchema, type GitHubProvider } from '../types.js';
 import { clockNow } from '@mawa/shared';
@@ -20,7 +21,7 @@ type Fixture = z.infer<typeof FixtureSchema>;
 export class DemoGitHubProvider implements GitHubProvider {
   private fixture: Promise<Fixture>;
 
-  constructor(fixturePath = fileURLToPath(new URL('../../fixtures/github.json', import.meta.url))) {
+  constructor(fixturePath = fixtureFor('github')) {
     this.fixture = readFile(fixturePath, 'utf8').then((raw) => FixtureSchema.parse(rebaseDates(JSON.parse(raw))));
   }
 
@@ -59,4 +60,14 @@ export function rebaseDates(value: unknown, now = clockNow()): unknown {
     return Object.fromEntries(Object.entries(obj).map(([k, v]) => [k, rebaseDates(v, now)]));
   }
   return value;
+}
+
+/** The demo persona's fixture (MAWA_PERSONA, set by the MCP client): fixtures/<persona>/github.json, else the default (student) week. */
+function fixtureFor(name: string): string {
+  const persona = process.env['MAWA_PERSONA'];
+  if (persona && /^[a-z]+$/.test(persona)) {
+    const p = fileURLToPath(new URL(`../../fixtures/${persona}/${name}.json`, import.meta.url));
+    if (existsSync(p)) return p;
+  }
+  return fileURLToPath(new URL(`../../fixtures/${name}.json`, import.meta.url));
 }

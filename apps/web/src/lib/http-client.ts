@@ -1,4 +1,5 @@
 import { AgentEventSchema, type AgentMode, type DataPolicy } from '@mawa/shared';
+import { persona } from './persona.js';
 import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status, AuditLog } from './types.js';
 
 const TOKEN_KEY = 'mawa.apiToken';
@@ -29,7 +30,7 @@ export class HttpClient implements AgentClient {
   }
 
   async startRun(prompt: string, mode: AgentMode): Promise<StartRunResult> {
-    const res = await api(`${this.base}/api/agent/run`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prompt, mode, ...(getPolicy() ? { policy: getPolicy() } : {}) }) });
+    const res = await api(`${this.base}/api/agent/run`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ prompt, mode, ...(getPolicy() ? { policy: getPolicy() } : {}), ...(mode === 'demo' ? { persona: persona().data } : {}) }) });
     const body = (await res.json()) as StartRunResult & { error?: string };
     if (!res.ok) throw new Error(body.error ?? `run failed (${res.status})`);
     return body;

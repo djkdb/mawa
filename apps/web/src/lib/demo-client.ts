@@ -1,6 +1,7 @@
 import { AgentEventSchema, WeeklyWorkReportSchema, type AgentEvent, type AgentMode, type McpServerId, type WeeklyWorkReport } from '@mawa/shared';
 import demoRuns from '@mawa/shared/demo/demo-runs.json';
 import demoAudit from '@mawa/shared/demo/demo-audit.json';
+import { persona } from './persona.js';
 import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status, AuditLog } from './types.js';
 
 export interface RecordedRun {
@@ -13,6 +14,7 @@ export interface RecordedRun {
   /** "validation": a fault-injection recording that shows the source validator at work. Never offered as an example. */
   kind?: 'validation' | 'llm' | 'policy';
   note?: string;
+  persona?: 'student' | 'worker';
   /** For the policy demo: the recording of the same question without the policy, and a short label. */
   baseline?: string;
   policyLabel?: string;
@@ -37,11 +39,27 @@ export function recordedIdOf(runId: string): string | null {
 
 /** A finished recorded run, for showing a completed result on first paint (no replay, no timers). */
 export function getRecordedRun(id?: string): RecordedRun | null {
-  return (id ? RECORDED.runs.find((r) => r.id === id) : RECORDED.runs.find((r) => !r.kind)) ?? null;
+  return (id ? RECORDED.runs.find((r) => r.id === id) : RECORDED.runs.find((r) => r.id === persona().defaultRun) ?? RECORDED.runs.find((r) => !r.kind)) ?? null;
+}
+const personaOf = (r: RecordedRun) => r.persona ?? 'student';
+/** The example questions of a persona's data. */
+export function demoExamples(): Array<{ id: string; prompt: string }> {
+  return RECORDED.runs.filter((r) => !r.kind && personaOf(r) === persona().data).map((r) => ({ id: r.id, prompt: r.prompt }));
+}
+/** The example (any persona) a prompt was recorded for. */
+export function exampleOf(prompt: string | null | undefined): { id: string; prompt: string } | null {
+  const r = prompt ? RECORDED.runs.find((x) => !x.kind && x.prompt === prompt) : undefined;
+  return r ? { id: r.id, prompt: r.prompt } : null;
+}
+/** Which persona's data a recorded run belongs to. */
+export function recordedPersona(id: string): 'student' | 'worker' | null {
+  const r = RECORDED.runs.find((x) => x.id === id);
+  return r ? personaOf(r) : null;
 }
 
 /** The example requests the demo can answer: exactly the prompts that were recorded. */
-export const DEMO_EXAMPLES = RECORDED.runs.filter((r) => !r.kind).map((r) => ({ id: r.id, prompt: r.prompt }));
+/** The student persona's example questions (the default). */
+export const DEMO_EXAMPLES = RECORDED.runs.filter((r) => !r.kind && personaOf(r) === 'student').map((r) => ({ id: r.id, prompt: r.prompt }));
 
 /** Replays started in this browser, remembered across reloads (ids and times only; the content is the recording). */
 const STORE_KEY = 'mawa.demo.runs';
