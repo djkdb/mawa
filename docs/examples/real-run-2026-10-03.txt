@@ -1,0 +1,61 @@
+# 실제 실행 기록 — 2026-10-03, Windows PowerShell, 본인 GitHub 계정(읽기 전용 fine-grained 토큰), Claude Code 로그인
+# 터미널 출력을 그대로 옮김. 토큰은 Read-Host -AsSecureString으로 입력(화면에 * 표시), 출력에는 나오지 않음.
+PS C:\Users\Pc\Downloads\DD\mawa> $s = Read-Host -AsSecureString "GitHub token"
+GitHub token: *********************************************************************************************
+PS C:\Users\Pc\Downloads\DD\mawa> $env:GITHUB_TOKEN = [System.Net.NetworkCredential]::new("", $s).Password
+PS C:\Users\Pc\Downloads\DD\mawa> $env:LLM_PROVIDER = "claude-cli"
+PS C:\Users\Pc\Downloads\DD\mawa> npm run ask -- --mode=real "이번 주 내 GitHub 활동이랑 리뷰 대기 정리해줘."
+
+> my-ai-work-agent@0.1.0 ask
+> node scripts/ask.mjs --mode=real 이번 주 내 GitHub 활동이랑 리뷰 대기 정리해줘.
+
+My AI Work Agent · real data · LLM claude-cli
+질문 이번 주 내 GitHub 활동이랑 리뷰 대기 정리해줘.
+
++  390ms MCP mawa-github v0.1.0 · stdio · 2025-11-25
++  425ms MCP tools/list → 4 tools
++  426ms LLM plan → claude-cli/claude-cli-default · 4.5KB · masked 0
++ 8102ms LLM plan (claude-opus-5-5): github.get_recent_commits, github.get_pull_requests, github.get_open_issues, github.get_repository_activity
++14905ms ✓ github.get_recent_commits {"since":"2026-09-27T15:00:00.000Z","until":"2026-10-04T15:00:00.000Z","limit":100} → 100 commits across 7 repositories 6802ms
++18253ms ✓ github.get_pull_requests {"since":"2026-09-27T15:00:00.000Z","state":"all","limit":50} → 0 pull requests (0 merged, 0 open) 3345ms
++18639ms ✓ github.get_open_issues {"limit":50} → 0 open issues 386ms
++24233ms ✓ github.get_repository_activity {"since":"2026-09-27T15:00:00.000Z","until":"2026-10-04T15:00:00.000Z","limit":20} → 13 active repositories 5594ms
++24233ms LLM plan → claude-cli/claude-opus-5-5 · 24.1KB · masked 0
++36417ms LLM analysis → claude-cli/claude-opus-5-5 · 67.9KB · masked 0
++76261ms report 5 sections · dropped 0
+
+요약
+  이번 주(9/28~10/4) 13개 저장소에서 총 369개 커밋이 있었고, 열린 PR·리뷰 요청·열린 이슈는 0건이라 리뷰 대기 항목은 없습니다. 커밋은 insta_auto(100), zun2o(99), zunterview(45), mawa(44)에 몰려 있습니다.
+  상세 커밋 목록은 대부분 10/3에 몰려 있고, 작성자는 'claude'(djkdb는 blog-post-bot)로 기록되어 있습니다. 메일·캘린더 데이터는 이번 수집에 포함되지 않았습니다.
+
+공부·개발 기록
+  [개발] mawa: MCP 정책 게이트웨이, 해시 체인 감사 로그, PII 마스킹, 서명된 감사 라인과 누락 검사·평가 세트를 추가했습니다.
+  [개발] mawa: Claude Code CLI를 LLM 제공자로 붙이고(`npm run ask`), Windows에서 where.exe·npm shim으로 CLI를 찾도록 고쳤습니다. eCampus(CBNU Moodle) MCP 서버도 추가했습니다.
+  [개발] zuntra: Phase 2~8을 진행했고(일정 CRUD, AI 일정 생성, AI동반자, 지도·예산, 여행 일지, 데모 모드, E2E·보안 수정), Cloudflare Workers(OpenNext) 배포 설정을 추가했습니다.
+  [개발] insta_auto: 페르소나 5명의 감사 결과를 반영해 설정 화면,티스토리 발행 확인, 릴스 404·clips 삭제 버그 등을 고쳤습니다. 릴스표지 디자인도 10회 이상 반복 수정했습니다.
+  [개발] zunall: 실제 Claude CLI로 페르소나 시뮬레이션을 돌려 정확성 버그를 고치고, CI 브라우저 테스트가 실행되지 않던 문제와 화면 이동 시 DB 왕복(3~6번 → 2번)을 개선했습니다.
+  [개발] zun2o: 시즌 2 콘텐츠(사진·영상 프롬프트, 엔딩 아트 슬롯,점프 스케어 개선)를 추가했습니다. zunterview는 생성형 UI·AI 문체 흔적을 걷어냈습니다.
+
+PR·프로젝트
+  [팀플] 리뷰 대기: 13개 활성 저장소 모두 열린 이슈가 0건이고, 이번 기간 PR은 생성·머지 모두 0건입니다. 변경은 PR 없이 직접 push된 것으로 보입니다.
+  [개발] zuntra는 Phase 8(E2E, 성능)과 문서화·배포 설정까지 마쳐 첫 배포 직전 단계로 보입니다. (추론)
+  [개발] 주 초반에 활동한 저장소: zunmal 26, zun 8, zunbeat 7, zunsic 6, zunho 3, songbang 1커밋. 9/28~10/2 이후로는 push가 없습니다.
+
+놓치면 안 되는 것
+  높음 [보안] 369개 커밋이 PR이나 사람의 리뷰 없이 main에 바로 들어갔고, 작성자는 대부분 'claude'입니다. 보안 관련 변경(mawa 감사·PII, zuntra 보안 수정)도 검토되지 않았을 수 있습니다. (추론)
+      근거: PR 0건 · 보안 기능 변경을 한 사람이 검토하지 않음
+  보통 [개발] zuntra에 WIP 커밋(Phase 6 백엔드) 직후 배포 설정이 추가되어, 검증이 덜 된 코드가 Cloudflare에 배포될 수 있습니다. (추론)
+      근거: 배포 설정이 하루 만에 Phase 2~8을 진행한 직후 추가됨
+  낮음 [개발] insta_auto 릴스 표지는 같은 날 되돌림(revert)을 포함해 10회 이상 수정되어 방향이 정해지지 않았습니다. (추론)
+      근거: revert 1건 포함 반복 수정이 이어짐
+
+할 일
+  높음 [보안] mawa의 정책 게이트웨이·감사 체인·PII 마스킹 변경(4dd8e29~0a6cb69)을 직접 diff로 검토하세요. (추론)
+      근거: 보안 핵심 코드가 리뷰 없이 들어감
+  보통 [개발] zuntra 배포 전에 E2E와 보안 수정 결과를 확인하고, 환경 변수 문서대로 시크릿이 설정되어 있는지 점검하세요. (추론)
+      근거: 배포 설정이 막 추가됨
+  낮음 [개발] 주요 저장소(mawa, zuntra)는 앞으로 브랜치 + PR로 작업해 리뷰 흔적을 남기는 것을 권합니다. (추론)
+      근거: 이번 주 PR이 0건
+
+113 sources · 76.3s
+PS C:\Users\Pc\Downloads\DD\mawa>
