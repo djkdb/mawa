@@ -39,6 +39,19 @@ Your work already has the data. GitHub knows what you shipped, Gmail knows what 
 
 One agent, connected context. Integrations are not hard-coded into the agent: each is an MCP server that the agent discovers at runtime. Adding Slack or Notion later is a new server directory, not an agent change.
 
+## What You Can Do With It
+
+| Situation | What the agent does | Where |
+| --- | --- | --- |
+| Monday weekly update | Reads last week's commits, PRs, issues, meetings and work mail and writes a short **한 일 / 할 일 / 막힌 것** update for Slack (Markdown keeps the full report) | 리포트 → Slack용 복사 |
+| "What should I do first?" | Ranks open issues, review-waiting PRs and action-required mail by labels, deadlines, ownership and age, each with its reason; next actions read "owner · action · when" | 질문: 가장 중요한 작업과 다음 액션 |
+| "Where am I stuck?" | Keeps only items waiting on someone: a fix gating a deadline, a review, an external approval, an unconfirmed date | 질문: 막히고 있는 부분 찾기 |
+| Catching slips across tools | Merges mail and events that reference the same `#N` into one item; flags a mail that states a different day than the calendar (e.g. "Thursday" vs a Monday event) | 주의할 점 |
+| 1:1 prep / lead review | Decision-first report, priority reasons, unassigned issues turned into "assign an owner", comparison with the previous run of the same question (new / ongoing / resolved) | 리포트 상단 |
+| Checking it is not making things up | Every line cites sources; the validator drops citations of sources that were never fetched; a data-use panel shows what each tool read and what reached the LLM (masked addresses, flagged instructions), exportable as a JSONL audit log | 리포트 → 출처 검증, 데이터 사용 내역 |
+
+It only reads. There are no write tools; drafting replies or editing issues is out of scope for v1.
+
 ## Architecture
 
 Monorepo (npm workspaces, Node 22, TypeScript strict):
@@ -132,6 +145,9 @@ See [`.env.example`](.env.example). Nothing is hard-coded; `.env` is git-ignored
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth client |
 | `SESSION_ENCRYPTION_KEY` | 64 hex chars (`openssl rand -hex 32`); without it tokens are memory-only |
 | `API_PORT`, `WEB_ORIGIN`, `API_PUBLIC_URL`, `TOKEN_STORE_PATH` | server settings |
+| `API_HOST` | interface to bind; `127.0.0.1` by default (run records contain mail and calendar data) |
+| `API_ACCESS_TOKEN` | optional shared secret (≥16 chars); when set, `/api/*` and disconnect require it and the UI asks for it once |
+| `RUN_STORE_PATH` | with `SESSION_ENCRYPTION_KEY`, finished runs are kept encrypted here (last 30) so reports can be compared week to week |
 
 ## Setup
 
@@ -239,7 +255,7 @@ Both apps depend only on `@mawa/shared` (built first). They are single-page apps
 
 ## Future Improvements
 
-More MCP servers (Slack, Notion, Jira); SQLite `RunStore` for run history; scheduled weekly runs; write tools gated behind explicit human approval; a fixture-based evaluation suite scoring source grounding and coverage; per-user token isolation and tool-call audit logs for multi-user deployments. See `docs/ARCHITECTURE.md` §8.
+A recorded real-LLM run (`LLM_API_KEY=… npm run record:llm-run` adds one to the demo, labelled with the model); more MCP servers (Slack, Notion, Jira); scheduled weekly runs; write tools gated behind explicit human approval; a fixture-based evaluation suite scoring source grounding and coverage; per-user token isolation and tool-call audit logs for multi-user deployments. See `docs/ARCHITECTURE.md` §8.
 
 ---
 

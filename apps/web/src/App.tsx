@@ -4,6 +4,7 @@ import { DataUsePanel } from './components/DataUsePanel.js';
 import { ReportView } from './components/ReportView.js';
 import { Shell } from './components/Shell.js';
 import { IS_DEMO_BUILD, getClient, type Status } from './lib/client.js';
+import { setApiToken } from './lib/http-client.js';
 import { useAgentRun } from './lib/useAgentRun.js';
 import { hrefFor, useHashRoute } from './lib/useHashRoute.js';
 import { ConnectionsPage } from './pages/ConnectionsPage.js';
@@ -59,7 +60,14 @@ export default function App() {
   return (
     <Shell route={route} reportHref={reportHref} navigate={(r) => navigate(r)} status={status}>
       <div className="sr-only" aria-live="polite" role="status">{announce}</div>
-      {statusError && !IS_DEMO_BUILD && (
+      {statusError?.startsWith('401') && !IS_DEMO_BUILD && (
+        <form className="surface mx-auto mb-4 flex max-w-5xl flex-wrap items-center gap-2 px-4 py-3 text-sm" onSubmit={(e) => { e.preventDefault(); const v = new FormData(e.currentTarget).get('token'); setApiToken(typeof v === 'string' && v ? v : null); setStatusError(null); void refresh(); }}>
+          <label htmlFor="api-token" className="text-text-2">이 API 서버는 접근 토큰(API_ACCESS_TOKEN)을 요구합니다.</label>
+          <input id="api-token" name="token" type="password" autoComplete="off" className="hairline min-h-9 flex-1 rounded-md bg-bg px-3 text-text" />
+          <button type="submit" className="min-h-9 rounded-md bg-accent-strong px-3 font-medium text-white">저장</button>
+        </form>
+      )}
+      {statusError && !statusError.startsWith('401') && !IS_DEMO_BUILD && (
         <p role="alert" className="mx-auto mb-4 max-w-5xl rounded-lg bg-rose-400/10 px-4 py-3 text-sm text-rose-200">API 서버에 연결할 수 없습니다 ({statusError}). <code className="font-mono">npm run dev</code>로 실행하거나 데모 빌드를 여세요.</p>
       )}
       {notice && <p role="status" className="surface mx-auto mb-4 max-w-5xl px-4 py-3 text-sm">{notice} <button type="button" className="ml-2 text-text-2 underline" onClick={() => setNotice(null)}>닫기</button></p>}
@@ -69,7 +77,7 @@ export default function App() {
         <div className="mx-auto flex max-w-5xl flex-col gap-5">
           {state.report ? (
             <>
-              <ReportView key={state.runId ?? 'none'} report={state.report} warnings={state.warnings} recorded={recorded} prompt={state.prompt} onAnnounce={setAnnounce} events={state.events} note={state.note ?? null} />
+              <ReportView key={state.runId ?? 'none'} report={state.report} warnings={state.warnings} recorded={recorded} prompt={state.prompt} onAnnounce={setAnnounce} events={state.events} note={state.note ?? null} runId={state.runId} />
               <DataUsePanel events={state.events} runId={state.runId} />
               <ActivityTimeline events={state.events} phase={state.phase} recorded={recorded} runId={state.runId} />
             </>

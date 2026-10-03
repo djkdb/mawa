@@ -6,7 +6,8 @@ export interface Status {
   defaultMode: AgentMode;
   llm: { provider: string; model: string; isModel: boolean };
   tokenStore: { persistent: boolean };
-  api?: { host: string };
+  runStore?: { persistent: boolean };
+  api?: { host: string; tokenRequired?: boolean };
   integrations: {
     github: { status: IntegrationStatus; account: string | null; connectUrl: string; scopes?: string[] };
     google: { status: IntegrationStatus; account: string | null; connectUrl: string; services: string[]; scopes?: string[] };
@@ -42,7 +43,8 @@ export interface RunSummary {
   servers: McpServerId[];
   /** True for runs shipped with the demo (recorded earlier), false for runs started in this session. */
   recorded: boolean;
-  kind?: 'validation';
+  kind?: 'validation' | 'llm';
+  model?: string;
 }
 
 export interface StartRunResult {

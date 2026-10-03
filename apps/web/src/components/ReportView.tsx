@@ -5,6 +5,7 @@ import { DEMO_EXAMPLES } from '../lib/client.js';
 import { EXAMPLE_META, KIND_NAME, KIND_SERVER, SERVER_COLOR, SOURCE_TYPE_NAME, periodKo, sectionTitle, timeKo } from '../lib/copy.js';
 import { copyText, exportReport } from '../lib/export.js';
 import { ModeBadge } from './ModeBadge.js';
+import { PreviousRun } from './PreviousRun.js';
 import { SectionBody, type BlockCtx } from './ReportBlocks.js';
 
 export function reportTitle(prompt: string | null): string {
@@ -63,7 +64,7 @@ function Verification({ warnings, events }: { warnings: string[]; events: AgentE
   );
 }
 
-export function ReportView({ report, warnings, recorded, prompt, onAnnounce, events = [], note }: { report: WeeklyWorkReport; warnings: string[]; recorded: boolean; prompt: string | null; onAnnounce: (msg: string) => void; events?: AgentEvent[]; note?: string | null }) {
+export function ReportView({ report, warnings, recorded, prompt, onAnnounce, events = [], note, runId = null }: { report: WeeklyWorkReport; warnings: string[]; recorded: boolean; prompt: string | null; onAnnounce: (msg: string) => void; events?: AgentEvent[]; note?: string | null; runId?: string | null }) {
   const demo = report.mode === 'demo';
   const byId = new Map(report.sources.map((s) => [s.id, s]));
   const [hidden, setHidden] = useState<Set<string>>(() => loadHidden(report.runId));
@@ -71,7 +72,7 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
   const [showSources, setShowSources] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   useEffect(() => { try { localStorage.setItem(HIDDEN_KEY(report.runId), JSON.stringify([...hidden])); } catch { /* per-viewer convenience only */ } }, [hidden, report.runId]);
-  const title = note ? '출처 검증 시연' : reportTitle(prompt);
+  const title = note?.startsWith('출처 검증') ? '출처 검증 시연' : reportTitle(prompt);
   const all = report.sections.flatMap((s) => s.items);
   const visible = all.filter((i) => !hidden.has(i.id));
   const observed = visible.filter((i) => i.confidence === 'observed').length;
@@ -116,6 +117,7 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
 
       <div className="mt-5"><StatStrip report={report} /></div>
       <Verification warnings={warnings} events={events} />
+      {!note && <PreviousRun report={report} runId={runId} prompt={prompt} />}
 
       {demo && <p className="mt-3 text-[13px] text-text-3">{recorded ? '기록된 실행을 재생한 결과입니다. ' : ''}가상의 demo-user 계정의 샘플 데이터로 만든 리포트이며 실제 계정 정보가 아닙니다.</p>}
 

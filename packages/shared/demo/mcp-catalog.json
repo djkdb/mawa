@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T06:31:14.891Z",
+  "generatedAt": "2026-10-03T06:49:34.083Z",
   "note": "Generated from the real MCP servers in demo mode by scripts/export-portfolio-data.mjs. Output examples are DEMO DATA. `connection` and `wire` are the recorded initialize handshake and JSON-RPC messages.",
   "servers": {
     "github": {
@@ -52,7 +52,7 @@
                 "sha": "a1b2c3d4e5f60000000000000000000000000000",
                 "message": "feat(agent): add LLM provider abstraction with Anthropic and OpenAI adapters",
                 "author": "demo-user",
-                "date": "2026-10-02T23:19:14.103Z",
+                "date": "2026-10-02T23:37:33.269Z",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/a1b2c3d4e5f6",
                 "additions": 412,
                 "deletions": 38
@@ -63,7 +63,7 @@
                 "sha": "b2c3d4e5f6a10000000000000000000000000000",
                 "message": "feat(mcp): wire GitHub MCP server over stdio transport",
                 "author": "demo-user",
-                "date": "2026-10-02T11:19:14.103Z",
+                "date": "2026-10-02T11:37:33.269Z",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/b2c3d4e5f6a1",
                 "additions": 286,
                 "deletions": 12
@@ -85,10 +85,10 @@
               "method": "tools/call",
               "rpcId": 2,
               "bytes": 2827,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"3 commits across 1 repositories\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:commit:demo-user/my-ai-work-agent@a1b2c3d4e5f6\\\",\\n    \\\"repo\\\": \\\"demo-user/my-ai-work-agent\\\",\\n    \\\"sh… (1381자)\"}],\"structuredContent\":{\"summary\":\"3 commits across 1 repositories\",\"data\":[{\"sourceId\":\"github:commit:demo-user/my-ai-work-agent@a1b2c3d4e5f6\",\"repo\":\"demo-user/my-ai-work-agent\",\"sha\":\"a1b2c3d4e5f60000000000000000000000000000\",\"message\":\"feat(agent): add LLM provider abstraction with Anthropic and OpenAI adapters\",\"author\":\"demo-user\",\"date\":\"2026-10-02T23:19:14.103Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/commit/a1b2c3d4e5f6\",\"additions\":412,\"deletions\":38},{\"sourceId\":\"github:commit:demo-user/my-ai-work-agent@b2c3d4e5f6a1\",\"repo\":\"demo-user/my-ai-work-agent\",\"sha\":\"b2c3d4e5f6a10000000000000000000000000000\",\"message\":\"feat(mcp): wire GitHub MCP server over stdio transport\",\"author\":\"demo-user\",\"date\":\"2026-10-02T11:19:14.103Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/commit/b2c3d4e5f6a1\",\"additions\":286,\"deletions\":12},{\"sourceId\":\"github:commit:demo-user/my-ai-work-agent@c3d4e5f6a1b2\",\"repo\":\"demo-user/my-ai-work-agent\",\"sha\":\"c3d4e5f6a1b20000000000000000000000000000\",\"message\":\"test(agent-core): cover source-grounded report validation\",\"author\":\"demo-user\",\"date\":\"2026-10-02T04:07:14.103Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/commit/c3d4e5f6a1b2\",\"additions\":154,\"deletions\":4}]}}}"
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"3 commits across 1 repositories\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:commit:demo-user/my-ai-work-agent@a1b2c3d4e5f6\\\",\\n    \\\"repo\\\": \\\"demo-user/my-ai-work-agent\\\",\\n    \\\"sh… (1381자)\"}],\"structuredContent\":{\"summary\":\"3 commits across 1 repositories\",\"data\":[{\"sourceId\":\"github:commit:demo-user/my-ai-work-agent@a1b2c3d4e5f6\",\"repo\":\"demo-user/my-ai-work-agent\",\"sha\":\"a1b2c3d4e5f60000000000000000000000000000\",\"message\":\"feat(agent): add LLM provider abstraction with Anthropic and OpenAI adapters\",\"author\":\"demo-user\",\"date\":\"2026-10-02T23:37:33.269Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/commit/a1b2c3d4e5f6\",\"additions\":412,\"deletions\":38},{\"sourceId\":\"github:commit:demo-user/my-ai-work-agent@b2c3d4e5f6a1\",\"repo\":\"demo-user/my-ai-work-agent\",\"sha\":\"b2c3d4e5f6a10000000000000000000000000000\",\"message\":\"feat(mcp): wire GitHub MCP server over stdio transport\",\"author\":\"demo-user\",\"date\":\"2026-10-02T11:37:33.269Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/commit/b2c3d4e5f6a1\",\"additions\":286,\"deletions\":12},{\"sourceId\":\"github:commit:demo-user/my-ai-work-agent@c3d4e5f6a1b2\",\"repo\":\"demo-user/my-ai-work-agent\",\"sha\":\"c3d4e5f6a1b20000000000000000000000000000\",\"message\":\"test(agent-core): cover source-grounded report validation\",\"author\":\"demo-user\",\"date\":\"2026-10-02T04:25:33.269Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/commit/c3d4e5f6a1b2\",\"additions\":154,\"deletions\":4}]}}}"
             }
           ],
-          "durationMs": 12
+          "durationMs": 13
         },
         {
           "name": "get_pull_requests",
@@ -142,8 +142,8 @@
                 "title": "feat: agent-core with provider abstraction and report validation",
                 "state": "open",
                 "author": "demo-user",
-                "createdAt": "2026-10-02T01:43:14.103Z",
-                "updatedAt": "2026-10-02T23:19:14.103Z",
+                "createdAt": "2026-10-02T02:01:33.269Z",
+                "updatedAt": "2026-10-02T23:37:33.269Z",
                 "mergedAt": null,
                 "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
                 "reviewComments": 3,
@@ -169,10 +169,10 @@
               "method": "tools/call",
               "rpcId": 3,
               "bytes": 1194,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"1 pull requests (0 merged, 1 open)\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:pr:demo-user/my-ai-work-agent#14\\\",\\n    \\\"repo\\\": \\\"demo-user/my-ai-work-agent\\\",\\n    \\\"number\\\": 14,\\n… (557자)\"}],\"structuredContent\":{\"summary\":\"1 pull requests (0 merged, 1 open)\",\"data\":[{\"sourceId\":\"github:pr:demo-user/my-ai-work-agent#14\",\"repo\":\"demo-user/my-ai-work-agent\",\"number\":14,\"title\":\"feat: agent-core with provider abstraction and report validation\",\"state\":\"open\",\"author\":\"demo-user\",\"createdAt\":\"2026-10-02T01:43:14.103Z\",\"updatedAt\":\"2026-10-02T23:19:14.103Z\",\"mergedAt\":null,\"url\":\"https://github.com/demo-user/my-ai-work-agent/pull/14\",\"reviewComments\":3,\"labels\":[\"agent\",\"needs-review\"]}]}}}"
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"1 pull requests (0 merged, 1 open)\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:pr:demo-user/my-ai-work-agent#14\\\",\\n    \\\"repo\\\": \\\"demo-user/my-ai-work-agent\\\",\\n    \\\"number\\\": 14,\\n… (557자)\"}],\"structuredContent\":{\"summary\":\"1 pull requests (0 merged, 1 open)\",\"data\":[{\"sourceId\":\"github:pr:demo-user/my-ai-work-agent#14\",\"repo\":\"demo-user/my-ai-work-agent\",\"number\":14,\"title\":\"feat: agent-core with provider abstraction and report validation\",\"state\":\"open\",\"author\":\"demo-user\",\"createdAt\":\"2026-10-02T02:01:33.269Z\",\"updatedAt\":\"2026-10-02T23:37:33.269Z\",\"mergedAt\":null,\"url\":\"https://github.com/demo-user/my-ai-work-agent/pull/14\",\"reviewComments\":3,\"labels\":[\"agent\",\"needs-review\"]}]}}}"
             }
           ],
-          "durationMs": 3
+          "durationMs": 2
         },
         {
           "name": "get_open_issues",
@@ -210,8 +210,8 @@
                 "title": "Google OAuth refresh token is not rotated after expiry",
                 "state": "open",
                 "author": "demo-user",
-                "createdAt": "2026-10-02T06:31:14.103Z",
-                "updatedAt": "2026-10-02T18:31:14.103Z",
+                "createdAt": "2026-10-02T06:49:33.269Z",
+                "updatedAt": "2026-10-02T18:49:33.269Z",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
                 "labels": [
                   "bug",
@@ -229,8 +229,8 @@
                 "title": "Agent exceeds tool-call budget on broad prompts",
                 "state": "open",
                 "author": "demo-user",
-                "createdAt": "2026-10-01T11:19:14.103Z",
-                "updatedAt": "2026-10-02T04:07:14.103Z",
+                "createdAt": "2026-10-01T11:37:33.269Z",
+                "updatedAt": "2026-10-02T04:25:33.269Z",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
                 "labels": [
                   "agent",
@@ -257,7 +257,7 @@
               "method": "tools/call",
               "rpcId": 4,
               "bytes": 2120,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 open issues\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:issue:demo-user/my-ai-work-agent#17\\\",\\n    \\\"repo\\\": \\\"demo-user/my-ai-work-agent\\\",\\n    \\\"number\\\": 17,\\n    \\\"title\\\": \\\"Goog… (1045자)\"}],\"structuredContent\":{\"summary\":\"2 open issues\",\"data\":[{\"sourceId\":\"github:issue:demo-user/my-ai-work-agent#17\",\"repo\":\"demo-user/my-ai-work-agent\",\"number\":17,\"title\":\"Google OAuth refresh token is not rotated after expiry\",\"state\":\"open\",\"author\":\"demo-user\",\"createdAt\":\"2026-10-02T06:31:14.103Z\",\"updatedAt\":\"2026-10-02T18:31:14.103Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/issues/17\",\"labels\":[\"bug\",\"auth\",\"priority:high\"],\"assignees\":[\"demo-user\"]},{\"sourceId\":\"github:issue:demo-user/my-ai-work-agent#16\",\"repo\":\"demo-user/my-ai-work-agent\",\"number\":16,\"title\":\"Agent exceeds tool-call budget on broad prompts\",\"state\":\"open\",\"author\":\"demo-user\",\"createdAt\":\"2026-10-01T11:19:14.103Z\",\"updatedAt\":\"2026-10-02T04:07:14.103Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/issues/16\",\"labels\":[\"agent\",\"enhancement\"],\"assignees\":[\"demo-user\"]}]}}}"
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 open issues\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:issue:demo-user/my-ai-work-agent#17\\\",\\n    \\\"repo\\\": \\\"demo-user/my-ai-work-agent\\\",\\n    \\\"number\\\": 17,\\n    \\\"title\\\": \\\"Goog… (1045자)\"}],\"structuredContent\":{\"summary\":\"2 open issues\",\"data\":[{\"sourceId\":\"github:issue:demo-user/my-ai-work-agent#17\",\"repo\":\"demo-user/my-ai-work-agent\",\"number\":17,\"title\":\"Google OAuth refresh token is not rotated after expiry\",\"state\":\"open\",\"author\":\"demo-user\",\"createdAt\":\"2026-10-02T06:49:33.269Z\",\"updatedAt\":\"2026-10-02T18:49:33.269Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/issues/17\",\"labels\":[\"bug\",\"auth\",\"priority:high\"],\"assignees\":[\"demo-user\"]},{\"sourceId\":\"github:issue:demo-user/my-ai-work-agent#16\",\"repo\":\"demo-user/my-ai-work-agent\",\"number\":16,\"title\":\"Agent exceeds tool-call budget on broad prompts\",\"state\":\"open\",\"author\":\"demo-user\",\"createdAt\":\"2026-10-01T11:37:33.269Z\",\"updatedAt\":\"2026-10-02T04:25:33.269Z\",\"url\":\"https://github.com/demo-user/my-ai-work-agent/issues/16\",\"labels\":[\"agent\",\"enhancement\"],\"assignees\":[\"demo-user\"]}]}}}"
             }
           ],
           "durationMs": 3
@@ -306,7 +306,7 @@
                 "url": "https://github.com/demo-user/my-ai-work-agent",
                 "description": "Connect work. Understand context. Execute with AI.",
                 "defaultBranch": "main",
-                "lastPushedAt": "2026-10-02T23:19:14.103Z",
+                "lastPushedAt": "2026-10-02T23:37:33.269Z",
                 "openIssues": 3,
                 "openPullRequests": 1,
                 "commitsInPeriod": 9,
@@ -318,7 +318,7 @@
                 "url": "https://github.com/demo-user/cbnu-algorithms",
                 "description": "Algorithm practice for CBNU coursework",
                 "defaultBranch": "main",
-                "lastPushedAt": "2026-09-28T08:55:14.103Z",
+                "lastPushedAt": "2026-09-28T09:13:33.269Z",
                 "openIssues": 1,
                 "openPullRequests": 0,
                 "commitsInPeriod": 3,
@@ -341,7 +341,7 @@
               "method": "tools/call",
               "rpcId": 5,
               "bytes": 1768,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":5,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 active repositories\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:repo:demo-user/my-ai-work-agent\\\",\\n    \\\"repo\\\": \\\"demo-user/my-ai-work-agent\\\",\\n    \\\"url\\\": \\\"https://github.com/d… (846자)\"}],\"structuredContent\":{\"summary\":\"2 active repositories\",\"data\":[{\"sourceId\":\"github:repo:demo-user/my-ai-work-agent\",\"repo\":\"demo-user/my-ai-work-agent\",\"url\":\"https://github.com/demo-user/my-ai-work-agent\",\"description\":\"Connect work. Understand context. Execute with AI.\",\"defaultBranch\":\"main\",\"lastPushedAt\":\"2026-10-02T23:19:14.103Z\",\"openIssues\":3,\"openPullRequests\":1,\"commitsInPeriod\":9,\"language\":\"TypeScript\"},{\"sourceId\":\"github:repo:demo-user/cbnu-algorithms\",\"repo\":\"demo-user/cbnu-algorithms\",\"url\":\"https://github.com/demo-user/cbnu-algorithms\",\"description\":\"Algorithm practice for CBNU coursework\",\"defaultBranch\":\"main\",\"lastPushedAt\":\"2026-09-28T08:55:14.103Z\",\"openIssues\":1,\"openPullRequests\":0,\"commitsInPeriod\":3,\"language\":\"C++\"}]}}}"
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":5,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 active repositories\\n[\\n  {\\n    \\\"sourceId\\\": \\\"github:repo:demo-user/my-ai-work-agent\\\",\\n    \\\"repo\\\": \\\"demo-user/my-ai-work-agent\\\",\\n    \\\"url\\\": \\\"https://github.com/d… (846자)\"}],\"structuredContent\":{\"summary\":\"2 active repositories\",\"data\":[{\"sourceId\":\"github:repo:demo-user/my-ai-work-agent\",\"repo\":\"demo-user/my-ai-work-agent\",\"url\":\"https://github.com/demo-user/my-ai-work-agent\",\"description\":\"Connect work. Understand context. Execute with AI.\",\"defaultBranch\":\"main\",\"lastPushedAt\":\"2026-10-02T23:37:33.269Z\",\"openIssues\":3,\"openPullRequests\":1,\"commitsInPeriod\":9,\"language\":\"TypeScript\"},{\"sourceId\":\"github:repo:demo-user/cbnu-algorithms\",\"repo\":\"demo-user/cbnu-algorithms\",\"url\":\"https://github.com/demo-user/cbnu-algorithms\",\"description\":\"Algorithm practice for CBNU coursework\",\"defaultBranch\":\"main\",\"lastPushedAt\":\"2026-09-28T09:13:33.269Z\",\"openIssues\":1,\"openPullRequests\":0,\"commitsInPeriod\":3,\"language\":\"C++\"}]}}}"
             }
           ],
           "durationMs": 2
@@ -453,7 +453,7 @@
               "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 events\\n[\\n  {\\n    \\\"sourceId\\\": \\\"calendar:event:demoev001\\\",\\n    \\\"eventId\\\": \\\"demoev001\\\",\\n    \\\"calendar\\\": \\\"primary\\\",\\n    \\\"title\\\": \\\"PR #14 review sync with Minji\\\",\\n… (1204자)\"}],\"structuredContent\":{\"summary\":\"2 events\",\"data\":[{\"sourceId\":\"calendar:event:demoev001\",\"eventId\":\"demoev001\",\"calendar\":\"primary\",\"title\":\"PR #14 review sync with Minji\",\"description\":\"Walk through provider abstraction comments; decide on retry strategy for OpenAI-compatible provider.\",\"start\":\"2026-10-02T05:00:00.000Z\",\"end\":\"2026-10-02T05:30:00.000Z\",\"allDay\":false,\"location\":\"Google Meet\",\"attendees\":[\"minji@example.com\",\"demo-user@example.com\"],\"organizer\":\"minji@example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev001\"},{\"sourceId\":\"calendar:event:demoev004\",\"eventId\":\"demoev004\",\"calendar\":\"primary\",\"title\":\"Deep work: Google OAuth refresh fix (#17)\",\"description\":\"Blocked time to fix refresh-token rotation before demo day.\",\"start\":\"2026-10-04T01:00:00.000Z\",\"end\":\"2026-10-04T04:00:00.000Z\",\"allDay\":false,\"location\":null,\"attendees\":[\"demo-user@example.com\"],\"organizer\":\"demo-user@example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev004\"}]}}}"
             }
           ],
-          "durationMs": 11
+          "durationMs": 17
         },
         {
           "name": "get_upcoming_events",
@@ -543,7 +543,7 @@
               "preview": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 upcoming events in the next 7 days\\n[\\n  {\\n    \\\"sourceId\\\": \\\"calendar:event:demoev004\\\",\\n    \\\"eventId\\\": \\\"demoev004\\\",\\n    \\\"calendar\\\": \\\"primary\\\",\\n    \\\"title\\\": \\\"Deep… (1192자)\"}],\"structuredContent\":{\"summary\":\"2 upcoming events in the next 7 days\",\"data\":[{\"sourceId\":\"calendar:event:demoev004\",\"eventId\":\"demoev004\",\"calendar\":\"primary\",\"title\":\"Deep work: Google OAuth refresh fix (#17)\",\"description\":\"Blocked time to fix refresh-token rotation before demo day.\",\"start\":\"2026-10-04T01:00:00.000Z\",\"end\":\"2026-10-04T04:00:00.000Z\",\"allDay\":false,\"location\":null,\"attendees\":[\"demo-user@example.com\"],\"organizer\":\"demo-user@example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev004\"},{\"sourceId\":\"calendar:event:demoev002\",\"eventId\":\"demoev002\",\"calendar\":\"primary\",\"title\":\"Capstone weekly check-in\",\"description\":\"5-minute architecture update: MCP vs direct API integration.\",\"start\":\"2026-10-05T06:00:00.000Z\",\"end\":\"2026-10-05T07:00:00.000Z\",\"allDay\":false,\"location\":\"S4-1 309\",\"attendees\":[\"park@cbnu.example.com\",\"demo-user@example.com\"],\"organizer\":\"park@cbnu.example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev002\"}]}}}"
             }
           ],
-          "durationMs": 3
+          "durationMs": 2
         },
         {
           "name": "search_events",
@@ -644,7 +644,7 @@
               "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 events matching \\\"demo\\\"\\n[\\n  {\\n    \\\"sourceId\\\": \\\"calendar:event:demoev004\\\",\\n    \\\"eventId\\\": \\\"demoev004\\\",\\n    \\\"calendar\\\": \\\"primary\\\",\\n    \\\"title\\\": \\\"Deep work: Googl… (1163자)\"}],\"structuredContent\":{\"summary\":\"2 events matching \\\"demo\\\"\",\"data\":[{\"sourceId\":\"calendar:event:demoev004\",\"eventId\":\"demoev004\",\"calendar\":\"primary\",\"title\":\"Deep work: Google OAuth refresh fix (#17)\",\"description\":\"Blocked time to fix refresh-token rotation before demo day.\",\"start\":\"2026-10-04T01:00:00.000Z\",\"end\":\"2026-10-04T04:00:00.000Z\",\"allDay\":false,\"location\":null,\"attendees\":[\"demo-user@example.com\"],\"organizer\":\"demo-user@example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev004\"},{\"sourceId\":\"calendar:event:demoev005\",\"eventId\":\"demoev005\",\"calendar\":\"primary\",\"title\":\"Demo day — My AI Work Agent\",\"description\":\"10 min demo + 5 min Q&A. HDMI only.\",\"start\":\"2026-10-11T05:00:00.000Z\",\"end\":\"2026-10-11T05:15:00.000Z\",\"allDay\":false,\"location\":\"Innovation Hall\",\"attendees\":[\"lab@cbnu.example.com\",\"demo-user@example.com\"],\"organizer\":\"lab@cbnu.example.com\",\"status\":\"confirmed\",\"url\":\"https://calendar.google.com/calendar/event?eid=demoev005\"}]}}}"
             }
           ],
-          "durationMs": 2
+          "durationMs": 3
         }
       ],
       "connection": {
@@ -712,7 +712,7 @@
                 "to": [
                   "demo-user@example.com"
                 ],
-                "date": "2026-10-02T20:55:14.806Z",
+                "date": "2026-10-02T21:13:34.017Z",
                 "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
                 "labels": [
                   "INBOX"
@@ -728,7 +728,7 @@
                 "to": [
                   "demo-user@example.com"
                 ],
-                "date": "2026-09-30T16:07:14.806Z",
+                "date": "2026-09-30T16:25:34.017Z",
                 "snippet": "Thank you for applying. We will review your portfolio and get back within two weeks.",
                 "labels": [
                   "INBOX"
@@ -752,7 +752,7 @@
               "method": "tools/call",
               "rpcId": 2,
               "bytes": 2158,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 emails matching \\\"review\\\"\\n[\\n  {\\n    \\\"sourceId\\\": \\\"gmail:msg:demo0001\\\",\\n    \\\"messageId\\\": \\\"demo0001\\\",\\n    \\\"threadId\\\": \\\"tdemo0001\\\",\\n    \\\"subject\\\": \\\"Re: my-ai-work-… (1051자)\"}],\"structuredContent\":{\"summary\":\"2 emails matching \\\"review\\\"\",\"data\":[{\"sourceId\":\"gmail:msg:demo0001\",\"messageId\":\"demo0001\",\"threadId\":\"tdemo0001\",\"subject\":\"Re: my-ai-work-agent PR #14 review\",\"from\":\"Kim Minji <minji@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-10-02T20:55:14.806Z\",\"snippet\":\"Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0001\"},{\"sourceId\":\"gmail:msg:demo0005\",\"messageId\":\"demo0005\",\"threadId\":\"tdemo0005\",\"subject\":\"QueryPie AX Engineer internship — application received\",\"from\":\"Recruiting <recruit@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-09-30T16:07:14.806Z\",\"snippet\":\"Thank you for applying. We will review your portfolio and get back within two weeks.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0005\"}]}}}"
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":2,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 emails matching \\\"review\\\"\\n[\\n  {\\n    \\\"sourceId\\\": \\\"gmail:msg:demo0001\\\",\\n    \\\"messageId\\\": \\\"demo0001\\\",\\n    \\\"threadId\\\": \\\"tdemo0001\\\",\\n    \\\"subject\\\": \\\"Re: my-ai-work-… (1051자)\"}],\"structuredContent\":{\"summary\":\"2 emails matching \\\"review\\\"\",\"data\":[{\"sourceId\":\"gmail:msg:demo0001\",\"messageId\":\"demo0001\",\"threadId\":\"tdemo0001\",\"subject\":\"Re: my-ai-work-agent PR #14 review\",\"from\":\"Kim Minji <minji@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-10-02T21:13:34.017Z\",\"snippet\":\"Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0001\"},{\"sourceId\":\"gmail:msg:demo0005\",\"messageId\":\"demo0005\",\"threadId\":\"tdemo0005\",\"subject\":\"QueryPie AX Engineer internship — application received\",\"from\":\"Recruiting <recruit@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-09-30T16:25:34.017Z\",\"snippet\":\"Thank you for applying. We will review your portfolio and get back within two weeks.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0005\"}]}}}"
             }
           ],
           "durationMs": 6
@@ -799,7 +799,7 @@
               "to": [
                 "demo-user@example.com"
               ],
-              "date": "2026-10-02T20:55:14.806Z",
+              "date": "2026-10-02T21:13:34.017Z",
               "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
               "labels": [
                 "INBOX"
@@ -824,10 +824,10 @@
               "method": "tools/call",
               "rpcId": 3,
               "bytes": 1698,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Email \\\"Re: my-ai-work-agent PR #14 review\\\" from Kim Minji <minji@example.com>\\n{\\n  \\\"sourceId\\\": \\\"gmail:msg:demo0001\\\",\\n  \\\"messageId\\\": \\\"demo0001\\\",\\n  \\\"threadId\\\": \\\"td… (788자)\"}],\"structuredContent\":{\"summary\":\"Email \\\"Re: my-ai-work-agent PR #14 review\\\" from Kim Minji <minji@example.com>\",\"data\":{\"sourceId\":\"gmail:msg:demo0001\",\"messageId\":\"demo0001\",\"threadId\":\"tdemo0001\",\"subject\":\"Re: my-ai-work-agent PR #14 review\",\"from\":\"Kim Minji <minji@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-10-02T20:55:14.806Z\",\"snippet\":\"Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0001\",\"body\":\"Hi Seongjun,\\n\\nI went through PR #14. The provider abstraction looks clean. Three comments:\\n1. Rename `complete` to `generate`? (naming, optional)\\n2. OpenAICompa… (200자)\",\"truncated\":true}}}}"
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":3,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"Email \\\"Re: my-ai-work-agent PR #14 review\\\" from Kim Minji <minji@example.com>\\n{\\n  \\\"sourceId\\\": \\\"gmail:msg:demo0001\\\",\\n  \\\"messageId\\\": \\\"demo0001\\\",\\n  \\\"threadId\\\": \\\"td… (788자)\"}],\"structuredContent\":{\"summary\":\"Email \\\"Re: my-ai-work-agent PR #14 review\\\" from Kim Minji <minji@example.com>\",\"data\":{\"sourceId\":\"gmail:msg:demo0001\",\"messageId\":\"demo0001\",\"threadId\":\"tdemo0001\",\"subject\":\"Re: my-ai-work-agent PR #14 review\",\"from\":\"Kim Minji <minji@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-10-02T21:13:34.017Z\",\"snippet\":\"Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0001\",\"body\":\"Hi Seongjun,\\n\\nI went through PR #14. The provider abstraction looks clean. Three comments:\\n1. Rename `complete` to `generate`? (naming, optional)\\n2. OpenAICompa… (200자)\",\"truncated\":true}}}}"
             }
           ],
-          "durationMs": 3
+          "durationMs": 1
         },
         {
           "name": "search_project_emails",
@@ -885,7 +885,7 @@
                 "to": [
                   "demo-user@example.com"
                 ],
-                "date": "2026-10-02T20:55:14.806Z",
+                "date": "2026-10-02T21:13:34.017Z",
                 "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
                 "labels": [
                   "INBOX"
@@ -901,7 +901,7 @@
                 "to": [
                   "demo-user@example.com"
                 ],
-                "date": "2026-10-02T06:31:14.806Z",
+                "date": "2026-10-02T06:49:34.017Z",
                 "snippet": "Your OAuth consent screen for project my-ai-work-agent needs verification before you can use sensitive scopes with external users.",
                 "labels": [
                   "INBOX"
@@ -925,7 +925,7 @@
               "method": "tools/call",
               "rpcId": 4,
               "bytes": 2326,
-              "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 project-related emails for [my-ai-work-agent]\\n[\\n  {\\n    \\\"sourceId\\\": \\\"gmail:msg:demo0001\\\",\\n    \\\"messageId\\\": \\\"demo0001\\\",\\n    \\\"threadId\\\": \\\"tdemo0001\\\",\\n    \\\"subje… (1139자)\"}],\"structuredContent\":{\"summary\":\"2 project-related emails for [my-ai-work-agent]\",\"data\":[{\"sourceId\":\"gmail:msg:demo0001\",\"messageId\":\"demo0001\",\"threadId\":\"tdemo0001\",\"subject\":\"Re: my-ai-work-agent PR #14 review\",\"from\":\"Kim Minji <minji@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-10-02T20:55:14.806Z\",\"snippet\":\"Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0001\"},{\"sourceId\":\"gmail:msg:demo0002\",\"messageId\":\"demo0002\",\"threadId\":\"tdemo0002\",\"subject\":\"[Action required] Google OAuth consent screen verification\",\"from\":\"Google Cloud Platform <noreply-cloud@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-10-02T06:31:14.806Z\",\"snippet\":\"Your OAuth consent screen for project my-ai-work-agent needs verification before you can use sensitive scopes with external users.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0002\"}]}}}"
+              "preview": "{\"jsonrpc\":\"2.0\",\"id\":4,\"result\":{\"content\":[{\"type\":\"text\",\"text\":\"2 project-related emails for [my-ai-work-agent]\\n[\\n  {\\n    \\\"sourceId\\\": \\\"gmail:msg:demo0001\\\",\\n    \\\"messageId\\\": \\\"demo0001\\\",\\n    \\\"threadId\\\": \\\"tdemo0001\\\",\\n    \\\"subje… (1139자)\"}],\"structuredContent\":{\"summary\":\"2 project-related emails for [my-ai-work-agent]\",\"data\":[{\"sourceId\":\"gmail:msg:demo0001\",\"messageId\":\"demo0001\",\"threadId\":\"tdemo0001\",\"subject\":\"Re: my-ai-work-agent PR #14 review\",\"from\":\"Kim Minji <minji@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-10-02T21:13:34.017Z\",\"snippet\":\"Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0001\"},{\"sourceId\":\"gmail:msg:demo0002\",\"messageId\":\"demo0002\",\"threadId\":\"tdemo0002\",\"subject\":\"[Action required] Google OAuth consent screen verification\",\"from\":\"Google Cloud Platform <noreply-cloud@example.com>\",\"to\":[\"demo-user@example.com\"],\"date\":\"2026-10-02T06:49:34.017Z\",\"snippet\":\"Your OAuth consent screen for project my-ai-work-agent needs verification before you can use sensitive scopes with external users.\",\"labels\":[\"INBOX\"],\"url\":\"https://mail.google.com/mail/u/0/#inbox/demo0002\"}]}}}"
             }
           ],
           "durationMs": 2

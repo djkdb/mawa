@@ -1,4 +1,5 @@
-import { Hono } from 'hono';
+import { timingSafeEqual } from 'node:crypto';
+import { Hono, type Context, type Next } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { z } from 'zod';
@@ -6,6 +7,8 @@ import { AgentModeSchema, PROJECT } from '@mawa/shared';
 import { GOOGLE_SCOPES, OAuthService, githubScopesFromEnv } from './auth/oauth.js';
 import { TokenStore } from './auth/token-store.js';
 import type { AppConfig } from './config.js';
+import { MemoryRunStore, type RunStore } from '@mawa/agent-core';
+import { EncryptedRunStore } from './agent/encrypted-run-store.js';
 import { RunManager } from './agent/run-manager.js';
 
 export interface AppDeps {
@@ -19,7 +22,14 @@ export async function createDeps(config: AppConfig): Promise<AppDeps> {
   const store = new TokenStore(config.tokenStorePath, config.encryptionKey);
   await store.load();
   const oauth = new OAuthService(config, store);
-  const runs = new RunManager(config, oauth);
+  // With an encryption key, run history persists (encrypted) so reports can be compared week to week.
+  let runStore: RunStore = new MemoryRunStore();
+  if (config.encryptionKey) {
+    const encrypted = new EncryptedRunStore(config.runStorePath, config.encryptionKey);
+    await encrypted.load();
+    runStore = encrypted;
+  }
+  const runs = new RunManager(config, oauth, runStore);
   return { config, oauth, runs, store };
 }
 
@@ -46,6 +56,25 @@ export function createApp(deps: AppDeps) {
     await next();
   });
 
+  // Optional access token: required for everything that reads run data or changes state.
+  if (config.accessToken) {
+    const expected = Buffer.from(config.accessToken);
+    const ok = (given: string | undefined) => {
+      if (!given) return false;
+      const b = Buffer.from(given);
+      return b.length === expected.length && timingSafeEqual(b, expected);
+    };
+    const guard = async (c: Context, next: Next) => {
+      if (c.req.path === '/api/health') return next();
+      const bearer = c.req.header('authorization')?.replace(/^Bearer\s+/i, '');
+      const query = c.req.method === 'GET' && c.req.path.endsWith('/events') ? c.req.query('access_token') : undefined;
+      if (!ok(bearer) && !ok(query)) return c.json({ error: 'API access token required' }, 401);
+      return next();
+    };
+    app.use('/api/*', guard);
+    app.use('/auth/:provider/disconnect', guard);
+  }
+
   app.get('/api/health', (c) => c.json({ ok: true, name: PROJECT.name }));
 
   /** Honest capability report: what is configured, what is connected, what the LLM is. */
@@ -55,7 +84,8 @@ export function createApp(deps: AppDeps) {
       defaultMode: config.defaultMode,
       llm: { ...runs.llmInfo, isModel: runs.llmInfo.provider !== 'scripted' },
       tokenStore: { persistent: deps.store.persistent },
-      api: { host: config.host },
+      runStore: { persistent: deps.runs.store instanceof EncryptedRunStore },
+      api: { host: config.host, tokenRequired: Boolean(config.accessToken) },
       integrations: {
         github: { status: oauth.status('github'), account: oauth.account('github') ?? null, connectUrl: '/auth/github/start', scopes: githubScopesFromEnv() },
         google: { status: oauth.status('google'), account: oauth.account('google') ?? null, connectUrl: '/auth/google/start', services: ['gmail', 'calendar'], scopes: GOOGLE_SCOPES },

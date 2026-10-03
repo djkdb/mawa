@@ -10,7 +10,7 @@ export interface RecordedRun {
   report: WeeklyWorkReport;
   warnings: string[];
   /** "validation": a fault-injection recording that shows the source validator at work. Never offered as an example. */
-  kind?: 'validation';
+  kind?: 'validation' | 'llm';
   note?: string;
 }
 
@@ -31,11 +31,11 @@ export function recordedIdOf(runId: string): string | null {
 
 /** A finished recorded run, for showing a completed result on first paint (no replay, no timers). */
 export function getRecordedRun(id?: string): RecordedRun | null {
-  return (id ? RECORDED.runs.find((r) => r.id === id) : RECORDED.runs[0]) ?? null;
+  return (id ? RECORDED.runs.find((r) => r.id === id) : RECORDED.runs.find((r) => !r.kind)) ?? null;
 }
 
 /** The example requests the demo can answer: exactly the prompts that were recorded. */
-export const DEMO_EXAMPLES = RECORDED.runs.filter((r) => r.kind !== 'validation').map((r) => ({ id: r.id, prompt: r.prompt }));
+export const DEMO_EXAMPLES = RECORDED.runs.filter((r) => !r.kind).map((r) => ({ id: r.id, prompt: r.prompt }));
 
 /** Replays started in this browser, remembered across reloads (ids and times only; the content is the recording). */
 const STORE_KEY = 'mawa.demo.runs';
@@ -92,7 +92,7 @@ export class DemoClient implements AgentClient {
 
   async startRun(prompt: string, mode: AgentMode): Promise<StartRunResult> {
     if (mode !== 'demo') throw new Error('This deployment is a browser-only demo. Real mode needs the API server (see README → Demo vs Real).');
-    const recorded = RECORDED.runs.find((r) => r.kind !== 'validation' && r.prompt.trim() === prompt.trim());
+    const recorded = RECORDED.runs.find((r) => !r.kind && r.prompt.trim() === prompt.trim());
     if (!recorded) {
       throw new Error('Demo mode replays recorded MCP runs, so it can only answer the example requests above. Pick one of them, or run the API locally for free-form prompts.');
     }
@@ -163,7 +163,7 @@ export class DemoClient implements AgentClient {
     const shipped: RunSummary[] = RECORDED.runs.map((r) => ({
       runId: `recorded_${r.id}`, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: r.report.generatedAt,
       toolCalls: r.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.report.sources.length, servers: serversOf(r.events), recorded: true,
-      ...(r.kind ? { kind: r.kind } : {}),
+      ...(r.kind ? { kind: r.kind } : {}), ...(r.kind === 'llm' ? { model: r.llm.model } : {}),
     }));
     return [...session, ...earlier, ...shipped];
   }

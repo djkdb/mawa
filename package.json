@@ -28,7 +28,8 @@
     "export:portfolio-data": "node scripts/export-portfolio-data.mjs",
     "test:e2e": "playwright test",
     "build:demo": "npm run build -w packages/shared && npm run build:demo -w apps/web",
-    "pretest:e2e": "npm run build:demo -w apps/web"
+    "pretest:e2e": "npm run build:demo -w apps/web",
+    "record:llm-run": "node scripts/record-llm-run.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

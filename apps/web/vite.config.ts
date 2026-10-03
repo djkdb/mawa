@@ -18,6 +18,8 @@ process.env['VITE_PUBLIC_URL'] ??= '';
 export default defineConfig(({ mode }) => ({
   plugins: [react(), tailwindcss()],
   define: {
+    // Code links point at the branch being built (Cloudflare Pages sets CF_PAGES_BRANCH), else HEAD.
+    'import.meta.env.VITE_REPO_REF': JSON.stringify(process.env['VITE_REPO_REF'] ?? process.env['CF_PAGES_BRANCH'] ?? 'HEAD'),
     'import.meta.env.VITE_DEMO_MODE': JSON.stringify(mode === 'demo' ? 'true' : (process.env['VITE_DEMO_MODE'] ?? 'false')),
   },
   build: { outDir: mode === 'demo' ? 'dist-demo' : 'dist' },

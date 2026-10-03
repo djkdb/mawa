@@ -7,7 +7,7 @@
  * Both apps/web (demo mode) and portfolio import these files.
  * Run after `npm run build`: `npm run export:portfolio-data`.
  */
-import { writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { McpToolExecutor, ScriptedProvider, runAgent } from '@mawa/agent-core';
 
@@ -105,6 +105,11 @@ try {
     runs.push({ id: 'validation-demo', kind: 'validation', prompt, note: '출처 검증 시연: 리포트 단계에 존재하지 않는 출처를 인용한 항목 1건과 출처 없는 "확인됨" 항목 1건을 일부러 주입한 기록입니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + fault injection' }, events: run.events, report: run.report, warnings: run.warnings });
     console.log(`run validation-demo: dropped ${run.events.find((e) => e.type === 'report_generated')?.droppedItems}`);
   }
+  // Keep a real-LLM recording made with `npm run record:llm-run`; this script never fabricates one.
+  try {
+    const prev = JSON.parse(await readFile(new URL('packages/shared/demo/demo-runs.json', root), 'utf8'));
+    runs.push(...prev.runs.filter((r) => r.kind === 'llm'));
+  } catch { /* first export */ }
   const out = { recordedAt: new Date().toISOString(), note: 'Recorded demo runs (DEMO MODE, scripted provider, real MCP servers over stdio, synthetic fixtures). Replayed by apps/web in demo mode and by the portfolio. Not live, not real data.', runs };
   await writeFile(new URL('packages/shared/demo/demo-runs.json', root), JSON.stringify(out, null, 2));
 } finally {

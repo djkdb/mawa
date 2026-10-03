@@ -1,7 +1,7 @@
 import { EventEmitter } from 'node:events';
 import { randomUUID } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
-import { McpToolExecutor, MemoryRunStore, createLLMProvider, runAgent, type LLMProvider, type McpServerSpec, type RunRecord } from '@mawa/agent-core';
+import { McpToolExecutor, MemoryRunStore, createLLMProvider, runAgent, type LLMProvider, type McpServerSpec, type RunRecord, type RunStore } from '@mawa/agent-core';
 import type { AgentEvent, AgentMode, McpServerId } from '@mawa/shared';
 import type { OAuthService } from '../auth/oauth.js';
 import type { AppConfig } from '../config.js';
@@ -19,11 +19,10 @@ export interface StartRunInput {
  * to SSE subscribers. One MCP executor per run; servers exit with the run.
  */
 export class RunManager {
-  readonly store = new MemoryRunStore();
   private emitter = new EventEmitter();
   private llm: LLMProvider;
 
-  constructor(private readonly config: AppConfig, private readonly oauth: OAuthService) {
+  constructor(private readonly config: AppConfig, private readonly oauth: OAuthService, readonly store: RunStore = new MemoryRunStore()) {
     this.llm = createLLMProvider(config.llm);
   }
 
@@ -49,12 +48,9 @@ export class RunManager {
           id,
           command: process.execPath,
           args: [SERVER_ENTRY(id)],
-          env: {
-            GOOGLE_ACCESS_TOKEN: google.accessToken,
-            ...(google.refreshToken ? { GOOGLE_REFRESH_TOKEN: google.refreshToken } : {}),
-            ...(this.config.google.clientId ? { GOOGLE_CLIENT_ID: this.config.google.clientId } : {}),
-            ...(this.config.google.clientSecret ? { GOOGLE_CLIENT_SECRET: this.config.google.clientSecret } : {}),
-          },
+          // Only the short-lived access token: the API refreshed it just above (freshGoogleToken),
+          // so the refresh token and client secret never leave this process.
+          env: { GOOGLE_ACCESS_TOKEN: google.accessToken },
         });
       } else {
         skipped.push({ id, reason: this.oauth.status('google') === 'not_configured' ? 'Google OAuth not configured' : 'Google not connected' });

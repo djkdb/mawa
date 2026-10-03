@@ -142,3 +142,35 @@ describe('oauth disconnect', () => {
     expect(store.get('google')).toBeNull();
   });
 });
+
+describe('api access token', () => {
+  it('requires the token on /api/* when API_ACCESS_TOKEN is set; health stays open', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-tok-'));
+    const config = loadConfig({ AGENT_MODE: 'demo', API_ACCESS_TOKEN: 'a-long-enough-secret', TOKEN_STORE_PATH: join(dir, 't.json') });
+    const app = createApp(await createDeps(config));
+    expect((await app.request('/api/health')).status).toBe(200);
+    expect((await app.request('/api/status')).status).toBe(401);
+    expect((await app.request('/api/status', { headers: { authorization: 'Bearer wrong-but-long-secret' } })).status).toBe(401);
+    const ok = await app.request('/api/status', { headers: { authorization: 'Bearer a-long-enough-secret' } });
+    expect(ok.status).toBe(200);
+    expect((await ok.json()).api.tokenRequired).toBe(true);
+    expect((await app.request('/auth/google/disconnect', { method: 'POST' })).status).toBe(401);
+  });
+});
+
+describe('encrypted run history', () => {
+  it('persists finished runs encrypted and reloads them after a restart', async () => {
+    const { EncryptedRunStore } = await import('../src/agent/encrypted-run-store.js');
+    const { readFile } = await import('node:fs/promises');
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-runs-'));
+    const path = join(dir, 'runs.enc.json');
+    const key = 'ab'.repeat(32);
+    const a = new EncryptedRunStore(path, key);
+    await a.create({ runId: 'run_1', mode: 'demo', prompt: 'p', status: 'running', createdAt: new Date().toISOString(), events: [], report: null, warnings: [], llm: { provider: 'scripted', model: 'x' } });
+    await a.update('run_1', { status: 'success', warnings: ['secret-ish minji@example.com'] });
+    expect(await readFile(path, 'utf8')).not.toContain('minji');
+    const b = new EncryptedRunStore(path, key);
+    await b.load();
+    expect((await b.get('run_1'))?.warnings).toEqual(['secret-ish minji@example.com']);
+  });
+});

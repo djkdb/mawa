@@ -69,7 +69,7 @@ export class TokenStore {
   }
 }
 
-function parseKey(hex: string): Buffer {
+export function parseKey(hex: string): Buffer {
   const buf = Buffer.from(hex, 'hex');
   if (buf.length !== 32) throw new Error('SESSION_ENCRYPTION_KEY must be 32 bytes as 64 hex characters (openssl rand -hex 32)');
   return buf;
