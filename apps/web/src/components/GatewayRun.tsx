@@ -7,7 +7,7 @@ import { verifyChain, type ChainCheck } from '@mawa/shared';
 import { piiBreakdown } from '../lib/copy.js';
 
 type Entry = { seq: number; at: string; client: string; action: string; server?: string; tool?: string; input?: Record<string, unknown>; rows?: number; detail?: string; maskedEmails?: number; maskedPii?: number; piiKinds?: Record<string, number>; prev: string; hash: string };
-type GatewayRecording = { recordedAt: string; model: string; prompt: string; answer: string; policy: { allowedTools?: string[] }; audit: Entry[] };
+type GatewayRecording = { publicKey?: string; recordedAt: string; model: string; prompt: string; answer: string; policy: { allowedTools?: string[] }; audit: Entry[] };
 
 /**
  * A recorded run of another MCP client — Claude Code — going through the policy gateway instead of
@@ -38,9 +38,9 @@ export function GatewayRun() {
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-2">
               <h3 className="text-sm font-medium text-text-2">게이트웨이 감사 로그 {RUN.audit.length}줄</h3>
-              <button type="button" onClick={() => void verifyChain(RUN.audit as unknown as Array<Record<string, unknown>>).then(setCheck)} className="ml-auto min-h-8 rounded-md bg-surface-2 px-3 text-xs font-medium text-text hover:bg-bg">체인 검증</button>
+              <button type="button" onClick={() => void verifyChain(RUN.audit as unknown as Array<Record<string, unknown>>, undefined, RUN.publicKey).then(setCheck)} className="ml-auto min-h-8 rounded-md bg-surface-2 px-3 text-xs font-medium text-text hover:bg-bg">체인 검증</button>
             </div>
-            {check && <p role="status" className={`mt-1 inline-flex items-center gap-1.5 text-xs ${check.ok ? 'text-ok' : 'text-danger'}`}>{check.ok ? <ShieldCheck className="h-3.5 w-3.5" aria-hidden /> : <ShieldAlert className="h-3.5 w-3.5" aria-hidden />}{check.ok ? `${check.count}줄 모두 일치` : `${check.brokenAt}번째 줄 실패 · ${check.reason}`}</p>}
+            {check && <p role="status" className={`mt-1 inline-flex items-center gap-1.5 text-xs ${check.ok ? 'text-ok' : 'text-danger'}`}>{check.ok ? <ShieldCheck className="h-3.5 w-3.5" aria-hidden /> : <ShieldAlert className="h-3.5 w-3.5" aria-hidden />}{check.ok ? `${check.count}줄 모두 일치${check.signature === 'valid' ? ' · 서명 확인' : ''}` : `${check.brokenAt}번째 줄 실패 · ${check.reason}`}</p>}
             <ol className="mt-2 space-y-2">
               {RUN.audit.map((e) => (
                 <li key={e.seq} className="rounded-lg bg-bg px-3 py-2 text-[13px]">

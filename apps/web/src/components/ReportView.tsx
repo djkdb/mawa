@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { CheckSquare, ChevronDown, ClipboardCopy, RotateCcw, ShieldCheck, TriangleAlert } from 'lucide-react';
 import type { AgentEvent, ReportSectionId, Source, WeeklyWorkReport } from '@mawa/shared';
 import { exampleOf } from '../lib/client.js';
+import { CoverageCard } from './CoverageCard.js';
 import { persona } from '../lib/persona.js';
 import { categoriesFor, EXAMPLE_META, KIND_NAME, KIND_SERVER, SERVER_COLOR, SOURCE_TYPE_NAME, categoryOf, periodKo, sectionTitle, timeKo } from '../lib/copy.js';
 import { SECTION_ICON, categoryIcon } from '../lib/icons.js';
@@ -135,6 +136,8 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
       {!note && <PreviousRun report={report} runId={runId} prompt={prompt} />}
 
       {demo && <p className="mt-3 text-[13px] text-text-3">{recorded ? '기록된 실행을 재생한 결과입니다. ' : ''}{persona().demoNote}</p>}
+
+      <CoverageCard events={events} refTime={new Date(report.generatedAt).getTime()} />
 
       {catCounts.size > 1 && (
         <div role="group" aria-label="카테고리" className="mt-4 flex flex-wrap items-center gap-1.5">

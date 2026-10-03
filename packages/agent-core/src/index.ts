@@ -10,3 +10,4 @@ export * from './run-store.js';
 export * from './report/guard.js';
 export * from './audit-file.js';
 export * from './report/pseudonym.js';
+export * from './report/coverage.js';

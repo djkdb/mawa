@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ArgLimitsSchema, mergeLimits } from '../arg-policy.js';
 import { AgentModeSchema } from '../mode.js';
 import {
   McpServerIdSchema,
@@ -103,6 +104,8 @@ export const DataPolicySchema = z.object({
   maskPii: z.boolean().default(true),
   /** Replace people's names with stable aliases (사람1, 사람2) for the LLM; the report is restored. */
   pseudonymize: z.boolean().default(false),
+  /** Argument-level limits (period, result count, repositories, sender domains). */
+  limits: ArgLimitsSchema.optional(),
 });
 export type DataPolicy = z.infer<typeof DataPolicySchema>;
 
@@ -145,7 +148,26 @@ export const ToolCallFailedSchema = EventBaseSchema.extend({
 export const ToolCallDeniedSchema = EventBaseSchema.extend({
   type: z.literal('tool_call_denied'),
   call: z.object({ id: z.string(), name: z.string(), input: z.record(z.string(), z.unknown()) }),
-  reason: z.enum(['policy']),
+  reason: z.enum(['policy', 'arguments']),
+  detail: z.string().optional(),
+});
+
+/** The policy narrowed a call's arguments before it ran (period, result count). */
+export const ToolCallAdjustedSchema = EventBaseSchema.extend({
+  type: z.literal('tool_call_adjusted'),
+  call: z.object({ id: z.string(), name: z.string() }),
+  changes: z.array(z.string()),
+});
+
+/**
+ * The omission check after the report: dated items (next 14 days) found by deterministic reads that
+ * the report neither cites nor names. Shown as "possibly missed"; the report itself is not changed.
+ */
+export const CoverageCheckedSchema = EventBaseSchema.extend({
+  type: z.literal('coverage_checked'),
+  reads: z.array(z.string()),
+  checked: z.number().int().nonnegative(),
+  missed: z.array(z.object({ sourceId: z.string(), title: z.string(), at: z.string(), why: z.string() })),
 });
 
 export const ContextAggregatedSchema = EventBaseSchema.extend({
@@ -182,6 +204,8 @@ export const AgentEventSchema = z.discriminatedUnion('type', [
   ToolCallCompletedSchema,
   ToolCallFailedSchema,
   ToolCallDeniedSchema,
+  ToolCallAdjustedSchema,
+  CoverageCheckedSchema,
   ContextAggregatedSchema,
   ReportGeneratedSchema,
   AgentRunCompletedSchema,
@@ -231,5 +255,12 @@ export function tightenPolicy(base: DataPolicy, req?: { [K in keyof DataPolicy]?
     maskPii: flag('maskPii'),
     pseudonymize: flag('pseudonymize'),
   };
+  const limits = mergeLimits(base.limits, req?.limits);
+  if (limits) policy.limits = limits;
+  // Wider than the base is a loosening attempt.
+  if (req?.limits && base.limits) {
+    const l = req.limits;
+    if ((l.maxDays ?? 0) > (base.limits.maxDays ?? Infinity) || (l.maxResults ?? 0) > (base.limits.maxResults ?? Infinity)) refused.push('limits');
+  }
   return { policy, refused };
 }

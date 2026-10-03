@@ -1,7 +1,7 @@
 import type { AgentEvent } from './events/index.js';
 import type { McpServerId } from './mcp/index.js';
 
-export type AuditAction = 'read' | 'denied' | 'failed' | 'excluded' | 'llm';
+export type AuditAction = 'read' | 'denied' | 'adjusted' | 'failed' | 'excluded' | 'llm';
 
 /** One audit row: a data access, a refusal, an exclusion, or a payload sent to the model. */
 export interface AuditRow {
@@ -41,11 +41,14 @@ export function auditRows(events: AgentEvent[]): AuditRow[] {
   const out: AuditRow[] = [];
   for (const e of events) {
     const base = { at: e.timestamp, runId: e.runId, mode: e.mode };
-    if (e.type === 'tool_call_completed') out.push({ ...base, action: 'read', server: e.call.server, tool: e.call.name, input: e.call.input, rows: rowsOf(e).length, sourceIds: rowsOf(e), durationMs: e.result.durationMs, sentToLlm });
+    if (e.type === 'tool_call_completed') { const verify = e.call.id.startsWith('verify_'); out.push({ ...base, action: 'read', server: e.call.server, tool: e.call.name, input: e.call.input, rows: rowsOf(e).length, sourceIds: rowsOf(e), durationMs: e.result.durationMs, sentToLlm: verify ? false : sentToLlm, ...(verify ? { detail: '누락 검사 (모델에 보내지 않음)' } : {}) }); }
     else if (e.type === 'tool_call_failed') out.push({ ...base, action: 'failed', server: e.call.server, tool: e.call.name, input: e.call.input, detail: e.result.error.code });
     else if (e.type === 'tool_call_denied') {
       const [server, tool] = e.call.name.split('__') as [McpServerId, string];
-      out.push({ ...base, action: 'denied', server, tool, input: e.call.input, detail: '허용 목록에 없는 도구' });
+      out.push({ ...base, action: 'denied', server, tool, input: e.call.input, detail: e.detail ?? '허용 목록에 없는 도구' });
+    } else if (e.type === 'tool_call_adjusted') {
+      const [server, tool] = e.call.name.split('__') as [McpServerId, string];
+      out.push({ ...base, action: 'adjusted', server, tool, detail: e.changes.join(', ') });
     } else if (e.type === 'policy_applied') for (const x of e.excluded) out.push({ ...base, action: 'excluded', sourceIds: [x.sourceId], detail: `규칙 “${x.rule}”` });
     else if (e.type === 'llm_request') out.push({ ...base, action: 'llm', provider: `${e.provider}/${e.model}`, detail: `${e.phase === 'plan' ? '계획' : '리포트 작성'} · ${e.contents.join(' · ')}`, bytes: e.bytes, maskedEmails: e.maskedEmails, maskedPii: e.maskedPii ?? 0, piiKinds: e.piiKinds ?? {}, flagged: e.flagged.map((f) => f.sourceId), sentToLlm: true });
   }

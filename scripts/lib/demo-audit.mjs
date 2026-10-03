@@ -1,5 +1,5 @@
 import { writeFile } from 'node:fs/promises';
-import { ChainedAuditLog } from '@mawa/agent-core';
+import { ChainedAuditLog, ephemeralSigner } from '@mawa/agent-core';
 import { auditRows } from '@mawa/shared';
 
 /**
@@ -7,10 +7,11 @@ import { auditRows } from '@mawa/shared';
  * in run order. The web demo verifies these stored hashes; it does not rebuild them for display.
  */
 export async function writeDemoAudit(runs, file) {
-  const log = new ChainedAuditLog();
+  // A key that exists only during this export: nobody can re-sign the shipped log later.
+  const log = new ChainedAuditLog(undefined, ephemeralSigner());
   for (const r of runs) await log.append(auditRows(r.events));
   const { entries, check } = await log.read();
   if (!check.ok) throw new Error('demo audit chain does not verify');
-  await writeFile(file, JSON.stringify({ note: 'Hash-chained audit of the shipped demo runs, written by scripts/export-portfolio-data.mjs / record-llm-run.mjs. Synthetic data.', head: check.head, entries }, null, 2));
+  await writeFile(file, JSON.stringify({ note: 'Hash-chained, Ed25519-signed audit of the shipped demo runs, written by scripts/export-portfolio-data.mjs / record-llm-run.mjs (the signing key existed only during that run). Synthetic data.', head: check.head, publicKey: log.publicKey, entries }, null, 2));
   return entries.length;
 }

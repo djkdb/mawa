@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Ban, Download, EyeOff, FileSearch, Link2, Send, ShieldAlert, ShieldCheck, TriangleAlert, Upload } from 'lucide-react';
+import { Ban, Download, Scissors, EyeOff, FileSearch, Link2, Send, ShieldAlert, ShieldCheck, TriangleAlert, Upload } from 'lucide-react';
 import { parseJsonl, verifyChain, type AgentEvent, type ChainCheck } from '@mawa/shared';
 import { getClient, recordedPersona, type RunSummary } from '../lib/client.js';
 import { persona } from '../lib/persona.js';
@@ -14,11 +14,12 @@ import { SecuritySummary } from '../components/SecuritySummary.js';
 const ACTION: Record<AuditAction, { label: string; Icon: typeof Send; cls: string }> = {
   read: { label: '읽기', Icon: FileSearch, cls: 'text-text-2' },
   denied: { label: '거절', Icon: Ban, cls: 'text-danger' },
+  adjusted: { label: '범위 조정', Icon: Scissors, cls: 'text-warn' },
   failed: { label: '실패', Icon: TriangleAlert, cls: 'text-warn' },
   excluded: { label: '제외', Icon: EyeOff, cls: 'text-inferred' },
   llm: { label: 'LLM 전송', Icon: Send, cls: 'text-accent' },
 };
-const FILTERS: Array<AuditAction | 'all'> = ['all', 'read', 'llm', 'denied', 'excluded', 'failed'];
+const FILTERS: Array<AuditAction | 'all'> = ['all', 'read', 'llm', 'denied', 'adjusted', 'excluded', 'failed'];
 const time = (iso: string) => new Date(iso).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
 
 /**
@@ -69,7 +70,7 @@ export function AuditPage() {
       <p className="mb-4 max-w-3xl text-sm text-text-2">에이전트가 MCP로 읽은 데이터, 정책이 거절하거나 뺀 것, LLM에 보낸 요청을 한 줄씩 남깁니다. {log?.source === 'server' ? 'API 서버가 실행이 끝날 때마다 파일에 이어 쓴 로그입니다.' : '데모를 기록할 때 한 번 써 둔 로그입니다.'} 화면을 열 때 다시 만들지 않고, 저장된 해시를 그대로 검증합니다.</p>
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
       {!runs && !error && <p className="text-sm text-text-3">불러오는 중…</p>}
-      {log && runs && <SecuritySummary entries={log.entries.filter(mine) as Array<AuditRow & { prev: string; hash: string }>} chain={log.entries as unknown as Array<Record<string, unknown>>} />}
+      {log && runs && <SecuritySummary entries={log.entries.filter(mine) as Array<AuditRow & { prev: string; hash: string }>} chain={log.entries as unknown as Array<Record<string, unknown>>} publicKey={log.publicKey} />}
       {runs && log && (
         <section aria-labelledby="audit-heading" className="surface p-4 sm:p-5">
           <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
@@ -77,7 +78,7 @@ export function AuditPage() {
             <p className="tnum text-sm text-text-2">실행 {runFilter === 'all' ? new Set(log.entries.map((e) => e.runId)).size : 1}건 · 읽기 {count('read')} · LLM 전송 {count('llm')} ({kb(sent.reduce((n, r) => n + (r.bytes ?? 0), 0))}) · 가림 {masked} · 거절 {count('denied')} · 제외 {count('excluded')}</p>
             <button type="button" onClick={() => downloadText(log.entries.map((x) => JSON.stringify(x)).join('\n'), 'audit-log.chained.jsonl')} className="ml-auto inline-flex min-h-9 items-center gap-1 rounded-md px-2 text-sm text-text-2 hover:text-text"><Download className="h-3.5 w-3.5" aria-hidden />JSONL 내려받기 (해시 체인)</button>
           </div>
-          <IntegrityPanel entries={log.entries as unknown as Array<Record<string, unknown>>} serverCheck={log.check} />
+          <IntegrityPanel entries={log.entries as unknown as Array<Record<string, unknown>>} serverCheck={log.check} publicKey={log.publicKey} />
           {log.source === 'recorded' && <p className="mt-2 text-xs text-text-3">표는 {persona().name}의 실행만 보여줍니다. 무결성 검증은 데모 전체 로그({log.entries.length}줄)에 대해 합니다.</p>}
           <div className="mt-3 flex flex-wrap items-center gap-1.5">
             <div role="group" aria-label="동작" className="flex flex-wrap gap-1.5">
@@ -139,25 +140,25 @@ function Row({ row, run }: { row: AuditRow; run: RunSummary | undefined }) {
  * edited, removed or reordered line fails verification from that point. Verify the log as shown,
  * see what an edit does, or check a downloaded file.
  */
-function IntegrityPanel({ entries, serverCheck }: { entries: Array<Record<string, unknown>>; serverCheck?: ChainCheck | undefined }) {
+function IntegrityPanel({ entries, serverCheck, publicKey }: { entries: Array<Record<string, unknown>>; serverCheck?: ChainCheck | undefined; publicKey?: string | undefined }) {
   const [result, setResult] = useState<{ label: string; check: ChainCheck } | null>(null);
   // A tail of a longer log links to the line before it; the server checks the whole file.
   const start = typeof entries[0]?.['prev'] === 'string' ? (entries[0]!['prev'] as string) : undefined;
   const run = async (label: string, tamper: boolean) => {
     const copy = entries.map((c) => ({ ...c }));
     if (tamper && copy.length > 2) copy[2] = { ...copy[2], rows: 0, detail: '조작된 기록' };
-    setResult({ label, check: await verifyChain(copy, start) });
+    setResult({ label, check: await verifyChain(copy, start, publicKey) });
   };
   const onFile = async (f: File | undefined) => {
     if (!f) return;
-    try { const lines = parseJsonl(await f.text()); setResult({ label: f.name, check: await verifyChain(lines, typeof lines[0]?.['prev'] === 'string' && lines[0]!['seq'] !== 1 ? (lines[0]!['prev'] as string) : undefined) }); }
+    try { const lines = parseJsonl(await f.text()); setResult({ label: f.name, check: await verifyChain(lines, typeof lines[0]?.['prev'] === 'string' && lines[0]!['seq'] !== 1 ? (lines[0]!['prev'] as string) : undefined, publicKey) }); }
     catch { setResult({ label: f.name, check: { ok: false, count: 0, brokenAt: 1, reason: 'JSONL로 읽을 수 없습니다' } }); }
   };
   return (
     <div className="mt-3 rounded-lg bg-surface-2 px-4 py-3">
       <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
         <span className="inline-flex items-center gap-1.5 font-medium text-text"><Link2 className="h-4 w-4 text-accent" aria-hidden />무결성 (해시 체인)</span>
-        <span className="text-xs text-text-3">줄마다 이전 줄의 SHA-256을 담아, 한 줄이라도 바뀌거나 빠지면 그 줄부터 검증이 실패합니다.{serverCheck ? ` 서버 검증(파일 전체): ${serverCheck.ok ? `${serverCheck.count}줄 일치` : `${serverCheck.brokenAt}번째 줄 실패`}` : ''}</span>
+        <span className="text-xs text-text-3">줄마다 이전 줄의 SHA-256을 담아, 한 줄이라도 바뀌거나 빠지면 그 줄부터 검증이 실패합니다.{publicKey ? ' 줄마다 Ed25519 서명도 있어, 서명 키 없이 전체를 다시 계산해 써도 통과하지 못합니다.' : ''}{serverCheck ? ` 서버 검증(파일 전체): ${serverCheck.ok ? `${serverCheck.count}줄 일치` : `${serverCheck.brokenAt}번째 줄 실패`}` : ''}</span>
         <div className="ml-auto flex flex-wrap gap-1.5">
           <button type="button" onClick={() => void run('현재 로그', false)} className="min-h-8 rounded-md bg-surface px-3 text-xs font-medium text-text hover:bg-bg">검증</button>
           <button type="button" onClick={() => void run('3번째 줄을 바꾼 사본', true)} className="min-h-8 rounded-md bg-surface px-3 text-xs text-text-2 hover:bg-bg hover:text-text">한 줄 바꿔서 검증</button>
@@ -167,7 +168,7 @@ function IntegrityPanel({ entries, serverCheck }: { entries: Array<Record<string
       {result && (
         <p role="status" className={`mt-2 inline-flex items-center gap-1.5 text-sm ${result.check.ok ? 'text-ok' : 'text-danger'}`}>
           {result.check.ok ? <ShieldCheck className="h-4 w-4" aria-hidden /> : <ShieldAlert className="h-4 w-4" aria-hidden />}
-          {result.label}: {result.check.ok ? `${result.check.count}줄 모두 일치 · 마지막 해시 ${result.check.head.slice(0, 12)}…` : `${result.check.brokenAt}번째 줄에서 검증 실패 · ${result.check.reason}`}
+          {result.label}: {result.check.ok ? `${result.check.count}줄 모두 일치${result.check.signature === 'valid' ? ' · 서명 확인' : result.check.signature === 'unsupported' ? ' · 이 브라우저는 서명 검증 미지원(npm run audit:verify 사용)' : ''} · 마지막 해시 ${result.check.head.slice(0, 12)}…` : `${result.check.brokenAt}번째 줄에서 검증 실패 · ${result.check.reason}`}
         </p>
       )}
     </div>

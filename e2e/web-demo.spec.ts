@@ -57,9 +57,9 @@ test('report: deep link survives reload, copy for Slack, hide items, demo source
   const { errors, api } = await collect(page);
   await context.grantPermissions(['clipboard-read', 'clipboard-write']);
   await page.goto(`${DEMO}#/report/recorded_blockers`);
-  await expect(page.getByRole('heading', { level: 2, name: '놓친 것·막힌 것' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: '놓친 것·막힌 것', exact: true })).toBeVisible();
   await page.reload();
-  await expect(page.getByRole('heading', { level: 2, name: '놓친 것·막힌 것' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: '놓친 것·막힌 것', exact: true })).toBeVisible();
   await expect(page).toHaveTitle('리포트 · My AI Work Agent');
 
   // Hide one item, then copy: the hidden item is excluded.
@@ -85,9 +85,9 @@ test('report: deep link survives reload, copy for Slack, hide items, demo source
 
   // Run history opens a specific run by URL.
   await page.getByRole('link', { name: '실행 기록' }).first().click();
-  await expect(page.getByRole('table')).toContainText('샘플 기록');
+  await expect(page.getByRole('table', { name: /실행 기록/ })).toContainText('샘플 기록');
   // The real-LLM recording is listed and labelled with its model.
-  await expect(page.getByRole('table')).toContainText(/실제 LLM 기록 · \S+/);
+  await expect(page.getByRole('table', { name: /실행 기록/ })).toContainText(/실제 LLM 기록 · \S+/);
   await page.getByRole('link', { name: '마감 순서', exact: true }).click();
   await expect(page).toHaveURL(/#\/report\/recorded_deadlines$/);
   await expect(page.getByRole('heading', { level: 2, name: '마감 순서' })).toBeVisible();
@@ -215,7 +215,7 @@ test('home: one-tap demo run ends with a visible link to the new report', async 
   await expect(page).toHaveURL(/#\/report\/demo_weekly-progress_/);
   await page.reload();
   await page.getByRole('link', { name: '실행 기록' }).first().click();
-  await expect(page.getByRole('table')).toContainText('이번 주 정리');
+  await expect(page.getByRole('table', { name: /실행 기록/ })).toContainText('이번 주 정리');
   expect(await page.locator('table tbody tr').count()).toBeGreaterThanOrEqual(5);
   expect(errors).toEqual([]);
 });

@@ -37,7 +37,10 @@ export function phaseFromEvent(type: AgentEvent['type'], prev: RunPhase): RunPha
     case 'tool_call_completed':
     case 'tool_call_failed':
     case 'tool_call_denied':
+    case 'tool_call_adjusted':
       return 'running';
+    case 'coverage_checked':
+      return prev;
     case 'context_aggregated':
       return 'analyzing';
     case 'report_generated':

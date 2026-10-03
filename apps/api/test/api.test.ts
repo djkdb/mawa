@@ -61,7 +61,9 @@ describe('api', () => {
     await (await app.request(`/api/agent/runs/${runId}/events`)).text();
     const audit = await (await app.request('/api/audit')).json();
     expect(audit.source).toBe('server');
-    expect(audit.check).toMatchObject({ ok: true });
+    expect(audit.check).toMatchObject({ ok: true, signature: 'valid' });
+    expect(typeof audit.publicKey).toBe('string');
+    expect(audit.entries.every((e: { sig?: string }) => typeof e.sig === 'string')).toBe(true);
     expect(audit.entries.length).toBeGreaterThan(3);
     expect(audit.entries.every((e: { runId: string }) => e.runId === runId)).toBe(true);
     expect(audit.entries.map((e: { action: string }) => e.action)).toEqual(expect.arrayContaining(['read', 'llm']));

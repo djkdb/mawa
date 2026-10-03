@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { exampleOf, getClient, recordedIdOf, recordedPersona, type RunSummary } from '../lib/client.js';
+import { EvalTable } from '../components/EvalPanel.js';
+import { IS_DEMO_BUILD, exampleOf, getClient, recordedIdOf, recordedPersona, type RunSummary } from '../lib/client.js';
 import { persona } from '../lib/persona.js';
 import { EXAMPLE_META, SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 import { hrefFor } from '../lib/useHashRoute.js';
@@ -22,6 +23,7 @@ export function RunsPage({ currentRunId, refreshKey }: { currentRunId: string | 
     <div className="mx-auto max-w-5xl">
       <p className="mb-4 text-sm text-text-2">에이전트가 만든 리포트 목록입니다. 질문을 누르면 그 실행의 리포트와 활동 기록을 엽니다.</p>
       {error && <p role="alert" className="text-sm text-danger">{error}</p>}
+      {IS_DEMO_BUILD && <EvalTable />}
       {runs && (
         <div className="surface overflow-hidden">
           <table className="w-full text-sm">

@@ -373,3 +373,22 @@ three policies, a real-LLM run, a gateway run) are recorded like the student's.
 holds their 주민등록번호 and friends' numbers; a worker's holds customers'. Showing the same
 controls from the user's side and the policy owner's side makes that concrete without
 pretending a student needs RBAC.
+
+## ADR-022 — Argument limits, a signed chain, an omission check and an eval set
+
+**Decision.**
+- `limits` in the data policy: `maxDays`, `maxResults`, `repos`, `senderDomains`. Calls are clamped
+  (`tool_call_adjusted`) or refused (`tool_call_denied`, reason `arguments`, e.g. a `*` mailbox
+  query); rows outside the repositories/domains are dropped. Same code in the agent and gateway.
+- Audit lines carry an Ed25519 signature of their hash (`sig`); the API keeps its key next to the
+  token store, the gateway takes `--signing-key`, the demo signs with a key that exists only
+  during the export. `verifyChain(…, publicKey)` rejects a chain rewritten without the key.
+- After the report, an omission check reads upcoming events, eCampus deadlines and mail with a
+  date next to a deadline word (through the same policy, never sent to the model) and emits
+  `coverage_checked` with the dated items the report neither cites nor names.
+- `eval-gold.json` lists hand-written gold items for four questions; `npm run eval` scores the
+  scripted and real-LLM recordings (report found / with the check), shown in the web demo.
+
+**Why.** "Which tool" is not access control without "how much of it". A hash chain without a key
+proves nothing to someone who can rewrite the file. A model's report is only as useful as what it
+does not miss, and that has to be measured, not asserted.

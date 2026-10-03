@@ -316,7 +316,11 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
   if (intent === 'deadlines') {
     const soon = deadlines.filter((dl) => dday(dl.at, now) <= 7);
     sections.push({ id: 'overview', items: deadlines.length ? [{ text: `앞으로 2주 마감 ${deadlines.length}건, 그중 7일 안에 ${soon.length}건입니다. 가장 급한 것: ${deadlines[0]!.title} (${ddayKo(dday(deadlines[0]!.at, now))}).`, confidence: 'inferred', sources: deadlines.flatMap((dl) => [dl.event?.sourceId, dl.mail?.sourceId]).filter((x): x is string => Boolean(x)).slice(0, 12) }] : [{ text: '다가오는 마감을 찾지 못했습니다.', confidence: 'inferred', sources: [] }] });
-    sections.push({ id: 'schedule', items: deadlines.map(deadlineLine) });
+    // "마감이랑 배포·회의 일정": the other upcoming events belong in the answer too, after the deadlines.
+    const asksSchedule = /일정|회의|배포|미팅|schedule|meeting/i.test(ctx.request ?? '');
+    const inDeadlines = new Set(deadlines.flatMap((dl) => (dl.event ? [dl.event.sourceId] : [])));
+    const otherEvents = asksSchedule ? upcoming.filter((e) => !inDeadlines.has(e.sourceId) && new Date(startOf(e)).getTime() <= now + 14 * DAY).map((e) => eventLine(e)) : [];
+    sections.push({ id: 'schedule', items: [...deadlines.map(deadlineLine), ...otherEvents] });
     const notInCalendar = deadlines.filter((dl) => dl.lms && !dl.event);
     const calendarAdd: Out[] = notInCalendar.length ? [{ text: `나 · 캘린더에 없는 eCampus 마감 ${notInCalendar.length}건 캘린더에 추가: ${notInCalendar.map((dl) => `${dl.title} (${d(dl.at)})`).join(', ')}`, confidence: 'inferred', priority: 'medium', reason: 'eCampus에만 있는 마감', sources: notInCalendar.map((dl) => dl.lms!.sourceId) }] : [];
     const unsubmitted: Out[] = deadlines.filter((dl) => dl.lms && (dl.submission === 'draft' || dl.submission === 'new') && dday(dl.at, now) <= 3).map((dl) => ({ text: `${dl.title} — ${SUBMISSION_KO[dl.submission!]} · ${ddayKo(dday(dl.at, now))}`, confidence: 'observed', priority: 'high', reason: `${dl.area ?? '과제'} · eCampus 제출 상태`, sources: [dl.lms!.sourceId, ...lmsAssign.filter((a) => a.title === dl.lms!.title).map((a) => a.sourceId)] }));

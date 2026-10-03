@@ -3,11 +3,11 @@ import { Hono, type Context, type Next } from 'hono';
 import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { z } from 'zod';
-import { AgentModeSchema, DataPolicySchema, PROJECT, tightenPolicy } from '@mawa/shared';
+import { AgentModeSchema, DataPolicySchema, PROJECT, tightenPolicy, type AuditRow } from '@mawa/shared';
 import { GOOGLE_SCOPES, OAuthService, githubScopesFromEnv } from './auth/oauth.js';
 import { TokenStore } from './auth/token-store.js';
 import type { AppConfig } from './config.js';
-import { MemoryRunStore, type RunStore } from '@mawa/agent-core';
+import { ChainedAuditLog, MemoryRunStore, loadOrCreateSigner, type RunStore } from '@mawa/agent-core';
 import { EncryptedRunStore } from './agent/encrypted-run-store.js';
 import { RunManager } from './agent/run-manager.js';
 
@@ -29,7 +29,9 @@ export async function createDeps(config: AppConfig): Promise<AppDeps> {
     await encrypted.load();
     runStore = encrypted;
   }
-  const runs = new RunManager(config, oauth, runStore);
+  // Audit lines are signed with a key kept next to the token store (created on first start).
+  const audit = new ChainedAuditLog<AuditRow>(config.auditLogPath, await loadOrCreateSigner(config.auditSigningKeyPath));
+  const runs = new RunManager(config, oauth, runStore, audit);
   return { config, oauth, runs, store };
 }
 
@@ -124,7 +126,7 @@ export function createApp(deps: AppDeps) {
   /** The server's hash-chained audit log (newest 500 lines) and the verification of the whole file. */
   app.get('/api/audit', async (c) => {
     const { entries, check } = await runs.audit.read();
-    return c.json({ source: 'server', path: config.auditLogPath.replace(/^.*[\\/](\.tokens[\\/])/, '$1'), check, entries: entries.slice(-500) });
+    return c.json({ source: 'server', publicKey: runs.audit.publicKey, path: config.auditLogPath.replace(/^.*[\\/](\.tokens[\\/])/, '$1'), check, entries: entries.slice(-500) });
   });
 
   app.get('/api/agent/runs/:id', async (c) => {

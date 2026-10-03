@@ -118,7 +118,8 @@ export class DemoClient implements AgentClient {
 
   /** The audit chain written once when the demo was recorded (scripts/export-portfolio-data.mjs). */
   async getAudit(): Promise<AuditLog> {
-    return { source: 'recorded', entries: (demoAudit as unknown as { entries: AuditLog['entries'] }).entries };
+    const d = demoAudit as unknown as { entries: AuditLog['entries']; publicKey?: string };
+    return { source: 'recorded', entries: d.entries, ...(d.publicKey ? { publicKey: d.publicKey } : {}) };
   }
 
   async startRun(prompt: string, mode: AgentMode): Promise<StartRunResult> {

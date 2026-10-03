@@ -14,6 +14,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseJsonl, verifyChain } from '@mawa/shared';
+import { signerFromPem } from '@mawa/agent-core';
 
 const root = new URL('../', import.meta.url);
 const path = (p) => fileURLToPath(new URL(p, root));
@@ -26,7 +27,7 @@ const prompt = argv.filter((a) => !a.startsWith('--'))[0] ?? (persona === 'worke
 const dir = await mkdtemp(join(tmpdir(), 'mawa-gw-run-'));
 const audit = join(dir, 'audit.jsonl');
 const policyFile = path('mcp-servers/gateway/policy.example.json');
-await writeFile(join(dir, 'mcp.json'), JSON.stringify({ mcpServers: { mawa: { command: process.execPath, args: [path('mcp-servers/gateway/dist/index.js'), '--mode=demo', `--policy=${policyFile}`, `--audit=${audit}`, ...(persona === 'student' ? [] : [`--persona=${persona}`])] } } }));
+await writeFile(join(dir, 'mcp.json'), JSON.stringify({ mcpServers: { mawa: { command: process.execPath, args: [path('mcp-servers/gateway/dist/index.js'), '--mode=demo', `--policy=${policyFile}`, `--audit=${audit}`, `--signing-key=${join(dir, 'audit-key.pem')}`, ...(persona === 'student' ? [] : [`--persona=${persona}`])] } } }));
 
 const out = await new Promise((resolve, reject) => {
   const child = spawn('claude', ['-p', '--mcp-config', 'mcp.json', '--strict-mcp-config', '--allowedTools', 'mcp__mawa__*', '--output-format', 'json', '--no-session-persistence', prompt], { cwd: dir, stdio: ['ignore', 'pipe', 'pipe'] });
@@ -38,12 +39,13 @@ const out = await new Promise((resolve, reject) => {
 if (out.is_error) { console.error(`claude error: ${String(out.result).slice(0, 300)}`); process.exit(1); }
 const text = await readFile(audit, 'utf8');
 const entries = parseJsonl(text);
-const check = await verifyChain(entries);
+const publicKey = signerFromPem(await readFile(join(dir, 'audit-key.pem'), 'utf8')).publicKey;
+const check = await verifyChain(entries, undefined, publicKey);
 if (!check.ok) { console.error('audit chain does not verify', check); process.exit(1); }
 const model = Object.keys(out.modelUsage ?? {})[0] ?? 'unknown';
 const policy = JSON.parse(await readFile(policyFile, 'utf8'));
 await writeFile(path(`docs/examples/gateway-audit${suffix}.chained.jsonl`), text);
-await writeFile(path(`packages/shared/demo/gateway-run${suffix}.json`), JSON.stringify({ persona, recordedAt: new Date().toISOString(), note: 'Claude Code (headless) → mawa-gateway → demo MCP servers. Synthetic data.', model, prompt, answer: out.result, policy, audit: entries }, null, 2));
+await writeFile(path(`packages/shared/demo/gateway-run${suffix}.json`), JSON.stringify({ persona, publicKey, recordedAt: new Date().toISOString(), note: 'Claude Code (headless) → mawa-gateway → demo MCP servers. Synthetic data.', model, prompt, answer: out.result, policy, audit: entries }, null, 2));
 const md = `# Claude Code through the MCP policy gateway (recorded run)
 
 Recorded ${new Date().toISOString().slice(0, 10)} with \`npm run record:gateway-run\`. **Data is the synthetic demo workspace** (\`--mode=demo\`); the model was Claude Code CLI (${model}).

@@ -22,6 +22,8 @@ export interface Status {
 export interface AuditLog {
   source: 'server' | 'recorded';
   check?: ChainCheck;
+  /** Ed25519 public key (base64 SPKI) that verifies each line's signature. */
+  publicKey?: string;
   entries: Array<Chained<AuditRow>>;
 }
 

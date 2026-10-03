@@ -152,3 +152,31 @@ describe('pseudonymize policy', () => {
     expect(result.events.filter((e) => e.type === 'llm_request').some((e) => e.type === 'llm_request' && e.pseudonyms === 1)).toBe(true);
   });
 });
+
+describe('omission check', () => {
+  it('reads upcoming items itself and reports dated items the report does not mention', async () => {
+    const now = new Date('2026-10-03T03:00:00.000Z');
+    const rows = {
+      calendar__get_upcoming_events: [{ sourceId: 'calendar:event:1', title: '정기 배포', start: '2026-10-06T05:00:00.000Z' }, { sourceId: 'calendar:event:2', title: '1:1 (팀장)', start: '2026-10-08T06:00:00.000Z' }],
+      gmail__search_emails: [{ sourceId: 'gmail:msg:9', subject: '[긴급] 정산 금액 불일치 문의', snippet: '10월 6일까지 원인 회신 부탁드립니다.', from: 'C <c@c.example.com>' }],
+    } as Record<string, unknown[]>;
+    const executor = {
+      servers: ['calendar', 'gmail'] as const,
+      async listTools() { return [{ server: 'calendar' as const, name: 'get_upcoming_events', description: 'd', inputSchema: { type: 'object' } }, { server: 'gmail' as const, name: 'search_emails', description: 'd', inputSchema: { type: 'object' } }]; },
+      async callTool(call: { id: string; server: string; name: string }) { return { status: 'ok' as const, callId: call.id, durationMs: 1, output: { summary: 'x', data: rows[`${call.server}__${call.name}`] ?? [] } }; },
+    };
+    const llm: LLMProvider = {
+      id: 'spy', model: 'spy',
+      async complete(req) {
+        if (!req.responseFormat) return req.messages.some((m) => m.role === 'tool') ? { text: '', toolCalls: [], stopReason: 'end_turn' } : { text: '', toolCalls: [{ id: 'c', name: 'calendar__get_upcoming_events', input: { days: 14 } }], stopReason: 'tool_use' };
+        // Mentions the deploy only; misses the 1:1 and the mail-only reply deadline.
+        return { text: JSON.stringify({ sections: [{ id: 'schedule', items: [{ text: '10/6 정기 배포', confidence: 'observed', sources: ['calendar:event:1'] }] }] }), toolCalls: [], stopReason: 'end_turn' };
+      },
+    };
+    const result = await runAgent({ prompt: 'x', mode: 'real', llm, executor: executor as never, period, now: () => now });
+    const cov = result.events.find((e) => e.type === 'coverage_checked');
+    expect(cov).toMatchObject({ checked: 3, reads: ['calendar__get_upcoming_events', 'gmail__search_emails'] });
+    expect(cov && cov.type === 'coverage_checked' ? cov.missed.map((m) => m.sourceId) : []).toEqual(['gmail:msg:9', 'calendar:event:2']);
+    expect(result.events.filter((e) => e.type === 'tool_call_completed').map((e) => (e.type === 'tool_call_completed' ? e.call.id : ''))).toEqual(['c', 'verify_1', 'verify_3']);
+  });
+});

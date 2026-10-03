@@ -41,7 +41,7 @@ export function AdminHome() {
         <h2 className="text-2xl font-semibold">B사 · 구성원 AI 데이터 사용 현황</h2>
         <p className="mt-1 max-w-3xl text-sm text-text-2">{p.intro}를 한 화면에서 봅니다. 결제팀 구성원의 실행 기록 기준이며, 가상의 회사와 샘플 데이터입니다.</p>
       </div>
-      {entries && log && <SecuritySummary entries={entries as Array<AuditRow & { prev: string; hash: string }>} chain={log.entries as unknown as Array<Record<string, unknown>>} />}
+      {entries && log && <SecuritySummary entries={entries as Array<AuditRow & { prev: string; hash: string }>} chain={log.entries as unknown as Array<Record<string, unknown>>} publicKey={log.publicKey} />}
       {columns.length > 1 && <PolicyCompare columns={columns} current={p.defaultRun} />}
       <GatewayRun />
       <a href={hrefFor('audit')} className="inline-flex w-fit min-h-9 items-center gap-1 text-sm font-medium text-accent hover:underline">감사 로그 전체 보기 <ArrowRight className="h-4 w-4" aria-hidden /></a>

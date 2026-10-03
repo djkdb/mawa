@@ -1,0 +1,256 @@
+{
+  "_note": "Gold items for the synthetic demo weeks, written by hand from the fixtures. A report finds an item when one of its sentences matches every pattern; the omission check catches it when one of its 'possibly missed' titles does.",
+  "cases": [
+    {
+      "id": "student-deadlines",
+      "persona": "student",
+      "title": "학생 · 앞으로 2주 마감",
+      "runs": [
+        "deadlines",
+        "llm-run"
+      ],
+      "items": [
+        {
+          "id": "os-hw2",
+          "label": "운영체제 과제2 (10/5)",
+          "all": [
+            "과제2|과제 2"
+          ]
+        },
+        {
+          "id": "coding-test",
+          "label": "A사 코딩테스트 (10/7)",
+          "all": [
+            "코딩테스트"
+          ]
+        },
+        {
+          "id": "db-quiz",
+          "label": "DB 퀴즈2 (10/8)",
+          "all": [
+            "퀴즈 ?2"
+          ]
+        },
+        {
+          "id": "scholarship",
+          "label": "장학금 신청 (10/9)",
+          "all": [
+            "장학금"
+          ]
+        },
+        {
+          "id": "scholarship-info",
+          "label": "장학금 지급 정보 확인 (10/9)",
+          "all": [
+            "지급 정보|등록된 정보|정보 확인|지급 계좌|등록 정보"
+          ]
+        },
+        {
+          "id": "net-report",
+          "label": "컴퓨터네트워크 보고서3 (10/12)",
+          "all": [
+            "보고서 ?3|TCP|컴퓨터네트워크|컴네"
+          ]
+        },
+        {
+          "id": "slides",
+          "label": "중간발표 슬라이드 (10/13)",
+          "all": [
+            "슬라이드"
+          ]
+        },
+        {
+          "id": "midterm",
+          "label": "캡스톤 중간발표 (10/15)",
+          "all": [
+            "중간발표"
+          ]
+        },
+        {
+          "id": "date-conflict",
+          "label": "발표일 불일치 (메일 10/14 · 캘린더 10/15)",
+          "all": [
+            "14일|10/14",
+            "15일|10/15"
+          ],
+          "check": false
+        }
+      ]
+    },
+    {
+      "id": "worker-deadlines",
+      "persona": "worker",
+      "title": "직장인 · 다음 주 일정",
+      "runs": [
+        "worker-deadlines",
+        "llm-run-worker"
+      ],
+      "items": [
+        {
+          "id": "planning",
+          "label": "스프린트 플래닝 (10/5)",
+          "all": [
+            "스프린트|플래닝"
+          ]
+        },
+        {
+          "id": "deploy",
+          "label": "정기 배포 (10/6)",
+          "all": [
+            "정기 배포"
+          ]
+        },
+        {
+          "id": "customer-reply",
+          "label": "C쇼핑 정산 문의 회신 (10/6)",
+          "all": [
+            "회신|불일치"
+          ]
+        },
+        {
+          "id": "db-access",
+          "label": "운영 DB 권한 만료·연장 사유 (10/6~7)",
+          "all": [
+            "권한"
+          ]
+        },
+        {
+          "id": "customer-meeting",
+          "label": "C쇼핑 정산 미팅 (10/7)",
+          "all": [
+            "정산 미팅"
+          ]
+        },
+        {
+          "id": "one-on-one",
+          "label": "팀장 1:1 (10/8)",
+          "all": [
+            "1:1"
+          ]
+        },
+        {
+          "id": "leave-plan",
+          "label": "연차 사용 계획 등록 (10/9)",
+          "all": [
+            "연차"
+          ]
+        },
+        {
+          "id": "seminar",
+          "label": "사내 세미나 발표",
+          "all": [
+            "세미나"
+          ]
+        },
+        {
+          "id": "seminar-conflict",
+          "label": "세미나 날짜 불일치 (메일 10/8 · 캘린더 10/9)",
+          "all": [
+            "세미나",
+            "8일|10/8",
+            "9일|10/9"
+          ],
+          "check": false
+        }
+      ]
+    },
+    {
+      "id": "student-risks",
+      "persona": "student",
+      "title": "학생 · 놓친 것·막힌 것",
+      "runs": [
+        "blockers"
+      ],
+      "items": [
+        {
+          "id": "os-draft",
+          "label": "운영체제 과제2 임시저장(미제출)",
+          "all": [
+            "임시저장|draft|미제출"
+          ],
+          "check": false
+        },
+        {
+          "id": "review-pr8",
+          "label": "PR #8 내 리뷰 대기",
+          "all": [
+            "#8"
+          ]
+        },
+        {
+          "id": "erd-12",
+          "label": "ERD #12 확정",
+          "all": [
+            "#12"
+          ]
+        },
+        {
+          "id": "date-conflict",
+          "label": "발표일 불일치",
+          "all": [
+            "14일|10/14",
+            "15일|10/15"
+          ],
+          "check": false
+        },
+        {
+          "id": "injection",
+          "label": "지시문이 든 메일 (회의록 봇)",
+          "all": [
+            "회의록|지시"
+          ],
+          "check": false
+        }
+      ]
+    },
+    {
+      "id": "worker-risks",
+      "persona": "worker",
+      "title": "직장인 · 막힌 것",
+      "runs": [
+        "worker-blockers"
+      ],
+      "items": [
+        {
+          "id": "pii-90",
+          "label": "#90 주민번호 컬럼 노출",
+          "all": [
+            "#90|주민번호"
+          ]
+        },
+        {
+          "id": "incident-145",
+          "label": "#145 결제 승인 지연",
+          "all": [
+            "#145|지연"
+          ]
+        },
+        {
+          "id": "review-87",
+          "label": "PR #87 내 리뷰 대기",
+          "all": [
+            "#87"
+          ]
+        },
+        {
+          "id": "seminar-conflict",
+          "label": "세미나 날짜 불일치",
+          "all": [
+            "세미나",
+            "8일|10/8",
+            "9일|10/9"
+          ],
+          "check": false
+        },
+        {
+          "id": "injection",
+          "label": "지시문이 든 메일 (알림 봇)",
+          "all": [
+            "알림 봇|지시"
+          ],
+          "check": false
+        }
+      ]
+    }
+  ]
+}

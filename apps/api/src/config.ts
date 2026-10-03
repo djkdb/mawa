@@ -31,6 +31,8 @@ const EnvSchema = z.object({
   LMS_BASE_URL: z.string().default('https://lms.chungbuk.ac.kr'),
   /** Hash-chained audit log (JSONL). Default: .tokens/audit.jsonl (git-ignored). */
   AUDIT_LOG_PATH: z.string().optional(),
+  /** Ed25519 key that signs audit lines (PEM). Created on first start. Default: .tokens/audit-signing-key.pem. */
+  AUDIT_SIGNING_KEY_PATH: z.string().optional(),
   /** Server-owned data policy (JSON). Requests can only make it stricter. */
   POLICY_PATH: z.string().optional(),
 });
@@ -50,6 +52,7 @@ export interface AppConfig {
   tokenStorePath: string;
   runStorePath: string;
   auditLogPath: string;
+  auditSigningKeyPath: string;
   /** The base policy every run starts from, and where it came from. */
   policy: { base: DataPolicy; source: string };
 }
@@ -72,6 +75,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     tokenStorePath: e.TOKEN_STORE_PATH ?? resolve(root, '.tokens', 'tokens.enc.json'),
     runStorePath: e.RUN_STORE_PATH ?? resolve(root, '.tokens', 'runs.enc.json'),
     auditLogPath: e.AUDIT_LOG_PATH ?? resolve(root, '.tokens', 'audit.jsonl'),
+    auditSigningKeyPath: e.AUDIT_SIGNING_KEY_PATH ?? (e.AUDIT_LOG_PATH ? `${e.AUDIT_LOG_PATH}.key.pem` : resolve(root, '.tokens', 'audit-signing-key.pem')),
     policy: loadPolicy(e.POLICY_PATH),
   };
 }

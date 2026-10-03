@@ -11,6 +11,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { writeDemoAudit } from './lib/demo-audit.mjs';
+import { writeEvalResults } from './lib/eval.mjs';
 import { McpToolExecutor, createLLMProvider, llmConfigFromEnv, runAgent } from '@mawa/agent-core';
 
 const config = llmConfigFromEnv();
@@ -36,5 +37,6 @@ out.runs = out.runs.filter((r) => r.id !== id);
 out.runs.push({ id, kind: 'llm', persona, prompt, note: `실제 LLM(${llm.id} · ${llm.model})이 도구를 고르고 리포트를 쓴 기록입니다. 데이터는 샘플(--mode=demo)입니다.`, llm: { provider: llm.id, model: llm.model }, recordedAt: new Date().toISOString(), events: run.events, report: run.report, warnings: run.warnings });
 await writeFile(file, JSON.stringify(out, null, 2));
 await writeDemoAudit(out.runs, new URL('packages/shared/demo/demo-audit.json', root));
+await writeEvalResults();
 const calls = run.events.filter((e) => e.type === 'tool_call_completed').map((e) => `${e.call.server}.${e.call.name}`);
 console.log(`recorded ${id} with ${llm.id}/${llm.model}: ${calls.length} tool calls (${calls.join(', ')}), dropped ${run.events.find((e) => e.type === 'report_generated')?.droppedItems ?? 0}`);

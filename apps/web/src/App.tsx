@@ -4,6 +4,7 @@ import { DataUsePanel } from './components/DataUsePanel.js';
 import { ReportView } from './components/ReportView.js';
 import { PolicyCompare } from './components/PolicyCompare.js';
 import { AuditPage } from './pages/AuditPage.js';
+import { EvalPanel } from './components/EvalPanel.js';
 import { Shell } from './components/Shell.js';
 import { IS_DEMO_BUILD, getClient, type Status } from './lib/client.js';
 import { getRecordedRun, recordedIdOf, recordedPersona } from './lib/demo-client.js';
@@ -106,6 +107,7 @@ export default function App() {
             <>
               {comparison && comparison.columns.length > 1 && <PolicyCompare key={comparison.current} columns={comparison.columns} current={comparison.current} defaultOpen={!comparison.current.endsWith('weekly-progress') && comparison.current !== 'worker-weekly'} />}
               <ReportView key={state.runId ?? 'none'} report={state.report} warnings={state.warnings} recorded={recorded} prompt={state.prompt} onAnnounce={setAnnounce} events={state.events} note={state.note ?? null} runId={state.runId} />
+              {IS_DEMO_BUILD && <EvalPanel recordedId={recId} />}
               <DataUsePanel events={state.events} runId={state.runId} />
               <ActivityTimeline events={state.events} phase={state.phase} recorded={recorded} runId={state.runId} />
             </>

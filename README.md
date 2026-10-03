@@ -1,15 +1,21 @@
 # My AI Work Agent
 
-> **Connect work. Understand context. Execute with AI.**
+> **내 메일을 AI에 맡겨도 될까?** — 그 질문에 코드로 답한 개인 업무 에이전트.
 >
-> 흩어진 업무 데이터를 연결하고, AI Agent가 업무 맥락을 이해해 실행 가능한 결과를 만들어주는 개인 업무 Agent.
+> GitHub·Gmail·캘린더·eCampus를 MCP로 읽어 이번 주 할 일과 마감을 출처와 함께 정리하고, **AI에 무엇을 보냈고 무엇을 막았는지**를 서명된 기록으로 남깁니다.
 
-A personal work agent that connects **GitHub, Gmail and Google Calendar** through real **MCP servers**, lets an AI agent decide which tools a request needs, aggregates the results into one context, and produces a **Weekly Work Report** in which every statement is either *observed* from a cited source or marked *inferred*.
+**The story in three steps**
+
+1. **A student's problem.** My week is scattered across GitHub, Gmail, Calendar and eCampus — and my mail also holds my 주민등록번호, my bank account, my friends' numbers. An agent that reads all of it for me must not hand all of it to a model.
+2. **What the agent does about it.** MCP servers per source; the model picks the tools; every sentence cites a fetched source (or is dropped); before anything reaches the model, a data policy hides tools, narrows arguments, drops rows, masks identifiers and pseudonymizes names; an **omission check** re-reads the next two weeks deterministically and flags what the report missed; a hand-written **eval set** scores how much each report found.
+3. **The same problem at work.** The worker persona (fictional B사) has customers' numbers instead of friends'. The policy moves out of the agent into an **MCP gateway** any client (Claude Code included) goes through, with per-user tokens and a **hash-chained, Ed25519-signed audit log** that the admin persona reads.
 
 ```
-USER → AI AGENT → MCP CLIENT → MCP SERVERS → EXTERNAL SERVICES
-                        ↓
-          CONTEXT AGGREGATION → AI ANALYSIS → ACTIONABLE REPORT
+USER → AI AGENT ─┐                                   ┌→ GitHub
+                 ├→ (policy · masking · audit) → MCP ├→ Gmail
+CLAUDE CODE ─────┘        gateway / agent            ├→ Calendar
+                                                     └→ eCampus
+REPORT ← source validation ← omission check ← eval
 ```
 
 | | |
@@ -18,6 +24,8 @@ USER → AI AGENT → MCP CLIENT → MCP SERVERS → EXTERNAL SERVICES
 | 3D portfolio | `portfolio` — a pitch deck in the browser, with presentation mode |
 | Motion graphic | `motion` — 45 s Remotion video |
 | Docs | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/DECISIONS.md`](docs/DECISIONS.md) · [`docs/IMPLEMENTATION.md`](docs/IMPLEMENTATION.md) · [`docs/SETUP.md`](docs/SETUP.md) |
+
+- 내 GitHub 계정으로 직접 돌려보기: [docs/REAL_RUN.md](docs/REAL_RUN.md)
 
 ## Overview
 

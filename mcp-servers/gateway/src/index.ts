@@ -8,7 +8,7 @@
 import { readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
-import { McpToolExecutor } from '@mawa/agent-core';
+import { McpToolExecutor, loadOrCreateSigner } from '@mawa/agent-core';
 import { createGateway } from './gateway.js';
 import { createRemoteGateway, loadUsers, newUserToken } from './remote.js';
 
@@ -37,18 +37,21 @@ async function main() {
   }));
   const executor = new McpToolExecutor({ servers, mode, clientName: 'mawa-gateway', ...(persona && mode === 'demo' ? { persona } : {}) });
   const auditPath = arg('audit');
+  // --signing-key=<pem>: sign every audit line (created on first use).
+  const signer = arg('signing-key') ? await loadOrCreateSigner(arg('signing-key')!) : undefined;
+  if (signer) console.error(`[mawa-gateway] audit public key: ${signer.publicKey}`);
   const close = () => { void executor.close().finally(() => process.exit(0)); };
   process.on('SIGINT', close);
   process.on('SIGTERM', close);
   // Remote mode: Streamable HTTP with per-user Bearer tokens (--users=<file>), loopback unless --host.
   if (arg('http')) {
     if (!arg('users')) throw new Error('--http needs --users=<file> (create entries with --new-token=<user>)');
-    const { http } = createRemoteGateway({ executor, policy, mode, users: await loadUsers(arg('users')!), ...(auditPath ? { auditPath } : {}) });
+    const { http } = createRemoteGateway({ executor, policy, mode, users: await loadUsers(arg('users')!), ...(auditPath ? { auditPath } : {}), ...(signer ? { signer } : {}) });
     const host = arg('host') ?? '127.0.0.1';
     http.listen(Number(arg('http')), host, () => console.error(`[mawa-gateway] http://${host}:${arg('http')}/mcp (mode=${mode}, servers=${ids.join(',')}, audit=${auditPath ?? 'memory'})`));
     return;
   }
-  const { server } = createGateway({ executor, policy, mode, ...(auditPath ? { auditPath } : {}) });
+  const { server } = createGateway({ executor, policy, mode, ...(auditPath ? { auditPath } : {}), ...(signer ? { signer } : {}) });
   await server.connect(new StdioServerTransport());
   process.stdin.on('end', close);
   console.error(`[mawa-gateway] ready (mode=${mode}, servers=${ids.join(',')}, audit=${auditPath ?? 'memory'})`);

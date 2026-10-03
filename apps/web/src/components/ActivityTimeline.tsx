@@ -42,20 +42,22 @@ export function stepsFromEvents(events: AgentEvent[], phase: RunPhase): Step[] {
         break;
       }
       case 'tool_discovered': { const s = steps.find((x) => x.key === 'discover'); if (s) { s.state = 'done'; s.label = `MCP 서버 ${new Set(e.tools.map((t) => t.server)).size}곳에서 도구 ${e.tools.length}개 발견`; } break; }
-      case 'tool_call_started': { const s: Step = { key: e.call.id, label: toolLabel(e.call.server, e.call.name, false), color: SERVER_COLOR[e.call.server], tool: { server: e.call.server, name: e.call.name, input: e.call.input }, state: 'active', code: `mcp-servers/${e.call.server}/src/server.ts` }; tool.set(e.call.id, s); steps.push(s); break; }
+      case 'tool_call_started': { const s: Step = { key: e.call.id, label: `${e.call.id.startsWith('verify_') ? '누락 검사 · ' : ''}${toolLabel(e.call.server, e.call.name, false)}`, color: SERVER_COLOR[e.call.server], tool: { server: e.call.server, name: e.call.name, input: e.call.input }, state: 'active', code: `mcp-servers/${e.call.server}/src/server.ts` }; tool.set(e.call.id, s); steps.push(s); break; }
       case 'tool_call_completed': {
         const s = tool.get(e.call.id);
         if (s && s.tool) {
           const data = e.result.output.data;
           s.state = 'done';
-          s.label = toolLabel(e.call.server, e.call.name, true);
+          s.label = `${e.call.id.startsWith('verify_') ? '누락 검사 · ' : ''}${toolLabel(e.call.server, e.call.name, true)}`;
           s.detail = summaryKo(e.result.output.summary);
           s.tool = { ...s.tool, summary: e.result.output.summary, durationMs: e.result.durationMs, ...(Array.isArray(data) ? { items: data.length } : {}) };
         }
         break;
       }
       case 'tool_call_failed': { const s = tool.get(e.call.id); if (s && s.tool) { s.state = 'failed'; s.detail = e.result.error.message; s.tool = { ...s.tool, error: e.result.error.message, durationMs: e.result.durationMs }; } break; }
-      case 'tool_call_denied': steps.push({ key: `deny-${e.call.id}`, label: `정책이 ${e.call.name.replace('__', '.')} 호출을 거절함`, detail: '허용 목록에 없는 도구입니다. MCP 서버로 요청을 보내지 않았고, 모델에게 거절됐다고 알렸습니다.', state: 'failed', code: 'packages/agent-core/src/agent.ts' }); break;
+      case 'coverage_checked': steps.push({ key: 'coverage', label: e.missed.length ? `누락 검사: 리포트에 없는 날짜 항목 ${e.missed.length}건` : `누락 검사: 날짜 항목 ${e.checked}개 모두 리포트에 있음`, detail: e.missed.map((m) => m.title).join(', '), state: e.missed.length ? 'failed' : 'done', code: 'packages/agent-core/src/report/coverage.ts' }); break;
+      case 'tool_call_adjusted': steps.push({ key: `adj-${e.call.id}`, label: `정책이 ${e.call.name.replace('__', '.')}의 범위를 좁힘`, detail: e.changes.join(' · '), state: 'done', code: 'packages/shared/src/arg-policy.ts' }); break;
+      case 'tool_call_denied': steps.push({ key: `deny-${e.call.id}`, label: `정책이 ${e.call.name.replace('__', '.')} 호출을 거절함`, detail: e.reason === 'arguments' ? `${e.detail ?? '인자가 정책 범위를 벗어남'}. MCP 서버로 요청을 보내지 않았습니다.` : '허용 목록에 없는 도구입니다. MCP 서버로 요청을 보내지 않았고, 모델에게 거절됐다고 알렸습니다.', state: 'failed', code: 'packages/agent-core/src/agent.ts' }); break;
       case 'context_aggregated': steps.push({ key: 'ctx', label: `출처 ${e.totalItems}건으로 맥락 구성`, state: 'done' }); steps.push({ key: 'analyze', label: '리포트 작성 중', state: 'active' }); break;
       case 'report_generated': { const s = steps.find((x) => x.key === 'analyze'); if (s) { s.state = 'done'; s.label = '리포트 완성'; s.detail = `섹션 ${e.report.sections.length}개 · 출처 검증 · 근거 없는 항목 ${e.droppedItems}건 제외`; s.code = 'packages/agent-core/src/report/generate.ts'; } break; }
       case 'agent_run_completed': if (e.status === 'error') { for (const s of steps) if (s.state === 'active') s.state = 'failed'; steps.push({ key: 'end', label: '실행 실패', detail: e.error ?? '', state: 'failed' }); } break;
@@ -175,7 +177,7 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
                     <tbody>
                       {events.map((e, i) => {
                         const t0 = new Date(events[0]!.timestamp).getTime();
-                        const detail = e.type === 'tool_call_denied' ? `${e.call.name} refused (${e.reason})` : 'call' in e ? `${e.call.server}.${e.call.name} ${JSON.stringify(e.call.input)}` : e.type === 'tool_discovered' ? `${e.tools.length} tools` : e.type === 'context_aggregated' ? JSON.stringify(e.counts) : e.type === 'report_generated' ? `${e.report.sections.length} sections, dropped ${e.droppedItems}` : e.type === 'agent_run_completed' ? e.status : e.type === 'tool_discovery_started' ? e.servers.join(',') : e.type === 'mcp_message' ? `${e.direction === 'client_to_server' ? '→' : '←'} ${e.server} ${e.kind} ${e.method ?? ''}${e.rpcId !== undefined ? ` #${e.rpcId}` : ''} ${kb(e.bytes)}` : e.type === 'mcp_server_connected' ? `${e.server}: ${e.serverInfo.name} v${e.serverInfo.version}, MCP ${e.protocolVersion}, ${e.transport}` : e.type === 'llm_request' ? `${e.phase} → ${e.provider}/${e.model} ${kb(e.bytes)}, masked ${e.maskedEmails}, flagged ${e.flagged.length}` : e.type === 'llm_response' ? `${e.provider}: ${e.stopReason}, ${e.toolCalls.length} tool calls` : '';
+                        const detail = e.type === 'tool_call_denied' ? `${e.call.name} refused (${e.reason})` : e.type === 'tool_call_adjusted' ? `${e.call.name} adjusted: ${e.changes.join(', ')}` : 'call' in e ? `${e.call.server}.${e.call.name} ${JSON.stringify(e.call.input)}` : e.type === 'tool_discovered' ? `${e.tools.length} tools` : e.type === 'context_aggregated' ? JSON.stringify(e.counts) : e.type === 'report_generated' ? `${e.report.sections.length} sections, dropped ${e.droppedItems}` : e.type === 'agent_run_completed' ? e.status : e.type === 'tool_discovery_started' ? e.servers.join(',') : e.type === 'mcp_message' ? `${e.direction === 'client_to_server' ? '→' : '←'} ${e.server} ${e.kind} ${e.method ?? ''}${e.rpcId !== undefined ? ` #${e.rpcId}` : ''} ${kb(e.bytes)}` : e.type === 'mcp_server_connected' ? `${e.server}: ${e.serverInfo.name} v${e.serverInfo.version}, MCP ${e.protocolVersion}, ${e.transport}` : e.type === 'llm_request' ? `${e.phase} → ${e.provider}/${e.model} ${kb(e.bytes)}, masked ${e.maskedEmails}, flagged ${e.flagged.length}` : e.type === 'llm_response' ? `${e.provider}: ${e.stopReason}, ${e.toolCalls.length} tool calls` : '';
                         return (
                           <tr key={i} className="border-t border-line/50 align-top">
                             <td className="tnum px-3 py-1 text-text-3">{new Date(e.timestamp).getTime() - t0}</td>

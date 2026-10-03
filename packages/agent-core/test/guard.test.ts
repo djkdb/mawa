@@ -110,3 +110,22 @@ describe('pseudonymizer', () => {
     expect(p.restore('사람B(교수)께 날짜를 확인하고 사람A의 PR을 리뷰하세요')).toBe('박교수께 날짜를 확인하고 김지민의 PR을 리뷰하세요');
   });
 });
+
+describe('signed audit log', () => {
+  it('signs each line; a chain rewritten without the key fails verification', async () => {
+    const { ChainedAuditLog, ephemeralSigner } = await import('../src/index.js');
+    const { chainEntries, verifyChain } = await import('@mawa/shared');
+    const signer = ephemeralSigner();
+    const log = new ChainedAuditLog<{ action: string; rows?: number }>(undefined, signer);
+    await log.append([{ action: 'read', rows: 4 }, { action: 'llm' }]);
+    const { entries, check } = await log.read();
+    expect(check).toMatchObject({ ok: true, signature: 'valid' });
+    expect(entries.every((e) => typeof e['sig'] === 'string')).toBe(true);
+    // Edit a line and recompute the whole chain: the hashes match again, the signatures do not.
+    const forged = await chainEntries([{ action: 'read', rows: 0 }, { action: 'llm' }]);
+    expect((await verifyChain(forged)).ok).toBe(true);
+    expect(await verifyChain(forged, undefined, signer.publicKey)).toMatchObject({ ok: false, brokenAt: 1, reason: expect.stringContaining('서명이 없습니다') });
+    const withOldSigs = forged.map((f, i) => ({ ...f, sig: entries[i]!['sig'] }));
+    expect(await verifyChain(withOldSigs, undefined, signer.publicKey)).toMatchObject({ ok: false, reason: expect.stringContaining('서명이 맞지 않습니다') });
+  });
+});

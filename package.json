@@ -32,7 +32,8 @@
     "record:llm-run": "node scripts/record-llm-run.mjs",
     "ask": "node scripts/ask.mjs",
     "audit:verify": "node scripts/verify-audit.mjs",
-    "record:gateway-run": "node scripts/record-gateway-run.mjs"
+    "record:gateway-run": "node scripts/record-gateway-run.mjs",
+    "eval": "node scripts/eval.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

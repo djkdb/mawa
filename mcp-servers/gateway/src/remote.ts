@@ -3,7 +3,7 @@ import { readFile } from 'node:fs/promises';
 import { createServer, type IncomingMessage, type Server as HttpServer } from 'node:http';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { isInitializeRequest } from '@modelcontextprotocol/sdk/types.js';
-import { ChainedAuditLog, type ToolExecutor } from '@mawa/agent-core';
+import { ChainedAuditLog, type AuditSigner, type ToolExecutor } from '@mawa/agent-core';
 import { DataPolicySchema, tightenPolicy, type DataPolicy } from '@mawa/shared';
 import { createGateway, type AuditEntry } from './gateway.js';
 
@@ -35,6 +35,7 @@ export interface RemoteOptions {
   users: GatewayUser[];
   mode: 'demo' | 'real';
   auditPath?: string;
+  signer?: AuditSigner;
 }
 
 /**
@@ -44,7 +45,7 @@ export interface RemoteOptions {
  */
 export function createRemoteGateway(options: RemoteOptions): { http: HttpServer; audit: ChainedAuditLog<AuditEntry> } {
   const base = DataPolicySchema.parse(options.policy);
-  const audit = new ChainedAuditLog<AuditEntry>(options.auditPath);
+  const audit = new ChainedAuditLog<AuditEntry>(options.auditPath, options.signer);
   const sessions = new Map<string, { transport: StreamableHTTPServerTransport; user: string }>();
 
   const http = createServer(async (req, res) => {

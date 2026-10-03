@@ -10,6 +10,7 @@
 import { readFile, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { writeDemoAudit } from './lib/demo-audit.mjs';
+import { writeEvalResults } from './lib/eval.mjs';
 import { McpToolExecutor, ScriptedProvider, runAgent } from '@mawa/agent-core';
 
 const root = new URL('../', import.meta.url);
@@ -180,10 +181,10 @@ try {
     runs.push({ id: `${prefix}policy-off`, kind: 'policy', persona, prompt: ex.prompt, note: '정책 비교의 기준 실행입니다. 제외 규칙, 메일 주소·개인정보 가리기, 도구 제한을 모두 끄고 같은 질문을 실행했습니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, policyLabel: '정책 없음', events: off.events, report: off.report, warnings: off.warnings });
     const strictExec = newExecutor(persona);
     const tools = (await strictExec.listTools()).map((t) => `${t.server}__${t.name}`);
-    const strict = { ...DEMO_POLICY, pseudonymize: true, allowedTools: tools.filter((t) => t !== 'gmail__get_email' && t !== 'gmail__search_emails') };
+    const strict = { ...DEMO_POLICY, pseudonymize: true, allowedTools: tools.filter((t) => t !== 'gmail__get_email' && t !== 'gmail__search_emails'), limits: { maxDays: 7, maxResults: 20, ...(persona === 'worker' ? { senderDomains: ['b-company.example.com', 'github.example.com'] } : {}) } };
     const on = await runAgent({ prompt: ex.prompt, mode: 'demo', llm: new GuessingProvider(ex.plan), executor: strictExec, dataPolicy: strict }).finally(() => strictExec.close());
     if (on.error) throw new Error(`${prefix}policy-strict: ${on.error}`);
-    runs.push({ id: `${prefix}policy-strict`, kind: 'policy', persona, prompt: ex.prompt, note: '정책 시연: 메일 전체 검색·본문 읽기 도구를 막고 제외 규칙, 가리기, 이름 가명 처리를 켠 실행입니다. 플래너가 막힌 도구(gmail.get_email)를 일부러 요청하도록 주입했고, 호출 단계에서 거절됐습니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + blocked-tool request' }, policyLabel: '엄격한 정책', events: on.events, report: on.report, warnings: on.warnings });
+    runs.push({ id: `${prefix}policy-strict`, kind: 'policy', persona, prompt: ex.prompt, note: '정책 시연: 메일 전체 검색·본문 읽기 도구를 막고, 조회 범위를 7일·20건으로 줄이고(직장인은 회사 도메인 메일만), 제외 규칙·가리기·이름 가명 처리를 켠 실행입니다. 플래너가 막힌 도구(gmail.get_email)를 일부러 요청하도록 주입했고, 호출 단계에서 거절됐습니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + blocked-tool request' }, policyLabel: '엄격한 정책', events: on.events, report: on.report, warnings: on.warnings });
     console.log(`policy demo (${persona}): denied ${on.events.filter((e) => e.type === 'tool_call_denied').length}`);
   }
   // Keep a real-LLM recording made with `npm run record:llm-run`; this script never fabricates one.
@@ -194,6 +195,7 @@ try {
   const out = { recordedAt: new Date().toISOString(), policy: DEMO_POLICY, note: 'Recorded demo runs (DEMO MODE, scripted provider, real MCP servers over stdio, synthetic fixtures). Replayed by apps/web in demo mode and by the portfolio. Not live, not real data.', runs };
   await writeFile(new URL('packages/shared/demo/demo-runs.json', root), JSON.stringify(out, null, 2));
   console.log(`audit: ${await writeDemoAudit(runs, new URL('packages/shared/demo/demo-audit.json', root))} chained lines`);
+  console.log(`eval: ${(await writeEvalResults()).length} scored runs`);
 } finally {
   await executor.close();
 }

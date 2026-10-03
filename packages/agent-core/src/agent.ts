@@ -1,12 +1,13 @@
 import { randomUUID } from 'node:crypto';
 import type { AgentEvent, AgentMode, DataPolicy, ToolCall, ToolDefinition, ToolResult, WeeklyWorkReport } from '@mawa/shared';
-import { DEMO_NOW } from '@mawa/shared';
+import { DEMO_NOW, applyArgLimits, filterRowsByLimits } from '@mawa/shared';
 import { aggregateContext, type AggregatedContext } from './context/aggregate.js';
 import type { LLMMessage, LLMProvider, LLMToolDefinition } from './llm/types.js';
 import { AGENT_SYSTEM_PROMPT } from './report/prompt.js';
 import { generateReport } from './report/generate.js';
 import { addKinds, detectInjection, excludedBy, maskPii, promptJson, type PiiKind } from './report/guard.js';
 import { Pseudonymizer } from './report/pseudonym.js';
+import { coverageCandidates, uncoveredCandidates } from './report/coverage.js';
 import { qualifiedToolName, splitQualifiedToolName, type ToolExecutor } from './tools/executor.js';
 import { isMcpServerId } from './tools/mcp-executor.js';
 
@@ -36,7 +37,20 @@ export interface RunAgentInput {
   onEvent?: (event: AgentEvent) => void;
   signal?: AbortSignal;
   now?: () => Date;
+  /**
+   * After the report: a deterministic read pass (upcoming events, eCampus deadlines, mail that states a
+   * date next to a deadline word) whose dated items the report neither cites nor names are reported as
+   * possibly missed. Reads go through the same policy and are audited; nothing goes to the model. Default on.
+   */
+  verifyCoverage?: boolean;
 }
+
+/** The safety reads of the omission check; each runs only if the policy allows the tool. */
+const COVERAGE_READS: Array<{ name: string; input: Record<string, unknown> }> = [
+  { name: 'calendar__get_upcoming_events', input: { days: 14 } },
+  { name: 'lms__get_upcoming_deadlines', input: { days: 14 } },
+  { name: 'gmail__search_emails', input: { query: '마감 OR 까지 OR 만료 OR 회신 OR 제출 OR 신청 OR 등록' } },
+];
 
 export interface RunAgentResult {
   runId: string;
@@ -149,19 +163,34 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
           messages.push({ role: 'tool', toolCallId: tc.id, content: `Unknown tool "${tc.name}".`, isError: true });
           continue;
         }
-        const call: ToolCall = { id: tc.id, server: split.server, name: split.name, input: tc.input };
+        // Argument limits: clamp the period and result count, refuse out-of-scope repositories and whole-mailbox queries.
+        const arg = applyArgLimits(tc.name, tc.input, dataPolicy.limits, now().getTime());
+        if (arg.refused) {
+          deniedCalls += 1;
+          emit('tool_call_denied', { call: { id: tc.id, name: tc.name, input: tc.input }, reason: 'arguments', detail: arg.refused });
+          warnings.push(`Data policy refused ${tc.name}: ${arg.refused}.`);
+          messages.push({ role: 'tool', toolCallId: tc.id, content: `Refused by the user's data policy: ${arg.refused}. Narrow the arguments or use another tool.`, isError: true });
+          continue;
+        }
+        if (arg.changes.length) emit('tool_call_adjusted', { call: { id: tc.id, name: tc.name }, changes: arg.changes });
+        const call: ToolCall = { id: tc.id, server: split.server, name: split.name, input: arg.input };
         emit('tool_call_started', { call });
         const raw = await input.executor.callTool(call, input.signal);
         // The data policy keeps matching rows out of everything downstream (LLM payload, context, report).
         let result = raw;
-        if (raw.status === 'ok' && Array.isArray(raw.output.data) && dataPolicy.exclude.length) {
-          const kept = raw.output.data.filter((row) => {
+        if (raw.status === 'ok' && Array.isArray(raw.output.data) && dataPolicy.limits) {
+          const { kept, dropped } = filterRowsByLimits(raw.output.data, dataPolicy.limits);
+          excludedRows.push(...dropped);
+          result = { ...raw, output: { ...raw.output, data: kept } };
+        }
+        if (result.status === 'ok' && Array.isArray(result.output.data) && dataPolicy.exclude.length) {
+          const kept = result.output.data.filter((row) => {
             const rule = excludedBy(row, dataPolicy.exclude);
             const id = row && typeof row === 'object' ? (row as { sourceId?: unknown }).sourceId : undefined;
             if (rule && typeof id === 'string') excludedRows.push({ sourceId: id, rule });
             return !rule;
           });
-          result = { ...raw, output: { ...raw.output, data: kept } };
+          result = { ...result, output: { ...result.output, data: kept } };
         }
         executed.push({ call, result });
         if (result.status === 'ok') {
@@ -207,6 +236,31 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
     report = pseudo ? { ...generated.report, sections: generated.report.sections.map((s) => ({ ...s, items: s.items.map((i) => ({ ...i, text: pseudo.restore(i.text), ...(i.reason ? { reason: pseudo.restore(i.reason) } : {}) })) })) } : generated.report;
     warnings.push(...generated.warnings);
     emit('report_generated', { report, droppedItems: generated.droppedItems });
+
+    // 5. Omission check: what is dated in the next two weeks that the report does not mention?
+    if (input.verifyCoverage !== false) {
+      const rows: unknown[] = executed.flatMap(({ result }) => (result.status === 'ok' && Array.isArray(result.output.data) ? result.output.data : []));
+      const reads: string[] = [];
+      for (const [i, r] of COVERAGE_READS.entries()) {
+        const def = byName.get(r.name);
+        const split = splitQualifiedToolName(r.name);
+        if (!def || !split || !isMcpServerId(split.server)) continue;
+        const arg = applyArgLimits(r.name, r.input, dataPolicy.limits, now().getTime());
+        if (arg.refused) continue;
+        const call: ToolCall = { id: `verify_${i + 1}`, server: split.server, name: split.name, input: arg.input };
+        emit('tool_call_started', { call });
+        const res = await input.executor.callTool(call, input.signal);
+        if (res.status !== 'ok') { emit('tool_call_failed', { call, result: res }); continue; }
+        const data = Array.isArray(res.output.data) ? res.output.data : [];
+        const allowed = filterRowsByLimits(data, dataPolicy.limits).kept.filter((row) => !excludedBy(row, dataPolicy.exclude));
+        emit('tool_call_completed', { call, result: { ...res, output: { ...res.output, data: allowed } } });
+        rows.push(...allowed);
+        reads.push(r.name);
+      }
+      const candidates = coverageCandidates(rows, now().getTime());
+      const missed = uncoveredCandidates(candidates, report);
+      emit('coverage_checked', { reads, checked: candidates.length, missed });
+    }
 
     emit('agent_run_completed', { status: 'success', durationMs: now().getTime() - startedAt.getTime() });
     return { runId, mode, report, events, context, warnings };

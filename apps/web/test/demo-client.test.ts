@@ -16,7 +16,7 @@ describe('DemoClient', () => {
     expect(DEMO_EXAMPLES).toHaveLength(4);
     const { runId } = await c.startRun(DEMO_EXAMPLES[2]!.prompt, 'demo');
     const list = await c.listRuns();
-    expect(list[0]).toMatchObject({ runId, recorded: false, status: 'running', toolCalls: 4 });
+    expect(list[0]).toMatchObject({ runId, recorded: false, status: 'running', toolCalls: 7 }); // 4 planned + 3 omission-check reads
     const events: string[] = [];
     await new Promise<void>((resolve, reject) => c.subscribeRun(runId, { onEvent: (e) => events.push(e.type), onDone: () => resolve(), onError: reject }));
     expect(events[0]).toBe('agent_run_started');

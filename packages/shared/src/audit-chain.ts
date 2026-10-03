@@ -5,7 +5,7 @@
  */
 export const GENESIS = '0'.repeat(64);
 
-export type Chained<T extends object = Record<string, unknown>> = T & { seq: number; prev: string; hash: string };
+export type Chained<T extends object = Record<string, unknown>> = T & { seq: number; prev: string; hash: string; /** Ed25519 signature of `hash` (base64), when the writer holds a signing key. */ sig?: string };
 
 /** JSON with sorted keys, so the hash does not depend on property order. */
 export function canonical(value: unknown): string {
@@ -23,7 +23,7 @@ export async function sha256Hex(text: string): Promise<string> {
 
 /** The hash of one entry: previous hash + the entry (with seq and prev, without its own hash). */
 export async function entryHash(entry: Record<string, unknown>): Promise<string> {
-  const { hash: _h, ...rest } = entry;
+  const { hash: _h, sig: _s, ...rest } = entry;
   return sha256Hex(`${String(rest['prev'])}\n${canonical(rest)}`);
 }
 
@@ -44,21 +44,37 @@ export async function chainEntries<T extends object>(entries: T[], prev = GENESI
   return out;
 }
 
-export type ChainCheck = { ok: true; count: number; head: string } | { ok: false; count: number; brokenAt: number; reason: string };
+export type ChainCheck = { ok: true; count: number; head: string; /** valid: every line signed by the given key; none: no key given; unsupported: this runtime cannot verify Ed25519. */ signature?: 'valid' | 'none' | 'unsupported' } | { ok: false; count: number; brokenAt: number; reason: string };
 
 /**
  * Checks every link; reports the first line (1-based) whose hash or back-link does not match.
  * `start` is the hash the first line must link to: GENESIS for a whole log, or the `prev` of the
  * first line when checking a tail (then everything before it is outside the check).
  */
-export async function verifyChain(entries: Array<Record<string, unknown>>, start = GENESIS): Promise<ChainCheck> {
+export async function verifyChain(entries: Array<Record<string, unknown>>, start = GENESIS, publicKey?: string): Promise<ChainCheck> {
   let prev = start;
+  let key: Awaited<ReturnType<typeof globalThis.crypto.subtle.importKey>> | null | 'unsupported' = null;
+  if (publicKey) {
+    try { key = await globalThis.crypto.subtle.importKey('spki', fromBase64(publicKey), { name: 'Ed25519' }, false, ['verify']); } catch { key = 'unsupported'; }
+  }
   for (const [i, e] of entries.entries()) {
     if (e['prev'] !== prev) return { ok: false, count: entries.length, brokenAt: i + 1, reason: i === 0 ? '첫 줄이 체인의 시작이 아닙니다' : '이전 줄과 연결이 끊겼습니다 (삭제·순서 변경)' };
     if (e['hash'] !== (await entryHash(e))) return { ok: false, count: entries.length, brokenAt: i + 1, reason: '내용이 기록 이후 바뀌었습니다' };
+    if (key && key !== 'unsupported') {
+      const sig = typeof e['sig'] === 'string' ? fromBase64(e['sig']) : null;
+      const valid = sig ? await globalThis.crypto.subtle.verify({ name: 'Ed25519' }, key, sig, new TextEncoder().encode(String(e['hash']))) : false;
+      if (!valid) return { ok: false, count: entries.length, brokenAt: i + 1, reason: sig ? '서명이 맞지 않습니다 (서명 키 없이 다시 쓴 기록)' : '서명이 없습니다' };
+    }
     prev = String(e['hash']);
   }
-  return { ok: true, count: entries.length, head: prev };
+  return { ok: true, count: entries.length, head: prev, signature: !publicKey ? 'none' : key === 'unsupported' ? 'unsupported' : 'valid' };
+}
+
+function fromBase64(b64: string): Uint8Array<ArrayBuffer> {
+  const bin = globalThis.atob(b64);
+  const out = new Uint8Array(new ArrayBuffer(bin.length));
+  for (let i = 0; i < bin.length; i += 1) out[i] = bin.charCodeAt(i);
+  return out;
 }
 
 export function parseJsonl(text: string): Array<Record<string, unknown>> {

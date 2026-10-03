@@ -8,9 +8,9 @@ import { kb } from './McpWire.js';
  * The security reviewer's first screen: what the policy did and whether the log is intact, in a few
  * lines, before the full table. Built from the stored audit log; the chain is verified on load.
  */
-export function SecuritySummary({ entries, chain }: { entries: Array<AuditRow & { prev: string; hash: string }>; /** The whole stored log, verified as one chain (entries may be a filtered view of it). */ chain: Array<Record<string, unknown>> }) {
+export function SecuritySummary({ entries, chain, publicKey }: { entries: Array<AuditRow & { prev: string; hash: string }>; /** The whole stored log, verified as one chain (entries may be a filtered view of it). */ chain: Array<Record<string, unknown>>; publicKey?: string | undefined }) {
   const [check, setCheck] = useState<ChainCheck | null>(null);
-  useEffect(() => { const start = typeof chain[0]?.['prev'] === 'string' ? (chain[0]!['prev'] as string) : undefined; void verifyChain(chain, start).then(setCheck); }, [chain]);
+  useEffect(() => { const start = typeof chain[0]?.['prev'] === 'string' ? (chain[0]!['prev'] as string) : undefined; void verifyChain(chain, start, publicKey).then(setCheck); }, [chain, publicKey]);
   const of = (a: AuditRow['action']) => entries.filter((e) => e.action === a);
   const denied = of('denied');
   const llm = of('llm');
@@ -23,12 +23,12 @@ export function SecuritySummary({ entries, chain }: { entries: Array<AuditRow & 
 
   const items: Array<{ Icon: LucideIcon; tone: string; title: string; detail: string }> = [
     check
-      ? check.ok ? { Icon: ShieldCheck, tone: 'text-ok', title: '감사 로그 무결성 정상', detail: `${check.count}줄 해시 체인 일치 · 마지막 해시 ${check.head.slice(0, 12)}…` }
+      ? check.ok ? { Icon: ShieldCheck, tone: 'text-ok', title: '감사 로그 무결성 정상', detail: `${check.count}줄 해시 체인 일치${check.signature === 'valid' ? ' · Ed25519 서명 확인' : ''} · 마지막 해시 ${check.head.slice(0, 12)}…` }
         : { Icon: ShieldAlert, tone: 'text-danger', title: '감사 로그 무결성 실패', detail: `${check.brokenAt}번째 줄 · ${check.reason}` }
       : { Icon: Link2, tone: 'text-text-3', title: '무결성 확인 중', detail: '' },
     { Icon: Ban, tone: denied.length ? 'text-danger' : 'text-text-3', title: `정책이 거절한 호출 ${denied.length}건`, detail: denied.length ? [...new Set(denied.map((d) => `${d.server}.${d.tool}`))].join(', ') : '허용 목록 밖 도구 요청 없음' },
     { Icon: TriangleAlert, tone: flagged.size ? 'text-warn' : 'text-text-3', title: `지시문이 섞인 외부 데이터 ${flagged.size}건`, detail: flagged.size ? `${[...flagged].slice(0, 3).join(', ')} · 데이터로만 다루고 따르지 않음` : '감지 없음' },
-    { Icon: EyeOff, tone: 'text-inferred', title: `모델에 보내기 전 가림 · 개인정보 ${pii} · 메일 주소 ${emails}`, detail: pii ? piiBreakdown(kinds) : '가린 개인정보 없음' },
+    { Icon: EyeOff, tone: 'text-inferred', title: `모델에 보내기 전 가린 횟수 · 개인정보 ${pii}회 · 메일 주소 ${emails}회`, detail: `${pii ? piiBreakdown(kinds) : '가린 개인정보 없음'} · 같은 값이 여러 요청에 들어가면 요청마다 셉니다` },
     { Icon: EyeOff, tone: 'text-text-2', title: `정책으로 뺀 항목 ${of('excluded').length}건`, detail: [...new Set(of('excluded').map((e) => e.detail))].join(', ') || '없음' },
     { Icon: Send, tone: 'text-accent', title: `LLM 요청 ${llm.length}회 · ${kb(llm.reduce((n, e) => n + (e.bytes ?? 0), 0))}`, detail: external.length ? `외부 모델: ${[...new Set(external.map((e) => e.provider).filter((x) => !x?.endsWith('-default')))].join(', ') || external[0]!.provider}` : '모두 스크립트(외부로 나간 데이터 없음)' },
   ];
