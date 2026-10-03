@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { CheckSquare, ChevronDown, ClipboardCopy, RotateCcw, ShieldCheck, TriangleAlert } from 'lucide-react';
 import type { AgentEvent, ReportSectionId, Source, WeeklyWorkReport } from '@mawa/shared';
 import { DEMO_EXAMPLES } from '../lib/client.js';
-import { EXAMPLE_META, KIND_NAME, KIND_SERVER, SERVER_COLOR, SOURCE_TYPE_NAME, periodKo, sectionTitle, timeKo } from '../lib/copy.js';
+import { CATEGORIES, EXAMPLE_META, KIND_NAME, KIND_SERVER, SERVER_COLOR, SOURCE_TYPE_NAME, categoryOf, periodKo, sectionTitle, timeKo } from '../lib/copy.js';
+import { hashQuery } from '../lib/useHashRoute.js';
 import { copyText, exportReport } from '../lib/export.js';
 import { ModeBadge } from './ModeBadge.js';
 import { PreviousRun } from './PreviousRun.js';
@@ -69,22 +70,33 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
   const byId = new Map(report.sources.map((s) => [s.id, s]));
   const [hidden, setHidden] = useState<Set<string>>(() => loadHidden(report.runId));
   const [editing, setEditing] = useState(false);
+  const [cat, setCat] = useState<string | null>(() => hashQuery().get('cat'));
   const [showSources, setShowSources] = useState(false);
   const [copied, setCopied] = useState<string | null>(null);
   useEffect(() => { try { localStorage.setItem(HIDDEN_KEY(report.runId), JSON.stringify([...hidden])); } catch { /* per-viewer convenience only */ } }, [hidden, report.runId]);
   const title = note?.startsWith('출처 검증') ? '출처 검증 시연' : reportTitle(prompt);
+  // Category filter (과제 / 팀플 / 개발 / 모임 …): narrows every section except the overview, and the copy.
+  const catCounts = new Map<string, number>();
+  for (const s of report.sections) if (s.id !== 'overview') for (const i of s.items) catCounts.set(i.category ?? '기타', (catCounts.get(i.category ?? '기타') ?? 0) + 1);
+  const view: WeeklyWorkReport = cat ? { ...report, sections: report.sections.map((s) => (s.id === 'overview' ? s : { ...s, items: s.items.filter((i) => (i.category ?? '기타') === cat) })).filter((s) => s.items.length > 0) } : report;
+  const pick = (c: string | null) => {
+    setCat(c);
+    const base = window.location.hash.split('?')[0];
+    window.history.replaceState(null, '', `${window.location.pathname}${window.location.search}${base}${c ? `?cat=${encodeURIComponent(c)}` : ''}`);
+  };
   const all = report.sections.flatMap((s) => s.items);
   const visible = all.filter((i) => !hidden.has(i.id));
   const observed = visible.filter((i) => i.confidence === 'observed').length;
   const groups = new Map<Source['type'], Source[]>();
   for (const s of report.sources) groups.set(s.type, [...(groups.get(s.type) ?? []), s]);
   const flagged = new Map(events.flatMap((e) => (e.type === 'llm_request' ? e.flagged : [])).map((f) => [f.sourceId, f.reason]));
-  const ordered = [...report.sections].sort((a, b) => (DECISION.includes(a.id) ? DECISION.indexOf(a.id) : 10) - (DECISION.includes(b.id) ? DECISION.indexOf(b.id) : 10));
+  const ordered = [...view.sections].sort((a, b) => (DECISION.includes(a.id) ? DECISION.indexOf(a.id) : 10) - (DECISION.includes(b.id) ? DECISION.indexOf(b.id) : 10));
   const firstEvidence = ordered.find((s) => !DECISION.includes(s.id))?.id;
-  const slackLines = exportReport(report, { title, prompt, hidden, format: 'slack' }).split('\n').length;
+  const copyTitle = cat ? `${title} · ${categoryOf(cat).label}` : title;
+  const slackLines = exportReport(view, { title: copyTitle, prompt, hidden, format: 'slack' }).split('\n').length;
 
   const copy = async (format: 'markdown' | 'slack') => {
-    const ok = await copyText(exportReport(report, { title, prompt, hidden, format }));
+    const ok = await copyText(exportReport(view, { title: copyTitle, prompt, hidden, format }));
     const msg = ok ? `${format === 'slack' ? '짧은 공유용' : 'Markdown'} 형식으로 복사했습니다${hidden.size ? ` (숨긴 항목 ${hidden.size}개 제외)` : ''}.` : '복사하지 못했습니다. 브라우저가 클립보드 접근을 막았습니다.';
     setCopied(msg);
     onAnnounce(msg);
@@ -121,7 +133,19 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
 
       {demo && <p className="mt-3 text-[13px] text-text-3">{recorded ? '기록된 실행을 재생한 결과입니다. ' : ''}성준님의 한 주를 가정해 만든 가상의 샘플 데이터로 만든 리포트이며, 실제 계정·메일이 아닙니다. A사는 가상의 회사입니다.</p>}
 
-      <nav aria-label="리포트 섹션" className="mt-4 flex flex-wrap gap-1.5">
+      {catCounts.size > 1 && (
+        <div role="group" aria-label="카테고리" className="mt-4 flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 text-xs text-text-3">카테고리</span>
+          <button type="button" aria-pressed={cat === null} onClick={() => pick(null)} className={`inline-flex min-h-8 items-center rounded-full px-3 text-xs ${cat === null ? 'bg-accent-2 text-text' : 'bg-surface-2 text-text-2 hover:text-text'}`}>전체</button>
+          {CATEGORIES.filter((c) => catCounts.has(c.key)).map((c) => (
+            <button key={c.key} type="button" aria-pressed={cat === c.key} onClick={() => pick(cat === c.key ? null : c.key)} className={`inline-flex min-h-8 items-center gap-1.5 rounded-full px-3 text-xs ${cat === c.key ? 'text-text' : 'bg-surface-2 text-text-2 hover:text-text'}`} style={cat === c.key ? { background: `color-mix(in srgb, ${c.color} 28%, transparent)` } : undefined}>
+              <span className="h-1.5 w-1.5 rounded-full" style={{ background: c.color }} aria-hidden />{c.label} <span className="tnum text-text-3">{catCounts.get(c.key)}</span>
+            </button>
+          ))}
+        </div>
+      )}
+
+      <nav aria-label="리포트 섹션" className="mt-3 flex flex-wrap gap-1.5">
         {ordered.map((s) => <a key={s.id} href={`#sec-${s.id}`} onClick={(e) => { e.preventDefault(); document.getElementById(`sec-${s.id}`)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' }); }} className="inline-flex min-h-8 items-center rounded-full bg-surface-2 px-3 text-xs text-text-2 hover:text-text">{sectionTitle(s.id, prompt)} <span className="tnum ml-1 text-text-3">{s.items.length}</span></a>)}
       </nav>
 

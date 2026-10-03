@@ -40,6 +40,15 @@ describe('runAgent end-to-end over real MCP servers (demo mode)', () => {
     for (const s of report.sections) for (const i of s.items) for (const ref of i.sources) expect(ids.has(ref)).toBe(true);
     expect(report.sections.map((s) => s.id)).toEqual(['overview', 'major_activities', 'project_progress', 'schedule', 'relevant_emails', 'potential_risks', 'next_actions']);
     expect(report.sections.flatMap((s) => s.items).some((i) => i.confidence === 'inferred')).toBe(true);
+    // Every non-overview item is filed under a category of the student's week.
+    const items = report.sections.filter((s) => s.id !== 'overview').flatMap((s) => s.items);
+    expect(items.every((i) => typeof i.category === 'string')).toBe(true);
+    const catOf = (needle: string) => items.find((i) => i.text.includes(needle))?.category;
+    expect(catOf('ERD 확정')).toBe('팀플');
+    expect(catOf('baekjoon')).toBe('공부');
+    expect(catOf('OG 이미지')).toBe('개발');
+    expect(catOf('알고리즘 스터디 6주차')).toBe('모임');
+    expect(catOf('코딩테스트')).toBe('취업');
 
     // The protocol underneath is part of the trace: handshakes reported by each server, then real JSON-RPC traffic.
     for (const e of result.events) expect(AgentEventSchema.safeParse(e).success).toBe(true);

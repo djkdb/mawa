@@ -26,6 +26,8 @@ export const ReportItemSchema = z
     priority: PrioritySchema.optional(),
     /** Why this priority / judgement, in one short line (e.g. "bug 라벨 · 데모 D-8 전 마감"). */
     reason: z.string().max(200).optional(),
+    /** What part of the week this is about: 과제, 팀플, 개발, 모임, 취업, 공부, 학사, 보안, 기타 (free text, short). */
+    category: z.string().max(12).optional(),
   })
   .refine((item) => item.confidence !== 'observed' || item.sources.length > 0, {
     message: 'An "observed" report item must cite at least one source.',

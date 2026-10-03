@@ -51,9 +51,9 @@ export async function generateReport(
         if (item.confidence === 'observed' && item.sources.length === 0) {
           // Downgrade rather than drop: the statement may still be useful, but it is not evidence-backed.
           warnings.push(`Downgraded unsourced "observed" item to inferred: "${item.text.slice(0, 80)}"`);
-          return [{ id: `item_${++counter}`, text: item.text, confidence: 'inferred' as const, sources: [], ...(item.priority ? { priority: item.priority } : {}), ...(item.reason ? { reason: item.reason.slice(0, 200) } : {}) }];
+          return [{ id: `item_${++counter}`, text: item.text, confidence: 'inferred' as const, sources: [], ...(item.priority ? { priority: item.priority } : {}), ...(item.reason ? { reason: item.reason.slice(0, 200) } : {}), ...(item.category ? { category: item.category.slice(0, 12) } : {}) }];
         }
-        return [{ id: `item_${++counter}`, text: item.text, confidence: item.confidence, sources: item.sources, ...(item.priority ? { priority: item.priority } : {}), ...(item.reason ? { reason: item.reason.slice(0, 200) } : {}) }];
+        return [{ id: `item_${++counter}`, text: item.text, confidence: item.confidence, sources: item.sources, ...(item.priority ? { priority: item.priority } : {}), ...(item.reason ? { reason: item.reason.slice(0, 200) } : {}), ...(item.category ? { category: item.category.slice(0, 12) } : {}) }];
       });
       const id = section.id as ReportSectionId;
       return { id, title: REPORT_SECTION_TITLES[id], items };

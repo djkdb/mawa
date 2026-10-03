@@ -1,7 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import { CircleDot, Clock, EyeOff, GitCommitHorizontal, GitMerge, GitPullRequest, GitPullRequestClosed, Mail, MapPin, MessageSquare, RotateCcw } from 'lucide-react';
 import type { ReportItem, ReportSection, Source, WeeklyWorkReport } from '@mawa/shared';
-import { PRIORITY_KO, SERVER_COLOR, SERVER_NAME, WORKSPACE_TZ, relDay } from '../lib/copy.js';
+import { categoryOf, PRIORITY_KO, SERVER_COLOR, SERVER_NAME, WORKSPACE_TZ, relDay } from '../lib/copy.js';
 import { ItemText } from './ItemText.js';
 import { SourceChips } from './SourcePopover.js';
 
@@ -46,6 +46,11 @@ function Confidence({ item }: { item: ReportItem }) {
 /** The one-line basis for a priority or judgement. */
 function Reason({ item }: { item: ReportItem }) {
   return item.reason ? <p className="mt-1 text-xs text-text-3"><span className="text-text-2">근거</span> · {item.reason}</p> : null;
+}
+function CatTag({ item }: { item: ReportItem }) {
+  if (!item.category) return null;
+  const c = categoryOf(item.category);
+  return <span className="inline-flex items-center gap-1 rounded-md px-1.5 text-[11px] font-medium leading-[18px]" style={{ color: c.color, background: `color-mix(in srgb, ${c.color} 14%, transparent)` }}>{c.label}</span>;
 }
 function Flag({ src, ctx }: { src: Source[]; ctx: BlockCtx }) {
   const hit = src.find((s) => ctx.flagged.has(s.id));
@@ -367,7 +372,7 @@ function RiskCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
       <div className="flex items-start gap-3 border-l-[3px] pl-3" style={{ borderColor: PRI_COLOR[item.priority ?? 'low'] }}>
         <Icon className="mt-1 h-4 w-4 shrink-0" style={{ color: s ? SERVER_COLOR[s.type] : undefined }} aria-hidden />
         <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-2"><Priority item={item} /><Confidence item={item} /><Flag src={src} ctx={ctx} /></div>
+          <div className="flex flex-wrap items-center gap-2"><Priority item={item} /><CatTag item={item} /><Confidence item={item} /><Flag src={src} ctx={ctx} /></div>
           <div className="mt-1"><ItemText item={item} byId={ctx.byId} refTime={new Date(ctx.report.generatedAt).getTime()} /></div>
           {snippet && !item.text.includes(snippet.slice(0, 30)) && <p className="mt-1 line-clamp-2 text-sm text-text-3">{senderName(str(s, 'from'))} · {snippet}</p>}
           <Reason item={item} />
@@ -402,6 +407,7 @@ function ActionsBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx 
               <Reason item={item} />
               <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                 <Priority item={item} />
+                <CatTag item={item} />
                 <Confidence item={item} />
                 {src.length > 0 && <SourceChips sources={src} demo={ctx.demo} />}
               </div>

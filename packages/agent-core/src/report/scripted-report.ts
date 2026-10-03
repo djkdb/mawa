@@ -75,12 +75,15 @@ function isoOf(month: number, day: number, now: number): string {
 
 /** What area of a student's (or worker's) week an item belongs to. */
 const AREAS: Array<[string, RegExp]> = [
-  ['팀플', /캡스톤|팀플|팀 회의|team-mate|capstone|중간발표|발표 슬라이드/i],
-  ['취업', /인턴|채용|코딩테스트|면접|recruit|intern|interview|포트폴리오|portfolio|my-ai-work-agent|이력서/i],
-  ['수업', /운영체제|데이터베이스|네트워크|과제|퀴즈|시험|중간고사|기말|eCampus|조교|homework|os-hw/i],
+  ['팀플', /캡스톤|팀플|team-mate|capstone|중간발표/i],
+  ['취업', /인턴|채용|코딩테스트|면접|recruit|intern|interview|이력서/i],
+  ['과제', /운영체제|데이터베이스|네트워크|과제|퀴즈|시험|중간고사|기말|eCampus|조교|homework|os-hw|보고서/i],
   ['공부', /스터디|BOJ|백준|baekjoon|알고리즘|algorithm/i],
+  ['개발', /my-ai-work-agent|portfolio|포트폴리오|deploy|배포|cloudflare/i],
   ['학사', /장학금|학부|학생 포털|등록금|수강신청/i],
 ];
+/** Gatherings on the calendar (team meetings, study sessions) are their own category. */
+const MEETING = /회의|스터디|모임|미팅|sync|세미나|MT\b|면담/i;
 const areaOf = (text: string) => AREAS.find(([, re]) => re.test(text))?.[0] ?? null;
 const DEADLINE = /마감|제출|시험|퀴즈|중간고사|기말|발표|코딩테스트|면접|due|deadline|exam|quiz|interview/i;
 const SUBMISSION_KO: Record<string, string> = { draft: '임시저장만 됨 (미제출)', new: '미제출', submitted: '제출 완료' };
@@ -153,7 +156,7 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
     const sub = lmsAssign.find((a) => (a.title ?? '') === title);
     const submission = sub ? str(sub, 'submission') : undefined;
     if (same) { same.lms = u; if (submission) same.submission = submission; continue; }
-    deadlines.push({ at, title, area: areaOf(title) ?? '수업', lms: u, ...(submission ? { submission } : {}) });
+    deadlines.push({ at, title, area: areaOf(title) ?? '과제', lms: u, ...(submission ? { submission } : {}) });
   }
   deadlines.sort((a, b) => a.at.localeCompare(b.at));
   for (const dl of deadlines) if (!dl.mail) { const m = workMail.find((x) => overlap(subject(x), dl.title) >= 2); if (m) dl.mail = m; }
@@ -292,6 +295,18 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
   const skipped = [promo.length ? `광고 메일 ${promo.length}건` : '', suspicious.length ? `의심 메일 ${suspicious.length}건` : ''].filter(Boolean).join(', ');
   const solved = commits.filter((c) => /BOJ\s*\d+|백준/i.test(c.title ?? ''));
   const sections: LLMReport['sections'] = [];
+  // Every item gets a category (과제 / 팀플 / 개발 / 모임 / 취업 / 공부 / 학사 …) from what it cites.
+  const byIdItem = new Map(ctx.items.map((i) => [i.sourceId, i]));
+  const categorize = (o: Out): Out => {
+    if (o.category) return o;
+    if (o.text.startsWith('의심 메일')) return { ...o, category: '보안' };
+    const cited = o.sources.map((id) => byIdItem.get(id)).filter((x): x is Item => Boolean(x));
+    const first = cited[0];
+    if (first && (first.kind ?? first.sourceId.split(':')[1]) === 'event' && cited.length === 1 && MEETING.test(first.title ?? '') && !DEADLINE.test(first.title ?? '')) return { ...o, category: '모임' };
+    const text = `${o.text} ${cited.map((i) => itemText(i)).join(' ')}`;
+    return { ...o, category: areaOf(text) ?? (first && MEETING.test(first.title ?? '') ? '모임' : '기타') };
+  };
+  const done = (r: LLMReport): LLMReport => ({ sections: r.sections.map((sec) => ({ ...sec, items: sec.id === 'overview' ? sec.items : sec.items.map(categorize) })) });
 
   if (intent === 'deadlines') {
     const soon = deadlines.filter((dl) => dday(dl.at, now) <= 7);
@@ -299,10 +314,10 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
     sections.push({ id: 'schedule', items: deadlines.map(deadlineLine) });
     const notInCalendar = deadlines.filter((dl) => dl.lms && !dl.event);
     const calendarAdd: Out[] = notInCalendar.length ? [{ text: `나 · 캘린더에 없는 eCampus 마감 ${notInCalendar.length}건 캘린더에 추가: ${notInCalendar.map((dl) => `${dl.title} (${d(dl.at)})`).join(', ')}`, confidence: 'inferred', priority: 'medium', reason: 'eCampus에만 있는 마감', sources: notInCalendar.map((dl) => dl.lms!.sourceId) }] : [];
-    const unsubmitted: Out[] = deadlines.filter((dl) => dl.lms && (dl.submission === 'draft' || dl.submission === 'new') && dday(dl.at, now) <= 3).map((dl) => ({ text: `${dl.title} — ${SUBMISSION_KO[dl.submission!]} · ${ddayKo(dday(dl.at, now))}`, confidence: 'observed', priority: 'high', reason: `${dl.area ?? '수업'} · eCampus 제출 상태`, sources: [dl.lms!.sourceId, ...lmsAssign.filter((a) => a.title === dl.lms!.title).map((a) => a.sourceId)] }));
+    const unsubmitted: Out[] = deadlines.filter((dl) => dl.lms && (dl.submission === 'draft' || dl.submission === 'new') && dday(dl.at, now) <= 3).map((dl) => ({ text: `${dl.title} — ${SUBMISSION_KO[dl.submission!]} · ${ddayKo(dday(dl.at, now))}`, confidence: 'observed', priority: 'high', reason: `${dl.area ?? '과제'} · eCampus 제출 상태`, sources: [dl.lms!.sourceId, ...lmsAssign.filter((a) => a.title === dl.lms!.title).map((a) => a.sourceId)] }));
     sections.push({ id: 'next_actions', items: byPriority([...preps, ...calendarAdd]) });
     sections.push({ id: 'potential_risks', items: byPriority([...unsubmitted, ...conflicts.map(conflictRisk), ...topics.filter((t) => t.kind === 'issue' && deadlines.some((dl) => dday(dl.at, now) <= 3 && dueWork(dl).includes(t))).map((t) => ({ ...topicRisk(t), priority: 'high' as const, reason: `${score(t).reason} · 마감 3일 안인데 아직 열림` }))]) });
-    return { sections: sections.filter((s) => s.items.length > 0) };
+    return done({ sections: sections.filter((s) => s.items.length > 0) });
   }
 
   if (intent === 'career') {
@@ -321,7 +336,7 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
     sections.push({ id: 'next_actions', items: byPriority([...deadlines.filter((dl) => dl.area === '취업').map(prepAction).filter((x): x is Out => x !== null), ...cTopics.map(topicAction)]) });
     sections.push({ id: 'relevant_emails', items: cMail.map((m): Out => ({ text: `${d(m.timestamp)} · ${person(f(m, 'from'))}: ${subject(m)} — ${clip(str(m, 'snippet'), 80)}`, confidence: 'observed', sources: [m.sourceId] })) });
     if (cCommits.length) sections.push({ id: 'major_activities', items: [{ text: `${repoShort(f(cCommits[0]!, 'repo'))}: 커밋 ${cCommits.length}개. ${cCommits.slice(0, 3).map((c) => `"${c.title ?? ''}"`).join(', ')}${cCommits.length > 3 ? ' 등' : ''}.`, confidence: 'observed', sources: cCommits.map((c) => c.sourceId) }] });
-    return { sections: sections.filter((s) => s.items.length > 0) };
+    return done({ sections: sections.filter((s) => s.items.length > 0) });
   }
 
   if (intent === 'blockers') {
@@ -339,7 +354,7 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
     sections.push({ id: 'potential_risks', items: blockers });
     sections.push({ id: 'next_actions', items: byPriority([...topics.filter((t) => score(t).priority === 'high' || (!ownerOf(t) && t.deadline) || t.reviewer || (t.kind === 'pr' && Number(f(t.item, 'reviewComments')) > 0)).map(topicAction), ...conflicts.map(conflictAction), ...standaloneMail.filter((m) => mailScore(m).priority === 'high').map(mailAction)]) });
     if (suspicious.length) sections.push({ id: 'relevant_emails', items: suspicious.map(suspiciousRisk) });
-    return { sections: sections.filter((s) => s.items.length > 0) };
+    return done({ sections: sections.filter((s) => s.items.length > 0) });
   }
 
   if (intent === 'priorities') {
@@ -352,7 +367,7 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
     sections.push({ id: 'next_actions', items: actions });
     sections.push({ id: 'potential_risks', items: risks.slice(0, 5) });
     sections.push({ id: 'schedule', items: upcoming.map((e) => eventLine(e)) });
-    return { sections: sections.filter((s) => s.items.length > 0) };
+    return done({ sections: sections.filter((s) => s.items.length > 0) });
   }
 
   // weekly
@@ -388,6 +403,6 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
     items: workMail.slice(0, 7).map((m): Out => ({ text: `${d(m.timestamp)} · ${person(f(m, 'from'))}: ${subject(m)}${f(m, 'snippet') ? ` — ${clip(str(m, 'snippet'), 80)}` : ''}`, confidence: 'observed', sources: [m.sourceId] })),
   });
   sections.push({ id: 'potential_risks', items: risks });
-  sections.push({ id: 'next_actions', items: actions.slice(0, 8) });
-  return { sections: sections.filter((s) => s.items.length > 0) };
+  sections.push({ id: 'next_actions', items: actions.slice(0, 10) });
+  return done({ sections: sections.filter((s) => s.items.length > 0) });
 }

@@ -130,3 +130,17 @@ export const SCOPE_MEANING: Record<string, { label: string; risk?: string }> = {
   email: { label: '계정 이메일 확인' },
 };
 export const DEFAULT_SCOPES = { github: ['read:user', 'repo'], google: ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/calendar.readonly', 'openid', 'email'] };
+
+/** Report item categories, in display order. The key is what the agent writes into item.category. */
+export const CATEGORIES: Array<{ key: string; label: string; color: string }> = [
+  { key: '과제', label: '수업·과제', color: '#93c5fd' },
+  { key: '팀플', label: '팀플', color: '#c084fc' },
+  { key: '개발', label: '개발', color: '#93a4ff' },
+  { key: '모임', label: '모임', color: '#2dd4bf' },
+  { key: '취업', label: '취업', color: '#fbbf24' },
+  { key: '공부', label: '공부', color: '#a3e635' },
+  { key: '학사', label: '학사', color: '#f9a8d4' },
+  { key: '보안', label: '보안', color: '#fb7185' },
+  { key: '기타', label: '기타', color: '#94a3b8' },
+];
+export const categoryOf = (key: string | undefined) => CATEGORIES.find((c) => c.key === key) ?? CATEGORIES[CATEGORIES.length - 1]!;

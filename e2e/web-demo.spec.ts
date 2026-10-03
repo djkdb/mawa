@@ -17,8 +17,8 @@ test('dashboard explains itself, shows risks/actions/deadlines, and replays a ru
   await page.goto(DEMO);
   await expect(page.getByText('GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.')).toBeVisible();
   await expect(page.getByRole('heading', { name: /성준님, 이번 주/ })).toBeVisible();
-  await expect(page.getByRole('heading', { name: '놓치면 안 되는 것' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: '다가오는 일정' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '카테고리별 이번 주' })).toBeVisible();
+  for (const c of ['수업·과제', '팀플', '개발', '모임', '취업']) await expect(page.getByRole('region', { name: c, exact: true })).toBeVisible();
   await expect(page.locator('.pri-high').first()).toBeVisible();
   await expect(page.getByText(/^(D-\d+|내일|오늘)$/).first()).toBeVisible();
 
@@ -45,8 +45,8 @@ test('dashboard explains itself, shows risks/actions/deadlines, and replays a ru
   await page.getByRole('button', { name: /원시 이벤트 \d+개/ }).click();
   await expect(page.getByRole('table', { name: '에이전트 이벤트 트레이스' })).toContainText('tool_call_completed');
 
-  // The "missed or stuck" run has its own sections and no "커밋 0개".
-  await expect(page.getByRole('heading', { name: '놓친 것·막힌 것' })).toBeVisible();
+  // The "missed or stuck" run has its own report and no "커밋 0개".
+  await expect(page.getByRole('region', { name: '팀플', exact: true })).toContainText('PR #8');
   expect(await page.getByText(/커밋 0개/).count()).toBe(0);
 
   expect(api, 'no API / external calls in demo mode').toEqual([]);
@@ -224,4 +224,22 @@ test('settings: the demo shows the data policy its recordings ran under (read-on
   await expect(policy.getByRole('textbox', { name: /제외할 단어/ })).toHaveValue('엄마, 쿠폰');
   await expect(policy.getByRole('textbox', { name: /제외할 단어/ })).toBeDisabled();
   await expect(policy.getByRole('checkbox', { name: /메일 주소 가리기/ })).toBeChecked();
+});
+
+test('report: category filter narrows the sections and the copy', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write']);
+  await page.goto(`${DEMO}#/`);
+  await page.getByRole('region', { name: '팀플', exact: true }).getByRole('link', { name: /팀플 전체 보기/ }).click();
+  await expect(page).toHaveURL(/#\/report\/recorded_weekly-progress\?cat=/);
+  const group = page.getByRole('group', { name: '카테고리' });
+  await expect(group.getByRole('button', { name: /팀플/ })).toHaveAttribute('aria-pressed', 'true');
+  const tags = await page.locator('#report [data-report-item]').allInnerTexts();
+  expect(tags.length).toBeGreaterThan(3);
+  expect(tags.join('\n')).not.toContain('Cloudflare');
+  await page.getByRole('button', { name: /짧게 복사/ }).click();
+  const clip = await page.evaluate(() => navigator.clipboard.readText());
+  expect(clip.split('\n')[0]).toContain('· 팀플');
+  expect(clip).not.toContain('코딩테스트');
+  await group.getByRole('button', { name: '전체' }).click();
+  expect((await page.locator('#report [data-report-item]').allInnerTexts()).join('\n')).toContain('Cloudflare');
 });

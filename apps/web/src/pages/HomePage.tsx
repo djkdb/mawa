@@ -1,67 +1,13 @@
 import { useEffect, useRef } from 'react';
 import { ArrowRight, CheckCircle2, Info, Play, Radio } from 'lucide-react';
-import type { AgentMode, WeeklyWorkReport } from '@mawa/shared';
+import type { AgentMode } from '@mawa/shared';
 import { ActivityTimeline } from '../components/ActivityTimeline.js';
-import { ItemText } from '../components/ItemText.js';
+import { CategoryBoard } from '../components/CategoryBoard.js';
 import { PromptPanel } from '../components/PromptPanel.js';
 import { StatStrip, reportTitle } from '../components/ReportView.js';
 import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
-import { PRIORITY_KO, periodKo, relDay, sectionTitle, timeKo, DEMO_PERSONA } from '../lib/copy.js';
+import { periodKo, DEMO_PERSONA } from '../lib/copy.js';
 import type { AgentRunState } from '../lib/useAgentRun.js';
-
-function Highlights({ report, prompt, reportHref }: { report: WeeklyWorkReport; prompt: string | null; reportHref: string }) {
-  const rank = { high: 0, medium: 1, low: 2 } as const;
-  const risks = [...(report.sections.find((s) => s.id === 'potential_risks')?.items ?? [])].sort((a, b) => rank[a.priority ?? 'low'] - rank[b.priority ?? 'low']);
-  const actions = [...(report.sections.find((s) => s.id === 'next_actions')?.items ?? [])].sort((a, b) => rank[a.priority ?? 'low'] - rank[b.priority ?? 'low']);
-  const ref = new Date(report.generatedAt).getTime();
-  const upcoming = report.sources
-    .filter((s) => s.metadata['kind'] === 'event' && s.timestamp && new Date(s.timestamp).getTime() >= ref)
-    .sort((a, b) => (a.timestamp ?? '').localeCompare(b.timestamp ?? ''))
-    .slice(0, 3);
-
-  const Card = ({ title, children, more }: { title: string; children: React.ReactNode; more?: number }) => (
-    <section className="surface flex flex-col p-5">
-      <h3 className="text-[15px] font-semibold">{title}</h3>
-      <div className="mt-2 flex-1">{children}</div>
-      {more ? <a href={reportHref} className="mt-2 inline-flex min-h-9 items-center gap-1 text-sm font-medium text-accent hover:underline">{more}개 더 보기 <ArrowRight className="h-3.5 w-3.5" aria-hidden /></a> : null}
-    </section>
-  );
-  const byId = new Map(report.sources.map((s) => [s.id, s]));
-  const Item = ({ item, action = false }: { item: WeeklyWorkReport['sections'][number]['items'][number]; action?: boolean }) => (
-    <li className="flex items-start gap-2.5 border-t border-line/60 py-3 first:border-t-0 first:pt-1">
-      {item.priority ? <span className={`pri pri-${item.priority} mt-0.5 w-9 shrink-0 justify-center`}>{PRIORITY_KO[item.priority]}</span> : <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-sm bg-inferred" aria-hidden />}
-      <ItemText item={item} byId={byId} refTime={ref} action={action} compact />
-    </li>
-  );
-
-  return (
-    <div className="grid gap-4 lg:grid-cols-3">
-      {risks.length > 0 && (
-        <Card title={sectionTitle('potential_risks', prompt)} more={Math.max(0, risks.length - 3)}>
-          <ul>{risks.slice(0, 3).map((i) => <Item key={i.id} item={i} />)}</ul>
-        </Card>
-      )}
-      {actions.length > 0 && (
-        <Card title="이번 주 할 일" more={Math.max(0, actions.length - 3)}>
-          <ul>{actions.slice(0, 3).map((i) => <Item key={i.id} item={i} action />)}</ul>
-        </Card>
-      )}
-      <Card title="다가오는 일정">
-        {upcoming.length ? (
-          <ul>
-            {upcoming.map((s) => (
-              <li key={s.id} className="flex items-baseline gap-3 py-1.5 text-sm">
-                <span className="tnum w-12 shrink-0 font-semibold text-calendar">{relDay(s.timestamp!, ref)}</span>
-                <span className="min-w-0"><span className="block text-text">{s.title}</span><span className="block text-xs text-text-3">{timeKo(s.timestamp!)}</span></span>
-              </li>
-            ))}
-          </ul>
-        ) : <p className="text-sm text-text-3">이번 실행에서는 일정을 조회하지 않았습니다.</p>}
-        {IS_DEMO_BUILD && upcoming.length > 0 && <p className="mt-2 text-xs text-text-3">기록 시점 기준</p>}
-      </Card>
-    </div>
-  );
-}
 
 /** "도구 3/4" while running: done calls over what the plan asked for. */
 function progressOf(state: AgentRunState): string {
@@ -137,7 +83,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
       )}
 
       {report && <StatStrip report={report} />}
-      {report && <Highlights report={report} prompt={state.prompt} reportHref={reportHref} />}
+      {report && <CategoryBoard report={report} runId={state.runId} />}
 
       <PromptPanel status={status} busy={busy} onRun={onRun} progress={busy ? progressOf(state) : null} />
       <ActivityTimeline events={state.events} phase={state.phase} recorded={IS_DEMO_BUILD} runId={state.runId} headingRef={activityHeading} />

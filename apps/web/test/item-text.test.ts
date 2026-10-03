@@ -15,6 +15,9 @@ describe('parseItem', () => {
       owner: '나', title: '운영체제 과제2 마감 준비', meta: ['#2 과제2 보고서 작성 끝내기'], when: 'D-2, 10월 5일 (월)',
     });
   });
+  it('turns a schedule line into title + time and place', () => {
+    expect(parseItem('10월 5일 (월) 오후 06:00 · 캡스톤 팀 회의 (S4-1 팀플실)')).toEqual({ title: '캡스톤 팀 회의', meta: ['(월) 오후 06:00', 'S4-1 팀플실'] });
+  });
   it('leaves a plain sentence alone', () => {
     expect(parseItem('일정 확인 필요: "중간발표" — 박교수 메일은 10월 14일, 캘린더는 10월 15일 (목)')).toEqual({ title: '일정 확인 필요: "중간발표"', meta: ['박교수 메일은 10월 14일, 캘린더는 10월 15일 (목)'] });
   });

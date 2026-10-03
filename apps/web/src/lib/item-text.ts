@@ -17,6 +17,9 @@ export interface ItemParts {
 
 export function parseItem(text: string, opts: { action?: boolean } = {}): ItemParts {
   let t = text.trim();
+  // Schedule line: "10월 5일 (월) 오후 06:00 · 캡스톤 팀 회의 (S4-1 팀플실) · 지남" → title + time/place.
+  const ev = /^(\d{1,2}월 \d{1,2}일 \([^)]+\) (?:오전|오후) \d{1,2}:\d{2}) · (.+?)(?: \(([^()]+)\))?( · 지남)?$/.exec(t);
+  if (ev && !opts.action) return { title: ev[2]!, meta: [ev[1]!.replace(/^\d{1,2}월 \d{1,2}일 /, ''), ...(ev[3] ? [ev[3]] : []), ...(ev[4] ? ['지남'] : [])] };
   let owner: string | undefined;
   if (opts.action) {
     const om = /^([^·—]{1,16}) · (.+)$/.exec(t);
