@@ -38,7 +38,7 @@ function ToolRow({ server, tool }: { server: McpServerId; tool: CatalogTool }) {
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <span className="flex flex-wrap items-center gap-1.5">
           <span className="font-mono text-[13px] text-text">{tool.name}</span>
-          {tool.annotations?.readOnlyHint && <span className="rounded bg-ok/15 px-1.5 py-0.5 text-[11px] text-emerald-200" title="서버가 tools/list에서 readOnlyHint: true로 선언">읽기 전용</span>}
+          {tool.annotations?.readOnlyHint && <span className="rounded bg-ok/15 px-1.5 py-0.5 text-[11px] text-ok" title="서버가 tools/list에서 readOnlyHint: true로 선언">읽기 전용</span>}
         </span>
         {wire.length > 0 && (
           <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="inline-flex min-h-8 items-center gap-1 text-xs text-text-2 hover:text-text">
@@ -84,8 +84,8 @@ function LmsConnect({ status, onConnected }: { status: Status | null; onConnecte
             <input name="password" required type="password" autoComplete="current-password" placeholder="비밀번호" aria-label="비밀번호" className="hairline min-h-10 rounded-lg bg-bg px-3 text-sm text-text" />
           </div>
           <div className="mt-3 flex items-center gap-3">
-            <button type="submit" disabled={busy} className="min-h-9 rounded-lg bg-accent-strong px-4 text-sm font-semibold text-white disabled:opacity-50">{busy ? '연결 중…' : '토큰 발급받고 연결'}</button>
-            {error && <span role="alert" className="text-sm text-rose-200">{error}</span>}
+            <button type="submit" disabled={busy} className="min-h-9 rounded-lg bg-accent-strong px-4 text-sm font-semibold text-on-accent disabled:opacity-50">{busy ? '연결 중…' : '토큰 발급받고 연결'}</button>
+            {error && <span role="alert" className="text-sm text-danger">{error}</span>}
           </div>
           <p className="mt-2 text-xs text-text-3">토큰은 eCampus의 ‘보안 키 관리’에서 언제든 초기화할 수 있습니다. 학교 정보시스템 이용 규정을 확인하고 본인 계정에만 사용하세요.</p>
         </>
@@ -120,7 +120,7 @@ export function ConnectionsPage({ status, events, onDisconnect, onConnected }: {
                   {scopes.length ? scopes.map((sc) => (
                     <li key={sc} className="text-[13px]">
                       <span className="text-text-2">{SCOPE_MEANING[sc]?.label ?? sc}</span> <code className="break-all font-mono text-[11px] text-text-3">{sc.replace('https://www.googleapis.com/auth/', '')}</code>
-                      {SCOPE_MEANING[sc]?.risk && <p className="mt-0.5 text-xs text-amber-200/90">{SCOPE_MEANING[sc]!.risk}</p>}
+                      {SCOPE_MEANING[sc]?.risk && <p className="mt-0.5 text-xs text-warn">{SCOPE_MEANING[sc]!.risk}</p>}
                     </li>
                   )) : <li className="text-[13px] text-text-2">GitHub App 권한 사용 (scope 파라미터 없음)</li>}
                 </ul>

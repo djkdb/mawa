@@ -1,9 +1,18 @@
 <!doctype html>
-<html lang="ko" class="dark">
+<html lang="ko">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="theme-color" content="#06080f" />
+    <meta name="theme-color" content="#0b0d12" />
+    <script>
+      // Apply the saved theme (or the system one) before first paint; see src/lib/theme.ts.
+      (function () {
+        var p = 'system';
+        try { p = localStorage.getItem('mawa-theme') || 'system'; } catch (e) {}
+        var t = p === 'system' ? (matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark') : p;
+        document.documentElement.dataset.theme = t;
+      })();
+    </script>
     <title>My AI Work Agent — AI × MCP × AX</title>
     <meta name="description" content="Connect work. Understand context. Execute with AI. A personal work agent that connects GitHub, Gmail and Google Calendar through MCP and turns them into a source-grounded weekly report." />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />

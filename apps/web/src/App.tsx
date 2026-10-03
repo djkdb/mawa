@@ -64,11 +64,11 @@ export default function App() {
         <form className="surface mx-auto mb-4 flex max-w-5xl flex-wrap items-center gap-2 px-4 py-3 text-sm" onSubmit={(e) => { e.preventDefault(); const v = new FormData(e.currentTarget).get('token'); setApiToken(typeof v === 'string' && v ? v : null); setStatusError(null); void refresh(); }}>
           <label htmlFor="api-token" className="text-text-2">이 API 서버는 접근 토큰(API_ACCESS_TOKEN)을 요구합니다.</label>
           <input id="api-token" name="token" type="password" autoComplete="off" className="hairline min-h-9 flex-1 rounded-md bg-bg px-3 text-text" />
-          <button type="submit" className="min-h-9 rounded-md bg-accent-strong px-3 font-medium text-white">저장</button>
+          <button type="submit" className="min-h-9 rounded-md bg-accent-strong px-3 font-medium text-on-accent">저장</button>
         </form>
       )}
       {statusError && !statusError.startsWith('401') && !IS_DEMO_BUILD && (
-        <p role="alert" className="mx-auto mb-4 max-w-5xl rounded-lg bg-rose-400/10 px-4 py-3 text-sm text-rose-200">API 서버에 연결할 수 없습니다 ({statusError}). <code className="font-mono">npm run dev</code>로 실행하거나 데모 빌드를 여세요.</p>
+        <p role="alert" className="mx-auto mb-4 max-w-5xl rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">API 서버에 연결할 수 없습니다 ({statusError}). <code className="font-mono">npm run dev</code>로 실행하거나 데모 빌드를 여세요.</p>
       )}
       {notice && <p role="status" className="surface mx-auto mb-4 max-w-5xl px-4 py-3 text-sm">{notice} <button type="button" className="ml-2 text-text-2 underline" onClick={() => setNotice(null)}>닫기</button></p>}
 

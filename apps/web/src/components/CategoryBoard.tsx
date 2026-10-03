@@ -1,12 +1,18 @@
-import { ArrowRight, BookOpen, Briefcase, CalendarClock, Code2, GraduationCap, Lightbulb, ShieldAlert, Shapes, Users } from 'lucide-react';
+import { AlertTriangle, ArrowRight, CalendarDays, CheckSquare, NotebookPen } from 'lucide-react';
 import type { ReportItem, WeeklyWorkReport } from '@mawa/shared';
 import { CATEGORIES, PRIORITY_KO } from '../lib/copy.js';
+import { categoryIcon } from '../lib/icons.js';
 import { hrefFor } from '../lib/useHashRoute.js';
 import { ItemText } from './ItemText.js';
 
-const ICON: Record<string, typeof Users> = { 과제: BookOpen, 팀플: Users, 개발: Code2, 모임: CalendarClock, 취업: Briefcase, 공부: Lightbulb, 학사: GraduationCap, 보안: ShieldAlert, 기타: Shapes };
 type Entry = { item: ReportItem; kind: '할 일' | '주의' | '일정' | '기록' };
 const rank = { high: 0, medium: 1, low: 2 } as const;
+const KIND: Record<Entry['kind'], { Icon: typeof CheckSquare; cls: string }> = {
+  '할 일': { Icon: CheckSquare, cls: 'text-accent' },
+  주의: { Icon: AlertTriangle, cls: 'text-warn' },
+  일정: { Icon: CalendarDays, cls: 'text-calendar' },
+  기록: { Icon: NotebookPen, cls: 'text-text-3' },
+};
 
 /**
  * This week by category (수업·과제 / 팀플 / 개발 / 모임 / 취업 / …): what to do, what to watch,
@@ -39,7 +45,7 @@ export function CategoryBoard({ report, runId }: { report: WeeklyWorkReport; run
       <div className="mt-3 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {cats.map((c) => {
           const entries = groups.get(c.key)!;
-          const Icon = ICON[c.key] ?? Shapes;
+          const Icon = categoryIcon(c.key);
           const count = (k: Entry['kind']) => entries.filter((e) => e.kind === k).length;
           const high = entries.filter((e) => e.item.priority === 'high').length;
           return (
@@ -53,7 +59,7 @@ export function CategoryBoard({ report, runId }: { report: WeeklyWorkReport; run
               <ul className="mt-2 flex-1">
                 {entries.slice(0, 3).map(({ item, kind }) => (
                   <li key={item.id} className="flex items-start gap-2.5 border-t border-line/60 py-2.5 first:border-t-0">
-                    <span className={`mt-0.5 w-9 shrink-0 text-center text-[11px] font-semibold ${kind === '할 일' ? 'text-accent' : kind === '주의' ? 'text-amber-200' : kind === '기록' ? 'text-text-3' : 'text-calendar'}`}>{kind}</span>
+                    <span className={`mt-0.5 inline-flex w-12 shrink-0 items-center gap-1 text-[11px] font-semibold ${KIND[kind].cls}`}>{(() => { const K = KIND[kind].Icon; return <K className="h-3.5 w-3.5" aria-hidden />; })()}{kind}</span>
                     <ItemText item={item} byId={byId} refTime={ref} action={kind === '할 일'} compact />
                     {item.priority === 'high' && <span className="sr-only">{PRIORITY_KO.high}</span>}
                   </li>

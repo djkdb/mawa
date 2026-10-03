@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type CSSProperties } from 'react';
 import { CheckSquare, ChevronDown, ClipboardCopy, RotateCcw, ShieldCheck, TriangleAlert } from 'lucide-react';
 import type { AgentEvent, ReportSectionId, Source, WeeklyWorkReport } from '@mawa/shared';
 import { DEMO_EXAMPLES } from '../lib/client.js';
 import { CATEGORIES, EXAMPLE_META, KIND_NAME, KIND_SERVER, SERVER_COLOR, SOURCE_TYPE_NAME, categoryOf, periodKo, sectionTitle, timeKo } from '../lib/copy.js';
+import { SECTION_ICON, categoryIcon } from '../lib/icons.js';
 import { hashQuery } from '../lib/useHashRoute.js';
 import { copyText, exportReport } from '../lib/export.js';
 import { ModeBadge } from './ModeBadge.js';
@@ -20,7 +21,7 @@ export function StatStrip({ report }: { report: WeeklyWorkReport }) {
   const stats = ['commit', 'pr', 'issue', 'event', 'due', 'msg'].filter((k) => counts.has(k));
   if (!stats.length) return null;
   return (
-    <dl className="grid gap-px overflow-hidden rounded-lg bg-line" style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}>
+    <dl className="stat-grid grid gap-px overflow-hidden rounded-lg bg-line" style={{ '--n': stats.length } as CSSProperties}>
       {stats.map((k) => (
         <div key={k} className="bg-surface-2 px-3 py-2.5 sm:px-4 sm:py-3" style={{ boxShadow: `inset 0 2px 0 ${SERVER_COLOR[KIND_SERVER[k] ?? 'github']}` }}>
           <dt className="whitespace-nowrap text-xs text-text-3">{KIND_NAME[k]}</dt>
@@ -56,7 +57,7 @@ function Verification({ warnings, events }: { warnings: string[]; events: AgentE
       </div>
       {!clean && (
         <ul className="mt-2 space-y-1.5 text-[13px]">
-          {dropped.map((w, i) => <li key={`d${i}`}><span className="tag mr-1.5 bg-rose-400/15 text-rose-200">제외</span>“{quote(w)}” <span className="text-text-3">— 조회한 적 없는 출처 <code className="font-mono text-[11px]">{ids(w)}</code>를 인용</span></li>)}
+          {dropped.map((w, i) => <li key={`d${i}`}><span className="tag mr-1.5 bg-danger/15 text-danger">제외</span>“{quote(w)}” <span className="text-text-3">— 조회한 적 없는 출처 <code className="font-mono text-[11px]">{ids(w)}</code>를 인용</span></li>)}
           {downgraded.map((w, i) => <li key={`g${i}`}><span className="tag mr-1.5 bg-inferred/15 text-inferred">낮춤</span>“{quote(w)}” <span className="text-text-3">— 출처 없이 ‘확인됨’이라고 주장</span></li>)}
         </ul>
       )}
@@ -139,7 +140,7 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
           <button type="button" aria-pressed={cat === null} onClick={() => pick(null)} className={`inline-flex min-h-8 items-center rounded-full px-3 text-xs ${cat === null ? 'bg-accent-2 text-text' : 'bg-surface-2 text-text-2 hover:text-text'}`}>전체</button>
           {CATEGORIES.filter((c) => catCounts.has(c.key)).map((c) => (
             <button key={c.key} type="button" aria-pressed={cat === c.key} onClick={() => pick(cat === c.key ? null : c.key)} className={`inline-flex min-h-8 items-center gap-1.5 rounded-full px-3 text-xs ${cat === c.key ? 'text-text' : 'bg-surface-2 text-text-2 hover:text-text'}`} style={cat === c.key ? { background: `color-mix(in srgb, ${c.color} 28%, transparent)` } : undefined}>
-              <span className="h-1.5 w-1.5 rounded-full" style={{ background: c.color }} aria-hidden />{c.label} <span className="tnum text-text-3">{catCounts.get(c.key)}</span>
+              {(() => { const Icon = categoryIcon(c.key); return <Icon className="h-3.5 w-3.5" style={{ color: c.color }} aria-hidden />; })()}{c.label} <span className="tnum text-text-3">{catCounts.get(c.key)}</span>
             </button>
           ))}
         </div>
@@ -152,7 +153,11 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce, eve
       {ordered.map((section) => (
         <section key={section.id} aria-labelledby={`sec-${section.id}`} className="mt-8 scroll-mt-24">
           {section.id === firstEvidence && <p className="mb-6 border-t border-line pt-6 text-xs font-medium text-text-3">근거 자료 · 위 판단에 쓰인 원본 활동</p>}
-          <h3 id={`sec-${section.id}`} className="scroll-mt-24 text-base font-semibold">{sectionTitle(section.id, prompt)}</h3>
+          <h3 id={`sec-${section.id}`} className="flex scroll-mt-24 items-center gap-2 text-[17px] font-semibold">
+            {(() => { const { Icon, color } = SECTION_ICON[section.id]; return <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg" style={{ color, background: `color-mix(in srgb, ${color} 15%, transparent)` }}><Icon className="h-4 w-4" aria-hidden /></span>; })()}
+            {sectionTitle(section.id, prompt)}
+            <span className="tnum text-sm font-normal text-text-3">{section.items.length}</span>
+          </h3>
           <SectionBody section={section} ctx={ctx} />
         </section>
       ))}

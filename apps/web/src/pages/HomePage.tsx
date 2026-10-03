@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react';
-import { ArrowRight, CheckCircle2, Info, Play, Radio } from 'lucide-react';
+import { ArrowRight, CheckCircle2, Info, Play, Radio, Sparkles } from 'lucide-react';
 import type { AgentMode } from '@mawa/shared';
 import { ActivityTimeline } from '../components/ActivityTimeline.js';
 import { CategoryBoard } from '../components/CategoryBoard.js';
@@ -8,6 +8,10 @@ import { StatStrip, reportTitle } from '../components/ReportView.js';
 import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
 import { periodKo, DEMO_PERSONA } from '../lib/copy.js';
 import type { AgentRunState } from '../lib/useAgentRun.js';
+import { getRecordedRun } from '../lib/demo-client.js';
+import { hrefFor } from '../lib/useHashRoute.js';
+
+const LLM_RUN = IS_DEMO_BUILD ? getRecordedRun('llm-run') : null;
 
 /** "도구 3/4" while running: done calls over what the plan asked for. */
 function progressOf(state: AgentRunState): string {
@@ -51,11 +55,12 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
           <p className="text-sm leading-relaxed text-text-2">
             <b className="font-semibold text-text">GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.</b>
-            {IS_DEMO_BUILD && <> 지금은 <span className="text-amber-200">데모 워크스페이스</span>로, 성준님의 한 주를 가정해 만든 가상의 샘플 데이터(수업·팀플·인턴 준비)로 기록된 실행을 재생합니다. 실제 계정에는 접속하지 않습니다.</>}
+            {IS_DEMO_BUILD && <> 지금은 <span className="text-warn">데모 워크스페이스</span>로, 성준님의 한 주를 가정해 만든 가상의 샘플 데이터(수업·팀플·인턴 준비)로 기록된 실행을 재생합니다. 실제 계정에는 접속하지 않습니다.</>}
+            {LLM_RUN && <> <a href={hrefFor('report', `recorded_${LLM_RUN.id}`)} className="inline-flex items-center gap-1 font-medium text-accent underline-offset-2 hover:underline"><Sparkles className="h-3.5 w-3.5" aria-hidden />실제 LLM({LLM_RUN.llm.model})이 도구를 고른 기록 보기</a></>}
           </p>
         </div>
         {IS_DEMO_BUILD && DEMO_EXAMPLES[0] && (
-          <button type="button" disabled={busy} onClick={() => onRun(DEMO_EXAMPLES[0]!.prompt, 'demo')} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-accent-strong px-4 text-sm font-semibold text-white hover:brightness-110 disabled:opacity-50">
+          <button type="button" disabled={busy} onClick={() => onRun(DEMO_EXAMPLES[0]!.prompt, 'demo')} className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-lg bg-accent-strong px-4 text-sm font-semibold text-on-accent hover:brightness-110 disabled:opacity-50">
             <Play className="h-4 w-4" aria-hidden />{busy ? '실행 중…' : '데모 실행해 보기 · 약 10초'}
           </button>
         )}
@@ -88,7 +93,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
 
       <PromptPanel status={status} busy={busy} onRun={onRun} progress={busy ? progressOf(state) : null} />
       <ActivityTimeline events={state.events} phase={state.phase} recorded={IS_DEMO_BUILD} runId={state.runId} headingRef={activityHeading} />
-      {state.error && state.phase === 'error' && <p role="alert" className="rounded-lg bg-rose-400/10 px-4 py-3 text-sm text-rose-200">{state.error}</p>}
+      {state.error && state.phase === 'error' && <p role="alert" className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">{state.error}</p>}
     </div>
   );
 }

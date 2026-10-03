@@ -67,7 +67,7 @@ export function PolicyEditor() {
 
       {!ro && (
         <div className="mt-4 flex items-center gap-3">
-          <button type="button" onClick={save} className="min-h-9 rounded-lg bg-accent-strong px-4 text-sm font-semibold text-white hover:brightness-110">정책 저장</button>
+          <button type="button" onClick={save} className="min-h-9 rounded-lg bg-accent-strong px-4 text-sm font-semibold text-on-accent hover:brightness-110">정책 저장</button>
           {msg && <span role="status" className="text-sm text-ok">{msg}</span>}
         </div>
       )}

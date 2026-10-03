@@ -114,7 +114,7 @@ npm run build:demo           # → apps/web/dist-demo (static, deploy anywhere)
 npm run preview:demo -w apps/web
 ```
 
-The three example requests are exactly the prompts that were recorded; free-form prompts need the API server. Each run is addressable (`#/report/<runId>`), its report can be copied as Slack mrkdwn or Markdown (items can be excluded first), and its full event trace (tool inputs, outputs, per-call MCP time) is viewable and downloadable as JSON. Recordings are regenerated from the real servers with `npm run export:portfolio-data` into `packages/shared/demo/`.
+The four example requests are exactly the prompts that were recorded with the scripted planner; one more run (`실제 LLM 기록`) was recorded with a real model (Claude Code CLI) choosing the tools over the same sample data (`LLM_PROVIDER=claude-cli npm run record:llm-run`). Free-form prompts need the API server. The UI follows the system light/dark setting, with a toggle in the top bar. Each run is addressable (`#/report/<runId>`), its report can be copied as Slack mrkdwn or Markdown (items can be excluded first), and its full event trace (tool inputs, outputs, per-call MCP time) is viewable and downloadable as JSON. Recordings are regenerated from the real servers with `npm run export:portfolio-data` into `packages/shared/demo/`.
 
 ## Demo vs Real
 

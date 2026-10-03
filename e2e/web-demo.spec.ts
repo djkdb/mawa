@@ -86,7 +86,9 @@ test('report: deep link survives reload, copy for Slack, hide items, demo source
   // Run history opens a specific run by URL.
   await page.getByRole('link', { name: '실행 기록' }).first().click();
   await expect(page.getByRole('table')).toContainText('샘플 기록');
-  await page.getByRole('link', { name: '마감 순서' }).click();
+  // The real-LLM recording is listed and labelled with its model.
+  await expect(page.getByRole('table')).toContainText(/실제 LLM 기록 · \S+/);
+  await page.getByRole('link', { name: '마감 순서', exact: true }).click();
   await expect(page).toHaveURL(/#\/report\/recorded_deadlines$/);
   await expect(page.getByRole('heading', { level: 2, name: '마감 순서' })).toBeVisible();
 
@@ -182,7 +184,7 @@ test('trust: validation demo shows the dropped citation, data-use panel, injecti
   await expect(page.getByText(/의심 메일: "\[캡스톤\] 회의록 자동 정리"/)).toBeVisible();
   await expect(page.getByText('⚠ 지시문 감지 · 데이터로만 처리').first()).toBeVisible();
   // Decision first: risks come before the evidence sections.
-  const order = await page.locator('#report h3').allInnerTexts();
+  const order = (await page.locator('#report h3').allInnerTexts()).map((t) => t.replace(/\s*\d+\s*$/, '').trim());
   expect(order.indexOf('놓치면 안 되는 것')).toBeLessThan(order.indexOf('공부·개발 기록'));
   await expect(page.locator('#report').getByText(/^근거 · /).first()).toBeVisible();
 

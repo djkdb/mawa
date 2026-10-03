@@ -61,7 +61,7 @@ export function PromptPanel({ status, busy, onRun, progress = null }: { status: 
       )}
 
       <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3">
-        <button type="button" onClick={() => onRun(prompt.trim(), mode)} disabled={busy || prompt.trim().length === 0} className="inline-flex items-center gap-2 rounded-lg bg-accent-strong px-5 py-3 text-[15px] font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
+        <button type="button" onClick={() => onRun(prompt.trim(), mode)} disabled={busy || prompt.trim().length === 0} className="inline-flex items-center gap-2 rounded-lg bg-accent-strong px-5 py-3 text-[15px] font-semibold text-on-accent transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
           {busy ? `실행 중… ${progress ?? ''}` : '에이전트 실행'} {!busy && <ArrowRight className="h-4 w-4" aria-hidden />}
         </button>
         {!IS_DEMO_BUILD && (

@@ -70,7 +70,7 @@ function ToolStep({ s }: { s: Step }) {
   return (
     <div className="min-w-0 flex-1">
       <button type="button" onClick={() => setOpen((o) => !o)} aria-expanded={open} className="flex w-full min-w-0 flex-wrap items-baseline gap-x-3 gap-y-0.5 rounded text-left">
-        <span className={`inline-flex items-center gap-2 text-[15px] ${s.state === 'failed' ? 'text-rose-200' : s.state === 'active' ? 'text-text' : 'text-text-2'}`}>
+        <span className={`inline-flex items-center gap-2 text-[15px] ${s.state === 'failed' ? 'text-danger' : s.state === 'active' ? 'text-text' : 'text-text-2'}`}>
           <span className="h-2 w-2 rounded-full" style={{ background: s.color }} aria-hidden />{s.label}
         </span>
         {s.detail && <span className="tnum text-sm text-text">{s.detail}</span>}
@@ -137,11 +137,11 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
                 <span className="mt-1 flex h-4 w-4 shrink-0 items-center justify-center">
                   {s.state === 'done' && <Check className="h-4 w-4 text-ok" aria-label="완료" />}
                   {s.state === 'active' && <Loader2 className="h-4 w-4 animate-spin text-accent" aria-label="진행 중" />}
-                  {s.state === 'failed' && <AlertTriangle className="h-4 w-4 text-rose-300" aria-label="실패" />}
+                  {s.state === 'failed' && <AlertTriangle className="h-4 w-4 text-danger" aria-label="실패" />}
                 </span>
                 {s.tool ? <ToolStep s={s} /> : (
                   <div className="flex min-w-0 flex-1 flex-wrap items-baseline gap-x-3 gap-y-0.5">
-                    <span className={`text-[15px] ${s.state === 'failed' ? 'text-rose-200' : s.state === 'active' ? 'text-text' : 'text-text-2'}`}>{s.label}</span>
+                    <span className={`text-[15px] ${s.state === 'failed' ? 'text-danger' : s.state === 'active' ? 'text-text' : 'text-text-2'}`}>{s.label}</span>
                     {s.detail && <span className="tnum min-w-0 break-words text-sm text-text">{s.detail}</span>}
                   </div>
                 )}

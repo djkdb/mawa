@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
-import { CircleHelp, Code2, FileText, History, Home, Plug, Settings, X } from 'lucide-react';
+import { CircleHelp, Code2, FileText, History, Home, Monitor, Moon, Plug, Settings, Sun, X } from 'lucide-react';
 import { IS_DEMO_BUILD, REPO_URL, type Status } from '../lib/client.js';
 import { DEMO_PERSONA } from '../lib/copy.js';
+import { useTheme, type ThemePref } from '../lib/theme.js';
 import { hrefFor, type Route } from '../lib/useHashRoute.js';
 import { HowItWorks } from './HowItWorks.js';
 import { ModeBadge } from './ModeBadge.js';
@@ -14,6 +15,25 @@ const NAV: Array<{ id: Route; label: string; icon: typeof Home }> = [
   { id: 'settings', label: '설정', icon: Settings },
 ];
 export const ROUTE_TITLE: Record<Route, string> = { home: '홈', report: '리포트', runs: '실행 기록', connections: '연결된 소스', settings: '설정' };
+
+const THEMES: Array<{ id: ThemePref; label: string; Icon: typeof Sun }> = [
+  { id: 'system', label: '시스템 설정 따르기', Icon: Monitor },
+  { id: 'light', label: '라이트 테마', Icon: Sun },
+  { id: 'dark', label: '다크 테마', Icon: Moon },
+];
+
+/** Cycles system → light → dark; the icon shows the current choice. */
+function ThemeToggle() {
+  const [pref, setPref] = useTheme();
+  const i = THEMES.findIndex((t) => t.id === pref);
+  const cur = THEMES[i]!;
+  const next = THEMES[(i + 1) % THEMES.length]!;
+  return (
+    <button type="button" onClick={() => setPref(next.id)} aria-label={`테마: ${cur.label}. 눌러서 ${next.label}`} title={`테마: ${cur.label}`} className="rounded-md p-2.5 text-text-2 hover:bg-surface-2 hover:text-text">
+      <cur.Icon className="h-5 w-5" aria-hidden />
+    </button>
+  );
+}
 
 export function Shell({ route, reportHref, navigate, status, children }: { route: Route; reportHref: string; navigate: (r: Route) => void; status: Status | null; children: React.ReactNode }) {
   const h1 = useRef<HTMLHeadingElement>(null);
@@ -65,13 +85,14 @@ export function Shell({ route, reportHref, navigate, status, children }: { route
           <div className="flex h-14 items-center justify-between gap-3 px-4 sm:px-6">
             <div className="flex min-w-0 items-center gap-2.5">
               <img src="/favicon.svg" alt="" className="h-6 w-6 lg:hidden" />
-              <span className="whitespace-nowrap text-[15px] font-semibold max-[359px]:hidden lg:hidden" aria-hidden>My AI Work Agent</span>
-              <span className="text-text-3 max-[359px]:hidden lg:hidden" aria-hidden>/</span>
+              <span className="whitespace-nowrap text-[15px] font-semibold max-[479px]:hidden lg:hidden" aria-hidden>My AI Work Agent</span>
+              <span className="text-text-3 max-[479px]:hidden lg:hidden" aria-hidden>/</span>
               <h1 ref={h1} tabIndex={-1} className="truncate text-[15px] font-semibold outline-none">{ROUTE_TITLE[route]}</h1>
             </div>
             <div className="flex items-center gap-1.5">
               <span className="lg:hidden"><ModeBadge mode={status?.defaultMode ?? 'demo'} /></span>
-              <button type="button" onClick={() => dialog.current?.showModal()} aria-label="작동 방식 보기" className="rounded-md p-2.5 text-text-2 hover:bg-surface hover:text-text"><CircleHelp className="h-5 w-5" aria-hidden /></button>
+              <ThemeToggle />
+              <button type="button" onClick={() => dialog.current?.showModal()} aria-label="작동 방식 보기" className="rounded-md p-2.5 text-text-2 hover:bg-surface-2 hover:text-text"><CircleHelp className="h-5 w-5" aria-hidden /></button>
               <span className="hidden h-8 w-8 items-center justify-center rounded-full bg-accent-2 text-xs font-semibold text-text sm:flex" title={workspace} role="img" aria-label={`사용자 ${workspace}`}>{workspace.slice(0, 1).toUpperCase()}</span>
             </div>
           </div>

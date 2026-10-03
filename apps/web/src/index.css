@@ -2,42 +2,79 @@
 
 @theme {
   --color-bg: #0b0d12;
-  --color-surface: #12151c;
-  --color-surface-2: #181c25;
-  --color-line: #242a36;
+  --color-surface: #13161e;
+  --color-surface-2: #1a1e28;
+  --color-line: #262c39;
   --color-text: #eef0f4;
-  --color-text-2: #aab1bd;
-  --color-text-3: #8a93a1;
-  --color-accent: #3b82f6;
+  --color-text-2: #b3bac6;
+  --color-text-3: #8e97a5;
+  --color-accent: #60a5fa;
   --color-accent-2: #1d3b78;
   --color-accent-strong: #2563eb;
+  --color-on-accent: #ffffff;
   --color-ok: #34d399;
   --color-caution: #f59e0b;
+  --color-warn: #fcd34d;
+  --color-danger: #fda4af;
   --color-inferred: #c084fc;
   --color-github: #93a4ff;
   --color-gmail: #fb7185;
   --color-calendar: #2dd4bf;
   --color-lms: #a3e635;
+  --color-cat-task: #93c5fd;
+  --color-cat-team: #c084fc;
+  --color-cat-dev: #93a4ff;
+  --color-cat-meet: #2dd4bf;
+  --color-cat-job: #fbbf24;
+  --color-cat-study: #a3e635;
+  --color-cat-school: #f9a8d4;
+  --color-cat-security: #fb7185;
+  --color-cat-other: #94a3b8;
+  --color-pr-open: #34d399;
+  --color-pr-merged: #c084fc;
+  --color-pr-closed: #94a3b8;
+  --color-issue: #fbbf24;
+  --color-pri-high: #f43f5e;
+  --color-pri-medium: #f59e0b;
+  --color-pri-low: #64748b;
   --font-sans: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Segoe UI', Roboto, sans-serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+/* Light theme: same tokens, darker hues so coloured text stays readable on white. */
+@layer base {
+  :root { --glow-1: rgba(59, 130, 246, 0.16); --glow-2: rgba(45, 212, 191, 0.07); --nav-bg: rgba(11, 13, 18, 0.82); --surface-edge: rgba(255, 255, 255, 0.04); --surface-shadow: none; --pri-high-bg: rgba(244,63,94,0.16); --pri-high-fg: #fda4af; --pri-med-bg: rgba(245,158,11,0.14); --pri-med-fg: #fcd34d; --pri-low-bg: rgba(148,163,184,0.14); --pri-low-fg: #cbd5e1; --conf-ok-bg: rgba(52,211,153,0.14); --conf-ok-fg: #6ee7b7; --conf-inf-bg: rgba(192,132,252,0.14); --conf-inf-fg: #d8b4fe; color-scheme: dark; }
+  :root[data-theme="light"] {
+    color-scheme: light;
+    --color-bg: #f4f6fa; --color-surface: #ffffff; --color-surface-2: #eef1f6; --color-line: #dde2ea;
+    --color-text: #111827; --color-text-2: #3f4a5a; --color-text-3: #5f6b7c;
+    --color-accent: #1d4ed8; --color-accent-2: #dbe7ff; --color-accent-strong: #2563eb;
+    --color-ok: #047857; --color-caution: #b45309; --color-warn: #92400e; --color-danger: #be123c; --color-inferred: #7e22ce;
+    --color-github: #4f5bd5; --color-gmail: #e11d48; --color-calendar: #0f766e; --color-lms: #4d7c0f;
+    --color-cat-task: #1d4ed8; --color-cat-team: #7e22ce; --color-cat-dev: #4f46e5; --color-cat-meet: #0f766e; --color-cat-job: #b45309; --color-cat-study: #4d7c0f; --color-cat-school: #be185d; --color-cat-security: #be123c; --color-cat-other: #475569;
+    --color-pr-open: #047857; --color-pr-merged: #7e22ce; --color-pr-closed: #64748b; --color-issue: #b45309;
+    --color-pri-high: #e11d48; --color-pri-medium: #d97706; --color-pri-low: #94a3b8;
+    --glow-1: rgba(59, 130, 246, 0.10); --glow-2: rgba(45, 212, 191, 0.06); --nav-bg: rgba(255, 255, 255, 0.85); --surface-edge: #e3e7ee; --surface-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+    --pri-high-bg: #ffe4e8; --pri-high-fg: #be123c; --pri-med-bg: #fef3c7; --pri-med-fg: #92400e; --pri-low-bg: #eef1f6; --pri-low-fg: #475569;
+    --conf-ok-bg: #d1fae5; --conf-ok-fg: #047857; --conf-inf-bg: #f3e8ff; --conf-inf-fg: #7e22ce;
+  }
+}
+
 html, body, #root { min-height: 100%; }
-:root { color-scheme: dark; }
 html { scroll-padding-top: 72px; scroll-padding-bottom: 76px; }
 @media (min-width: 1024px) { html { scroll-padding-bottom: 16px; } }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 .skip-link { position: absolute; left: 12px; top: -48px; z-index: 50; padding: 8px 12px; border-radius: 8px; background: var(--color-accent-strong); color: #fff; font-size: 14px; }
 .skip-link:focus { top: 12px; }
-dialog::backdrop { background: rgba(0,0,0,0.6); }
+dialog::backdrop { background: rgba(0,0,0,0.5); }
 .pri { display: inline-flex; align-items: center; border-radius: 6px; padding: 1px 6px; font-size: 11px; font-weight: 700; line-height: 1.5; white-space: nowrap; }
-.pri-high { background: rgba(244,63,94,0.16); color: #fda4af; }
-.pri-medium { background: rgba(245,158,11,0.14); color: #fcd34d; }
-.pri-low { background: rgba(148,163,184,0.14); color: #cbd5e1; }
+.pri-high { background: var(--pri-high-bg); color: var(--pri-high-fg); }
+.pri-medium { background: var(--pri-med-bg); color: var(--pri-med-fg); }
+.pri-low { background: var(--pri-low-bg); color: var(--pri-low-fg); }
 body {
   background:
-    radial-gradient(1100px 520px at 12% -10%, rgba(59, 130, 246, 0.16), transparent 60%),
-    radial-gradient(900px 480px at 100% 10%, rgba(45, 212, 191, 0.07), transparent 60%),
+    radial-gradient(1100px 520px at 12% -10%, var(--glow-1), transparent 60%),
+    radial-gradient(900px 480px at 100% 10%, var(--glow-2), transparent 60%),
     var(--color-bg);
   background-attachment: fixed;
   color: var(--color-text);
@@ -50,12 +87,12 @@ body {
 }
 h1, h2, h3 { letter-spacing: -0.02em; text-wrap: balance; line-height: 1.25; }
 p { text-wrap: pretty; }
-::selection { background: #3b82f655; }
-:focus-visible { outline: 2px solid #93c5fd; outline-offset: 2px; border-radius: 8px; }
+::selection { background: color-mix(in srgb, var(--color-accent) 30%, transparent); }
+:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 8px; }
 /* Headings and <main> receive focus programmatically (route changes, run start) so screen readers land there; they are not controls. */
 h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, main[tabindex="-1"]:focus { outline: none; }
 
-.surface { background: var(--color-surface); border-radius: 12px; }
+.surface { background: var(--color-surface); border-radius: 12px; box-shadow: 0 0 0 1px var(--surface-edge), var(--surface-shadow); }
 .hairline { border: 1px solid var(--color-line); }
 .tag { display: inline-flex; align-items: center; gap: 6px; border-radius: 6px; padding: 2px 8px; font-size: 12px; font-weight: 600; line-height: 1.4; }
 .tnum { font-variant-numeric: tabular-nums; }
@@ -64,7 +101,7 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, main[tabindex="-1"]:focus { ou
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
 }
 
-.topnav { position: sticky; top: 0; z-index: 30; background: rgba(11, 13, 18, 0.82); backdrop-filter: blur(10px); border-bottom: 1px solid var(--color-line); }
+.topnav { position: sticky; top: 0; z-index: 30; background: var(--nav-bg); backdrop-filter: blur(10px); border-bottom: 1px solid var(--color-line); }
 .rail a { display: flex; align-items: center; gap: 10px; padding: 7px 10px; border-radius: 8px; color: var(--color-text-2); font-size: 14px; }
 .rail a:hover { color: var(--color-text); background: var(--color-surface); }
 .rail a[aria-current="true"] { color: var(--color-text); background: var(--color-surface-2); box-shadow: inset 2px 0 0 var(--color-accent); }
@@ -82,5 +119,9 @@ h1[tabindex="-1"]:focus, h2[tabindex="-1"]:focus, main[tabindex="-1"]:focus { ou
 
 /* Confidence as a word, not a colour dot. */
 .conf { display: inline-flex; align-items: center; border-radius: 6px; padding: 0 6px; font-size: 11px; font-weight: 600; line-height: 18px; white-space: nowrap; }
-.conf-ok { background: rgba(52,211,153,0.14); color: #6ee7b7; }
-.conf-inf { background: rgba(192,132,252,0.14); color: #d8b4fe; }
+.conf-ok { background: var(--conf-ok-bg); color: var(--conf-ok-fg); }
+.conf-inf { background: var(--conf-inf-bg); color: var(--conf-inf-fg); }
+
+/* Stat strip: all counts on one row from sm up, three per row on phones. */
+.stat-grid { grid-template-columns: repeat(min(var(--n), 3), minmax(0, 1fr)); }
+@media (min-width: 640px) { .stat-grid { grid-template-columns: repeat(var(--n), minmax(0, 1fr)); } }

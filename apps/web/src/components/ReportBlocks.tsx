@@ -2,6 +2,7 @@ import { useState, type ReactNode } from 'react';
 import { CircleDot, Clock, EyeOff, GitCommitHorizontal, GitMerge, GitPullRequest, GitPullRequestClosed, Mail, MapPin, MessageSquare, RotateCcw } from 'lucide-react';
 import type { ReportItem, ReportSection, Source, WeeklyWorkReport } from '@mawa/shared';
 import { categoryOf, PRIORITY_KO, SERVER_COLOR, SERVER_NAME, WORKSPACE_TZ, relDay } from '../lib/copy.js';
+import { categoryIcon } from '../lib/icons.js';
 import { ItemText } from './ItemText.js';
 import { SourceChips } from './SourcePopover.js';
 
@@ -50,11 +51,12 @@ function Reason({ item }: { item: ReportItem }) {
 function CatTag({ item }: { item: ReportItem }) {
   if (!item.category) return null;
   const c = categoryOf(item.category);
-  return <span className="inline-flex items-center gap-1 rounded-md px-1.5 text-[11px] font-medium leading-[18px]" style={{ color: c.color, background: `color-mix(in srgb, ${c.color} 14%, transparent)` }}>{c.label}</span>;
+  const Icon = categoryIcon(item.category);
+  return <span className="inline-flex items-center gap-1 rounded-md px-1.5 text-[11px] font-medium leading-[18px]" style={{ color: c.color, background: `color-mix(in srgb, ${c.color} 14%, transparent)` }}><Icon className="h-3 w-3" aria-hidden />{c.label}</span>;
 }
 function Flag({ src, ctx }: { src: Source[]; ctx: BlockCtx }) {
   const hit = src.find((s) => ctx.flagged.has(s.id));
-  return hit ? <span className="inline-flex items-center gap-1 rounded-md bg-caution/15 px-1.5 py-0.5 text-[11px] font-medium text-amber-200" title={ctx.flagged.get(hit.id)}>⚠ 지시문 감지 · 데이터로만 처리</span> : null;
+  return hit ? <span className="inline-flex items-center gap-1 rounded-md bg-caution/15 px-1.5 py-0.5 text-[11px] font-medium text-warn" title={ctx.flagged.get(hit.id)}>⚠ 지시문 감지 · 데이터로만 처리</span> : null;
 }
 function Priority({ item }: { item: ReportItem }) {
   return item.priority ? <span className={`pri pri-${item.priority}`}>{PRIORITY_KO[item.priority]}</span> : null;
@@ -114,7 +116,7 @@ function OverviewBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx
   for (const s of report.sources) if (kindOf(s) === 'commit') { const r = repoShort(str(s, 'repo')) || '기타'; repoCounts.set(r, (repoCounts.get(r) ?? 0) + 1); }
   const repos = [...repoCounts.entries()].sort((a, b) => b[1] - a[1]);
   const commitTotal = repos.reduce((n, [, c]) => n + c, 0);
-  const shades = ['var(--color-github)', '#6b7bd6', '#4a5699', '#363f70'];
+  const shades = ['var(--color-github)', 'color-mix(in srgb, var(--color-github) 72%, var(--color-surface))', 'color-mix(in srgb, var(--color-github) 50%, var(--color-surface))', 'color-mix(in srgb, var(--color-github) 32%, var(--color-surface))'];
   const today = kstDay(report.generatedAt);
   const total = (d: string) => { const b = perDay.get(d)!; return b.github + b.gmail + b.calendar + b.lms; };
 
@@ -172,7 +174,7 @@ function weekday(day: string) { return new Date(`${day}T12:00:00+09:00`).toLocal
 
 /* ---------- major activities: one card per repository ---------- */
 
-const COMMIT_TYPE_COLOR: Record<string, string> = { feat: '#34d399', fix: '#fb7185', test: '#c084fc', docs: '#93c5fd', refactor: '#fbbf24', chore: '#94a3b8', solve: '#2dd4bf', perf: '#f472b6', ci: '#94a3b8', style: '#94a3b8', build: '#94a3b8' };
+const COMMIT_TYPE_COLOR: Record<string, string> = { feat: 'var(--color-ok)', fix: 'var(--color-gmail)', test: 'var(--color-inferred)', docs: 'var(--color-cat-task)', refactor: 'var(--color-cat-job)', chore: 'var(--color-cat-other)', solve: 'var(--color-calendar)', perf: 'var(--color-cat-school)', ci: 'var(--color-cat-other)', style: 'var(--color-cat-other)', build: 'var(--color-cat-other)' };
 
 function ActivityCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
   const [open, setOpen] = useState(false);
@@ -226,9 +228,9 @@ function ActivityCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
 /* ---------- project progress: PR / issue cards ---------- */
 
 const PR_STATE: Record<string, { label: string; color: string; Icon: typeof GitPullRequest }> = {
-  open: { label: '열림', color: '#34d399', Icon: GitPullRequest },
-  merged: { label: '병합됨', color: '#c084fc', Icon: GitMerge },
-  closed: { label: '닫힘', color: '#94a3b8', Icon: GitPullRequestClosed },
+  open: { label: '열림', color: 'var(--color-pr-open)', Icon: GitPullRequest },
+  merged: { label: '병합됨', color: 'var(--color-pr-merged)', Icon: GitMerge },
+  closed: { label: '닫힘', color: 'var(--color-pr-closed)', Icon: GitPullRequestClosed },
 };
 
 function WorkCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
@@ -237,7 +239,7 @@ function WorkCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
   if (!s) return <SentenceRow item={item} ctx={ctx} />;
   const isPr = kindOf(s) === 'pr';
   const state = isPr ? (str(s, 'mergedAt') ? 'merged' : (str(s, 'state') ?? 'open')) : 'issue';
-  const st = isPr ? (PR_STATE[state] ?? PR_STATE['open']!) : { label: '열린 이슈', color: '#fbbf24', Icon: CircleDot };
+  const st = isPr ? (PR_STATE[state] ?? PR_STATE['open']!) : { label: '열린 이슈', color: 'var(--color-issue)', Icon: CircleDot };
   const comments = num(s, 'reviewComments');
   const extra = item.text.includes(s.title) ? null : item.text;
   return (
@@ -324,7 +326,7 @@ function ScheduleBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx
 
 /* ---------- emails: inbox rows ---------- */
 
-const AVATAR = ['#93a4ff', '#fb7185', '#2dd4bf', '#fbbf24', '#c084fc', '#34d399'];
+const AVATAR = ['var(--color-github)', 'var(--color-gmail)', 'var(--color-calendar)', 'var(--color-cat-job)', 'var(--color-inferred)', 'var(--color-ok)'];
 function Avatar({ name }: { name: string }) {
   const h = [...name].reduce((n, c) => (n * 31 + c.charCodeAt(0)) >>> 0, 7);
   const color = AVATAR[h % AVATAR.length]!;
@@ -359,7 +361,7 @@ function MailRow({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
 
 /* ---------- risks / blockers: priority cards ---------- */
 
-const PRI_COLOR = { high: '#f43f5e', medium: '#f59e0b', low: '#64748b' } as const;
+const PRI_COLOR = { high: 'var(--color-pri-high)', medium: 'var(--color-pri-medium)', low: 'var(--color-pri-low)' } as const;
 
 function RiskCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
   const src = cited(item, ctx.byId);

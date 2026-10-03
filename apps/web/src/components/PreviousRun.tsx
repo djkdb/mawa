@@ -46,8 +46,8 @@ export function PreviousRun({ report, runId, prompt }: { report: WeeklyWorkRepor
             {diff.counts.map((c) => <span key={c.kind}>{KIND_NAME[c.kind]} {c.now} <span className={c.now - c.prev > 0 ? 'text-ok' : c.now - c.prev < 0 ? 'text-gmail' : 'text-text-3'}>({delta(c.now - c.prev)})</span></span>)}
           </div>
           <ul className="mt-2 space-y-1 text-[13px]">
-            {diff.added.slice(0, 3).map((i) => <li key={`a${i.id}`}><span className="tag mr-1.5 bg-rose-400/15 text-rose-200">신규</span>{i.text}</li>)}
-            {diff.resolved.slice(0, 3).map((i) => <li key={`r${i.id}`} className="text-text-2"><span className="tag mr-1.5 bg-ok/15 text-emerald-200">해소</span>{i.text}</li>)}
+            {diff.added.slice(0, 3).map((i) => <li key={`a${i.id}`}><span className="tag mr-1.5 bg-danger/15 text-danger">신규</span>{i.text}</li>)}
+            {diff.resolved.slice(0, 3).map((i) => <li key={`r${i.id}`} className="text-text-2"><span className="tag mr-1.5 bg-ok/15 text-ok">해소</span>{i.text}</li>)}
             {diff.continuing.length > 0 && <li className="text-text-3">지속 {diff.continuing.length}건 (지난 실행에도 있던 주의 항목)</li>}
           </ul>
         </>

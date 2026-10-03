@@ -123,7 +123,7 @@ export function WireRow({ m, t0, tool }: { m: Pick<Message, 'server' | 'directio
         <span className="inline-flex w-[76px] shrink-0 items-center gap-1" style={{ color: SERVER_COLOR[m.server] }}>
           {out ? <ArrowRight className="h-3 w-3" aria-label="클라이언트 → 서버" /> : <ArrowLeft className="h-3 w-3" aria-label="서버 → 클라이언트" />}{m.server}
         </span>
-        <span className={`w-[68px] shrink-0 max-sm:order-last max-sm:w-auto ${m.kind === 'error' ? 'text-rose-300' : 'text-text-3'}`}>{m.kind}</span>
+        <span className={`w-[68px] shrink-0 max-sm:order-last max-sm:w-auto ${m.kind === 'error' ? 'text-danger' : 'text-text-3'}`}>{m.kind}</span>
         <span className="min-w-0 flex-1 truncate text-text">{m.method ?? ''}{tool ? <span className="text-text-2"> {tool}</span> : null}{m.rpcId !== undefined ? <span className="text-text-3"> #{m.rpcId}</span> : null}</span>
         <span className="tnum shrink-0 text-text-3">{kb(m.bytes)}</span>
         <ChevronRight className={`h-3 w-3 shrink-0 text-text-3 transition ${open ? 'rotate-90' : ''}`} aria-hidden />
