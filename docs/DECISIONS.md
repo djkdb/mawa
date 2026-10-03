@@ -200,3 +200,34 @@ run, like apps/api, so every recording contains the handshake.
 **Why.** "MCP" should be inspectable, not asserted: the topology view, the
 message log and the connections page are all drawn from these events.
 
+---
+
+## ADR-014 — Guard the LLM payload and show it; record a validation demo
+
+**Context.** A five-persona review (hiring engineer, developer, team lead,
+security engineer, first-time mobile user) found that the trust story was
+asserted, not visible: nothing showed what reached the model, the validator
+never had anything to drop, and the API listened on all interfaces with no
+cross-origin protection.
+
+**Decision.**
+- Before any LLM request, third-party data is masked (personal email
+  addresses → `m***@domain`, role accounts kept), made tag-safe (`<`/`>`
+  escaped inside the context block) and screened for instruction-like text;
+  each request is reported as an `llm_request` event (size, contents, fields,
+  masked count, flagged items) and each planning answer as `llm_response`.
+- The API binds to `127.0.0.1` by default (`API_HOST`), refuses cross-origin
+  state changes and run reads, revokes the grant at the provider on
+  disconnect, and no longer reflects error text into redirect URLs.
+- Tools declare `readOnlyHint`; reports carry a one-line `reason` per
+  priority; the scripted writer merges mails/events that reference the same
+  `#N`, detects mail-vs-calendar date conflicts, and leaves personal mail out.
+- The demo ships a fourth recording, clearly labelled as fault injection,
+  in which a citation to a source that was never fetched is dropped and an
+  unsourced "observed" claim is downgraded. A synthetic prompt-injection mail
+  in the fixtures shows the flagging path.
+
+**Why.** For a governance-minded reader the evidence has to be on screen and
+exportable (JSONL audit), and every claim must hold in real mode too, since
+all of it is computed from the same events.
+

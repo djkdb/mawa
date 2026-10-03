@@ -15,6 +15,7 @@ export function createCalendarMcpServer(provider: CalendarProvider, mode: 'demo'
     'get_events',
     {
       title: 'Get events',
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
       description: `Events on the primary calendar in a time range. Defaults to the current ISO week (Mon–Sun).${tag}`,
       inputSchema: z.object({
         timeMin: z.iso.datetime().optional(),
@@ -34,6 +35,7 @@ export function createCalendarMcpServer(provider: CalendarProvider, mode: 'demo'
     'get_upcoming_events',
     {
       title: 'Get upcoming events',
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
       description: `Events starting from now for the next N days.${tag}`,
       inputSchema: z.object({ days: z.number().int().min(1).max(30).default(7), limit: z.number().int().min(1).max(100).default(20) }),
       outputSchema: Output,
@@ -49,6 +51,7 @@ export function createCalendarMcpServer(provider: CalendarProvider, mode: 'demo'
     'search_events',
     {
       title: 'Search events',
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
       description: `Free-text search over event title, description and location in a time range (default: ±30 days).${tag}`,
       inputSchema: z.object({
         query: z.string().min(1),

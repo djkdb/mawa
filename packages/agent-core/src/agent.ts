@@ -4,6 +4,7 @@ import { aggregateContext, type AggregatedContext } from './context/aggregate.js
 import type { LLMMessage, LLMProvider, LLMToolDefinition } from './llm/types.js';
 import { AGENT_SYSTEM_PROMPT } from './report/prompt.js';
 import { generateReport } from './report/generate.js';
+import { detectInjection, promptJson } from './report/guard.js';
 import { qualifiedToolName, splitQualifiedToolName, type ToolExecutor } from './tools/executor.js';
 import { isMcpServerId } from './tools/mcp-executor.js';
 
@@ -87,12 +88,22 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
     const messages: LLMMessage[] = [{ role: 'user', content: `${input.prompt}\n\n(Reporting period: ${period.start} to ${period.end}. Today is ${now().toISOString()}.)` }];
     const executed: Array<{ call: ToolCall; result: ToolResult }> = [];
     let turns = 0;
+    let planMasked = 0;
+    const flagged = new Map<string, { sourceId: string; reason: string }>();
 
     while (turns < policy.maxTurns) {
       turns += 1;
       throwIfAborted(input.signal);
+      const toolMsgs = messages.filter((m) => m.role === 'tool').length;
+      emit('llm_request', {
+        phase: 'plan', provider: input.llm.id, model: input.llm.model,
+        bytes: Buffer.byteLength(JSON.stringify({ system: AGENT_SYSTEM_PROMPT, messages, tools: llmTools })),
+        contents: ['사용자 질문', `도구 정의 ${llmTools.length}개`, ...(toolMsgs ? [`도구 결과 ${toolMsgs}건`] : [])],
+        fields: [], maskedEmails: planMasked, flagged: [...flagged.values()],
+      });
       const response = await input.llm.complete({ system: AGENT_SYSTEM_PROMPT, messages, tools: llmTools });
       if (response.stopReason === 'refusal') throw new Error('The model declined the request.');
+      emit('llm_response', { phase: 'plan', provider: input.llm.id, model: input.llm.model, stopReason: response.stopReason, text: response.text.slice(0, 500), toolCalls: response.toolCalls.map((t) => ({ name: t.name, input: t.input })) });
       messages.push({ role: 'assistant', content: response.text, toolCalls: response.toolCalls });
       if (response.toolCalls.length === 0) break;
 
@@ -115,7 +126,17 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
         executed.push({ call, result });
         if (result.status === 'ok') {
           emit('tool_call_completed', { call, result });
-          messages.push({ role: 'tool', toolCallId: tc.id, content: truncate(JSON.stringify(result.output), policy.maxResultChars) });
+          // Third-party text goes to the model masked, tag-safe, and screened for instructions.
+          const json = promptJson(result.output);
+          const masked = { text: truncate(json.text, policy.maxResultChars), count: json.count };
+          planMasked += masked.count;
+          for (const row of Array.isArray(result.output.data) ? result.output.data : [result.output.data]) {
+            if (!row || typeof row !== 'object') continue;
+            const r = row as Record<string, unknown>;
+            const reason = detectInjection([r['subject'], r['snippet'], r['body'], r['title'], r['description']].filter((x) => typeof x === 'string').join('\n'));
+            if (reason && typeof r['sourceId'] === 'string') flagged.set(r['sourceId'], { sourceId: r['sourceId'], reason });
+          }
+          messages.push({ role: 'tool', toolCallId: tc.id, content: masked.text });
         } else {
           emit('tool_call_failed', { call, result });
           warnings.push(`${call.server}.${call.name} failed: ${result.error.message}`);
@@ -130,7 +151,11 @@ export async function runAgent(input: RunAgentInput): Promise<RunAgentResult> {
     emit('context_aggregated', { counts: context.counts, totalItems: context.items.length });
 
     // 4. Analyze + validate.
-    const generated = await generateReport(input.llm, context, { runId, mode, prompt: input.prompt, generatedAt: now().toISOString() });
+    const generated = await generateReport(input.llm, context, {
+      runId, mode, prompt: input.prompt, generatedAt: now().toISOString(),
+      onPrompt: (p) => emit('llm_request', { phase: 'analysis', provider: input.llm.id, model: input.llm.model, bytes: p.bytes, contents: ['사용자 질문', `출처 ${context!.sources.length}건의 요약과 필드`, '리포트 JSON 스키마'], fields: p.fields, maskedEmails: p.maskedEmails, flagged: [...flagged.values()] }),
+    });
+    for (const f of flagged.values()) warnings.push(`Suspicious instructions in ${f.sourceId} (${f.reason}); treated as data.`);
     report = generated.report;
     warnings.push(...generated.warnings);
     emit('report_generated', { report, droppedItems: generated.droppedItems });
@@ -154,9 +179,15 @@ function throwIfAborted(signal?: AbortSignal) {
   if (signal?.aborted) throw new Error('Run aborted');
 }
 
-/** Current ISO week, Monday 00:00 UTC to next Monday. */
-export function defaultPeriod(now: Date): { start: string; end: string } {
-  const day = (now.getUTCDay() + 6) % 7;
-  const monday = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() - day);
+/**
+ * The reporting week in the workspace timezone (Asia/Seoul, UTC+9, no DST): Monday 00:00 to next Monday 00:00.
+ * On Mondays the default is the week that just ended, since that is what a Monday update reports on.
+ */
+export function defaultPeriod(now: Date, tzOffsetHours = 9): { start: string; end: string } {
+  const off = tzOffsetHours * 3_600_000;
+  const local = new Date(now.getTime() + off);
+  const day = (local.getUTCDay() + 6) % 7;
+  let monday = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate() - day) - off;
+  if (day === 0) monday -= 7 * 86_400_000;
   return { start: new Date(monday).toISOString(), end: new Date(monday + 7 * 86_400_000).toISOString() };
 }

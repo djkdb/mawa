@@ -22,6 +22,8 @@ export const ToolDefinitionSchema = z.object({
   name: z.string().min(1),
   description: z.string(),
   inputSchema: JsonSchemaSchema,
+  /** MCP tool annotations as reported by the server (hints, not guarantees). */
+  annotations: z.object({ readOnlyHint: z.boolean().optional(), destructiveHint: z.boolean().optional(), openWorldHint: z.boolean().optional() }).optional(),
 });
 export type ToolDefinition = z.infer<typeof ToolDefinitionSchema>;
 

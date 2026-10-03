@@ -139,7 +139,33 @@ export class OAuthService {
     return updated;
   }
 
-  async disconnect(provider: OAuthProviderId): Promise<void> {
+  /**
+   * Revokes the grant at the provider (best effort), then deletes the local token.
+   * `revoked` tells the UI whether the provider confirmed it.
+   */
+  async disconnect(provider: OAuthProviderId, fetchImpl: typeof fetch = fetch): Promise<{ revoked: boolean }> {
+    const stored = this.store.get(provider);
+    let revoked = false;
+    if (stored) {
+      try {
+        if (provider === 'google') {
+          const token = stored.refreshToken ?? stored.accessToken;
+          const res = await fetchImpl('https://oauth2.googleapis.com/revoke', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ token }) });
+          revoked = res.ok;
+        } else if (this.config.github.clientId && this.config.github.clientSecret) {
+          const basic = Buffer.from(`${this.config.github.clientId}:${this.config.github.clientSecret}`).toString('base64');
+          const res = await fetchImpl(`https://api.github.com/applications/${this.config.github.clientId}/grant`, {
+            method: 'DELETE',
+            headers: { authorization: `Basic ${basic}`, accept: 'application/vnd.github+json', 'content-type': 'application/json' },
+            body: JSON.stringify({ access_token: stored.accessToken }),
+          });
+          revoked = res.status === 204;
+        }
+      } catch {
+        revoked = false;
+      }
+    }
     await this.store.remove(provider);
+    return { revoked };
   }
 }

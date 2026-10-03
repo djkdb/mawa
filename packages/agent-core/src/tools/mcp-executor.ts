@@ -105,7 +105,11 @@ export class McpToolExecutor implements ToolExecutor {
       if (!client) continue;
       const { tools } = await client.listTools();
       for (const t of tools) {
-        defs.push({ server: id, name: t.name, description: t.description ?? '', inputSchema: t.inputSchema as ToolDefinition['inputSchema'] });
+        const a = t.annotations;
+        defs.push({
+          server: id, name: t.name, description: t.description ?? '', inputSchema: t.inputSchema as ToolDefinition['inputSchema'],
+          ...(a ? { annotations: { ...(a.readOnlyHint !== undefined ? { readOnlyHint: a.readOnlyHint } : {}), ...(a.destructiveHint !== undefined ? { destructiveHint: a.destructiveHint } : {}), ...(a.openWorldHint !== undefined ? { openWorldHint: a.openWorldHint } : {}) } } : {}),
+        });
       }
     }
     this.toolCache = defs;

@@ -3,7 +3,7 @@ import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { z } from 'zod';
 import { AgentModeSchema, PROJECT } from '@mawa/shared';
-import { OAuthService } from './auth/oauth.js';
+import { GOOGLE_SCOPES, OAuthService, githubScopesFromEnv } from './auth/oauth.js';
 import { TokenStore } from './auth/token-store.js';
 import type { AppConfig } from './config.js';
 import { RunManager } from './agent/run-manager.js';
@@ -30,6 +30,22 @@ export function createApp(deps: AppDeps) {
   const app = new Hono();
   app.use('/api/*', cors({ origin: config.webOrigin }));
 
+  // Cross-site requests may not change state or read run data: a browser on another origin
+  // could otherwise POST a form (disconnect, start runs) or read SSE. Requests without an
+  // Origin header (same-origin GET, curl on the loopback interface) are allowed.
+  // While bound to loopback, local dev servers on any port (vite dev/preview proxies) are trusted too.
+  const allowedOrigins = new Set([config.webOrigin, new URL(config.publicUrl).origin]);
+  const loopback = /^http:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+  const allowed = (o: string) => allowedOrigins.has(o) || (config.host === '127.0.0.1' && loopback.test(o));
+  app.use('*', async (c, next) => {
+    const origin = c.req.header('origin');
+    const site = c.req.header('sec-fetch-site');
+    if ((origin && !allowed(origin)) || (site === 'cross-site' && !(origin && allowed(origin)))) {
+      if (c.req.method !== 'GET' || c.req.path.startsWith('/api/agent/')) return c.json({ error: 'Cross-origin request refused' }, 403);
+    }
+    await next();
+  });
+
   app.get('/api/health', (c) => c.json({ ok: true, name: PROJECT.name }));
 
   /** Honest capability report: what is configured, what is connected, what the LLM is. */
@@ -39,9 +55,10 @@ export function createApp(deps: AppDeps) {
       defaultMode: config.defaultMode,
       llm: { ...runs.llmInfo, isModel: runs.llmInfo.provider !== 'scripted' },
       tokenStore: { persistent: deps.store.persistent },
+      api: { host: config.host },
       integrations: {
-        github: { status: oauth.status('github'), account: oauth.account('github') ?? null, connectUrl: '/auth/github/start' },
-        google: { status: oauth.status('google'), account: oauth.account('google') ?? null, connectUrl: '/auth/google/start', services: ['gmail', 'calendar'] },
+        github: { status: oauth.status('github'), account: oauth.account('github') ?? null, connectUrl: '/auth/github/start', scopes: githubScopesFromEnv() },
+        google: { status: oauth.status('google'), account: oauth.account('google') ?? null, connectUrl: '/auth/google/start', services: ['gmail', 'calendar'], scopes: GOOGLE_SCOPES },
       },
       realMode: { available: real.servers.length > 0, servers: real.servers.map((s) => s.id), skipped: real.skipped },
     });
@@ -121,15 +138,17 @@ export function createApp(deps: AppDeps) {
       await oauth.handleCallback(p.data, { code: c.req.query('code'), state: c.req.query('state'), error: c.req.query('error') });
       return c.redirect(`${config.webOrigin}/?connected=${p.data}`);
     } catch (err) {
-      return c.redirect(`${config.webOrigin}/?auth_error=${encodeURIComponent(err instanceof Error ? err.message : String(err))}`);
+      // Do not reflect provider/exception text into the URL; the detail goes to the server log.
+      console.error(`[auth] ${p.data} callback failed: ${err instanceof Error ? err.message : String(err)}`);
+      return c.redirect(`${config.webOrigin}/?auth_error=${p.data}`);
     }
   });
 
   app.post('/auth/:provider/disconnect', async (c) => {
     const p = ProviderParam.safeParse(c.req.param('provider'));
     if (!p.success) return c.json({ error: 'Unknown provider' }, 404);
-    await oauth.disconnect(p.data);
-    return c.json({ ok: true });
+    const { revoked } = await oauth.disconnect(p.data);
+    return c.json({ ok: true, revoked });
   });
 
   return app;

@@ -107,3 +107,38 @@ describe('real mode integrity', () => {
     expect(JSON.parse(discoveryLine.slice(6)).servers).toEqual(['github']);
   }, 60_000);
 });
+
+describe('api hardening', () => {
+  it('refuses cross-origin state changes and run reads, allows the web origin', async () => {
+    const app = await makeApp();
+    const evil = { origin: 'https://evil.example', 'content-type': 'application/json' };
+    expect((await app.request('/auth/github/disconnect', { method: 'POST', headers: evil })).status).toBe(403);
+    expect((await app.request('/api/agent/run', { method: 'POST', body: JSON.stringify({ prompt: 'x' }), headers: evil })).status).toBe(403);
+    expect((await app.request('/api/agent/runs', { headers: { origin: 'https://evil.example' } })).status).toBe(403);
+    expect((await app.request('/api/status', { headers: { origin: 'http://localhost:5173' } })).status).toBe(200);
+  });
+
+  it('binds to loopback by default and reports requested scopes', async () => {
+    expect(loadConfig({}).host).toBe('127.0.0.1');
+    const app = await makeApp();
+    const body = await (await app.request('/api/status')).json();
+    expect(body.integrations.github.scopes).toEqual(['read:user', 'repo']);
+    expect(body.integrations.google.scopes).toContain('https://www.googleapis.com/auth/gmail.readonly');
+  });
+});
+
+describe('oauth disconnect', () => {
+  it('revokes the grant at the provider before deleting the local token', async () => {
+    const { OAuthService } = await import('../src/auth/oauth.js');
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-oauth-'));
+    const config = loadConfig({ GOOGLE_CLIENT_ID: 'id', GOOGLE_CLIENT_SECRET: 'secret', TOKEN_STORE_PATH: join(dir, 't.json') });
+    const store = new TokenStore(config.tokenStorePath);
+    await store.set({ provider: 'google', accessToken: 'at', refreshToken: 'rt', connectedAt: new Date().toISOString() } as never);
+    const oauth = new OAuthService(config, store);
+    const calls: string[] = [];
+    const fakeFetch = (async (url: string, init?: RequestInit) => { calls.push(`${url} ${String(init?.body)}`); return new Response(null, { status: 200 }); }) as unknown as typeof fetch;
+    expect(await oauth.disconnect('google', fakeFetch)).toEqual({ revoked: true });
+    expect(calls[0]).toContain('https://oauth2.googleapis.com/revoke token=rt');
+    expect(store.get('google')).toBeNull();
+  });
+});

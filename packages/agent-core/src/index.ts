@@ -7,3 +7,4 @@ export * from './report/generate.js';
 export * from './report/scripted-report.js';
 export * from './agent.js';
 export * from './run-store.js';
+export * from './report/guard.js';

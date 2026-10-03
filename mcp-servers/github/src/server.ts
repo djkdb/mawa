@@ -22,6 +22,7 @@ export function createGitHubMcpServer(provider: GitHubProvider, mode: 'demo' | '
     'get_recent_commits',
     {
       title: 'Get recent commits',
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
       description: `Commits in the period, newest first, across the user's most recently pushed repositories or one repo. Each commit carries its author.${tag}`,
       inputSchema: z.object({
         ...PeriodInput,
@@ -41,6 +42,7 @@ export function createGitHubMcpServer(provider: GitHubProvider, mode: 'demo' | '
     'get_pull_requests',
     {
       title: 'Get pull requests',
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
       description: `Pull requests updated in the period, with state open/closed/merged.${tag}`,
       inputSchema: z.object({
         since: PeriodInput.since,
@@ -61,6 +63,7 @@ export function createGitHubMcpServer(provider: GitHubProvider, mode: 'demo' | '
     'get_open_issues',
     {
       title: 'Get open issues',
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
       description: `Open issues assigned to the user (or all open issues of one repo).${tag}`,
       inputSchema: z.object({ repo: z.string().optional(), limit: z.number().int().min(1).max(100).default(20) }),
       outputSchema: z.object({ summary: z.string(), data: z.array(IssueSchema) }),
@@ -75,6 +78,7 @@ export function createGitHubMcpServer(provider: GitHubProvider, mode: 'demo' | '
     'get_repository_activity',
     {
       title: 'Get repository activity',
+      annotations: { readOnlyHint: true, destructiveHint: false, openWorldHint: true },
       description: `Per-repository summary of activity in the period: commits, open issues, last push.${tag}`,
       inputSchema: z.object({ ...PeriodInput, limit: z.number().int().min(1).max(50).default(10) }),
       outputSchema: z.object({ summary: z.string(), data: z.array(RepositoryActivitySchema) }),

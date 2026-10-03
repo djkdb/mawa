@@ -15,6 +15,8 @@ export function loadDotenv(): void {
 const EnvSchema = z.object({
   AGENT_MODE: AgentModeSchema.default('demo'),
   API_PORT: z.coerce.number().int().positive().default(3001),
+  /** Interface to bind. Loopback by default: run records contain mail and calendar data. */
+  API_HOST: z.string().default('127.0.0.1'),
   WEB_ORIGIN: z.string().default('http://localhost:5173'),
   API_PUBLIC_URL: z.string().optional(),
   GITHUB_CLIENT_ID: z.string().optional(),
@@ -28,6 +30,7 @@ const EnvSchema = z.object({
 export interface AppConfig {
   defaultMode: AgentMode;
   port: number;
+  host: string;
   webOrigin: string;
   publicUrl: string;
   llm: LLMConfig;
@@ -43,6 +46,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
   return {
     defaultMode: e.AGENT_MODE,
     port: e.API_PORT,
+    host: e.API_HOST,
     webOrigin: e.WEB_ORIGIN,
     publicUrl: e.API_PUBLIC_URL ?? `http://localhost:${e.API_PORT}`,
     llm: llmConfigFromEnv(env),

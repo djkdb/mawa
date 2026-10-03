@@ -81,6 +81,8 @@ node mcp-servers/github/dist/index.js --mode=demo      # or GITHUB_TOKEN=… --m
 6. analyze: the LLM receives the context and a JSON schema; the agent drops items citing unknown ids, downgrades unsourced "observed" items to "inferred", and validates with `WeeklyWorkReportSchema`
 7. `report_generated` → `agent_run_completed`
 
+Around every LLM request the agent emits `llm_request` (size, what was included, how many email addresses were masked, which third-party items looked like instructions) and, on planning turns, `llm_response` (the tool calls chosen). The report page turns these into a data-use panel with a JSONL audit export.
+
 Only these events reach the UI. Model reasoning is never emitted.
 
 ## Tech Stack

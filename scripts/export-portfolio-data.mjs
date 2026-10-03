@@ -53,6 +53,21 @@ const EXAMPLES = [
 ];
 
 const newExecutor = () => new McpToolExecutor({ servers: ['github', 'gmail', 'calendar'].map(server), mode: 'demo', clientName: 'mawa-agent' });
+/**
+ * Fault injection for the validation demo: the scripted report plus two items a careless model might write —
+ * one citing a source id that no tool returned, one claiming "observed" with no source. The run is labelled as such.
+ */
+class FabricatingProvider extends ScriptedProvider {
+  async complete(request) {
+    const res = await super.complete(request);
+    if (!request.responseFormat) return res;
+    const report = JSON.parse(res.text);
+    const risks = report.sections.find((x) => x.id === 'potential_risks') ?? report.sections[0];
+    risks.items.unshift({ text: '이슈 #99 배포 파이프라인 장애 — 오늘 오전부터 모든 배포 실패', confidence: 'observed', priority: 'high', sources: ['github:issue:demo-user/my-ai-work-agent#99'] });
+    risks.items.push({ text: '팀 전체가 이번 주 목표를 달성했습니다', confidence: 'observed', sources: [] });
+    return { ...res, text: JSON.stringify(report) };
+  }
+}
 const executor = newExecutor();
 try {
   const wire = [];
@@ -67,7 +82,7 @@ try {
     const example = result.status === 'ok' ? { summary: result.output.summary, data: Array.isArray(result.output.data) ? result.output.data.slice(0, 2) : result.output.data } : { error: result.error };
     const rpc = wire.slice(from).filter((e) => e.type === 'mcp_message').map(({ direction, kind, method, rpcId, bytes, preview }) => ({ direction, kind, method, rpcId, bytes, preview }));
     catalog.servers[t.server] ??= { tools: [] };
-    catalog.servers[t.server].tools.push({ name: t.name, description: t.description, inputSchema: t.inputSchema, sampleInput: SAMPLE_INPUT[key] ?? {}, outputExample: example, wire: rpc, durationMs: result.durationMs });
+    catalog.servers[t.server].tools.push({ name: t.name, description: t.description, inputSchema: t.inputSchema, annotations: t.annotations, sampleInput: SAMPLE_INPUT[key] ?? {}, outputExample: example, wire: rpc, durationMs: result.durationMs });
   }
   offWire();
   await writeFile(new URL('packages/shared/demo/mcp-catalog.json', root), JSON.stringify(catalog, null, 2));
@@ -81,6 +96,14 @@ try {
     if (run.error) throw new Error(`${ex.id}: ${run.error}`);
     runs.push({ id: ex.id, prompt: ex.prompt, llm: { provider: 'scripted', model: 'scripted-heuristics-v1' }, events: run.events, report: run.report, warnings: run.warnings });
     console.log(`run ${ex.id}: ${run.events.length} events, ${run.report.sources.length} sources, ${run.report.sections.length} sections`);
+  }
+  {
+    const prompt = '최근 프로젝트에서 막히고 있는 부분을 찾아줘.';
+    const runExecutor = newExecutor();
+    const run = await runAgent({ prompt, mode: 'demo', llm: new FabricatingProvider(EXAMPLES[2].plan), executor: runExecutor }).finally(() => runExecutor.close());
+    if (run.error) throw new Error(`validation-demo: ${run.error}`);
+    runs.push({ id: 'validation-demo', kind: 'validation', prompt, note: '출처 검증 시연: 리포트 단계에 존재하지 않는 출처를 인용한 항목 1건과 출처 없는 "확인됨" 항목 1건을 일부러 주입한 기록입니다.', llm: { provider: 'scripted', model: 'scripted-heuristics-v1 + fault injection' }, events: run.events, report: run.report, warnings: run.warnings });
+    console.log(`run validation-demo: dropped ${run.events.find((e) => e.type === 'report_generated')?.droppedItems}`);
   }
   const out = { recordedAt: new Date().toISOString(), note: 'Recorded demo runs (DEMO MODE, scripted provider, real MCP servers over stdio, synthetic fixtures). Replayed by apps/web in demo mode and by the portfolio. Not live, not real data.', runs };
   await writeFile(new URL('packages/shared/demo/demo-runs.json', root), JSON.stringify(out, null, 2));

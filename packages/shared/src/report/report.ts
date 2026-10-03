@@ -24,6 +24,8 @@ export const ReportItemSchema = z
     /** Ids of `Source`s in `WeeklyWorkReport.sources`. Validated for existence. */
     sources: z.array(z.string().min(1)).default([]),
     priority: PrioritySchema.optional(),
+    /** Why this priority / judgement, in one short line (e.g. "bug 라벨 · 데모 D-8 전 마감"). */
+    reason: z.string().max(200).optional(),
   })
   .refine((item) => item.confidence !== 'observed' || item.sources.length > 0, {
     message: 'An "observed" report item must cite at least one source.',

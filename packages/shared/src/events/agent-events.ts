@@ -55,6 +55,36 @@ export const McpMessageSchema = EventBaseSchema.extend({
   preview: z.string(),
 });
 
+/**
+ * What was sent to the LLM on one request: size and categories, never the content itself.
+ * `maskedEmails` counts addresses masked before sending; `flagged` lists third-party
+ * items whose text looked like instructions to the model (treated as data, shown to the user).
+ */
+export const LlmRequestSchema = EventBaseSchema.extend({
+  type: z.literal('llm_request'),
+  phase: z.enum(['plan', 'analysis']),
+  provider: z.string(),
+  model: z.string(),
+  bytes: z.number().int().nonnegative(),
+  /** What the payload consists of, e.g. ["사용자 질문", "도구 정의 10개", "도구 결과 4건"]. */
+  contents: z.array(z.string()),
+  /** Item fields included on the analysis turn. */
+  fields: z.array(z.string()).default([]),
+  maskedEmails: z.number().int().nonnegative(),
+  flagged: z.array(z.object({ sourceId: z.string(), reason: z.string() })).default([]),
+});
+
+/** The model's answer on a planning turn: which tools it chose, with what arguments. Text is capped; no hidden reasoning. */
+export const LlmResponseSchema = EventBaseSchema.extend({
+  type: z.literal('llm_response'),
+  phase: z.literal('plan'),
+  provider: z.string(),
+  model: z.string(),
+  stopReason: z.string(),
+  text: z.string(),
+  toolCalls: z.array(z.object({ name: z.string(), input: z.record(z.string(), z.unknown()) })),
+});
+
 export const ToolDiscoveredSchema = EventBaseSchema.extend({
   type: z.literal('tool_discovered'),
   tools: z.array(ToolDefinitionSchema),
@@ -103,6 +133,8 @@ export const AgentEventSchema = z.discriminatedUnion('type', [
   ToolDiscoveryStartedSchema,
   McpServerConnectedSchema,
   McpMessageSchema,
+  LlmRequestSchema,
+  LlmResponseSchema,
   ToolDiscoveredSchema,
   ToolCallStartedSchema,
   ToolCallCompletedSchema,
@@ -116,6 +148,8 @@ export type AgentRunStarted = z.infer<typeof AgentRunStartedSchema>;
 export type ToolDiscoveryStarted = z.infer<typeof ToolDiscoveryStartedSchema>;
 export type McpServerConnected = z.infer<typeof McpServerConnectedSchema>;
 export type McpMessage = z.infer<typeof McpMessageSchema>;
+export type LlmRequest = z.infer<typeof LlmRequestSchema>;
+export type LlmResponse = z.infer<typeof LlmResponseSchema>;
 export type ToolDiscovered = z.infer<typeof ToolDiscoveredSchema>;
 export type ToolCallStarted = z.infer<typeof ToolCallStartedSchema>;
 export type ToolCallCompleted = z.infer<typeof ToolCallCompletedSchema>;

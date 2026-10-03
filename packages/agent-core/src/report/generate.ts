@@ -1,7 +1,7 @@
 import { REPORT_SECTION_ORDER, REPORT_SECTION_TITLES, WeeklyWorkReportSchema, type AgentMode, type ReportSectionId, type WeeklyWorkReport } from '@mawa/shared';
 import type { AggregatedContext } from '../context/aggregate.js';
 import type { LLMProvider } from '../llm/types.js';
-import { AGENT_SYSTEM_PROMPT, LLMReportSchema, buildAnalysisPrompt, llmReportJsonSchema } from './prompt.js';
+import { AGENT_SYSTEM_PROMPT, LLMReportSchema, analysisPrompt, llmReportJsonSchema, type AnalysisPrompt } from './prompt.js';
 
 export interface GenerateReportResult {
   report: WeeklyWorkReport;
@@ -18,11 +18,13 @@ export interface GenerateReportResult {
 export async function generateReport(
   llm: LLMProvider,
   context: AggregatedContext,
-  input: { runId: string; mode: AgentMode; prompt: string; generatedAt?: string },
+  input: { runId: string; mode: AgentMode; prompt: string; generatedAt?: string; onPrompt?: (p: AnalysisPrompt & { bytes: number }) => void },
 ): Promise<GenerateReportResult> {
+  const prompt = analysisPrompt(context, input.prompt);
+  input.onPrompt?.({ ...prompt, bytes: Buffer.byteLength(AGENT_SYSTEM_PROMPT) + Buffer.byteLength(prompt.text) });
   const response = await llm.complete({
     system: AGENT_SYSTEM_PROMPT,
-    messages: [{ role: 'user', content: buildAnalysisPrompt(context, input.prompt) }],
+    messages: [{ role: 'user', content: prompt.text }],
     responseFormat: { name: 'weekly_work_report', schema: llmReportJsonSchema() },
   });
   if (response.stopReason === 'refusal') throw new Error('The model declined to produce a report.');
@@ -49,9 +51,9 @@ export async function generateReport(
         if (item.confidence === 'observed' && item.sources.length === 0) {
           // Downgrade rather than drop: the statement may still be useful, but it is not evidence-backed.
           warnings.push(`Downgraded unsourced "observed" item to inferred: "${item.text.slice(0, 80)}"`);
-          return [{ id: `item_${++counter}`, text: item.text, confidence: 'inferred' as const, sources: [], ...(item.priority ? { priority: item.priority } : {}) }];
+          return [{ id: `item_${++counter}`, text: item.text, confidence: 'inferred' as const, sources: [], ...(item.priority ? { priority: item.priority } : {}), ...(item.reason ? { reason: item.reason.slice(0, 200) } : {}) }];
         }
-        return [{ id: `item_${++counter}`, text: item.text, confidence: item.confidence, sources: item.sources, ...(item.priority ? { priority: item.priority } : {}) }];
+        return [{ id: `item_${++counter}`, text: item.text, confidence: item.confidence, sources: item.sources, ...(item.priority ? { priority: item.priority } : {}), ...(item.reason ? { reason: item.reason.slice(0, 200) } : {}) }];
       });
       const id = section.id as ReportSectionId;
       return { id, title: REPORT_SECTION_TITLES[id], items };
