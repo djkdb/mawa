@@ -4,6 +4,8 @@
 >
 > GitHub·Gmail·캘린더·eCampus를 MCP로 읽어 이번 주 할 일과 마감을 출처와 함께 정리하고, **AI에 무엇을 보냈고 무엇을 막았는지**를 서명된 기록으로 남깁니다.
 
+**▶ 바로 보기: [mawa-epm.pages.dev](https://mawa-epm.pages.dev/)** — 설치 없이 브라우저에서 열리는 데모(가상의 샘플 데이터). 학생 · 직장인 · 관리자 화면을 위쪽에서 전환합니다. 내 계정으로 돌리는 방법은 [docs/REAL_RUN.md](docs/REAL_RUN.md).
+
 **The story in three steps**
 
 1. **A student's problem.** My week is scattered across GitHub, Gmail, Calendar and eCampus — and my mail also holds my 주민등록번호, my bank account, my friends' numbers. An agent that reads all of it for me must not hand all of it to a model.
