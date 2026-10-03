@@ -83,6 +83,7 @@ const AREAS: Array<[string, RegExp]> = [
 ];
 const areaOf = (text: string) => AREAS.find(([, re]) => re.test(text))?.[0] ?? null;
 const DEADLINE = /마감|제출|시험|퀴즈|중간고사|기말|발표|코딩테스트|면접|due|deadline|exam|quiz|interview/i;
+const SUBMISSION_KO: Record<string, string> = { draft: '임시저장만 됨 (미제출)', new: '미제출', submitted: '제출 완료' };
 
 export function intentOf(request?: string): ScriptedIntent {
   const r = request ?? '';
@@ -103,6 +104,7 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
   const intent = intentOf(ctx.request);
   const by = (kind: string) => ctx.items.filter((i) => (i.kind ?? i.sourceId.split(':')[1]) === kind);
   const commits = by('commit'), prs = by('pr'), issues = by('issue'), repos = by('repo'), emails = by('msg'), events = by('event');
+  const lmsDue = by('due'), lmsAssign = by('assign');
   const f = (i: Item, k: string) => i.fields?.[k];
   const str = (i: Item, k: string) => String(f(i, k) ?? '');
   const labelsOf = (i: Item) => (Array.isArray(f(i, 'labels')) ? (f(i, 'labels') as unknown[]).map(String) : []);
@@ -131,7 +133,7 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
   // ---- deadlines: dated events, and dates that mails give with 까지/마감 -----------
   const sortedEvents = [...events].sort((a, b) => startOf(a).localeCompare(startOf(b)));
   const upcoming = sortedEvents.filter((e) => new Date(startOf(e)).getTime() >= now);
-  interface Deadline { at: string; title: string; area: string | null; event?: Item; mail?: Item }
+  interface Deadline { at: string; title: string; area: string | null; event?: Item; mail?: Item; lms?: Item; submission?: string }
   const deadlines: Deadline[] = upcoming.filter((e) => DEADLINE.test(e.title ?? '')).map((e) => ({ at: startOf(e), title: e.title ?? '', area: areaOf(`${e.title ?? ''} ${e.summary}`), event: e }));
   for (const m of workMail) {
     const said = statedWhen(mailText(m));
@@ -141,6 +143,17 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
     const same = deadlines.find((x) => x.event && overlap(subject(m), x.title) >= 2);
     if (same) { same.mail = m; continue; }
     deadlines.push({ at, title: subject(m).replace(/^\[[^\]]+\]\s*/, '').replace(/\s*\([^)]*마감\)\s*$/, '').replace(/^\d{4}-\d\s*/, '').replace(/\s*안내$/, ''), area: areaOf(`${mailText(m)} ${str(m, 'from')}`), mail: m });
+  }
+  // LMS (eCampus) deadlines: merge with the same calendar/mail deadline, else add; carry my submission status.
+  for (const u of lmsDue) {
+    const at = str(u, 'due');
+    if (!at || new Date(at).getTime() < now) continue;
+    const title = u.title ?? '';
+    const same = deadlines.find((x) => kstDay(new Date(x.at).getTime()) === kstDay(new Date(at).getTime()) && (overlap(title, x.title) >= 2 || (x.mail !== undefined && overlap(title, subject(x.mail)) >= 2)));
+    const sub = lmsAssign.find((a) => (a.title ?? '') === title);
+    const submission = sub ? str(sub, 'submission') : undefined;
+    if (same) { same.lms = u; if (submission) same.submission = submission; continue; }
+    deadlines.push({ at, title, area: areaOf(title) ?? '수업', lms: u, ...(submission ? { submission } : {}) });
   }
   deadlines.sort((a, b) => a.at.localeCompare(b.at));
   for (const dl of deadlines) if (!dl.mail) { const m = workMail.find((x) => overlap(subject(x), dl.title) >= 2); if (m) dl.mail = m; }
@@ -244,16 +257,18 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
 
   // A deadline line, and the open work it depends on.
   const conflictIds = new Set(conflicts.map((c) => c.ev.sourceId));
-  const dueWork = (dl: Deadline) => topics.filter((t) => t.kind === 'issue' && ((dl.event && (t.deadline === dl.event || t.events.includes(dl.event))) || overlap(t.item.title ?? '', dl.title) >= 1));
+  const dueWork = (dl: Deadline) => topics.filter((t) => t.kind === 'issue' && ((dl.event && (t.deadline === dl.event || t.events.includes(dl.event))) || overlap(t.item.title ?? '', dl.title) >= 2));
   const deadlineLine = (dl: Deadline): Out => {
     const n = dday(dl.at, now);
     const open = dueWork(dl);
-    const srcs = [dl.event?.sourceId, dl.mail?.sourceId, ...open.map((t) => t.item.sourceId)].filter((x): x is string => Boolean(x));
+    const srcs = [dl.event?.sourceId, dl.lms?.sourceId, dl.mail?.sourceId, ...open.map((t) => t.item.sourceId)].filter((x): x is string => Boolean(x));
+    const sub = SUBMISSION_KO[dl.submission ?? ''];
+    const origin = dl.event ? '캘린더 일정' : dl.lms ? 'eCampus 마감' : `${person(f(dl.mail!, 'from'))} 메일에 적힌 날짜`;
     return {
-      text: `${ddayKo(n)} · ${dt(dl.at)} · ${dl.title}${open.length ? ` · 남은 일: ${open.map((t) => `#${t.num}`).join(', ')}` : ''}${dl.event && conflictIds.has(dl.event.sourceId) ? ' · 날짜 확인 필요' : ''}`,
-      confidence: dl.event ? 'observed' : 'inferred',
-      priority: n <= 2 ? 'high' : n <= 7 ? 'medium' : 'low',
-      reason: [dl.area, dl.event ? '캘린더 일정' : `${person(f(dl.mail!, 'from'))} 메일에 적힌 날짜`, dl.mail && dl.event ? `${person(f(dl.mail, 'from'))} 메일과 일치` : ''].filter(Boolean).join(' · '),
+      text: `${ddayKo(n)} · ${dt(dl.at)} · ${dl.title}${sub ? ` · ${sub}` : ''}${open.length ? ` · 남은 일: ${open.map((t) => `#${t.num}`).join(', ')}` : ''}${dl.event && conflictIds.has(dl.event.sourceId) ? ' · 날짜 확인 필요' : ''}`,
+      confidence: dl.event || dl.lms ? 'observed' : 'inferred',
+      priority: n <= 2 || (dl.submission === 'draft' && n <= 3) ? 'high' : n <= 7 ? 'medium' : 'low',
+      reason: [dl.area, origin, dl.lms && dl.event ? 'eCampus와 일치' : '', dl.lms && !dl.event && !dl.mail ? '캘린더·메일에는 없음' : '', dl.mail && (dl.event || dl.lms) ? `${person(f(dl.mail, 'from'))} 메일과 일치` : ''].filter(Boolean).join(' · '),
       sources: srcs,
     };
   };
@@ -261,8 +276,8 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
     const n = dday(dl.at, now);
     if (n > 7) return null;
     const open = dueWork(dl);
-    const how = /코딩테스트/.test(dl.title) ? '그래프·최단경로 유형 복습, 응시 링크 메일 확인' : /퀴즈|시험/.test(dl.title) ? (str(dl.mail ?? dl.event!, 'snippet').match(/범위[:：]\s*([^.]+)/)?.[1] ? `범위 복습: ${str(dl.mail ?? dl.event!, 'snippet').match(/범위[:：]\s*([^.]+)/)![1]}` : '범위 복습') : open.length ? `${open.map((t) => `#${t.num} ${t.item.title ?? ''}`).join(', ')} 끝내기` : /장학금|신청/.test(dl.title) ? '포털에서 신청' : '준비';
-    return { text: `나 · ${dl.title} 준비 — ${how} (${ddayKo(n)}, ${dw(dl.at)})`, confidence: 'inferred', priority: n <= 2 ? 'high' : 'medium', reason: `${dl.area ?? '마감'} · ${ddayKo(n)}`, sources: [dl.event?.sourceId, dl.mail?.sourceId, ...open.map((t) => t.item.sourceId)].filter((x): x is string => Boolean(x)) };
+    const how = dl.submission === 'draft' ? 'eCampus에 최종 제출하기 (지금은 임시저장 상태)' : /코딩테스트/.test(dl.title) ? '그래프·최단경로 유형 복습, 응시 링크 메일 확인' : /퀴즈|시험/.test(dl.title) ? (str(dl.mail ?? dl.event!, 'snippet').match(/범위[:：]\s*([^.]+)/)?.[1] ? `범위 복습: ${str(dl.mail ?? dl.event!, 'snippet').match(/범위[:：]\s*([^.]+)/)![1]}` : '범위 복습') : open.length ? `${open.map((t) => `#${t.num} ${t.item.title ?? ''}`).join(', ')} 끝내기` : /장학금|신청/.test(dl.title) ? '포털에서 신청' : '준비';
+    return { text: `나 · ${dl.title} 준비 — ${how} (${ddayKo(n)}, ${dw(dl.at)})`, confidence: 'inferred', priority: n <= 2 ? 'high' : 'medium', reason: `${dl.area ?? '마감'} · ${ddayKo(n)}${dl.submission ? ` · eCampus ${SUBMISSION_KO[dl.submission] ?? dl.submission}` : ''}`, sources: [dl.event?.sourceId, dl.lms?.sourceId, dl.mail?.sourceId, ...open.map((t) => t.item.sourceId)].filter((x): x is string => Boolean(x)) };
   };
 
   const nonLow = topics.filter((t) => score(t).priority !== 'low');
@@ -282,8 +297,11 @@ export function buildScriptedReport(ctx: ScriptedContext, now = Date.now()): LLM
     const soon = deadlines.filter((dl) => dday(dl.at, now) <= 7);
     sections.push({ id: 'overview', items: deadlines.length ? [{ text: `앞으로 2주 마감 ${deadlines.length}건, 그중 7일 안에 ${soon.length}건입니다. 가장 급한 것: ${deadlines[0]!.title} (${ddayKo(dday(deadlines[0]!.at, now))}).`, confidence: 'inferred', sources: deadlines.flatMap((dl) => [dl.event?.sourceId, dl.mail?.sourceId]).filter((x): x is string => Boolean(x)).slice(0, 12) }] : [{ text: '다가오는 마감을 찾지 못했습니다.', confidence: 'inferred', sources: [] }] });
     sections.push({ id: 'schedule', items: deadlines.map(deadlineLine) });
-    sections.push({ id: 'next_actions', items: byPriority(preps) });
-    sections.push({ id: 'potential_risks', items: byPriority([...conflicts.map(conflictRisk), ...topics.filter((t) => t.kind === 'issue' && deadlines.some((dl) => dday(dl.at, now) <= 3 && dueWork(dl).includes(t))).map((t) => ({ ...topicRisk(t), priority: 'high' as const, reason: `${score(t).reason} · 마감 3일 안인데 아직 열림` }))]) });
+    const notInCalendar = deadlines.filter((dl) => dl.lms && !dl.event);
+    const calendarAdd: Out[] = notInCalendar.length ? [{ text: `나 · 캘린더에 없는 eCampus 마감 ${notInCalendar.length}건 캘린더에 추가: ${notInCalendar.map((dl) => `${dl.title} (${d(dl.at)})`).join(', ')}`, confidence: 'inferred', priority: 'medium', reason: 'eCampus에만 있는 마감', sources: notInCalendar.map((dl) => dl.lms!.sourceId) }] : [];
+    const unsubmitted: Out[] = deadlines.filter((dl) => dl.lms && (dl.submission === 'draft' || dl.submission === 'new') && dday(dl.at, now) <= 3).map((dl) => ({ text: `${dl.title} — ${SUBMISSION_KO[dl.submission!]} · ${ddayKo(dday(dl.at, now))}`, confidence: 'observed', priority: 'high', reason: `${dl.area ?? '수업'} · eCampus 제출 상태`, sources: [dl.lms!.sourceId, ...lmsAssign.filter((a) => a.title === dl.lms!.title).map((a) => a.sourceId)] }));
+    sections.push({ id: 'next_actions', items: byPriority([...preps, ...calendarAdd]) });
+    sections.push({ id: 'potential_risks', items: byPriority([...unsubmitted, ...conflicts.map(conflictRisk), ...topics.filter((t) => t.kind === 'issue' && deadlines.some((dl) => dday(dl.at, now) <= 3 && dueWork(dl).includes(t))).map((t) => ({ ...topicRisk(t), priority: 'high' as const, reason: `${score(t).reason} · 마감 3일 안인데 아직 열림` }))]) });
     return { sections: sections.filter((s) => s.items.length > 0) };
   }
 

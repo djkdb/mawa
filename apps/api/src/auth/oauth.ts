@@ -1,5 +1,6 @@
 import { randomBytes } from 'node:crypto';
 import { google } from 'googleapis';
+import { moodleToken } from '@mawa/mcp-lms';
 import type { AppConfig } from '../config.js';
 import type { OAuthProviderId, StoredToken, TokenStore } from './token-store.js';
 
@@ -27,6 +28,7 @@ export class OAuthService {
   constructor(private readonly config: AppConfig, private readonly store: TokenStore) {}
 
   isConfigured(provider: OAuthProviderId): boolean {
+    if (provider === 'lms') return true; // no client registration: the user's own LMS login mints a token
     const c = provider === 'github' ? this.config.github : this.config.google;
     return Boolean(c.clientId && c.clientSecret);
   }
@@ -140,6 +142,15 @@ export class OAuthService {
   }
 
   /**
+   * CBNU eCampus (Moodle): exchange the user's LMS id/password for a mobile web-service token, the
+   * same call the official app makes. The password is used for this one request and never stored.
+   */
+  async connectLms(username: string, password: string, fetchImpl: typeof fetch = fetch): Promise<void> {
+    const token = await moodleToken(this.config.lms.baseUrl, username, password, fetchImpl);
+    await this.store.set({ provider: 'lms', accessToken: token, account: username, connectedAt: new Date().toISOString() });
+  }
+
+  /**
    * Revokes the grant at the provider (best effort), then deletes the local token.
    * `revoked` tells the UI whether the provider confirmed it.
    */
@@ -152,7 +163,7 @@ export class OAuthService {
           const token = stored.refreshToken ?? stored.accessToken;
           const res = await fetchImpl('https://oauth2.googleapis.com/revoke', { method: 'POST', headers: { 'content-type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams({ token }) });
           revoked = res.ok;
-        } else if (this.config.github.clientId && this.config.github.clientSecret) {
+        } else if (provider === 'github' && this.config.github.clientId && this.config.github.clientSecret) {
           const basic = Buffer.from(`${this.config.github.clientId}:${this.config.github.clientSecret}`).toString('base64');
           const res = await fetchImpl(`https://api.github.com/applications/${this.config.github.clientId}/grant`, {
             method: 'DELETE',

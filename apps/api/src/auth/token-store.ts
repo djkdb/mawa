@@ -2,7 +2,7 @@ import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 
-export type OAuthProviderId = 'github' | 'google';
+export type OAuthProviderId = 'github' | 'google' | 'lms';
 
 export interface StoredToken {
   provider: OAuthProviderId;

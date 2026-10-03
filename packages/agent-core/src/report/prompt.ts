@@ -7,7 +7,7 @@ export const CONTEXT_BLOCK_START = '<aggregated_context>';
 export const CONTEXT_BLOCK_END = '</aggregated_context>';
 
 export const AGENT_SYSTEM_PROMPT = `You are My AI Work Agent, a personal work agent.
-You answer questions about the user's work by calling tools exposed by MCP servers (GitHub, Gmail, Google Calendar).
+You answer questions about the user's work and studies by calling tools exposed by MCP servers (GitHub, Gmail, Google Calendar, and the university LMS).
 Rules:
 - First decide which tools you need, then call them. Prefer calling several tools in one turn.
 - Call each tool at most once unless you need a different argument set. Do not call gmail get_email unless a specific message id matters.
@@ -79,7 +79,7 @@ ${CONTEXT_BLOCK_END}`;
   return { text, maskedEmails: masked.count, fields };
 }
 
-const FIELD_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'assignees', 'createdAt', 'updatedAt', 'from', 'snippet', 'start', 'end', 'location', 'reviewComments', 'commitsInPeriod', 'openIssues', 'mergedAt', 'allDay'] as const;
+const FIELD_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'assignees', 'createdAt', 'updatedAt', 'from', 'snippet', 'start', 'end', 'location', 'reviewComments', 'commitsInPeriod', 'openIssues', 'mergedAt', 'allDay', 'course', 'module', 'due', 'action', 'submission'] as const;
 /** A small, stable subset of each item's raw fields; enough to write concrete sentences without dumping payloads. */
 export function pickFields(raw: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {};

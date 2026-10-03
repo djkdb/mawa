@@ -33,7 +33,7 @@ export class RunManager {
 
   /** Which servers would run in each mode, and why some are unavailable. */
   async availableServers(mode: AgentMode): Promise<{ servers: McpServerSpec[]; skipped: Array<{ id: McpServerId; reason: string }> }> {
-    const all: McpServerId[] = ['github', 'gmail', 'calendar'];
+    const all: McpServerId[] = ['github', 'gmail', 'calendar', 'lms'];
     if (mode === 'demo') return { servers: all.map((id) => ({ id, command: process.execPath, args: [SERVER_ENTRY(id)] })), skipped: [] };
 
     const servers: McpServerSpec[] = [];
@@ -57,6 +57,9 @@ export class RunManager {
         skipped.push({ id, reason: this.oauth.status('google') === 'not_configured' ? 'Google OAuth not configured' : 'Google not connected' });
       }
     }
+    const lms = this.oauth.status('lms') === 'connected' ? this.oauth.token('lms') : null;
+    if (lms) servers.push({ id: 'lms', command: process.execPath, args: [SERVER_ENTRY('lms')], env: { LMS_TOKEN: lms.accessToken, LMS_BASE_URL: this.config.lms.baseUrl } });
+    else skipped.push({ id: 'lms', reason: 'eCampus not connected' });
     return { servers, skipped };
   }
 

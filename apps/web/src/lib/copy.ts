@@ -43,15 +43,15 @@ export function periodKo(p: { start: string; end: string }): string {
   return `${day(p.start)} – ${day(new Date(new Date(p.end).getTime() - 1).toISOString())}`;
 }
 
-export const SERVER_NAME: Record<McpServerId, string> = { github: 'GitHub', gmail: 'Gmail', calendar: 'Google Calendar' };
+export const SERVER_NAME: Record<McpServerId, string> = { github: 'GitHub', gmail: 'Gmail', calendar: 'Google Calendar', lms: 'eCampus' };
 export const SOURCE_TYPE_NAME: Record<Source['type'], string> = SERVER_NAME;
-export const KIND_NAME: Record<string, string> = { commit: '커밋', pr: 'PR', issue: '이슈', repo: '저장소', msg: '이메일', event: '일정' };
+export const KIND_NAME: Record<string, string> = { commit: '커밋', pr: 'PR', issue: '이슈', repo: '저장소', msg: '이메일', event: '일정', due: 'eCampus 마감', assign: '과제', course: '과목' };
 
 export const EXAMPLE_META: Record<string, { title: string; hint: string; uses: McpServerId[] }> = {
-  'weekly-progress': { title: '이번 주 정리', hint: '커밋·백준·팀플 PR, 수업 메일, 일정을 한 번에', uses: ['github', 'calendar', 'gmail'] },
-  deadlines: { title: '마감 순서', hint: '과제·퀴즈·발표·신청 마감을 D-day 순으로, 남은 일까지', uses: ['calendar', 'gmail', 'github'] },
+  'weekly-progress': { title: '이번 주 정리', hint: '커밋·백준·팀플 PR, 수업 메일, 일정, eCampus 마감을 한 번에', uses: ['github', 'calendar', 'gmail', 'lms'] },
+  deadlines: { title: '마감 순서', hint: 'eCampus 과제·퀴즈와 제출 상태, 발표·신청 마감을 D-day 순으로', uses: ['lms', 'calendar', 'gmail', 'github'] },
   career: { title: '취업 준비 현황', hint: '인턴 전형 일정, 코딩테스트 대비, 포트폴리오 작업', uses: ['gmail', 'calendar', 'github'] },
-  blockers: { title: '놓친 것·막힌 것', hint: '내 차례인 리뷰, 팀원 부탁, 어긋난 일정', uses: ['github', 'gmail', 'calendar'] },
+  blockers: { title: '놓친 것·막힌 것', hint: '내 차례인 리뷰, 팀원 부탁, 어긋난 일정, 미제출 과제', uses: ['github', 'gmail', 'calendar', 'lms'] },
 };
 
 /** "Searching → Searched" style verb pairs per tool, with the result summary translated where it is a known shape. */
@@ -66,6 +66,9 @@ export const TOOL_VERB: Record<string, [running: string, done: string]> = {
   get_events: ['이번 주 일정을 가져오는 중', '이번 주 일정 확인'],
   get_upcoming_events: ['다가오는 일정을 가져오는 중', '다가오는 일정 확인'],
   search_events: ['일정을 검색하는 중', '일정 검색'],
+  get_courses: ['수강 과목을 가져오는 중', '수강 과목 확인'],
+  get_upcoming_deadlines: ['eCampus 마감을 가져오는 중', 'eCampus 마감 확인'],
+  get_assignments: ['과제 제출 상태를 확인하는 중', '과제 제출 상태 확인'],
 };
 export function toolLabel(server: McpServerId, name: string, done: boolean): string {
   const v = TOOL_VERB[name];
@@ -79,6 +82,9 @@ export function summaryKo(summary: string): string {
   const prs = n(/(\d+) pull requests/); if (prs) { const open = n(/(\d+) open/); const merged = n(/(\d+) merged/); return `PR ${prs}개${merged || open ? ` (병합 ${merged ?? 0}, 열림 ${open ?? 0})` : ''}`; }
   const issues = n(/(\d+) open issues/); if (issues) return `열린 이슈 ${issues}개`;
   const repos = n(/(\d+) active repositories/); if (repos) return `활동 중인 저장소 ${repos}개`;
+  const lmsDue = n(/(\d+) LMS deadlines/); if (lmsDue) return `eCampus 마감 ${lmsDue}건`;
+  const asg = summary.match(/(\d+) assignments due, (\d+) not submitted/); if (asg) return `과제 ${asg[1]}개 · 미제출 ${asg[2]}개`;
+  const courses = n(/(\d+) courses/); if (courses) return `수강 과목 ${courses}개`;
   const emails = n(/(\d+) (?:project-related )?emails/); if (emails) return `이메일 ${emails}건`;
   const upcoming = n(/(\d+) upcoming events/); if (upcoming) return `다가오는 일정 ${upcoming}건`;
   const events = n(/(\d+) events/); if (events) return `일정 ${events}건`;
@@ -95,8 +101,8 @@ export function dateKo(iso: string): string {
 }
 
 /** One hue per source, used for icons, chips, tiles and activity rows. */
-export const SERVER_COLOR: Record<McpServerId, string> = { github: 'var(--color-github)', gmail: 'var(--color-gmail)', calendar: 'var(--color-calendar)' };
-export const KIND_SERVER: Record<string, McpServerId> = { commit: 'github', pr: 'github', issue: 'github', repo: 'github', msg: 'gmail', event: 'calendar' };
+export const SERVER_COLOR: Record<McpServerId, string> = { github: 'var(--color-github)', gmail: 'var(--color-gmail)', calendar: 'var(--color-calendar)', lms: 'var(--color-lms)' };
+export const KIND_SERVER: Record<string, McpServerId> = { commit: 'github', pr: 'github', issue: 'github', repo: 'github', msg: 'gmail', event: 'calendar', due: 'lms', assign: 'lms', course: 'lms' };
 
 export const TOOL_DESC_KO: Record<string, string> = {
   get_recent_commits: '기간 내 커밋을 최신순으로 가져옵니다. 최근 푸시된 저장소 전체 또는 지정한 저장소 하나.',
@@ -109,6 +115,9 @@ export const TOOL_DESC_KO: Record<string, string> = {
   get_events: '기본 캘린더의 일정을 기간으로 조회합니다. 기본값은 이번 주(월–일).',
   get_upcoming_events: '지금부터 N일 동안의 다가오는 일정을 가져옵니다.',
   search_events: '제목·설명·장소를 텍스트로 검색합니다(기본 ±30일).',
+  get_courses: 'eCampus(Moodle)에서 수강 중인 과목 목록을 가져옵니다.',
+  get_upcoming_deadlines: 'eCampus에서 앞으로 N일 안에 해야 할 것(과제 제출, 퀴즈 응시)을 가까운 순으로 가져옵니다. 끝낸 것은 빠집니다.',
+  get_assignments: '마감이 다가오는 과제와 내 제출 상태(제출됨 / 임시저장 / 미제출)를 가져옵니다.',
 };
 
 /** What each OAuth scope lets the token do, in plain words. Shown before connecting. */

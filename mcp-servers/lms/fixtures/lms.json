@@ -1,0 +1,145 @@
+{
+  "_note": "SYNTHETIC DEMO DATA for a fictional semester of 이성준 (CBNU Software). Not a real eCampus account. Dates are relative via {\"$daysAgo\": n} (negative = future); $time is Asia/Seoul.",
+  "courses": [
+    {
+      "sourceId": "lms:course:1101",
+      "courseId": 1101,
+      "shortName": "OS",
+      "title": "운영체제",
+      "url": "https://lms.chungbuk.ac.kr/course/view.php?id=1101"
+    },
+    {
+      "sourceId": "lms:course:1102",
+      "courseId": 1102,
+      "shortName": "DB",
+      "title": "데이터베이스시스템",
+      "url": "https://lms.chungbuk.ac.kr/course/view.php?id=1102"
+    },
+    {
+      "sourceId": "lms:course:1103",
+      "courseId": 1103,
+      "shortName": "NET",
+      "title": "컴퓨터네트워크",
+      "url": "https://lms.chungbuk.ac.kr/course/view.php?id=1103"
+    },
+    {
+      "sourceId": "lms:course:1104",
+      "courseId": 1104,
+      "shortName": "CAP",
+      "title": "캡스톤디자인",
+      "url": "https://lms.chungbuk.ac.kr/course/view.php?id=1104"
+    }
+  ],
+  "deadlines": [
+    {
+      "sourceId": "lms:due:9001",
+      "eventId": 9001,
+      "course": "운영체제",
+      "courseId": 1101,
+      "title": "과제2: CPU 스케줄링",
+      "module": "assign",
+      "due": {
+        "$daysAgo": -2,
+        "$time": "23:59"
+      },
+      "action": "과제 제출",
+      "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=9001"
+    },
+    {
+      "sourceId": "lms:due:9002",
+      "eventId": 9002,
+      "course": "데이터베이스시스템",
+      "courseId": 1102,
+      "title": "퀴즈2: 정규화",
+      "module": "quiz",
+      "due": {
+        "$daysAgo": -5,
+        "$time": "11:00"
+      },
+      "action": "퀴즈 응시",
+      "url": "https://lms.chungbuk.ac.kr/mod/quiz/view.php?id=9002"
+    },
+    {
+      "sourceId": "lms:due:9003",
+      "eventId": 9003,
+      "course": "컴퓨터네트워크",
+      "courseId": 1103,
+      "title": "실습 보고서 3: TCP 혼잡 제어",
+      "module": "assign",
+      "due": {
+        "$daysAgo": -9,
+        "$time": "23:59"
+      },
+      "action": "과제 제출",
+      "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=9003"
+    },
+    {
+      "sourceId": "lms:due:9004",
+      "eventId": 9004,
+      "course": "캡스톤디자인",
+      "courseId": 1104,
+      "title": "중간발표 슬라이드 제출",
+      "module": "assign",
+      "due": {
+        "$daysAgo": -10,
+        "$time": "23:59"
+      },
+      "action": "과제 제출",
+      "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=9004"
+    }
+  ],
+  "assignments": [
+    {
+      "sourceId": "lms:assign:8001",
+      "assignmentId": 8001,
+      "course": "운영체제",
+      "courseId": 1101,
+      "title": "과제2: CPU 스케줄링",
+      "due": {
+        "$daysAgo": -2,
+        "$time": "23:59"
+      },
+      "submission": "draft",
+      "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8001"
+    },
+    {
+      "sourceId": "lms:assign:8003",
+      "assignmentId": 8003,
+      "course": "컴퓨터네트워크",
+      "courseId": 1103,
+      "title": "실습 보고서 3: TCP 혼잡 제어",
+      "due": {
+        "$daysAgo": -9,
+        "$time": "23:59"
+      },
+      "submission": "new",
+      "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8003"
+    },
+    {
+      "sourceId": "lms:assign:8004",
+      "assignmentId": 8004,
+      "course": "캡스톤디자인",
+      "courseId": 1104,
+      "title": "중간발표 슬라이드 제출",
+      "due": {
+        "$daysAgo": -10,
+        "$time": "23:59"
+      },
+      "submission": "new",
+      "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8004"
+    },
+    {
+      "sourceId": "lms:assign:8000",
+      "assignmentId": 8000,
+      "course": "운영체제",
+      "courseId": 1101,
+      "title": "과제1: 프로세스와 스레드",
+      "due": {
+        "$daysAgo": 12,
+        "$time": "23:59"
+      },
+      "submission": "submitted",
+      "url": "https://lms.chungbuk.ac.kr/mod/assign/view.php?id=8000"
+    }
+  ]
+}

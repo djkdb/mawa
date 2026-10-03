@@ -45,7 +45,7 @@ Built for my own week as a CBNU software student (classes, a capstone team, inte
 
 | Situation | What the agent does |
 | --- | --- |
-| "What's due?" | Orders assignments, quizzes, presentations and applications by D-day from calendar events **and** dates written in mail ("10월 9일까지"), and attaches the open work behind each (e.g. *OS HW2 due D-2 · remaining: #2 report*) |
+| "What's due?" | Orders assignments, quizzes, presentations and applications by D-day from **eCampus (CBNU's Moodle LMS)**, calendar events and dates written in mail ("10월 9일까지"), with my submission status (*임시저장만 됨*) and the open work behind each; flags LMS deadlines missing from the calendar |
 | Weekly review | Commits per repo, Baekjoon problems solved, team PRs, class and team mail, upcoming deadlines, one summary |
 | Team project | Merges a teammate's mail and the meeting that reference the same `#N` into one item; "PR #8 waits for **my** review"; unassigned issues become "decide who owns it" |
 | Internship prep | Next selection step with D-day, coding-test prep from what was solved this week, portfolio work in progress |
@@ -150,6 +150,7 @@ See [`.env.example`](.env.example). Nothing is hard-coded; `.env` is git-ignored
 | `API_PORT`, `WEB_ORIGIN`, `API_PUBLIC_URL`, `TOKEN_STORE_PATH` | server settings |
 | `API_HOST` | interface to bind; `127.0.0.1` by default (run records contain mail and calendar data) |
 | `API_ACCESS_TOKEN` | optional shared secret (≥16 chars); when set, `/api/*` and disconnect require it and the UI asks for it once |
+| `LMS_BASE_URL` | Moodle LMS for the eCampus MCP server (default `https://lms.chungbuk.ac.kr`); connect in the UI with your own LMS login |
 | `RUN_STORE_PATH` | with `SESSION_ENCRYPTION_KEY`, finished runs are kept encrypted here (last 30) so reports can be compared week to week |
 
 ## Setup

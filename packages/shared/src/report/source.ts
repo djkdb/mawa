@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /** Where a piece of context came from. One entry per integration. */
-export const SourceTypeSchema = z.enum(['github', 'gmail', 'calendar']);
+export const SourceTypeSchema = z.enum(['github', 'gmail', 'calendar', 'lms']);
 export type SourceType = z.infer<typeof SourceTypeSchema>;
 
 /**

@@ -11,6 +11,7 @@ export interface Status {
   integrations: {
     github: { status: IntegrationStatus; account: string | null; connectUrl: string; scopes?: string[] };
     google: { status: IntegrationStatus; account: string | null; connectUrl: string; services: string[]; scopes?: string[] };
+    lms?: { status: IntegrationStatus; account: string | null; connectUrl: string; baseUrl: string };
   };
   realMode: { available: boolean; servers: string[]; skipped: Array<{ id: string; reason: string }> };
 }
@@ -72,5 +73,7 @@ export interface AgentClient {
   fetchRun(runId: string): Promise<RunRecord>;
   /** Recent runs, newest first (without events). */
   listRuns(): Promise<RunSummary[]>;
-  disconnect(provider: 'github' | 'google'): Promise<void>;
+  disconnect(provider: 'github' | 'google' | 'lms'): Promise<void>;
+  /** CBNU eCampus (Moodle): exchange id/password for a token on the API server. */
+  connectLms?(username: string, password: string): Promise<void>;
 }

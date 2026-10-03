@@ -15,7 +15,7 @@ async function collect(page: Page) {
 test('dashboard explains itself, shows risks/actions/deadlines, and replays a run with a visible trace', async ({ page }) => {
   const { errors, api } = await collect(page);
   await page.goto(DEMO);
-  await expect(page.getByText('GitHub·Gmail·Google Calendar를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.')).toBeVisible();
+  await expect(page.getByText('GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.')).toBeVisible();
   await expect(page.getByRole('heading', { name: /성준님, 이번 주/ })).toBeVisible();
   await expect(page.getByRole('heading', { name: '놓치면 안 되는 것' })).toBeVisible();
   await expect(page.getByRole('heading', { name: '다가오는 일정' })).toBeVisible();
@@ -33,7 +33,7 @@ test('dashboard explains itself, shows risks/actions/deadlines, and replays a ru
 
   await page.getByRole('button', { name: '에이전트 실행' }).click();
   await expect(page.locator('#activity-heading')).toBeFocused();
-  await expect(page.getByText(/도구 \d+회 호출 \(GitHub, Gmail, Calendar\) · 출처 \d+건 · MCP 호출 합계 \d+ms/)).toBeVisible({ timeout: 30_000 });
+  await expect(page.getByText(/도구 \d+회 호출 \(GitHub, Gmail, Calendar, eCampus\) · 출처 \d+건 · MCP 호출 합계 \d+ms/)).toBeVisible({ timeout: 30_000 });
   await expect(page.getByText('도구 선택: 질문별 실행 계획(스크립트)', { exact: false })).toBeVisible();
 
   // Tool call details: inputs, result, duration; raw events.
@@ -150,7 +150,8 @@ test('MCP is visible: handshakes, per-server traffic, JSON-RPC log, and recorded
   await expect(topo).toContainText('mawa-github v0.1.0');
   await expect(topo).toContainText(/stdio · MCP \d{4}-\d{2}-\d{2}/);
   await expect(page.locator('#activity').getByText(/MCP 호출 합계/)).toBeVisible({ timeout: 30_000 });
-  await expect(topo).toContainText('핸드셰이크 3/3');
+  await expect(topo).toContainText('핸드셰이크 4/4');
+  await expect(topo).toContainText('mawa-lms v0.1.0');
   await page.locator('#activity').getByRole('button', { name: /JSON-RPC 메시지 \d+개/ }).click();
   const log = page.getByRole('list', { name: 'JSON-RPC 메시지' });
   await expect(log).toContainText('initialize');

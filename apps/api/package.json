@@ -15,7 +15,8 @@
     "@mawa/shared": "*",
     "googleapis": "^182.0.0",
     "hono": "^4.13.0",
-    "zod": "^4.0.0"
+    "zod": "^4.0.0",
+    "@mawa/mcp-lms": "*"
   },
   "devDependencies": {
     "tsx": "^4.23.0"

@@ -48,7 +48,13 @@ export class HttpClient implements AgentClient {
     return rows.map((r) => ({ runId: r.runId, mode: r.mode, prompt: r.prompt, status: r.status, createdAt: r.createdAt, toolCalls: r.toolCalls ?? 0, sources: r.sources ?? 0, servers: r.servers ?? [], recorded: false }));
   }
 
-  async disconnect(provider: 'github' | 'google'): Promise<void> {
+  async connectLms(username: string, password: string): Promise<void> {
+    const res = await api(`${this.base}/auth/lms/connect`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ username, password }) });
+    const body = (await res.json().catch(() => ({}))) as { error?: string };
+    if (!res.ok) throw new Error(body.error ?? `eCampus 연결 실패 (${res.status})`);
+  }
+
+  async disconnect(provider: 'github' | 'google' | 'lms'): Promise<void> {
     await api(`${this.base}/auth/${provider}/disconnect`, { method: 'POST' });
   }
 

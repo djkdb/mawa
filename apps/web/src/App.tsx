@@ -91,7 +91,7 @@ export default function App() {
         </div>
       )}
       {route === 'runs' && <RunsPage currentRunId={state.runId} refreshKey={state.events.length + (state.runId?.length ?? 0) + (state.phase === 'completed' ? 1 : 0)} />}
-      {route === 'connections' && <ConnectionsPage status={status} events={state.events} onDisconnect={(p) => getClient().disconnect(p).then(refresh)} />}
+      {route === 'connections' && <ConnectionsPage status={status} events={state.events} onDisconnect={(p) => getClient().disconnect(p).then(refresh)} onConnected={() => { setNotice('eCampus 연결됨'); void refresh(); }} />}
       {route === 'settings' && <SettingsPage status={status} />}
     </Shell>
   );

@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 /** Identifies which MCP server owns a tool. */
-export const McpServerIdSchema = z.enum(['github', 'gmail', 'calendar']);
+export const McpServerIdSchema = z.enum(['github', 'gmail', 'calendar', 'lms']);
 export type McpServerId = z.infer<typeof McpServerIdSchema>;
 
 /**

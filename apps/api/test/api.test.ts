@@ -92,7 +92,7 @@ describe('real mode integrity', () => {
     const status = await (await app.request('/api/status')).json();
     expect(status.integrations.github.status).toBe('connected');
     expect(status.realMode.servers).toEqual(['github']);
-    expect(status.realMode.skipped.map((s: { id: string }) => s.id)).toEqual(['gmail', 'calendar']);
+    expect(status.realMode.skipped.map((s: { id: string }) => s.id)).toEqual(['gmail', 'calendar', 'lms']);
     expect(JSON.stringify(status)).not.toContain('invalid-token-for-test');
 
     const start = await app.request('/api/agent/run', { method: 'POST', body: JSON.stringify({ prompt: 'x', mode: 'real' }), headers: { 'content-type': 'application/json' } });
@@ -172,5 +172,32 @@ describe('encrypted run history', () => {
     const b = new EncryptedRunStore(path, key);
     await b.load();
     expect((await b.get('run_1'))?.warnings).toEqual(['secret-ish minji@example.com']);
+  });
+});
+
+describe('eCampus (Moodle) connection', () => {
+  it('exchanges id/password for a token once, stores only the token, and exposes the status', async () => {
+    const { OAuthService } = await import('../src/auth/oauth.js');
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-lms-'));
+    const config = loadConfig({ TOKEN_STORE_PATH: join(dir, 't.json') });
+    const store = new TokenStore(config.tokenStorePath);
+    const oauth = new OAuthService(config, store);
+    expect(oauth.status('lms')).toBe('disconnected');
+    const seen: string[] = [];
+    const fake = (async (url: string, init?: RequestInit) => { seen.push(`${url} ${String(init?.body)}`); return new Response(JSON.stringify({ token: 'moodle-token' })); }) as unknown as typeof fetch;
+    await oauth.connectLms('2021000000', 'pw-secret', fake);
+    expect(seen[0]).toContain('https://lms.chungbuk.ac.kr/login/token.php');
+    expect(seen[0]).toContain('service=moodle_mobile_app');
+    expect(store.get('lms')).toMatchObject({ accessToken: 'moodle-token', account: '2021000000' });
+    expect(JSON.stringify(store.get('lms'))).not.toContain('pw-secret');
+    expect(oauth.status('lms')).toBe('connected');
+    expect(await oauth.disconnect('lms', fake)).toEqual({ revoked: false });
+    expect(oauth.status('lms')).toBe('disconnected');
+  });
+
+  it('refuses non-JSON connect requests (no cross-site form posts)', async () => {
+    const app = await makeApp();
+    const res = await app.request('/auth/lms/connect', { method: 'POST', body: 'username=a&password=b', headers: { 'content-type': 'application/x-www-form-urlencoded' } });
+    expect(res.status).toBe(415);
   });
 });

@@ -28,6 +28,7 @@ const EnvSchema = z.object({
   SESSION_ENCRYPTION_KEY: z.string().optional(),
   TOKEN_STORE_PATH: z.string().optional(),
   RUN_STORE_PATH: z.string().optional(),
+  LMS_BASE_URL: z.string().default('https://lms.chungbuk.ac.kr'),
 });
 
 export interface AppConfig {
@@ -40,6 +41,7 @@ export interface AppConfig {
   llm: LLMConfig;
   github: { clientId?: string; clientSecret?: string };
   google: { clientId?: string; clientSecret?: string };
+  lms: { baseUrl: string };
   encryptionKey?: string;
   tokenStorePath: string;
   runStorePath: string;
@@ -57,6 +59,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     publicUrl: e.API_PUBLIC_URL ?? `http://localhost:${e.API_PORT}`,
     llm: llmConfigFromEnv(env),
     github: { ...(e.GITHUB_CLIENT_ID ? { clientId: e.GITHUB_CLIENT_ID } : {}), ...(e.GITHUB_CLIENT_SECRET ? { clientSecret: e.GITHUB_CLIENT_SECRET } : {}) },
+    lms: { baseUrl: e.LMS_BASE_URL },
     google: { ...(e.GOOGLE_CLIENT_ID ? { clientId: e.GOOGLE_CLIENT_ID } : {}), ...(e.GOOGLE_CLIENT_SECRET ? { clientSecret: e.GOOGLE_CLIENT_SECRET } : {}) },
     ...(e.SESSION_ENCRYPTION_KEY ? { encryptionKey: e.SESSION_ENCRYPTION_KEY } : {}),
     tokenStorePath: e.TOKEN_STORE_PATH ?? resolve(root, '.tokens', 'tokens.enc.json'),

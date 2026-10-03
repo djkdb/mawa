@@ -253,3 +253,26 @@ The demo shows the policy its recordings ran under, read-only.
 governance story concrete: the user decides what the agent may read and send,
 and every run proves what happened.
 
+---
+
+## ADR-016 — eCampus (CBNU Moodle LMS) as a fourth MCP server
+
+**Context.** Coursework deadlines live in the university LMS, not in mail or
+the calendar. CBNU's eCampus is Moodle; its public config
+(`tool_mobile_get_public_config`) reports `enablewebservices: 1` and
+`enablemobilewebservice: 1`, i.e. the official mobile web service is on.
+
+**Decision.** `mcp-servers/lms` exposes three read-only tools
+(`get_courses`, `get_upcoming_deadlines`, `get_assignments`) over the same
+Moodle REST functions the mobile app uses, with the user's own token sent in
+the POST body. The API's `/auth/lms/connect` exchanges the user's LMS
+id/password once at `/login/token.php?service=moodle_mobile_app`; only the
+token is stored (encrypted when `SESSION_ENCRYPTION_KEY` is set). Demo mode
+serves a synthetic semester. The report merges LMS deadlines with same-day
+calendar/mail deadlines, carries submission status, and flags LMS deadlines
+missing from the calendar.
+
+**Not verified.** The real provider is tested against a fake Moodle only; it
+has not run against eCampus with a real account (no credentials in the build
+environment). Users should check the university's IT usage rules.
+

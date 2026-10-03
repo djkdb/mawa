@@ -109,7 +109,7 @@ export function ActivityTimeline({ events, phase, recorded, runId, headingRef, d
   const mcpMs = completed.reduce((n, e) => n + e.result.durationMs, 0);
   const sources = events.find((e) => e.type === 'context_aggregated');
   const summary = done
-    ? `도구 ${completed.length}회 호출 (${servers.map((s) => ({ github: 'GitHub', gmail: 'Gmail', calendar: 'Calendar' })[s]).join(', ')}) · 출처 ${sources?.type === 'context_aggregated' ? sources.totalItems : 0}건 · MCP 호출 합계 ${mcpMs}ms`
+    ? `도구 ${completed.length}회 호출 (${servers.map((s) => ({ github: 'GitHub', gmail: 'Gmail', calendar: 'Calendar', lms: 'eCampus' })[s]).join(', ')}) · 출처 ${sources?.type === 'context_aggregated' ? sources.totalItems : 0}건 · MCP 호출 합계 ${mcpMs}ms`
     : '에이전트가 도구를 고르고 MCP로 실행하는 중';
   const expanded = !done || open;
   const wireCount = events.filter((e) => e.type === 'mcp_message').length;

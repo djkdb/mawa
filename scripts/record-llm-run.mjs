@@ -21,7 +21,7 @@ const file = new URL('packages/shared/demo/demo-runs.json', root);
 const server = (id) => ({ id, command: process.execPath, args: [fileURLToPath(new URL(`mcp-servers/${id}/dist/index.js`, root))] });
 const llm = createLLMProvider(config);
 const prompt = process.argv[2] ?? '이번 주 내 개발 프로젝트 진행 상황을 정리해줘.';
-const executor = new McpToolExecutor({ servers: ['github', 'gmail', 'calendar'].map(server), mode: 'demo', clientName: 'mawa-agent' });
+const executor = new McpToolExecutor({ servers: ['github', 'gmail', 'calendar', 'lms'].map(server), mode: 'demo', clientName: 'mawa-agent' });
 const run = await runAgent({ prompt, mode: 'demo', llm, executor }).finally(() => executor.close());
 if (run.error || !run.report) { console.error(`run failed: ${run.error}`); process.exit(1); }
 const out = JSON.parse(await readFile(file, 'utf8'));

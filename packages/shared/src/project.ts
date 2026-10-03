@@ -13,7 +13,7 @@ export const PROJECT = {
     instagram: { handle: '@zun_it_', url: 'https://www.instagram.com/zun_it_/' },
     github: 'https://github.com/djkdb/mawa',
   },
-  integrations: ['github', 'gmail', 'calendar'] as const,
+  integrations: ['github', 'gmail', 'calendar', 'lms'] as const,
   pipeline: [
     'USER',
     'AI AGENT',

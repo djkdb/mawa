@@ -16,7 +16,7 @@ export function reportTitle(prompt: string | null): string {
 export function StatStrip({ report }: { report: WeeklyWorkReport }) {
   const counts = new Map<string, number>();
   for (const s of report.sources) { const k = String(s.metadata['kind'] ?? ''); counts.set(k, (counts.get(k) ?? 0) + 1); }
-  const stats = ['commit', 'pr', 'issue', 'event', 'msg'].filter((k) => counts.has(k));
+  const stats = ['commit', 'pr', 'issue', 'event', 'due', 'msg'].filter((k) => counts.has(k));
   if (!stats.length) return null;
   return (
     <dl className="grid gap-px overflow-hidden rounded-lg bg-line" style={{ gridTemplateColumns: `repeat(${stats.length}, minmax(0, 1fr))` }}>

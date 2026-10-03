@@ -8,7 +8,7 @@ import { getPolicy, setPolicy } from '../lib/http-client.js';
 import { SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 
 type Catalog = { servers: Record<string, { tools: Array<{ name: string }> }> };
-const SERVERS: McpServerId[] = ['github', 'gmail', 'calendar'];
+const SERVERS: McpServerId[] = ['github', 'gmail', 'calendar', 'lms'];
 const ALL_TOOLS = SERVERS.flatMap((s) => ((catalog as unknown as Catalog).servers[s]?.tools ?? []).map((t) => `${s}__${t.name}`));
 
 /**

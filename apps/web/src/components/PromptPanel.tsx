@@ -1,10 +1,10 @@
 import { useRef, useState } from 'react';
-import { ArrowRight, CalendarDays, GitBranch, Mail } from 'lucide-react';
+import { ArrowRight, CalendarDays, GraduationCap, GitBranch, Mail } from 'lucide-react';
 import type { AgentMode, McpServerId } from '@mawa/shared';
 import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
 import { EXAMPLE_META, SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 
-const ICON: Record<McpServerId, React.ReactNode> = { github: <GitBranch className="h-3.5 w-3.5" aria-hidden />, gmail: <Mail className="h-3.5 w-3.5" aria-hidden />, calendar: <CalendarDays className="h-3.5 w-3.5" aria-hidden /> };
+const ICON: Record<McpServerId, React.ReactNode> = { github: <GitBranch className="h-3.5 w-3.5" aria-hidden />, gmail: <Mail className="h-3.5 w-3.5" aria-hidden />, calendar: <CalendarDays className="h-3.5 w-3.5" aria-hidden />, lms: <GraduationCap className="h-3.5 w-3.5" aria-hidden /> };
 
 export function PromptPanel({ status, busy, onRun, progress = null }: { status: Status | null; busy: boolean; onRun: (prompt: string, mode: AgentMode) => void; progress?: string | null }) {
   const [selected, setSelected] = useState<string>(DEMO_EXAMPLES[0]?.id ?? '');

@@ -73,6 +73,7 @@ export function createApp(deps: AppDeps) {
     };
     app.use('/api/*', guard);
     app.use('/auth/:provider/disconnect', guard);
+    app.use('/auth/lms/connect', guard);
   }
 
   app.get('/api/health', (c) => c.json({ ok: true, name: PROJECT.name }));
@@ -88,6 +89,7 @@ export function createApp(deps: AppDeps) {
       api: { host: config.host, tokenRequired: Boolean(config.accessToken) },
       integrations: {
         github: { status: oauth.status('github'), account: oauth.account('github') ?? null, connectUrl: '/auth/github/start', scopes: githubScopesFromEnv() },
+        lms: { status: oauth.status('lms'), account: oauth.account('lms') ?? null, connectUrl: '/auth/lms/connect', baseUrl: config.lms.baseUrl },
         google: { status: oauth.status('google'), account: oauth.account('google') ?? null, connectUrl: '/auth/google/start', services: ['gmail', 'calendar'], scopes: GOOGLE_SCOPES },
       },
       realMode: { available: real.servers.length > 0, servers: real.servers.map((s) => s.id), skipped: real.skipped },
@@ -152,6 +154,7 @@ export function createApp(deps: AppDeps) {
 
   // ---- OAuth ------------------------------------------------------------
   const ProviderParam = z.enum(['github', 'google']);
+  const AnyProvider = z.enum(['github', 'google', 'lms']);
 
   app.get('/auth/:provider/start', (c) => {
     const p = ProviderParam.safeParse(c.req.param('provider'));
@@ -176,8 +179,22 @@ export function createApp(deps: AppDeps) {
     }
   });
 
+  // eCampus (Moodle): id/password → token, once. JSON only, so a cross-site form cannot post it.
+  const LmsBody = z.object({ username: z.string().trim().min(1).max(100), password: z.string().min(1).max(200) });
+  app.post('/auth/lms/connect', async (c) => {
+    if (!(c.req.header('content-type') ?? '').includes('application/json')) return c.json({ error: 'JSON body required' }, 415);
+    const body = LmsBody.safeParse(await c.req.json().catch(() => ({})));
+    if (!body.success) return c.json({ error: 'username and password are required' }, 400);
+    try {
+      await oauth.connectLms(body.data.username, body.data.password);
+      return c.json({ ok: true, account: body.data.username });
+    } catch (err) {
+      return c.json({ error: err instanceof Error ? err.message : String(err) }, 400);
+    }
+  });
+
   app.post('/auth/:provider/disconnect', async (c) => {
-    const p = ProviderParam.safeParse(c.req.param('provider'));
+    const p = AnyProvider.safeParse(c.req.param('provider'));
     if (!p.success) return c.json({ error: 'Unknown provider' }, 404);
     const { revoked } = await oauth.disconnect(p.data);
     return c.json({ ok: true, revoked });

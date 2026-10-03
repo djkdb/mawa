@@ -23,7 +23,10 @@ const SAMPLE_INPUT = {
   gmail__search_project_emails: { keywords: ['my-ai-work-agent'], limit: 2 },
   calendar__get_events: { limit: 2 },
   calendar__get_upcoming_events: { days: 7, limit: 2 },
-  calendar__search_events: { query: 'demo', limit: 2 },
+  calendar__search_events: { query: '발표', limit: 2 },
+  lms__get_courses: {},
+  lms__get_upcoming_deadlines: { days: 14, limit: 2 },
+  lms__get_assignments: { days: 14, limit: 2 },
 };
 const KEYWORDS = ['my-ai-work-agent', 'team-mate', '캡스톤', '과제', '퀴즈', '스터디', '인턴', '코딩테스트', '장학금', '발표'];
 
@@ -40,8 +43,11 @@ const EXAMPLES = [
     { name: 'gmail__search_project_emails', input: { keywords: KEYWORDS } },
     { name: 'calendar__get_events', input: {} },
     { name: 'calendar__get_upcoming_events', input: { days: 14 } },
+    { name: 'lms__get_upcoming_deadlines', input: { days: 14 } },
   ] },
   { id: 'deadlines', prompt: '앞으로 2주 과제·시험·발표 마감 순서대로 알려줘.', plan: [
+    { name: 'lms__get_upcoming_deadlines', input: { days: 14 } },
+    { name: 'lms__get_assignments', input: { days: 14 } },
     { name: 'calendar__get_upcoming_events', input: { days: 14 } },
     { name: 'gmail__search_emails', input: { query: '마감 OR 제출 OR 퀴즈 OR 시험 OR 발표 OR 신청' } },
     { name: 'github__get_open_issues', input: {} },
@@ -57,10 +63,11 @@ const EXAMPLES = [
     { name: 'github__get_pull_requests', input: { state: 'open' } },
     { name: 'gmail__search_project_emails', input: { keywords: KEYWORDS } },
     { name: 'calendar__get_upcoming_events', input: { days: 14 } },
+    { name: 'lms__get_assignments', input: { days: 14 } },
   ] },
 ];
 
-const newExecutor = () => new McpToolExecutor({ servers: ['github', 'gmail', 'calendar'].map(server), mode: 'demo', clientName: 'mawa-agent' });
+const newExecutor = () => new McpToolExecutor({ servers: ['github', 'gmail', 'calendar', 'lms'].map(server), mode: 'demo', clientName: 'mawa-agent' });
 /**
  * Fault injection for the validation demo: the scripted report plus two items a careless model might write —
  * one citing a source id that no tool returned, one claiming "observed" with no source. The run is labelled as such.

@@ -72,7 +72,7 @@ function toSource(item: ContextItem): Source {
 }
 
 /** Structured fields the UI renders (state pills, labels, sender, place). Whitelisted and size-capped. */
-const DISPLAY_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'assignees', 'createdAt', 'mergedAt', 'reviewComments', 'additions', 'deletions', 'from', 'snippet', 'start', 'end', 'allDay', 'location', 'commitsInPeriod', 'openIssues', 'openPullRequests', 'language'] as const;
+const DISPLAY_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'assignees', 'createdAt', 'mergedAt', 'reviewComments', 'additions', 'deletions', 'from', 'snippet', 'start', 'end', 'allDay', 'location', 'commitsInPeriod', 'openIssues', 'openPullRequests', 'language', 'course', 'module', 'due', 'action', 'submission'] as const;
 
 function displayFields(raw: Record<string, unknown>): Record<string, unknown> {
   const out: Record<string, unknown> = {};
@@ -95,7 +95,7 @@ function normalize(call: ToolCall, row: unknown): ContextItem | null {
   const kind = sourceId.split(':')[1] ?? 'item';
   const str = (k: string) => (typeof r[k] === 'string' ? (r[k] as string) : undefined);
   const url = str('url');
-  const timestamp = str('date') ?? str('start') ?? str('updatedAt') ?? str('lastPushedAt');
+  const timestamp = str('date') ?? str('start') ?? str('due') ?? str('updatedAt') ?? str('lastPushedAt');
 
   let title: string;
   let summary: string;
@@ -119,6 +119,18 @@ function normalize(call: ToolCall, row: unknown): ContextItem | null {
     case 'msg':
       title = str('subject') ?? '';
       summary = `Email from ${str('from')} on ${str('date')}: "${title}" — ${str('snippet') ?? ''}`;
+      break;
+    case 'due':
+      title = `${str('course') ?? ''} ${str('title') ?? ''}`.trim();
+      summary = `LMS deadline: ${title} (${str('module')}) due ${str('due')}${str('action') ? `, action: ${str('action')}` : ''}`;
+      break;
+    case 'assign':
+      title = `${str('course') ?? ''} ${str('title') ?? ''}`.trim();
+      summary = `LMS assignment: ${title} due ${str('due') ?? 'none'}, my submission: ${str('submission')}`;
+      break;
+    case 'course':
+      title = str('title') ?? '';
+      summary = `Course ${title} (${str('shortName')})`;
       break;
     case 'event':
       title = str('title') ?? '';

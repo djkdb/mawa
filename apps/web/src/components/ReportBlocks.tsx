@@ -93,16 +93,16 @@ function SentenceRow({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
 
 function OverviewBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx }) {
   const { report } = ctx;
-  const servers = ['github', 'gmail', 'calendar'] as const;
+  const servers = ['github', 'gmail', 'calendar', 'lms'] as const;
   const start = new Date(report.period.start).getTime();
   const days = Array.from({ length: 7 }, (_, i) => kstDay(new Date(start + i * 86_400_000 + 12 * 3_600_000).toISOString()));
-  const perDay = new Map(days.map((d) => [d, { github: 0, gmail: 0, calendar: 0 }]));
+  const perDay = new Map(days.map((d) => [d, { github: 0, gmail: 0, calendar: 0, lms: 0 }]));
   for (const s of report.sources) {
     if (!s.timestamp || kindOf(s) === 'repo') continue;
     const bucket = perDay.get(kstDay(s.timestamp));
     if (bucket) bucket[s.type] += 1;
   }
-  const max = Math.max(1, ...[...perDay.values()].map((b) => b.github + b.gmail + b.calendar));
+  const max = Math.max(1, ...[...perDay.values()].map((b) => b.github + b.gmail + b.calendar + b.lms));
   const present = servers.filter((sv) => [...perDay.values()].some((b) => b[sv] > 0));
   const repoCounts = new Map<string, number>();
   for (const s of report.sources) if (kindOf(s) === 'commit') { const r = repoShort(str(s, 'repo')) || '기타'; repoCounts.set(r, (repoCounts.get(r) ?? 0) + 1); }
@@ -110,7 +110,7 @@ function OverviewBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx
   const commitTotal = repos.reduce((n, [, c]) => n + c, 0);
   const shades = ['var(--color-github)', '#6b7bd6', '#4a5699', '#363f70'];
   const today = kstDay(report.generatedAt);
-  const total = (d: string) => { const b = perDay.get(d)!; return b.github + b.gmail + b.calendar; };
+  const total = (d: string) => { const b = perDay.get(d)!; return b.github + b.gmail + b.calendar + b.lms; };
 
   return (
     <>
@@ -258,11 +258,11 @@ function WorkCard({ item, ctx }: { item: ReportItem; ctx: BlockCtx }) {
 
 function ScheduleBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx }) {
   const ref = new Date(ctx.report.generatedAt).getTime();
-  const rows = section.items.map((item) => ({ item, ev: cited(item, ctx.byId).find((s) => kindOf(s) === 'event' && (str(s, 'start') ?? s.timestamp)) }));
+  const rows = section.items.map((item) => ({ item, ev: cited(item, ctx.byId).find((s) => (kindOf(s) === 'event' || kindOf(s) === 'due') && (str(s, 'start') ?? str(s, 'due') ?? s.timestamp)) }));
   const loose = rows.filter((r) => !r.ev);
   const byDay = new Map<string, typeof rows>();
-  for (const r of rows.filter((x) => x.ev).sort((a, b) => (str(a.ev, 'start') ?? a.ev!.timestamp!).localeCompare(str(b.ev, 'start') ?? b.ev!.timestamp!))) {
-    const d = kstDay(str(r.ev, 'start') ?? r.ev!.timestamp!);
+  for (const r of rows.filter((x) => x.ev).sort((a, b) => (str(a.ev, 'start') ?? str(a.ev, 'due') ?? a.ev!.timestamp!).localeCompare(str(b.ev, 'start') ?? str(b.ev, 'due') ?? b.ev!.timestamp!))) {
+    const d = kstDay(str(r.ev, 'start') ?? str(r.ev, 'due') ?? r.ev!.timestamp!);
     byDay.set(d, [...(byDay.get(d) ?? []), r]);
   }
   return (
@@ -280,20 +280,24 @@ function ScheduleBlock({ section, ctx }: { section: ReportSection; ctx: BlockCtx
               </div>
               <ul className="space-y-2 border-l-2 pl-3" style={{ borderColor: 'color-mix(in srgb, var(--color-calendar) 45%, transparent)' }}>
                 {items.map(({ item, ev }) => {
-                  const start = str(ev, 'start') ?? ev!.timestamp!;
+                  const start = str(ev, 'start') ?? str(ev, 'due') ?? ev!.timestamp!;
+                  const isLms = kindOf(ev) === 'due';
                   const end = str(ev, 'end');
                   const allDay = meta(ev, 'allDay') === true;
-                  const extra = item.text.includes(ev!.title) ? null : item.text;
+                  // Keep what the sentence adds after the title (submission status, remaining work, a date conflict).
+                  const tail = item.text.includes(ev!.title) ? item.text.slice(item.text.indexOf(ev!.title) + ev!.title.length).replace(/^\s*·\s*/, '').replace(/\s*\(.*?\)\s*$/, '').replace(/^·?\s*지남$/, '') : item.text;
+                  const extra = tail.trim() || null;
                   return (
                     <Item key={item.id} item={item} ctx={ctx} className="flex items-start gap-3 rounded-lg bg-surface-2 px-3 py-2.5">
                       <div className="min-w-0 flex-1">
                         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                          <span className="tnum inline-flex items-center gap-1 text-sm font-semibold text-calendar"><Clock className="h-3.5 w-3.5" aria-hidden />{allDay ? '종일' : `${hm(start)}${end ? `–${hm(end)}` : ''}`}</span>
+                          <span className="tnum inline-flex items-center gap-1 text-sm font-semibold" style={{ color: isLms ? 'var(--color-lms)' : 'var(--color-calendar)' }}><Clock className="h-3.5 w-3.5" aria-hidden />{allDay ? '종일' : isLms ? `${hm(start)} 마감` : `${hm(start)}${end ? `–${hm(end)}` : ''}`}</span>
                           <span className="item-text min-w-0 text-[15px] font-medium text-text">{ev!.title}</span>
                         </div>
                         {extra && <p className="mt-0.5 text-sm text-text-2">{extra}</p>}
                         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                           {str(ev, 'location') && <Tag><MapPin className="h-3 w-3" aria-hidden />{str(ev, 'location')}</Tag>}
+                          {isLms && <Tag color="var(--color-lms)">eCampus · {str(ev, 'course')}{str(ev, 'action') ? ` · ${str(ev, 'action')}` : ''}</Tag>}
                           <SourceChips sources={[ev!]} demo={ctx.demo} />
                         </div>
                       </div>

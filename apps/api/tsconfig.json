@@ -1,6 +1,24 @@
 {
   "extends": "../../tsconfig.base.json",
-  "compilerOptions": { "rootDir": "src", "outDir": "dist", "types": ["node"] },
-  "include": ["src"],
-  "references": [{ "path": "../../packages/shared" }, { "path": "../../packages/agent-core" }]
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist",
+    "types": [
+      "node"
+    ]
+  },
+  "include": [
+    "src"
+  ],
+  "references": [
+    {
+      "path": "../../packages/shared"
+    },
+    {
+      "path": "../../packages/agent-core"
+    },
+    {
+      "path": "../../mcp-servers/lms"
+    }
+  ]
 }

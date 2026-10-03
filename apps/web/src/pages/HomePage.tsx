@@ -101,7 +101,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
         <div className="flex min-w-0 flex-1 items-start gap-3">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
           <p className="text-sm leading-relaxed text-text-2">
-            <b className="font-semibold text-text">GitHub·Gmail·Google Calendar를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.</b>
+            <b className="font-semibold text-text">GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.</b>
             {IS_DEMO_BUILD && <> 지금은 <span className="text-amber-200">데모 워크스페이스</span>로, 성준님의 한 주를 가정해 만든 가상의 샘플 데이터(수업·팀플·인턴 준비)로 기록된 실행을 재생합니다. 실제 계정에는 접속하지 않습니다.</>}
           </p>
         </div>

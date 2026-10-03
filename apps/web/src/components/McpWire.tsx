@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { ArrowLeft, ArrowRight, CalendarDays, ChevronRight, Cpu, GitBranch, Mail } from 'lucide-react';
+import { ArrowLeft, ArrowRight, CalendarDays, ChevronRight, Cpu, GitBranch, GraduationCap, Mail } from 'lucide-react';
 import type { AgentEvent, McpServerId } from '@mawa/shared';
 import { SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 
 type Connected = Extract<AgentEvent, { type: 'mcp_server_connected' }>;
 type Message = Extract<AgentEvent, { type: 'mcp_message' }>;
 
-const SERVERS: McpServerId[] = ['github', 'gmail', 'calendar'];
-const ICON: Record<McpServerId, typeof Mail> = { github: GitBranch, gmail: Mail, calendar: CalendarDays };
+const SERVERS: McpServerId[] = ['github', 'gmail', 'calendar', 'lms'];
+const ICON: Record<McpServerId, typeof Mail> = { github: GitBranch, gmail: Mail, calendar: CalendarDays, lms: GraduationCap };
 
 export function kb(bytes: number): string {
   return bytes < 1024 ? `${bytes}B` : `${(bytes / 1024).toFixed(1)}KB`;
@@ -54,7 +54,7 @@ export function McpTopology({ events, live, recorded }: { events: AgentEvent[]; 
   return (
     <figure className="mt-4 rounded-lg bg-bg/60 p-3 sm:p-4" aria-label="MCP 연결 상태">
       <div className="grid gap-3 md:grid-cols-[200px_72px_minmax(0,1fr)] md:items-center md:gap-0">
-        <div className="hairline rounded-lg bg-surface-2 p-3 md:row-span-3">
+        <div className="hairline rounded-lg bg-surface-2 p-3" style={{ gridRow: `span ${used.length}` }}>
           <div className="flex items-center gap-2 text-sm font-semibold text-text"><Cpu className="h-4 w-4 text-accent" aria-hidden />에이전트</div>
           <div className="mt-1 text-xs text-text-2">MCP 클라이언트 · <span className="whitespace-nowrap font-mono">mawa-agent</span></div>
           <div className="tnum mt-2 text-xs text-text-3">핸드셰이크 {handshakes}/{used.length} · 메시지 {total}개</div>
