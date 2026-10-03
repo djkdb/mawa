@@ -1,11 +1,11 @@
 import { useState } from 'react';
-import { ChevronDown, ClipboardCopy, EyeOff, RotateCcw } from 'lucide-react';
+import { ChevronDown, ClipboardCopy, RotateCcw } from 'lucide-react';
 import type { Source, WeeklyWorkReport } from '@mawa/shared';
 import { DEMO_EXAMPLES } from '../lib/client.js';
-import { EXAMPLE_META, KIND_NAME, KIND_SERVER, PRIORITY_KO, SERVER_COLOR, SOURCE_TYPE_NAME, periodKo, sectionTitle, timeKo } from '../lib/copy.js';
+import { EXAMPLE_META, KIND_NAME, KIND_SERVER, SERVER_COLOR, SOURCE_TYPE_NAME, periodKo, sectionTitle, timeKo } from '../lib/copy.js';
 import { copyText, exportReport } from '../lib/export.js';
 import { ModeBadge } from './ModeBadge.js';
-import { SourceChips } from './SourcePopover.js';
+import { SectionBody, type BlockCtx } from './ReportBlocks.js';
 
 export function reportTitle(prompt: string | null): string {
   const ex = DEMO_EXAMPLES.find((e) => e.prompt === prompt);
@@ -49,6 +49,7 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce }: {
     setTimeout(() => setCopied(null), 2500);
   };
   const toggle = (id: string) => setHidden((h) => { const n = new Set(h); if (n.has(id)) n.delete(id); else n.add(id); return n; });
+  const ctx: BlockCtx = { report, byId, demo, hidden, toggle };
 
   return (
     <article id="report" aria-labelledby="report-heading" className="surface scroll-mt-20 p-5 sm:p-7">
@@ -78,28 +79,9 @@ export function ReportView({ report, warnings, recorded, prompt, onAnnounce }: {
       </div>
 
       {report.sections.map((section) => (
-        <section key={section.id} aria-labelledby={`sec-${section.id}`} className="mt-7">
+        <section key={section.id} aria-labelledby={`sec-${section.id}`} className="mt-8">
           <h3 id={`sec-${section.id}`} className="text-base font-semibold">{sectionTitle(section.id, prompt)}</h3>
-          <ul className="mt-2 divide-y divide-line/70">
-            {section.items.map((item) => {
-              const cited = item.sources.map((id) => byId.get(id)).filter((s): s is Source => Boolean(s));
-              const ok = item.confidence === 'observed';
-              const isHidden = hidden.has(item.id);
-              return (
-                <li key={item.id} className={`group flex items-start gap-3 py-2.5 ${isHidden ? 'opacity-40' : ''}`}>
-                  <span className={`mt-[9px] h-2 w-2 shrink-0 rounded-sm ${ok ? 'bg-ok' : 'bg-inferred'}`} role="img" aria-label={ok ? '확인됨' : '추론'} />
-                  <p className={`min-w-0 flex-1 text-[15px] leading-relaxed text-text ${isHidden ? 'line-through' : ''}`}>
-                    {item.priority && <span className={`pri pri-${item.priority} mr-2 align-[1px]`}>{PRIORITY_KO[item.priority]}</span>}
-                    {item.text}{' '}
-                    {cited.length > 0 && <SourceChips sources={cited} demo={demo} />}
-                  </p>
-                  <button type="button" onClick={() => toggle(item.id)} aria-pressed={isHidden} aria-label={isHidden ? '항목 다시 보이기' : '복사할 때 이 항목 빼기'} title={isHidden ? '다시 보이기' : '복사할 때 빼기'} className="shrink-0 rounded-md p-1.5 text-text-3 opacity-60 hover:bg-surface-2 hover:text-text group-hover:opacity-100 focus-visible:opacity-100">
-                    {isHidden ? <RotateCcw className="h-4 w-4" aria-hidden /> : <EyeOff className="h-4 w-4" aria-hidden />}
-                  </button>
-                </li>
-              );
-            })}
-          </ul>
+          <SectionBody section={section} ctx={ctx} />
         </section>
       ))}
 

@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-10-03T03:10:44.534Z",
+  "generatedAt": "2026-10-03T04:53:35.040Z",
   "note": "Generated from the real MCP servers in demo mode by scripts/export-portfolio-data.mjs. Output examples are DEMO DATA.",
   "servers": {
     "github": {
@@ -47,7 +47,7 @@
                 "sha": "a1b2c3d4e5f60000000000000000000000000000",
                 "message": "feat(agent): add LLM provider abstraction with Anthropic and OpenAI adapters",
                 "author": "demo-user",
-                "date": "2026-10-02T19:58:43.827Z",
+                "date": "2026-10-02T21:41:33.859Z",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/a1b2c3d4e5f6",
                 "additions": 412,
                 "deletions": 38
@@ -58,7 +58,7 @@
                 "sha": "b2c3d4e5f6a10000000000000000000000000000",
                 "message": "feat(mcp): wire GitHub MCP server over stdio transport",
                 "author": "demo-user",
-                "date": "2026-10-02T07:58:43.827Z",
+                "date": "2026-10-02T09:41:33.859Z",
                 "url": "https://github.com/demo-user/my-ai-work-agent/commit/b2c3d4e5f6a1",
                 "additions": 286,
                 "deletions": 12
@@ -113,8 +113,8 @@
                 "title": "feat: agent-core with provider abstraction and report validation",
                 "state": "open",
                 "author": "demo-user",
-                "createdAt": "2026-10-01T22:22:43.827Z",
-                "updatedAt": "2026-10-02T19:58:43.827Z",
+                "createdAt": "2026-10-02T00:05:33.859Z",
+                "updatedAt": "2026-10-02T21:41:33.859Z",
                 "mergedAt": null,
                 "url": "https://github.com/demo-user/my-ai-work-agent/pull/14",
                 "reviewComments": 3,
@@ -157,8 +157,8 @@
                 "title": "Google OAuth refresh token is not rotated after expiry",
                 "state": "open",
                 "author": "demo-user",
-                "createdAt": "2026-10-02T03:10:43.827Z",
-                "updatedAt": "2026-10-02T15:10:43.827Z",
+                "createdAt": "2026-10-02T04:53:33.859Z",
+                "updatedAt": "2026-10-02T16:53:33.859Z",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/17",
                 "labels": [
                   "bug",
@@ -176,8 +176,8 @@
                 "title": "Agent exceeds tool-call budget on broad prompts",
                 "state": "open",
                 "author": "demo-user",
-                "createdAt": "2026-10-01T07:58:43.827Z",
-                "updatedAt": "2026-10-02T00:46:43.827Z",
+                "createdAt": "2026-10-01T09:41:33.859Z",
+                "updatedAt": "2026-10-02T02:29:33.859Z",
                 "url": "https://github.com/demo-user/my-ai-work-agent/issues/16",
                 "labels": [
                   "agent",
@@ -229,7 +229,7 @@
                 "url": "https://github.com/demo-user/my-ai-work-agent",
                 "description": "Connect work. Understand context. Execute with AI.",
                 "defaultBranch": "main",
-                "lastPushedAt": "2026-10-02T19:58:43.827Z",
+                "lastPushedAt": "2026-10-02T21:41:33.859Z",
                 "openIssues": 3,
                 "openPullRequests": 1,
                 "commitsInPeriod": 9,
@@ -241,7 +241,7 @@
                 "url": "https://github.com/demo-user/cbnu-algorithms",
                 "description": "Algorithm practice for CBNU coursework",
                 "defaultBranch": "main",
-                "lastPushedAt": "2026-09-28T05:34:43.827Z",
+                "lastPushedAt": "2026-09-28T07:17:33.859Z",
                 "openIssues": 1,
                 "openPullRequests": 0,
                 "commitsInPeriod": 3,
@@ -299,7 +299,7 @@
                 "to": [
                   "demo-user@example.com"
                 ],
-                "date": "2026-10-02T17:34:44.471Z",
+                "date": "2026-10-02T19:17:34.975Z",
                 "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
                 "labels": [
                   "INBOX"
@@ -315,7 +315,7 @@
                 "to": [
                   "demo-user@example.com"
                 ],
-                "date": "2026-09-30T12:46:44.471Z",
+                "date": "2026-09-30T14:29:34.975Z",
                 "snippet": "Thank you for applying. We will review your portfolio and get back within two weeks.",
                 "labels": [
                   "INBOX"
@@ -362,7 +362,7 @@
               "to": [
                 "demo-user@example.com"
               ],
-              "date": "2026-10-02T17:34:44.471Z",
+              "date": "2026-10-02T19:17:34.975Z",
               "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
               "labels": [
                 "INBOX"
@@ -424,7 +424,7 @@
                 "to": [
                   "demo-user@example.com"
                 ],
-                "date": "2026-10-02T17:34:44.471Z",
+                "date": "2026-10-02T19:17:34.975Z",
                 "snippet": "Left 3 comments on the provider abstraction. Mostly naming, one real concern about retry logic.",
                 "labels": [
                   "INBOX"
@@ -440,7 +440,7 @@
                 "to": [
                   "demo-user@example.com"
                 ],
-                "date": "2026-10-02T03:10:44.471Z",
+                "date": "2026-10-02T04:53:34.975Z",
                 "snippet": "Your OAuth consent screen for project my-ai-work-agent needs verification before you can use sensitive scopes with external users.",
                 "labels": [
                   "INBOX"

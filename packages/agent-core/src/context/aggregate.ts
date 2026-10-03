@@ -67,8 +67,24 @@ function toSource(item: ContextItem): Source {
     title: item.title,
     ...(item.url ? { url: item.url } : {}),
     ...(item.timestamp ? { timestamp: item.timestamp } : {}),
-    metadata: { kind: item.kind },
+    metadata: { kind: item.kind, ...displayFields(item.raw) },
   };
+}
+
+/** Structured fields the UI renders (state pills, labels, sender, place). Whitelisted and size-capped. */
+const DISPLAY_KEYS = ['repo', 'number', 'state', 'labels', 'author', 'assignees', 'createdAt', 'mergedAt', 'reviewComments', 'additions', 'deletions', 'from', 'snippet', 'start', 'end', 'allDay', 'location', 'commitsInPeriod', 'openIssues', 'openPullRequests', 'language'] as const;
+
+function displayFields(raw: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const k of DISPLAY_KEYS) {
+    const v = raw[k];
+    if (v === undefined || v === null) continue;
+    if (typeof v === 'string') out[k] = v.slice(0, 200);
+    else if (typeof v === 'number' || typeof v === 'boolean') out[k] = v;
+    else if (Array.isArray(v)) out[k] = v.filter((x): x is string => typeof x === 'string').slice(0, 10);
+  }
+  if (typeof raw['sha'] === 'string') out['sha'] = raw['sha'].slice(0, 7);
+  return out;
 }
 
 function normalize(call: ToolCall, row: unknown): ContextItem | null {

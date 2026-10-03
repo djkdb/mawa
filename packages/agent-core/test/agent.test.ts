@@ -97,4 +97,10 @@ describe('aggregateContext', () => {
     expect(ctx.counts).toEqual({ gmail: 1 });
     expect(ctx.sources[0]!.id).toBe('gmail:msg:1');
   });
+
+  it('copies only whitelisted display fields into source metadata', () => {
+    const row = { sourceId: 'github:pr:o/r#1', repo: 'o/r', number: 1, title: 't', state: 'open', labels: ['bug', 3], reviewComments: 2, body: 'secret-ish long body', token: 'x', sha: 'abcdef0123456789' };
+    const ctx = aggregateContext([{ call: { id: 'c', server: 'github' as const, name: 'get_pull_requests', input: {} }, result: { status: 'ok' as const, callId: 'c', durationMs: 1, output: { summary: '', data: [row] } } }], period);
+    expect(ctx.sources[0]!.metadata).toEqual({ kind: 'pr', repo: 'o/r', number: 1, state: 'open', labels: ['bug'], reviewComments: 2, sha: 'abcdef0' });
+  });
 });

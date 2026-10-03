@@ -62,8 +62,8 @@ test('report: deep link survives reload, copy for Slack, hide items, demo source
   await expect(page).toHaveTitle('리포트 · My AI Work Agent');
 
   // Hide one item, then copy: the hidden item is excluded.
-  const firstItem = page.locator('#report li').first();
-  const hiddenText = (await firstItem.locator('p').innerText()).split('\n')[0]!.replace(/^(높음|보통|낮음)/, '').slice(0, 20);
+  const firstItem = page.locator('#report [data-report-item]').first();
+  const hiddenText = (await firstItem.locator('.item-text').innerText()).split('\n')[0]!.replace(/^(높음|보통|낮음)/, '').slice(0, 20);
   await firstItem.getByRole('button', { name: '복사할 때 이 항목 빼기' }).click();
   await expect(page.getByRole('button', { name: /숨긴 항목 1개 되돌리기/ })).toBeVisible();
   await page.getByRole('button', { name: 'Slack용 복사' }).click();
@@ -118,6 +118,24 @@ test('phone layout: bottom tabs, no horizontal overflow, popover inside the view
   await page.getByRole('link', { name: '리포트' }).last().click();
   await page.getByRole('button', { name: CHIP }).first().click();
   expect(await overflow()).toBeLessThanOrEqual(0);
+  expect(api).toEqual([]);
+  expect(errors).toEqual([]);
+});
+
+test('weekly report renders sections visually from source metadata (chart, PR states, timeline, inbox)', async ({ page }) => {
+  const { errors, api } = await collect(page);
+  await page.goto(`${DEMO}#/report/recorded_weekly-progress`);
+  const report = page.locator('#report');
+  await expect(report.getByRole('img', { name: /^요일별 활동:/ })).toBeVisible();
+  await expect(report.getByText('저장소별 커밋')).toBeVisible();
+  await expect(report.getByText('병합됨').first()).toBeVisible();
+  await expect(report.getByText('리뷰 코멘트 3')).toBeVisible();
+  await expect(report.getByText(/^\d{2}:\d{2}–\d{2}:\d{2}$/).first()).toBeVisible();
+  await expect(report.getByText('Kim Minji').first()).toBeVisible();
+  await report.getByRole('button', { name: /커밋 \d+개 더 보기/ }).click();
+  await expect(report.getByRole('button', { name: '접기' })).toBeVisible();
+  await page.setViewportSize({ width: 375, height: 812 });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)).toBeLessThanOrEqual(0);
   expect(api).toEqual([]);
   expect(errors).toEqual([]);
 });
