@@ -1,4 +1,4 @@
-import { AgentEventSchema, WeeklyWorkReportSchema, type AgentEvent, type AgentMode, type WeeklyWorkReport } from '@mawa/shared';
+import { AgentEventSchema, WeeklyWorkReportSchema, type AgentEvent, type AgentMode, type McpServerId, type WeeklyWorkReport } from '@mawa/shared';
 import demoRuns from '@mawa/shared/demo/demo-runs.json';
 import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status } from './types.js';
 
@@ -12,6 +12,19 @@ export interface RecordedRun {
 }
 
 const RECORDED = (demoRuns as unknown as { recordedAt: string; note: string; runs: RecordedRun[] });
+
+/** MCP servers a run called, in first-call order. */
+export function serversOf(events: AgentEvent[]): McpServerId[] {
+  const out: McpServerId[] = [];
+  for (const e of events) if (e.type === 'tool_call_completed' && !out.includes(e.call.server)) out.push(e.call.server);
+  return out;
+}
+
+/** `recorded_<id>` and session replays `demo_<id>_<stamp>` both map back to a shipped recording. */
+export function recordedIdOf(runId: string): string | null {
+  const m = runId.match(/^recorded_(.+)$/) ?? runId.match(/^demo_(.+)_[a-z0-9]+$/);
+  return m ? m[1]! : null;
+}
 
 /** A finished recorded run, for showing a completed result on first paint (no replay, no timers). */
 export function getRecordedRun(id?: string): RecordedRun | null {
@@ -44,7 +57,7 @@ const DELAY: Partial<Record<AgentEvent['type'], number>> = {
  */
 export class DemoClient implements AgentClient {
   readonly kind = 'demo' as const;
-  private runs = new Map<string, RunRecord & { recorded: RecordedRun }>();
+  private runs = new Map<string, RunRecord & { recorded: RecordedRun; events: AgentEvent[] }>();
 
   async getStatus(): Promise<Status> {
     const first = RECORDED.runs[0];
@@ -67,7 +80,7 @@ export class DemoClient implements AgentClient {
       throw new Error('Demo mode replays recorded MCP runs, so it can only answer the example requests above. Pick one of them, or run the API locally for free-form prompts.');
     }
     const runId = `demo_${recorded.id}_${Date.now().toString(36)}`;
-    const record = { runId, mode: 'demo' as const, prompt: recorded.prompt, status: 'running' as const, createdAt: new Date().toISOString(), report: null, warnings: recorded.warnings, llm: recorded.llm, recorded };
+    const record = { runId, mode: 'demo' as const, prompt: recorded.prompt, status: 'running' as const, createdAt: new Date().toISOString(), report: null, warnings: recorded.warnings, llm: recorded.llm, recorded, events: [] as AgentEvent[] };
     this.runs.set(runId, record);
     return { runId, mode: 'demo', warnings: recorded.warnings };
   }
@@ -102,10 +115,12 @@ export class DemoClient implements AgentClient {
       if (event.type === 'report_generated') {
         const report = WeeklyWorkReportSchema.parse({ ...event.report, runId });
         Object.assign(record, { report });
+        record.events.push({ ...event, report });
         handlers.onEvent({ ...event, report });
       } else {
         // The record is final the moment the completion event goes out, so history never shows a stale "running".
         if (event.type === 'agent_run_completed') Object.assign(record, { status: event.status === 'success' ? 'success' : 'error', report: record.recorded.report });
+        record.events.push(event);
         handlers.onEvent(event);
       }
       timer = setTimeout(() => step(i + 1), DELAY[event.type] ?? 250);
@@ -121,25 +136,26 @@ export class DemoClient implements AgentClient {
   async listRuns(): Promise<RunSummary[]> {
     const session: RunSummary[] = [...this.runs.values()].reverse().map((r) => ({
       runId: r.runId, mode: 'demo', prompt: r.prompt, status: r.status, createdAt: r.createdAt,
-      toolCalls: r.recorded.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.recorded.report.sources.length, recorded: false,
+      toolCalls: r.recorded.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.recorded.report.sources.length, servers: serversOf(r.recorded.events), recorded: false,
     }));
     const shipped: RunSummary[] = RECORDED.runs.map((r) => ({
       runId: `recorded_${r.id}`, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: r.report.generatedAt,
-      toolCalls: r.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.report.sources.length, recorded: true,
+      toolCalls: r.events.filter((e) => e.type === 'tool_call_completed').length, sources: r.report.sources.length, servers: serversOf(r.events), recorded: true,
     }));
     return [...session, ...shipped];
   }
 
   async fetchRun(runId: string): Promise<RunRecord> {
-    if (runId.startsWith('recorded_')) {
-      const r = RECORDED.runs.find((x) => `recorded_${x.id}` === runId);
-      if (!r) throw new Error('Unknown recorded run');
-      return { runId, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: r.report.generatedAt, report: r.report, warnings: r.warnings, llm: r.llm };
+    const live = this.runs.get(runId);
+    if (live) {
+      const { recorded: _recorded, ...record } = live;
+      return record;
     }
-    const r = this.runs.get(runId);
-    if (!r) throw new Error('Unknown demo run');
-    const { recorded: _recorded, ...record } = r;
-    return record;
+    // Shipped recording, or a session replay after a page reload: both resolve to the recording itself.
+    const id = recordedIdOf(runId);
+    const r = id ? RECORDED.runs.find((x) => x.id === id) : undefined;
+    if (!r) throw new Error('이 실행 기록을 찾을 수 없습니다.');
+    return { runId: `recorded_${r.id}`, mode: 'demo', prompt: r.prompt, status: 'success', createdAt: r.report.generatedAt, report: r.report, warnings: r.warnings, llm: r.llm, events: r.events };
   }
 
   async disconnect(): Promise<void> {

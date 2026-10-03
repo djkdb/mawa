@@ -3,19 +3,31 @@ import { useEffect, useState } from 'react';
 export type Route = 'home' | 'report' | 'runs' | 'connections' | 'settings';
 const ROUTES: Route[] = ['home', 'report', 'runs', 'connections', 'settings'];
 
-function parse(): Route {
-  const h = window.location.hash.replace(/^#\/?/, '');
-  return (ROUTES as string[]).includes(h) ? (h as Route) : 'home';
+export interface Location { route: Route; param: string | null }
+
+function parse(): Location {
+  const [head, ...rest] = window.location.hash.replace(/^#\/?/, '').split('/');
+  const route = (ROUTES as string[]).includes(head ?? '') ? (head as Route) : 'home';
+  return { route, param: rest.length ? decodeURIComponent(rest.join('/')) : null };
 }
 
-/** Tiny hash router so the demo works on any static host without rewrites. */
+export function hrefFor(route: Route, param?: string | null): string {
+  return route === 'home' ? '#/' : `#/${route}${param ? `/${encodeURIComponent(param)}` : ''}`;
+}
+
+/** Tiny hash router (#/report/<runId>) so the demo works on any static host without rewrites. */
 export function useHashRoute() {
-  const [route, setRoute] = useState<Route>(() => parse());
+  const [loc, setLoc] = useState<Location>(() => parse());
   useEffect(() => {
-    const on = () => setRoute(parse());
+    const on = () => setLoc(parse());
     window.addEventListener('hashchange', on);
     return () => window.removeEventListener('hashchange', on);
   }, []);
-  const navigate = (r: Route) => { window.location.hash = r === 'home' ? '/' : `/${r}`; window.scrollTo({ top: 0 }); };
-  return { route, navigate };
+  const navigate = (route: Route, param?: string | null) => {
+    const href = hrefFor(route, param);
+    if (window.location.hash === href) setLoc(parse());
+    else window.location.hash = href.slice(1);
+    window.scrollTo({ top: 0 });
+  };
+  return { ...loc, navigate };
 }

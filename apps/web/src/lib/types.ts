@@ -1,4 +1,4 @@
-import type { AgentEvent, AgentMode, WeeklyWorkReport } from '@mawa/shared';
+import type { AgentEvent, AgentMode, McpServerId, WeeklyWorkReport } from '@mawa/shared';
 
 export type IntegrationStatus = 'not_configured' | 'disconnected' | 'connected';
 
@@ -23,6 +23,8 @@ export interface RunRecord {
   warnings: string[];
   error?: string;
   llm: { provider: string; model: string };
+  /** The run's event trace, when the client has it. */
+  events?: AgentEvent[];
 }
 
 export interface RunSummary {
@@ -33,6 +35,8 @@ export interface RunSummary {
   createdAt: string;
   toolCalls: number;
   sources: number;
+  /** MCP servers the run actually called, in call order. */
+  servers: McpServerId[];
   /** True for runs shipped with the demo (recorded earlier), false for runs started in this session. */
   recorded: boolean;
 }

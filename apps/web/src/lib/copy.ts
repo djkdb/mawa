@@ -11,6 +11,29 @@ export const SECTION_TITLE: Record<ReportSectionId, string> = {
   next_actions: '다음 액션',
 };
 
+export const PRIORITY_KO = { high: '높음', medium: '보통', low: '낮음' } as const;
+
+/** Section titles adapt to the question: the blockers run's risks are its blockers. */
+export function sectionTitle(id: ReportSectionId, prompt: string | null): string {
+  if (id === 'potential_risks' && prompt && /막히|블로커|block/i.test(prompt)) return '막힌 항목';
+  if (id === 'overview' && prompt && /중요|우선/.test(prompt)) return '우선순위 요약';
+  return SECTION_TITLE[id];
+}
+
+/** "D-3" style label relative to a reference instant (the run's generation time). */
+export function relDay(iso: string, ref: number): string {
+  const day = (t: number) => Math.floor((t + 9 * 3_600_000) / 86_400_000);
+  const diff = day(new Date(iso).getTime()) - day(ref);
+  return diff === 0 ? '오늘' : diff === 1 ? '내일' : diff > 0 ? `D-${diff}` : `${-diff}일 전`;
+}
+
+/** The report period's end is exclusive (next Monday 00:00); show the last included day. */
+export function periodKo(p: { start: string; end: string }): string {
+  // The period is a calendar week computed in UTC (agent-core defaultPeriod), so its day labels are read in UTC.
+  const day = (iso: string) => new Date(iso).toLocaleDateString('ko-KR', { timeZone: 'UTC', month: 'long', day: 'numeric' });
+  return `${day(p.start)} – ${day(new Date(new Date(p.end).getTime() - 1).toISOString())}`;
+}
+
 export const SERVER_NAME: Record<McpServerId, string> = { github: 'GitHub', gmail: 'Gmail', calendar: 'Google Calendar' };
 export const SOURCE_TYPE_NAME: Record<Source['type'], string> = SERVER_NAME;
 export const KIND_NAME: Record<string, string> = { commit: '커밋', pr: 'PR', issue: '이슈', repo: '저장소', msg: '이메일', event: '일정' };
@@ -22,7 +45,7 @@ export const EXAMPLE_META: Record<string, { title: string; hint: string; uses: M
 };
 
 /** "Searching → Searched" style verb pairs per tool, with the result summary translated where it is a known shape. */
-const TOOL_VERB: Record<string, [running: string, done: string]> = {
+export const TOOL_VERB: Record<string, [running: string, done: string]> = {
   get_recent_commits: ['최근 커밋을 가져오는 중', '최근 커밋 확인'],
   get_pull_requests: ['Pull Request를 가져오는 중', 'Pull Request 확인'],
   get_open_issues: ['열린 이슈를 가져오는 중', '열린 이슈 확인'],
@@ -52,11 +75,13 @@ export function summaryKo(summary: string): string {
   return summary;
 }
 
+/** All UI dates use the workspace timezone so they match the report text (written in Asia/Seoul). */
+export const WORKSPACE_TZ = 'Asia/Seoul';
 export function timeKo(iso: string): string {
-  return new Date(iso).toLocaleString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  return new Date(iso).toLocaleString('ko-KR', { timeZone: WORKSPACE_TZ, month: 'short', day: 'numeric', weekday: 'short', hour: '2-digit', minute: '2-digit' });
 }
 export function dateKo(iso: string): string {
-  return new Date(iso).toLocaleDateString('ko-KR', { month: 'long', day: 'numeric' });
+  return new Date(iso).toLocaleDateString('ko-KR', { timeZone: WORKSPACE_TZ, month: 'long', day: 'numeric' });
 }
 
 /** One hue per source, used for icons, chips, tiles and activity rows. */

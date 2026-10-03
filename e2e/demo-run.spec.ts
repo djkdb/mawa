@@ -14,9 +14,10 @@ test('API-backed workspace runs the agent and shows a source-grounded report', a
   await page.getByRole('button', { name: '에이전트 실행' }).click();
   await expect(page.getByText(/도구 \d+회 호출 \((?=.*GitHub)(?=.*Gmail)(?=.*Calendar)[^)]*\)/)).toBeVisible({ timeout: 45_000 });
   await expect(page.getByRole('heading', { name: '주의할 점' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: '다가오는 일정' })).toBeVisible();
 
   await page.getByRole('link', { name: '리포트' }).first().click();
-  await expect(page.getByRole('heading', { level: 2, name: '주간 업무 리포트' })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 2, name: '이번 주 진행 상황 정리' })).toBeVisible();
   expect(await page.getByText('데모 워크스페이스 · 샘플 데이터').count()).toBeGreaterThanOrEqual(1);
   await expect(page.getByText('샘플 데이터로 만든 리포트이며 실제 계정 정보가 아닙니다')).toBeVisible();
   const chips = page.getByRole('button', { name: /^(PR #|이슈 #|커밋 |메일 · |일정 · )/ });

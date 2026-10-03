@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { ArrowRight, CalendarDays, GitBranch, Mail } from 'lucide-react';
 import type { AgentMode, McpServerId } from '@mawa/shared';
 import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
@@ -12,20 +12,31 @@ export function PromptPanel({ status, busy, onRun }: { status: Status | null; bu
   const [mode, setMode] = useState<AgentMode>('demo');
   const realAvailable = !IS_DEMO_BUILD && (status?.realMode.available ?? false);
   const prompt = selected ? (DEMO_EXAMPLES.find((e) => e.id === selected)?.prompt ?? '') : custom;
+  const radios = useRef<Array<HTMLButtonElement | null>>([]);
+  // Roving tabindex: one tab stop for the group, arrows move focus and selection (WAI-ARIA radio group).
+  const onKey = (e: React.KeyboardEvent, i: number) => {
+    const n = DEMO_EXAMPLES.length;
+    const next = e.key === 'ArrowRight' || e.key === 'ArrowDown' ? (i + 1) % n : e.key === 'ArrowLeft' || e.key === 'ArrowUp' ? (i - 1 + n) % n : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : -1;
+    if (next < 0) return;
+    e.preventDefault();
+    setSelected(DEMO_EXAMPLES[next]!.id);
+    radios.current[next]?.focus();
+  };
+  const activeIndex = Math.max(0, DEMO_EXAMPLES.findIndex((e) => e.id === selected));
 
   return (
     <section id="ask" aria-labelledby="ask-heading" className="surface scroll-mt-20 p-5 sm:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
         <h2 id="ask-heading" className="text-lg font-semibold">새 리포트 만들기</h2>
-        <span className="text-sm text-text-3">질문을 고르고 실행하세요</span>
+        <span className="text-sm text-text-3">질문을 고르고 실행하세요 · 방향키로 선택</span>
       </div>
 
       <div role="radiogroup" aria-label="질문 선택" className="mt-4 grid gap-2 sm:grid-cols-3">
-        {DEMO_EXAMPLES.map((ex) => {
+        {DEMO_EXAMPLES.map((ex, i) => {
           const meta = EXAMPLE_META[ex.id] ?? { title: ex.prompt, hint: '', uses: [] as McpServerId[] };
           const active = ex.id === selected;
           return (
-            <button key={ex.id} type="button" role="radio" aria-checked={active} disabled={busy} onClick={() => setSelected(ex.id)} className={`flex flex-col items-start gap-1.5 rounded-lg p-4 text-left transition disabled:opacity-60 ${active ? 'bg-surface-2 ring-1 ring-accent' : 'bg-bg/60 hover:bg-surface-2'}`}>
+            <button key={ex.id} ref={(el) => { radios.current[i] = el; }} type="button" role="radio" aria-checked={active} tabIndex={i === activeIndex ? 0 : -1} onKeyDown={(e) => onKey(e, i)} disabled={busy} onClick={() => setSelected(ex.id)} className={`flex flex-col items-start gap-1.5 rounded-lg p-4 text-left transition disabled:opacity-60 ${active ? 'bg-surface-2 ring-1 ring-accent' : 'bg-bg/60 hover:bg-surface-2'}`}>
               <span className="text-[15px] font-semibold leading-snug text-text">{meta.title}</span>
               <span className="text-[13px] leading-relaxed text-text-2">{meta.hint}</span>
               <span className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-3">
@@ -44,7 +55,7 @@ export function PromptPanel({ status, busy, onRun }: { status: Status | null; bu
       )}
 
       <div className="mt-5 flex flex-wrap items-center gap-x-4 gap-y-3">
-        <button type="button" onClick={() => onRun(prompt.trim(), mode)} disabled={busy || prompt.trim().length === 0} className="inline-flex items-center gap-2 rounded-lg bg-accent px-5 py-3 text-[15px] font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
+        <button type="button" onClick={() => onRun(prompt.trim(), mode)} disabled={busy || prompt.trim().length === 0} className="inline-flex items-center gap-2 rounded-lg bg-accent-strong px-5 py-3 text-[15px] font-semibold text-white transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-50">
           {busy ? '실행 중…' : '에이전트 실행'} {!busy && <ArrowRight className="h-4 w-4" aria-hidden />}
         </button>
         {!IS_DEMO_BUILD && (

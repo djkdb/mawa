@@ -15,9 +15,11 @@ export interface AgentRunState {
   report: WeeklyWorkReport | null;
   warnings: string[];
   error: string | null;
+  /** The question this run answers. */
+  prompt: string | null;
 }
 
-const initial: AgentRunState = { phase: 'idle', runId: null, mode: null, events: [], report: null, warnings: [], error: null };
+const initial: AgentRunState = { phase: 'idle', runId: null, mode: null, events: [], report: null, warnings: [], error: null, prompt: null };
 
 export function phaseFromEvent(type: AgentEvent['type'], prev: RunPhase): RunPhase {
   switch (type) {
@@ -48,7 +50,7 @@ export function useAgentRun() {
   const run = useCallback(async (prompt: string, mode: AgentMode) => {
     const client = getClient();
     unsubscribe.current?.();
-    setState({ ...initial, phase: 'starting', mode });
+    setState({ ...initial, phase: 'starting', mode, prompt });
     try {
       const started = await client.startRun(prompt, mode);
       setState((s) => ({ ...s, runId: started.runId, mode: started.mode, warnings: started.warnings }));
@@ -83,14 +85,18 @@ export function useAgentRun() {
     const r = getRecordedRun(id);
     if (!r) return;
     unsubscribe.current?.();
-    setState({ phase: 'completed', runId: `recorded_${r.id}`, mode: 'demo', events: r.events, report: r.report, warnings: r.warnings, error: null });
+    setState({ phase: 'completed', runId: `recorded_${r.id}`, mode: 'demo', events: r.events, report: r.report, warnings: r.warnings, error: null, prompt: r.prompt });
   }, []);
 
   /** Open a finished run from history (any client). */
   const openRun = useCallback(async (runId: string) => {
-    const r = await getClient().fetchRun(runId);
-    unsubscribe.current?.();
-    setState({ phase: r.status === 'success' ? 'completed' : 'error', runId: r.runId, mode: r.mode, events: [], report: r.report, warnings: r.warnings, error: r.error ?? null });
+    try {
+      const r = await getClient().fetchRun(runId);
+      unsubscribe.current?.();
+      setState({ phase: r.status === 'success' ? 'completed' : r.status === 'running' ? 'running' : 'error', runId: r.runId, mode: r.mode, events: r.events ?? [], report: r.report, warnings: r.warnings, error: r.error ?? null, prompt: r.prompt });
+    } catch (err) {
+      setState({ ...initial, phase: 'error', error: err instanceof Error ? err.message : String(err) });
+    }
   }, []);
 
   const reset = useCallback(() => {

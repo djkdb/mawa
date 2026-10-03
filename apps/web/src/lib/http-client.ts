@@ -28,8 +28,8 @@ export class HttpClient implements AgentClient {
   async listRuns(): Promise<RunSummary[]> {
     const res = await fetch(`${this.base}/api/agent/runs`);
     if (!res.ok) throw new Error(`runs ${res.status}`);
-    const rows = (await res.json()) as Array<Omit<RunRecord, 'events' | 'report'> & { toolCalls?: number; sources?: number }>;
-    return rows.map((r) => ({ runId: r.runId, mode: r.mode, prompt: r.prompt, status: r.status, createdAt: r.createdAt, toolCalls: r.toolCalls ?? 0, sources: r.sources ?? 0, recorded: false }));
+    const rows = (await res.json()) as Array<Omit<RunRecord, 'events' | 'report'> & { toolCalls?: number; sources?: number; servers?: RunSummary['servers'] }>;
+    return rows.map((r) => ({ runId: r.runId, mode: r.mode, prompt: r.prompt, status: r.status, createdAt: r.createdAt, toolCalls: r.toolCalls ?? 0, sources: r.sources ?? 0, servers: r.servers ?? [], recorded: false }));
   }
 
   async disconnect(provider: 'github' | 'google'): Promise<void> {

@@ -89,14 +89,14 @@ React 19 · TypeScript · Vite 8 · Tailwind 4 · Three.js / React Three Fiber /
 
 ## Live Demo
 
-Demo mode runs **for free, with no API key and no server**: `apps/web` has a browser-only build that replays runs recorded from the real agent + MCP pipeline over synthetic fixtures. The UI code path is the same one a live run uses (same events, same report schema, same source-integrity validation), so what you see is the real product UX, labelled honestly as `DEMO MODE · SYNTHETIC DATA · RECORDED MCP RUN`.
+Demo mode runs **for free, with no API key and no server**: `apps/web` has a browser-only build that replays runs recorded from the real agent + MCP pipeline over synthetic fixtures. The UI code path is the same one a live run uses (same events, same report schema, same source-integrity validation), so what you see is the real product UX, labelled as a demo workspace with sample data (`데모 워크스페이스 · 샘플 데이터`, `기록 재생`). In the demo, tool selection comes from a per-question plan (`scripted-heuristics-v1`), and the UI says so; with `LLM_API_KEY` on the API server, the model chooses the tools.
 
 ```bash
 npm run build:demo           # → apps/web/dist-demo (static, deploy anywhere)
 npm run preview:demo -w apps/web
 ```
 
-The three example requests are exactly the prompts that were recorded; free-form prompts need the API server. Recordings are regenerated from the real servers with `npm run export:portfolio-data` into `packages/shared/demo/`.
+The three example requests are exactly the prompts that were recorded; free-form prompts need the API server. Each run is addressable (`#/report/<runId>`), its report can be copied as Slack mrkdwn or Markdown (items can be excluded first), and its full event trace (tool inputs, outputs, per-call MCP time) is viewable and downloadable as JSON. Recordings are regenerated from the real servers with `npm run export:portfolio-data` into `packages/shared/demo/`.
 
 ## Demo vs Real
 
@@ -146,7 +146,7 @@ OAuth app and LLM configuration for Real Mode: [`docs/SETUP.md`](docs/SETUP.md).
 ```bash
 npm run dev        # builds TS packages, then starts api (:3001), web (:5173), portfolio (:5174)
 npm run build      # builds every workspace (shared, agent-core, mcp servers, api, web, portfolio; motion typechecks)
-npm run test       # vitest: schemas, MCP servers over stdio, agent loop, API (48 tests)
+npm run test       # vitest: schemas, MCP servers over stdio, agent loop, API, demo client (50 tests)
 npm run test:e2e   # Playwright: API-backed UI, portfolio, and the standalone demo build (run npm run build first)
 npm run lint       # eslint
 npm run typecheck  # tsc -b + Vite apps

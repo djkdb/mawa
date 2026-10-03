@@ -1,32 +1,48 @@
 import { useEffect, useState } from 'react';
-import { getClient, type RunSummary } from '../lib/client.js';
-import { EXAMPLE_META } from '../lib/copy.js';
-import { DEMO_EXAMPLES } from '../lib/client.js';
+import { DEMO_EXAMPLES, getClient, type RunSummary } from '../lib/client.js';
+import { EXAMPLE_META, SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
+import { hrefFor } from '../lib/useHashRoute.js';
 
 function titleFor(prompt: string) {
   const ex = DEMO_EXAMPLES.find((e) => e.prompt === prompt);
   return ex ? (EXAMPLE_META[ex.id]?.title ?? prompt) : prompt;
 }
 
-export function RunsPage({ currentRunId, refreshKey, onOpen }: { currentRunId: string | null; refreshKey: number; onOpen: (runId: string) => void }) {
+export function RunsPage({ currentRunId, refreshKey }: { currentRunId: string | null; refreshKey: number }) {
   const [runs, setRuns] = useState<RunSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   useEffect(() => { getClient().listRuns().then(setRuns).catch((e: Error) => setError(e.message)); }, [refreshKey]);
   return (
     <div className="mx-auto max-w-5xl">
-      <p className="mb-4 text-sm text-text-2">에이전트가 실행한 리포트 목록입니다. 항목을 열면 리포트 화면으로 이동합니다.</p>
+      <p className="mb-4 text-sm text-text-2">에이전트가 만든 리포트 목록입니다. 질문을 누르면 그 실행의 리포트와 활동 기록을 엽니다.</p>
       {error && <p role="alert" className="text-sm text-rose-200">{error}</p>}
       {runs && (
         <div className="surface overflow-hidden">
           <table className="w-full text-sm">
+            <caption className="sr-only">실행 기록: 시간, 질문, 호출한 소스, 도구 호출 수, 출처 수, 상태</caption>
             <thead className="text-left text-xs text-text-3">
-              <tr className="border-b border-line"><th className="px-4 py-2.5 font-medium">시간</th><th className="px-4 py-2.5 font-medium">질문</th><th className="hidden px-4 py-2.5 font-medium sm:table-cell">도구 호출</th><th className="hidden px-4 py-2.5 font-medium sm:table-cell">출처</th><th className="px-4 py-2.5 font-medium">상태</th></tr>
+              <tr className="border-b border-line">
+                <th scope="col" className="px-4 py-2.5 font-medium">시간</th>
+                <th scope="col" className="px-4 py-2.5 font-medium">질문</th>
+                <th scope="col" className="hidden px-4 py-2.5 font-medium md:table-cell">호출한 소스</th>
+                <th scope="col" className="hidden px-4 py-2.5 font-medium sm:table-cell">도구 호출</th>
+                <th scope="col" className="hidden px-4 py-2.5 font-medium sm:table-cell">출처</th>
+                <th scope="col" className="px-4 py-2.5 font-medium">상태</th>
+              </tr>
             </thead>
             <tbody>
               {runs.map((r) => (
-                <tr key={r.runId} className={`cursor-pointer border-b border-line/60 last:border-0 hover:bg-surface-2 ${r.runId === currentRunId ? 'bg-surface-2' : ''}`} onClick={() => onOpen(r.runId)}>
-                  <td className="tnum whitespace-nowrap px-4 py-3 text-text-2">{new Date(r.createdAt).toLocaleString('ko-KR', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
-                  <td className="px-4 py-3"><button type="button" className="text-left font-medium text-text hover:underline" onClick={(e) => { e.stopPropagation(); onOpen(r.runId); }}>{titleFor(r.prompt)}</button>{r.recorded && <span className="ml-2 text-xs text-text-3">기록</span>}</td>
+                <tr key={r.runId} className={`border-b border-line/60 last:border-0 hover:bg-surface-2 ${r.runId === currentRunId ? 'bg-surface-2' : ''}`}>
+                  <td className="tnum whitespace-nowrap px-4 py-3 text-text-2">{new Date(r.createdAt).toLocaleString('ko-KR', { timeZone: 'Asia/Seoul', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+                  <td className="px-4 py-3">
+                    <a href={hrefFor('report', r.runId)} className="font-medium text-text hover:underline">{titleFor(r.prompt)}</a>
+                    {r.recorded && <span className="ml-2 rounded bg-surface-2 px-1.5 py-0.5 text-[11px] text-text-3">샘플 기록</span>}
+                  </td>
+                  <td className="hidden px-4 py-3 md:table-cell">
+                    <span className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-2">
+                      {r.servers.map((s) => <span key={s} className="inline-flex items-center gap-1"><span className="h-1.5 w-1.5 rounded-full" style={{ background: SERVER_COLOR[s] }} aria-hidden />{SERVER_NAME[s]}</span>)}
+                    </span>
+                  </td>
                   <td className="tnum hidden px-4 py-3 text-text-2 sm:table-cell">{r.toolCalls}회</td>
                   <td className="tnum hidden px-4 py-3 text-text-2 sm:table-cell">{r.sources}건</td>
                   <td className="px-4 py-3"><span className={`tag ${r.status === 'success' ? 'bg-ok/15 text-emerald-200' : r.status === 'running' ? 'bg-accent-2 text-text' : 'bg-rose-400/15 text-rose-200'}`}>{r.status === 'success' ? '완료' : r.status === 'running' ? '실행 중' : '실패'}</span></td>
