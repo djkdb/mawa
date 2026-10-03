@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle2, Info, Play, Radio, Sparkles } from 'lucide-re
 import type { AgentMode } from '@mawa/shared';
 import { ActivityTimeline } from '../components/ActivityTimeline.js';
 import { CategoryBoard } from '../components/CategoryBoard.js';
+import { FocusCard } from '../components/FocusCard.js';
 import { PromptPanel } from '../components/PromptPanel.js';
 import { StatStrip, reportTitle } from '../components/ReportView.js';
 import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
@@ -55,7 +56,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
           <p className="text-sm leading-relaxed text-text-2">
             <b className="font-semibold text-text">GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 주간 리포트를 써 주는 AI 업무 에이전트입니다.</b>
-            {IS_DEMO_BUILD && <> 지금은 <span className="text-warn">데모 워크스페이스</span>로, 성준님의 한 주를 가정해 만든 가상의 샘플 데이터(수업·팀플·인턴 준비)로 기록된 실행을 재생합니다. 실제 계정에는 접속하지 않습니다.</>}
+            {IS_DEMO_BUILD && <> 지금은 <span className="font-medium text-warn">데모</span>입니다. 성준님의 한 주를 가정한 가상 샘플 데이터로 기록된 실행을 재생하고, 실제 계정에는 접속하지 않습니다.</>}
             {LLM_RUN && <> <a href={hrefFor('report', `recorded_${LLM_RUN.id}`)} className="inline-flex items-center gap-1 font-medium text-accent underline-offset-2 hover:underline"><Sparkles className="h-3.5 w-3.5" aria-hidden />실제 LLM({LLM_RUN.llm.model})이 도구를 고른 기록 보기</a></>}
           </p>
         </div>
@@ -88,6 +89,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
         </button>
       )}
 
+      {report && <FocusCard report={report} runId={state.runId} />}
       {report && <StatStrip report={report} />}
       {report && <CategoryBoard report={report} runId={state.runId} />}
 

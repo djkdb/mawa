@@ -1,10 +1,17 @@
 import { useRef, useState } from 'react';
-import { ArrowRight, CalendarDays, GraduationCap, GitBranch, Mail } from 'lucide-react';
+import { AlarmClock, ArrowRight, Briefcase, CalendarDays, CircleAlert, ClipboardList, GraduationCap, GitBranch, Mail, type LucideIcon } from 'lucide-react';
 import type { AgentMode, McpServerId } from '@mawa/shared';
 import { DEMO_EXAMPLES, IS_DEMO_BUILD, type Status } from '../lib/client.js';
 import { EXAMPLE_META, SERVER_COLOR, SERVER_NAME } from '../lib/copy.js';
 
 const ICON: Record<McpServerId, React.ReactNode> = { github: <GitBranch className="h-3.5 w-3.5" aria-hidden />, gmail: <Mail className="h-3.5 w-3.5" aria-hidden />, calendar: <CalendarDays className="h-3.5 w-3.5" aria-hidden />, lms: <GraduationCap className="h-3.5 w-3.5" aria-hidden /> };
+
+const EX_ICON: Record<string, { Icon: LucideIcon; color: string }> = {
+  'weekly-progress': { Icon: ClipboardList, color: 'var(--color-accent)' },
+  deadlines: { Icon: AlarmClock, color: 'var(--color-calendar)' },
+  career: { Icon: Briefcase, color: 'var(--color-cat-job)' },
+  blockers: { Icon: CircleAlert, color: 'var(--color-pri-high)' },
+};
 
 export function PromptPanel({ status, busy, onRun, progress = null }: { status: Status | null; busy: boolean; onRun: (prompt: string, mode: AgentMode) => void; progress?: string | null }) {
   const [selected, setSelected] = useState<string>(DEMO_EXAMPLES[0]?.id ?? '');
@@ -27,16 +34,17 @@ export function PromptPanel({ status, busy, onRun, progress = null }: { status: 
   return (
     <section id="ask" aria-labelledby="ask-heading" className="surface scroll-mt-20 p-5 sm:p-6">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 id="ask-heading" className="text-lg font-semibold">새 리포트 만들기</h2>
-        <span className="text-sm text-text-3">질문을 고르고 실행하세요 · 방향키로 선택</span>
+        <h2 id="ask-heading" className="text-lg font-semibold">무엇을 정리해 드릴까요?</h2>
+        <span className="text-sm text-text-3 max-sm:hidden">질문을 고르고 실행하세요 · 방향키로 선택</span>
       </div>
 
-      <div role="radiogroup" aria-label="질문 선택" className="mt-4 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div role="radiogroup" aria-label="질문 선택" className="-mx-5 mt-4 flex snap-x gap-2 overflow-x-auto px-5 pb-1 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-4">
         {DEMO_EXAMPLES.map((ex, i) => {
           const meta = EXAMPLE_META[ex.id] ?? { title: ex.prompt, hint: '', uses: [] as McpServerId[] };
           const active = ex.id === selected;
           return (
-            <button key={ex.id} ref={(el) => { radios.current[i] = el; }} type="button" role="radio" aria-checked={active} tabIndex={i === activeIndex ? 0 : -1} onKeyDown={(e) => onKey(e, i)} disabled={busy} onClick={() => setSelected(ex.id)} className={`flex flex-col items-start gap-1.5 rounded-lg p-4 text-left transition disabled:opacity-60 ${active ? 'bg-surface-2 ring-1 ring-accent' : 'bg-bg/60 hover:bg-surface-2'}`}>
+            <button key={ex.id} ref={(el) => { radios.current[i] = el; }} type="button" role="radio" aria-checked={active} tabIndex={i === activeIndex ? 0 : -1} onKeyDown={(e) => onKey(e, i)} disabled={busy} onClick={() => setSelected(ex.id)} className={`flex w-[72%] shrink-0 snap-start flex-col items-start gap-1.5 rounded-xl p-4 text-left transition disabled:opacity-60 sm:w-auto ${active ? 'bg-surface-2 ring-2 ring-accent' : 'bg-bg/60 ring-1 ring-line hover:bg-surface-2'}`}>
+              {(() => { const x = EX_ICON[ex.id]; return x ? <span className="mb-1 grid h-8 w-8 place-items-center rounded-lg" style={{ color: x.color, background: `color-mix(in srgb, ${x.color} 15%, transparent)` }}><x.Icon className="h-4 w-4" aria-hidden /></span> : null; })()}
               <span className="text-[15px] font-semibold leading-snug text-text">{meta.title}</span>
               <span className="text-[13px] leading-relaxed text-text-2">{meta.hint}</span>
               <span className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs text-text-3">
