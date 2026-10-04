@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import { ArrowRight, CheckCircle2, ChevronDown, Info, Play, Radio, ShieldCheck, Sparkles } from 'lucide-react';
-import type { AgentMode } from '@mawa/shared';
+import type { AgentMode, McpServerId } from '@mawa/shared';
 import { ActivityTimeline } from '../components/ActivityTimeline.js';
+import { AgentOffice } from '../components/AgentOffice.js';
 import { CategoryBoard } from '../components/CategoryBoard.js';
 import { FocusCard } from '../components/FocusCard.js';
 import { PromptPanel } from '../components/PromptPanel.js';
@@ -45,6 +46,9 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
     prev.current = state.phase;
   }, [state.phase]);
 
+  // Desks in the office: the servers this run connected to, else the ones this workspace can use.
+  const connectedNow = [...new Set(state.events.flatMap((e) => (e.type === 'mcp_server_connected' ? [e.server] : [])))];
+  const officeServers = connectedNow.length ? connectedNow : IS_DEMO_BUILD ? persona().servers : (status?.realMode.servers ?? persona().servers).filter((s): s is McpServerId => ['github', 'gmail', 'calendar', 'lms'].includes(s));
   const scrollTo = (id: string) => document.getElementById(id)?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   const calls = state.events.filter((e) => e.type === 'tool_call_completed').length;
   const rpc = state.events.filter((e) => e.type === 'mcp_message').length;
@@ -101,6 +105,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
       {report && <CategoryBoard report={report} runId={state.runId} />}
 
       <PromptPanel status={status} busy={busy} onRun={onRun} progress={busy ? progressOf(state) : null} />
+      <AgentOffice events={state.events} live={busy} servers={officeServers} />
       <ActivityTimeline events={state.events} phase={state.phase} recorded={IS_DEMO_BUILD} runId={state.runId} headingRef={activityHeading} />
       {state.error && state.phase === 'error' && <p role="alert" className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">{state.error}</p>}
     </div>

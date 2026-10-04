@@ -243,7 +243,7 @@ Tools outside `allowedTools` are absent from `tools/list` and refused on `tools/
 
 ## Frontend
 
-`apps/web` renders the prompt panel, the `AGENT ACTIVITY` timeline (derived purely from events), the report with `observed` / `inferred` markers and clickable `Source:` chips, and the integrations panel. Desktop-first, responsive to mobile, keyboard-accessible controls, `aria-live` on the timeline.
+`apps/web` renders the prompt panel, the **agent office** (a pixel office drawn in code: one person per MCP server, the agent walking between desks, the model as a robot in the AI room and the data policy as a guard at its door — every move is one run event, with a replay button and a per-person info card), the `AGENT ACTIVITY` timeline (derived purely from events), the report with `observed` / `inferred` markers and clickable `Source:` chips, and the integrations panel. Desktop-first, responsive to mobile, keyboard-accessible controls, `aria-live` on the timeline.
 
 `portfolio` is a ten-slide 3D presentation (Hero, Problem, Solution, Architecture, Live demo, MCP explorer, AX thinking, Learnings, About, Final). `←` `→` `Space` navigate, `P` enters Presentation Mode, `Esc` exits; wheel/touch scrolling works too. The MCP explorer and the demo replay are generated from the real servers by `npm run export:portfolio-data`, and the demo slide is labelled as a recorded replay.
 

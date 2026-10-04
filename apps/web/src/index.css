@@ -128,3 +128,12 @@ a { text-underline-offset: 3px; }
 :root { --ease-out: cubic-bezier(0.23, 1, 0.32, 1); }
 button, a, [role="radio"] { transition-property: color, background-color, box-shadow, opacity, transform; transition-duration: 160ms; transition-timing-function: var(--ease-out); }
 button:not(:disabled):active, [role="radio"]:not(:disabled):active { transform: scale(0.97); }
+
+/* Agent office speech bubbles: pixel-style, readable in both themes (the scene itself is fixed-palette). */
+.office-bubble { max-width: 46%; overflow: hidden; text-overflow: ellipsis; padding: 2px 6px; font-size: 11px; line-height: 16px; font-weight: 600; color: #1b1b24; background: #fffdf5; border: 2px solid #1b1b24; border-radius: 3px; box-shadow: 2px 2px 0 rgba(0,0,0,.25); }
+.office-bubble::after { content: ''; position: absolute; left: 50%; bottom: -6px; margin-left: -3px; border: 3px solid transparent; border-top-color: #1b1b24; }
+.office-bubble[data-tone='ok'] { background: #ecfdf5; }
+.office-bubble[data-tone='warn'] { background: #fffbeb; }
+.office-bubble[data-tone='bad'] { background: #fef2f2; color: #991b1b; }
+.office-bubble[data-tone='think'] { background: #f5f3ff; }
+@media (max-width: 639px) { .office-bubble { font-size: 9px; line-height: 13px; padding: 1px 4px; } }

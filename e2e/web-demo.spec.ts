@@ -313,3 +313,19 @@ test('personas: the same service as a student, a worker and the admin', async ({
   expect(errors).toEqual([]);
   expect(api).toEqual([]);
 });
+
+test('agent office: one person per MCP server, replays the run from its events, info per person', async ({ page }) => {
+  await page.goto(DEMO);
+  const office = page.getByRole('region', { name: '에이전트 사무실' });
+  await office.scrollIntoViewIfNeeded();
+  await expect(office.getByRole('img', { name: /에이전트 사무실 그림/ })).toBeVisible();
+  for (const who of ['GitHub 담당', '메일 담당', '일정 담당', 'eCampus 담당', '보안 담당 · 정책', 'AI 모델', '에이전트']) await expect(office.getByRole('button', { name: `${who} 정보` })).toBeVisible();
+  const now = office.locator('p[aria-live]');
+  await expect(now).toContainText('지난 실행');
+  await office.getByRole('button', { name: '다시 보기' }).click();
+  await expect(now).toContainText(/GitHub 개발실|AI에게|연결/, { timeout: 10_000 });
+  await office.getByRole('button', { name: 'GitHub 담당 정보' }).click();
+  await expect(office.getByRole('region', { name: 'GitHub 담당 정보' })).toContainText(/mawa-github v\d/);
+  await office.getByRole('button', { name: '일시정지' }).click();
+  await expect(office.getByRole('button', { name: '재생' })).toBeVisible();
+});
