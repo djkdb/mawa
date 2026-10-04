@@ -50,3 +50,14 @@ describe('GitHub App user tokens', () => {
     expect(calls.filter((c) => c.url.endsWith('/access_token'))).toHaveLength(2);
   });
 });
+
+describe('.env lines left empty', () => {
+  it('treat KEY= as unset (default paths), but keep GITHUB_OAUTH_SCOPES= as "no scope"', () => {
+    const c = loadConfig({ TOKEN_STORE_PATH: '', RUN_STORE_PATH: '', AUDIT_LOG_PATH: '', API_PUBLIC_URL: '', GITHUB_CLIENT_ID: '', GITHUB_OAUTH_SCOPES: '' });
+    expect(c.tokenStorePath).toMatch(/\.tokens[\\/]tokens\.enc\.json$/);
+    expect(c.auditLogPath).toMatch(/\.tokens[\\/]audit\.jsonl$/);
+    expect(c.publicUrl).toBe('http://localhost:3001');
+    expect(c.github.clientId).toBeUndefined();
+    expect(c.github.scopes).toEqual([]);
+  });
+});

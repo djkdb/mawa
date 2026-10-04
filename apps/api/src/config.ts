@@ -62,7 +62,9 @@ export interface AppConfig {
 }
 
 export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
-  const e = EnvSchema.parse(env);
+  // `KEY=` copied from .env.example means "not set", not an empty path or URL.
+  // GITHUB_OAUTH_SCOPES is the exception: empty is meaningful (a GitHub App asks for no scope).
+  const e = EnvSchema.parse(Object.fromEntries(Object.entries(env).filter(([k, v]) => k === 'GITHUB_OAUTH_SCOPES' || (v ?? '').trim() !== '')));
   const root = resolve(fileURLToPath(new URL('.', import.meta.url)), '../../..');
   return {
     defaultMode: e.AGENT_MODE,
