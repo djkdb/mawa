@@ -85,5 +85,5 @@ console.log('\nmawa doctor — 실제 모드 웹 실행 전 점검 (값은 출�
 for (const [k, msg, fix] of results) console.log(`  ${icon[k]} ${msg}${fix ? `\n      → ${fix}` : ''}`);
 const fails = results.filter((r) => r[0] === 'fail').length;
 const warns = results.filter((r) => r[0] === 'warn').length;
-console.log(`\n${fails ? `✗ 고칠 것 ${fails}개` : '✓ 실행 준비됨'}${warns ? ` · 확인할 것 ${warns}개` : ''}${fails ? '' : ' → npm run dev 후 http://localhost:5173'}\n`);
+console.log(`\n${fails ? `✗ 고칠 것 ${fails}개` : '✓ 실행 준비됨'}${warns ? ` · 확인할 것 ${warns}개` : ''}${fails ? '' : ' → npm run start:real (또는 npm run dev) 후 http://localhost:5173'}\n`);
 process.exitCode = fails ? 1 : 0;

@@ -34,7 +34,8 @@ test('dashboard explains itself, shows risks/actions/deadlines, and replays a ru
   await expect(radios.nth(3)).toBeFocused();
 
   await page.getByRole('button', { name: '에이전트 실행' }).click();
-  await expect(page.locator('#activity-heading')).toBeFocused();
+  // The run is shown first in the agent office (focus moves there), the step list stays below.
+  await expect(page.locator('#office-heading')).toBeFocused();
   await expect(page.getByText(/도구 \d+회 호출 \(GitHub, Gmail, Calendar, eCampus\) · 출처 \d+건 · MCP 호출 합계 \d+ms/)).toBeVisible({ timeout: 30_000 });
   await expect(page.getByText('도구 선택: 질문별 실행 계획(스크립트)', { exact: false })).toBeVisible();
 

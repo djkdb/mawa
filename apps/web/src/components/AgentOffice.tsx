@@ -96,10 +96,16 @@ function neon(g: CanvasRenderingContext2D, text: string, x: number, y: number, c
   let cx = x;
   for (const ch of text) {
     const gl = GLYPH[ch];
-    if (gl) gl.forEach((row, j) => { for (let i = 0; i < 3; i++) if (row[i] === '1') { g.fillStyle = on > 0.5 ? mix(color, '#ffffff', 0.35) : rgba(color, 0.35); g.fillRect(cx + i, y + j, 1, 1); } });
+    if (gl) gl.forEach((row, j) => { for (let i = 0; i < 3; i++) if (row[i] === '1') { g.fillStyle = !P.night ? mix(color, '#0f172a', 0.25) : on > 0.5 ? mix(color, '#ffffff', 0.35) : rgba(color, 0.35); g.fillRect(cx + i, y + j, 1, 1); } });
     cx += 4;
   }
 }
+
+// ================================================================ two themes: night shift (dark UI) / daytime (light UI)
+type Pal = { shell: string; corr: [string, string]; runner: string; runnerEdge: string; panelLine: string; panelSpeck: string; panel: string; trim: string; base: string; floor: string; seam: string; grain: string; rug: string; rugEdge: [number, number]; signBox: string; closed: string; wall: string; wallHi: string; dark: number; signLit: number; night: boolean };
+const NIGHT: Pal = { shell: '#0d1020', corr: ['#1a1d2e', '#181b2b'], runner: '#23283f', runnerEdge: '#2a3050', panelLine: '#1d2138', panelSpeck: '#262b47', panel: '#222743', trim: '#30365a', base: '#141727', floor: '#241e2c', seam: '#181420', grain: '#3a3044', rug: '#1b1d2c', rugEdge: [0.22, 0.38], signBox: '#10121f', closed: '#3b3f55', wall: '#0b0d18', wallHi: '#2a2f4a', dark: 0.72, signLit: 1, night: true };
+const DAY: Pal = { shell: '#cfd6e2', corr: ['#d9dfe8', '#d3d9e3'], runner: '#c3cad8', runnerEdge: '#b3bccd', panelLine: '#e3dccf', panelSpeck: '#f4efe6', panel: '#efe9de', trim: '#ffffff', base: '#c9bfae', floor: '#d8c3a5', seam: '#bfa786', grain: '#e4d2b8', rug: '#f3f4f6', rugEdge: [0.28, 0.5], signBox: '#ffffff', closed: '#9aa3b5', wall: '#8a93a8', wallHi: '#b6bdcc', dark: 0.16, signLit: 0, night: false };
+let P: Pal = NIGHT;
 
 // ================================================================ static layer (rebuilt when the set of rooms changes)
 function buildStatic(present: Set<McpServerId>): HTMLCanvasElement {
@@ -107,44 +113,44 @@ function buildStatic(present: Set<McpServerId>): HTMLCanvasElement {
   c.width = W; c.height = H;
   const g = c.getContext('2d')!;
   // Building shell.
-  g.fillStyle = '#0d1020'; g.fillRect(0, 0, W, H);
+  g.fillStyle = P.shell; g.fillRect(0, 0, W, H);
   // Window wall: night sky + skyline (drawn per frame for blinking lights); mullions here.
-  g.fillStyle = '#0a0d1c'; g.fillRect(0, 0, W, 22);
+  g.fillStyle = P.wall; g.fillRect(0, 0, W, 22);
   // Corridor: dark floor + runner + edge lights.
-  for (let x = 0; x < W; x++) for (let y = 104; y < 126; y++) { const n = noise(x, y); g.fillStyle = n > 0.5 ? '#1a1d2e' : '#181b2b'; g.fillRect(x, y, 1, 1); }
-  g.fillStyle = '#23283f'; g.fillRect(0, 110, W, 10);
-  g.fillStyle = '#2a3050'; g.fillRect(0, 110, W, 1); g.fillRect(0, 119, W, 1);
+  for (let x = 0; x < W; x++) for (let y = 104; y < 126; y++) { const n = noise(x, y); g.fillStyle = n > 0.5 ? P.corr[0] : P.corr[1]; g.fillRect(x, y, 1, 1); }
+  g.fillStyle = P.runner; g.fillRect(0, 110, W, 10);
+  g.fillStyle = P.runnerEdge; g.fillRect(0, 110, W, 1); g.fillRect(0, 119, W, 1);
   for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, Room]>) {
     // Back wall: panels, top trim, baseboard.
-    for (let x = r.x; x < r.x + r.w; x++) for (let y = r.y; y < r.y + 18; y++) { g.fillStyle = (x - r.x) % 20 === 0 ? '#1d2138' : noise(x, y, 1) > 0.92 ? '#262b47' : '#222743'; g.fillRect(x, y, 1, 1); }
-    g.fillStyle = '#30365a'; g.fillRect(r.x, r.y, r.w, 1);
-    g.fillStyle = '#141727'; g.fillRect(r.x, r.y + 18, r.w, 2);
+    for (let x = r.x; x < r.x + r.w; x++) for (let y = r.y; y < r.y + 18; y++) { g.fillStyle = (x - r.x) % 20 === 0 ? P.panelLine : noise(x, y, 1) > 0.92 ? P.panelSpeck : P.panel; g.fillRect(x, y, 1, 1); }
+    g.fillStyle = P.trim; g.fillRect(r.x, r.y, r.w, 1);
+    g.fillStyle = P.base; g.fillRect(r.x, r.y + 18, r.w, 2);
     // Floor: dark wood planks, slight per-room tint.
     for (let y = r.y + 20; y < r.y + r.h; y++) for (let x = r.x; x < r.x + r.w; x++) {
       const plank = Math.floor((y - r.y) / 5);
       const seam = (y - r.y) % 5 === 0 || (x + plank * 17) % 31 === 0;
-      const base = mix('#241e2c', r.neon, 0.06);
-      g.fillStyle = seam ? '#181420' : noise(x, plank, 2) > 0.85 ? mix(base, '#3a3044', 0.5) : base;
+      const base = mix(P.floor, r.neon, 0.06);
+      g.fillStyle = seam ? P.seam : noise(x, plank, 2) > 0.85 ? mix(base, P.grain, 0.5) : base;
       g.fillRect(x, y, 1, 1);
     }
     // Rug in the room colour.
     const rx = r.x + 22, ry = r.y + r.h - 34, rw = r.w - 44, rh = 22;
-    g.fillStyle = mix('#1b1d2c', r.neon, 0.22); g.fillRect(rx, ry, rw, rh);
-    g.fillStyle = mix('#1b1d2c', r.neon, 0.38); g.fillRect(rx, ry, rw, 1); g.fillRect(rx, ry + rh - 1, rw, 1); g.fillRect(rx + 2, ry + 2, rw - 4, 1); g.fillRect(rx + 2, ry + rh - 3, rw - 4, 1);
+    g.fillStyle = mix(P.rug, r.neon, P.rugEdge[0]); g.fillRect(rx, ry, rw, rh);
+    g.fillStyle = mix(P.rug, r.neon, P.rugEdge[1]); g.fillRect(rx, ry, rw, 1); g.fillRect(rx, ry + rh - 1, rw, 1); g.fillRect(rx + 2, ry + 2, rw - 4, 1); g.fillRect(rx + 2, ry + rh - 3, rw - 4, 1);
     // Neon sign frame.
-    g.fillStyle = '#10121f'; g.fillRect(r.x + 6, r.y + 4, r.sign.length * 4 + 5, 9);
+    g.fillStyle = P.signBox; g.fillRect(r.x + 6, r.y + 4, r.sign.length * 4 + 5, 9);
     // Unconnected source: the room stays dark (drawn in the light pass) and gets a closed sign.
-    if (id !== 'agent' && id !== 'ai' && !present.has(id)) { g.fillStyle = '#3b3f55'; g.fillRect(r.door - 8, r.y + r.h - 3, 16, 2); }
+    if (id !== 'agent' && id !== 'ai' && !present.has(id)) { g.fillStyle = P.closed; g.fillRect(r.door - 8, r.y + r.h - 3, 16, 2); }
   }
   // Walls between rooms (tops), front walls with door gaps.
-  g.fillStyle = '#0b0d18';
+  g.fillStyle = P.wall;
   for (const x of [0, 130, 262, 394]) { g.fillRect(x, 22, 6, 82); g.fillRect(x, 126, 6, 99); }
   for (const r of Object.values(ROOMS)) {
     const fy = r.y < CORRIDOR ? r.y + r.h : r.y - 2;
-    g.fillStyle = '#0b0d18'; g.fillRect(r.x, fy, r.door - 12 - r.x, 4); g.fillRect(r.door + 12, fy, r.x + r.w - r.door - 12, 4);
-    g.fillStyle = '#2a2f4a'; g.fillRect(r.x, fy, r.door - 12 - r.x, 1); g.fillRect(r.door + 12, fy, r.x + r.w - r.door - 12, 1);
+    g.fillStyle = P.wall; g.fillRect(r.x, fy, r.door - 12 - r.x, 4); g.fillRect(r.door + 12, fy, r.x + r.w - r.door - 12, 4);
+    g.fillStyle = P.wallHi; g.fillRect(r.x, fy, r.door - 12 - r.x, 1); g.fillRect(r.door + 12, fy, r.x + r.w - r.door - 12, 1);
   }
-  g.fillStyle = '#0b0d18'; g.fillRect(0, 221, W, 4);
+  g.fillStyle = P.wall; g.fillRect(0, 221, W, 4);
   furniture(g);
   return c;
 }
@@ -159,7 +165,7 @@ function furniture(g: CanvasRenderingContext2D) {
   };
   // GitHub: server rack, poster, plant.
   rect(108, 30, 14, 34, '#151827'); rect(108, 30, 14, 1, '#2a2f4a'); for (let i = 0; i < 6; i++) rect(110, 33 + i * 5, 10, 3, '#1f2337');
-  rect(30, 26, 10, 12, '#1b1f33'); rect(31, 27, 8, 10, '#312e81'); rect(33, 29, 4, 1, '#a78bfa'); rect(33, 31, 3, 1, '#a78bfa');
+  rect(92, 26, 10, 12, '#1b1f33'); rect(93, 27, 8, 10, '#312e81'); rect(95, 29, 4, 1, '#a78bfa'); rect(95, 31, 3, 1, '#a78bfa');
   plant(12, 84);
   // Gmail: pigeonhole wall + cart.
   rect(232, 28, 26, 22, '#2b2032'); for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) { rect(233 + i * 6, 29 + j * 7, 5, 6, '#170f1c'); if ((i * 3 + j) % 3 !== 1) rect(233 + i * 6, 32 + j * 7, 5, 2, '#e5e7eb'); }
@@ -168,20 +174,32 @@ function furniture(g: CanvasRenderingContext2D) {
   rect(366, 26, 26, 18, '#0b0d18'); rect(344, 27, 9, 9, '#1b1f33'); rect(345, 28, 7, 7, '#e2e8f0'); rect(348, 29, 1, 3, '#0f172a'); rect(348, 31, 3, 1, '#0f172a');
   plant(380, 84);
   // eCampus: tall shelves + reading lamp.
-  shelf(12, 130, 26, 40); shelf(98, 130, 28, 40);
-  rect(42, 160, 1, 10, '#64748b'); rect(39, 158, 7, 3, '#facc15');
+  shelf(12, 144, 26, 32); shelf(98, 144, 28, 32);
+  rect(42, 164, 1, 10, '#64748b'); rect(39, 162, 7, 3, '#facc15');
   // HQ: wall status screen, printer, sofa.
-  rect(176, 128, 48, 15, '#0b0d18');
+  rect(200, 128, 46, 15, '#0b0d18');
   rect(240, 164, 16, 10, '#cbd5e1'); rect(240, 164, 16, 2, '#94a3b8'); rect(242, 168, 12, 1, '#1f2937'); rect(240, 174, 16, 2, '#64748b');
   rect(146, 200, 18, 9, '#1e3a8a'); rect(146, 196, 18, 5, '#2563eb'); rect(146, 196, 2, 13, '#1e3a8a'); rect(162, 196, 2, 13, '#1e3a8a');
   // AI core room: pedestal + holo screen frame.
   rect(346, 196, 20, 6, '#1b1f33'); rect(344, 202, 24, 3, '#10121f'); rect(346, 196, 20, 1, '#3d4470');
-  rect(286, 128, 40, 15, '#0b0d18');
+  rect(336, 128, 40, 15, '#0b0d18');
   plant(380, 140);
 }
 
 // ================================================================ per-frame layers
 function sky(g: CanvasRenderingContext2D, t: number) {
+  if (!P.night) {
+    const grd = g.createLinearGradient(0, 0, 0, 22); grd.addColorStop(0, '#60a5fa'); grd.addColorStop(1, '#dbeafe'); g.fillStyle = grd; g.fillRect(0, 0, W, 22);
+    g.fillStyle = '#fde68a'; g.fillRect(366, 3, 7, 7); g.fillStyle = '#fef3c7'; g.fillRect(367, 4, 3, 3);
+    for (let k = 0; k < 4; k++) { const x = Math.round(((t / 120 + k * 117) % (W + 40)) - 30), y = 3 + k * 3; g.fillStyle = 'rgba(255,255,255,0.9)'; g.fillRect(x, y, 16, 3); g.fillRect(x + 4, y - 2, 8, 2); }
+    for (let x = 0; x < W; x += 9) {
+      const h = 6 + Math.floor(noise(x, 1) * 13), w = 7 + Math.floor(noise(x, 2) * 3);
+      g.fillStyle = noise(x, 3) > 0.5 ? '#94a3b8' : '#a5b4c8'; g.fillRect(x, 22 - h, w, h);
+      for (let wy = 22 - h + 2; wy < 21; wy += 3) for (let wx = x + 1; wx < x + w - 1; wx += 2) if (noise(wx, wy) > 0.55) { g.fillStyle = '#dbeafe'; g.fillRect(wx, wy, 1, 1); }
+    }
+    g.fillStyle = P.wall; for (let x = 0; x < W; x += 50) g.fillRect(x, 0, 3, 22); g.fillRect(0, 20, W, 2);
+    return;
+  }
   const grd = g.createLinearGradient(0, 0, 0, 22); grd.addColorStop(0, '#0a1030'); grd.addColorStop(1, '#1d2250'); g.fillStyle = grd; g.fillRect(0, 0, W, 22);
   g.fillStyle = '#f8fafc'; g.fillRect(368, 4, 5, 5); g.fillStyle = '#cbd5e1'; g.fillRect(371, 4, 2, 2);
   for (let i = 0; i < 40; i++) { const x = (i * 53) % W, y = (i * 7) % 9; if (noise(i, 0) > 0.5) { g.fillStyle = 'rgba(255,255,255,0.6)'; g.fillRect(x, y, 1, 1); } }
@@ -190,11 +208,11 @@ function sky(g: CanvasRenderingContext2D, t: number) {
     g.fillStyle = noise(x, 3) > 0.5 ? '#0b0e22' : '#0e1229'; g.fillRect(x, 22 - h, w, h);
     for (let wy = 22 - h + 2; wy < 21; wy += 3) for (let wx = x + 1; wx < x + w - 1; wx += 2) if (noise(wx, wy, Math.floor(t / 1800 + noise(wx, wy) * 5)) > 0.72) { g.fillStyle = noise(wx, wy, 9) > 0.7 ? '#93c5fd' : '#fcd34d'; g.fillRect(wx, wy, 1, 1); }
   }
-  g.fillStyle = '#0b0d18'; for (let x = 0; x < W; x += 50) g.fillRect(x, 0, 3, 22); g.fillRect(0, 20, W, 2);
+  g.fillStyle = P.wall; for (let x = 0; x < W; x += 50) g.fillRect(x, 0, 3, 22); g.fillRect(0, 20, W, 2);
 }
 
 function monitor(g: CanvasRenderingContext2D, x: number, y: number, w: number, on: boolean, tint: string, t: number) {
-  g.fillStyle = '#0b0d16'; g.fillRect(x, y, w, 10); g.fillStyle = on ? mix('#0b1120', tint, 0.35) : '#141827'; g.fillRect(x + 1, y + 1, w - 2, 7);
+  g.fillStyle = '#0b0d16'; g.fillRect(x, y, w, 10); g.fillStyle = on ? mix('#0b1120', tint, 0.35) : P.night ? '#141827' : '#475569'; g.fillRect(x + 1, y + 1, w - 2, 7);
   if (on) for (let i = 0; i < 3; i++) { g.fillStyle = mix(tint, '#ffffff', 0.4); g.fillRect(x + 2, y + 2 + i * 2, 2 + ((Math.floor(t / 140) + i * 4) % (w - 5)), 1); }
   g.fillStyle = '#0b0d16'; g.fillRect(x + Math.floor(w / 2) - 1, y + 10, 2, 2);
 }
@@ -233,7 +251,7 @@ export function actionsFor(e: AgentEvent): Action[] {
       const masked = e.maskedEmails + e.maskedPii;
       return [
         { ms: 900, walkTo: 'ai', active: ['ai'], say: { agent: null }, status: e.phase === 'plan' ? 'AI에게 어떤 도구를 쓸지 묻는 중' : '모은 자료를 AI에게 넘기는 중' },
-        { ms: 1300, scan: true, active: ['ai'], fx: { from: 'agent', to: 'core', n: e.phase === 'plan' ? 6 : 14, masked }, count: { masked }, say: { guard: { text: masked ? `스캔 · 가림 ${masked}건` : '스캔 · 통과', tone: masked ? 'warn' : 'ok' } } },
+        { ms: 1300, scan: true, active: ['ai'], fx: { from: 'agent', to: 'core', n: e.phase === 'plan' ? 6 : 14, masked }, ...(e.phase === 'analysis' ? { count: { masked } } : {}), say: { guard: { text: masked ? `스캔 · 가림 ${masked}건` : '스캔 · 통과', tone: masked ? 'warn' : 'ok' } } },
         { ms: e.phase === 'plan' ? 800 : 1500, active: ['ai'], say: { ai: { text: e.phase === 'plan' ? '어떤 자료가 필요할까…' : '리포트 쓰는 중…', tone: 'think' } } },
       ];
     }
@@ -272,9 +290,11 @@ function infoOf(a: Actor, events: AgentEvent[]): { title: string; lines: string[
   }
   if (a === 'guard') {
     const masked = events.reduce((n, e) => n + (e.type === 'llm_request' ? e.maskedEmails + e.maskedPii : 0), 0);
+    const analysis = [...events].reverse().find((e) => e.type === 'llm_request' && e.phase === 'analysis');
+    const inReport = analysis && analysis.type === 'llm_request' ? analysis.maskedEmails + analysis.maskedPii : 0;
     const denied = events.filter((e) => e.type === 'tool_call_denied').length;
     const excluded = events.flatMap((e) => (e.type === 'policy_applied' ? e.excluded : [])).length;
-    return { title: '보안 담당 · 데이터 정책', lines: [`AI에 보내기 전 가림 ${masked}건(요청마다 합산) · 호출 차단 ${denied}건 · 제외 ${excluded}건`, '허용된 도구만 통과시키고, 메일 주소·개인정보를 가립니다.'] };
+    return { title: '보안 담당 · 데이터 정책', lines: [`리포트용 자료에서 가림 ${inReport}건 · 모든 요청 합계 ${masked}건 (같은 값이 여러 요청에 들어가면 요청마다 셉니다)`, `호출 차단 ${denied}건 · 제외 ${excluded}건`, '허용된 도구만 통과시키고, 메일 주소·개인정보를 가립니다.'] };
   }
   const hello = events.find((e) => e.type === 'mcp_server_connected' && e.server === a);
   const tools = events.flatMap((e) => (e.type === 'tool_discovered' ? e.tools.filter((t) => t.server === a) : []));
@@ -301,12 +321,27 @@ function route(from: Spot, to: RoomId): Spot[] {
   return pts;
 }
 
-export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; live: boolean; servers: McpServerId[] }) {
+/** The app's resolved theme (index.html / useTheme set data-theme on <html>). */
+function useResolvedTheme(): 'light' | 'dark' {
+  const read = () => (typeof document !== 'undefined' && document.documentElement.dataset['theme'] === 'light' ? 'light' : 'dark');
+  const [t, setT] = useState<'light' | 'dark'>(read);
+  useEffect(() => {
+    const o = new MutationObserver(() => setT(read()));
+    o.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    return () => o.disconnect();
+  }, []);
+  return t;
+}
+
+export function AgentOffice({ events, live, servers, headingRef }: { events: AgentEvent[]; live: boolean; servers: McpServerId[]; headingRef?: React.Ref<HTMLHeadingElement> }) {
+  const theme = useResolvedTheme();
   const canvas = useRef<HTMLCanvasElement>(null);
   const tags = useRef<Partial<Record<Actor, HTMLElement | null>>>({});
   const bubbles = useRef<Partial<Record<Actor, HTMLDivElement | null>>>({});
   const hud = useRef<HTMLDivElement>(null);
   const mode = useRef<HTMLSpanElement>(null);
+  const hudSm = useRef<HTMLSpanElement>(null);
+  const modeSm = useRef<HTMLSpanElement>(null);
   const reduced = useMemo(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches, []);
   const [status, setStatus] = useState('질문을 기다리는 중');
   const [log, setLog] = useState<string[]>([]);
@@ -314,7 +349,7 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
   const [picked, setPicked] = useState<Actor | null>(null);
   const present = useMemo(() => new Set(servers), [servers]);
   const presentKey = [...present].sort().join(',');
-  const fresh = () => ({ queue: [] as Action[], fed: 0, current: null as Action | null, left: 0, agent: { ...VISIT.agent, path: [] } as Mover, say: {} as Say, active: new Set<RoomId>(), carry: 0, printed: 0, playing: true, scan: 0, particles: [] as Particle[], calls: 0, masked: 0, sources: 0, replaying: false });
+  const fresh = () => ({ queue: [] as Action[], fed: 0, current: null as Action | null, left: 0, agent: { ...VISIT.agent, path: [] } as Mover, say: {} as Say, active: new Set<RoomId>(), carry: 0, printed: 0, playing: true, scan: 0, particles: [] as Particle[], calls: 0, masked: 0, sources: 0, replaying: false, ended: false });
   const sim = useRef(fresh());
   const runKey = events.find((e) => e.type === 'agent_run_started')?.runId ?? '';
 
@@ -346,9 +381,11 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
   // Feed new events into the queue as they arrive.
   useEffect(() => {
     const s = sim.current;
-    if (events.length < s.fed) s.fed = 0;
-    for (const e of events.slice(s.fed)) s.queue.push(...actionsFor(e));
-    s.fed = events.length;
+    // The same run id replayed again (demo button): start the office over.
+    if (events.length < s.fed) { sim.current = fresh(); sim.current.say.agent = { text: '질문을 기다리는 중' }; }
+    const s2 = sim.current;
+    for (const e of events.slice(s2.fed)) { s2.queue.push(...actionsFor(e)); if (e.type === 'agent_run_completed') s2.ended = true; }
+    s2.fed = events.length;
   }, [events]);
 
   const replay = () => {
@@ -365,6 +402,7 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
     const g = canvas.current?.getContext('2d');
     if (!g) return;
     g.imageSmoothingEnabled = false;
+    P = theme === 'light' ? DAY : NIGHT;
     const base = buildStatic(present);
     const light = document.createElement('canvas'); light.width = W; light.height = H;
     const lg = light.getContext('2d')!;
@@ -379,7 +417,13 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
       const dt = Math.min(100, now - last);
       last = now;
       if (s.playing) {
-        const speed = s.queue.length > 24 ? 3 : s.queue.length > 10 ? 2 : 1;
+        // Live: never fall far behind the run (catch up within ~2.5 s once it has ended). Replay: watchable pace.
+        // Remaining time = queued action time + walking still to do (current path, ~one corridor trip per queued walk).
+        let walk = 0; let at: Spot = s.agent;
+        for (const p of s.agent.path) { walk += Math.hypot(p.x - at.x, p.y - at.y); at = p; }
+        walk += s.queue.filter((a) => a.walkTo).length * 220;
+        const backlog = s.queue.reduce((n, a) => n + a.ms, 0) + Math.max(0, s.left) + walk / 0.075;
+        const speed = s.replaying ? (s.queue.length > 24 ? 3 : s.queue.length > 10 ? 2 : 1) : Math.min(16, Math.max(1, s.ended ? backlog / 1800 : backlog / 3500));
         if (!s.current && s.queue.length) {
           const a = s.queue.shift()!;
           s.current = a; s.left = a.ms;
@@ -416,7 +460,7 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
       }
       // Room lights ease toward on (active), dim (idle) or off (not connected).
       for (const id of Object.keys(ROOMS) as RoomId[]) {
-        const target = id !== 'agent' && id !== 'ai' && !present.has(id) ? 0 : s.active.has(id) ? 1 : 0.38;
+        const target = id !== 'agent' && id !== 'ai' && !present.has(id) ? 0 : s.active.has(id) ? 1 : P.night ? 0.38 : 0.8;
         const cur = roomLight.get(id) ?? target;
         roomLight.set(id, cur + (target - cur) * Math.min(1, dt / 220));
       }
@@ -429,9 +473,9 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
       for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, Room]>) neon(g, r.sign, r.x + 9, r.y + 6, r.neon, flick(id) > 0.2 ? 1 : 0.3);
       // Wall screens: calendar week grid, HQ status, AI holo text.
       for (let i = 0; i < 7; i++) for (let j = 0; j < 3; j++) { g.fillStyle = i === 3 && j === 1 ? '#f43f5e' : s.active.has('calendar') ? '#5eead4' : '#1f4d4a'; g.fillRect(368 + i * 3, 29 + j * 4, 2, 2); }
-      g.fillStyle = s.printed > 0 ? '#22c55e' : s.active.has('agent') ? '#3b82f6' : '#1e293b'; g.fillRect(178, 130, Math.round(44 * Math.min(1, (s.calls + (s.printed > 0 ? 4 : 0)) / 10)), 2);
-      for (let i = 0; i < 3; i++) { g.fillStyle = s.active.has('agent') ? '#93c5fd' : '#334155'; g.fillRect(178, 134 + i * 3, 10 + ((i * 13 + Math.floor(now / 400)) % 30), 1); }
-      for (let i = 0; i < 3; i++) { g.fillStyle = s.active.has('ai') ? mix(ROOMS.ai.neon, '#ffffff', 0.3) : '#3b2453'; g.fillRect(288, 131 + i * 3, 8 + ((i * 11 + Math.floor(now / 160)) % 28), 1); }
+      g.fillStyle = s.printed > 0 ? '#22c55e' : s.active.has('agent') ? '#3b82f6' : '#1e293b'; g.fillRect(202, 130, Math.round(42 * Math.min(1, (s.calls + (s.printed > 0 ? 4 : 0)) / 10)), 2);
+      for (let i = 0; i < 3; i++) { g.fillStyle = s.active.has('agent') ? '#93c5fd' : '#334155'; g.fillRect(202, 134 + i * 3, 10 + ((i * 13 + Math.floor(now / 400)) % 30), 1); }
+      for (let i = 0; i < 3; i++) { g.fillStyle = s.active.has('ai') ? mix(ROOMS.ai.neon, '#ffffff', 0.3) : '#3b2453'; g.fillRect(338, 131 + i * 3, 8 + ((i * 11 + Math.floor(now / 160)) % 28), 1); }
       // Server rack LEDs.
       for (let i = 0; i < 6; i++) { g.fillStyle = s.active.has('github') && noise(i, Math.floor(now / 120)) > 0.4 ? '#4ade80' : '#14532d'; g.fillRect(118, 34 + i * 5, 1, 1); g.fillStyle = noise(i, Math.floor(now / 700)) > 0.5 ? '#facc15' : '#3f3f1a'; g.fillRect(116, 34 + i * 5, 1, 1); }
       // Monitors on desks (behind people).
@@ -481,7 +525,7 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
       // ---- lighting: darkness with holes for room lights, monitors, neon, core.
       lg.globalCompositeOperation = 'source-over';
       lg.clearRect(0, 0, W, H);
-      lg.fillStyle = 'rgba(3,5,16,0.72)'; lg.fillRect(0, 0, W, H);
+      lg.fillStyle = P.night ? `rgba(3,5,16,${P.dark})` : `rgba(40,52,84,${P.dark})`; lg.fillRect(0, 0, W, H);
       lg.globalCompositeOperation = 'destination-out';
       const hole = (x: number, y: number, r: number, a: number) => { if (a <= 0.01) return; const gr = lg.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(0,0,0,${a})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); lg.fillStyle = gr; lg.fillRect(x - r, y - r, r * 2, r * 2); };
       for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, Room]>) { const v = roomLight.get(id) ?? 0; hole(r.x + r.w / 2, r.y + r.h / 2, 70, 0.95 * v); hole(r.x + 14, r.y + 8, 18, 0.9 * flick(id)); }
@@ -493,7 +537,7 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
       g.drawImage(light, 0, 0);
       // Coloured glow on top (additive).
       g.globalCompositeOperation = 'lighter';
-      const glow = (x: number, y: number, r: number, c: string, a: number) => { if (a <= 0.01) return; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, rgba(c, a)); gr.addColorStop(1, rgba(c, 0)); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); };
+      const glow = (x: number, y: number, r: number, c: string, a0: number) => { const a = a0 * (P.night ? 1 : 0.35); if (a <= 0.01) return; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, rgba(c, a)); gr.addColorStop(1, rgba(c, 0)); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); };
       for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, Room]>) { glow(r.x + 9 + r.sign.length * 2, r.y + 8, 16, r.neon, 0.35 * flick(id)); if (s.active.has(id)) glow(r.x + r.w / 2, r.y + r.h - 20, 50, r.neon, 0.12); }
       glow(CORE.x, CORE.y - 14, thinking ? 30 : 20, ROOMS.ai.neon, thinking ? 0.45 : 0.25);
       if (s.scan > 0) glow(GATE_X, 114, 22, '#f43f5e', 0.35 * s.scan);
@@ -521,13 +565,15 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
           }
         }
       }
-      if (hud.current) hud.current.textContent = `도구 ${s.calls} · 가림 ${s.masked} · 출처 ${s.sources}`;
-      if (mode.current) mode.current.textContent = live ? 'LIVE' : s.replaying ? 'REPLAY' : sim.current.fed ? 'DONE' : 'IDLE';
+      const hudText = `도구 ${s.calls} · 가림 ${s.masked} · 출처 ${s.sources}`;
+      const modeText = live ? 'LIVE' : s.replaying ? 'REPLAY' : s.fed ? 'DONE' : 'IDLE';
+      for (const el of [hud.current, hudSm.current]) if (el && el.textContent !== hudText) el.textContent = hudText;
+      for (const el of [mode.current, modeSm.current]) if (el && el.textContent !== modeText) el.textContent = modeText;
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [presentKey, reduced, live]);
+  }, [presentKey, reduced, live, theme]);
 
   const toggle = () => { const s = sim.current; s.playing = !s.playing; setPlaying(s.playing); };
 
@@ -535,7 +581,7 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
     <section aria-labelledby="office-heading" className="surface p-4 sm:p-5">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
-          <h2 id="office-heading" className="text-[15px] font-semibold">에이전트 사무실</h2>
+          <h2 id="office-heading" ref={headingRef} tabIndex={-1} className="text-[15px] font-semibold outline-none">에이전트 사무실</h2>
           <p className="text-[13px] text-text-3">MCP 서버마다 담당자 한 명. 실행 이벤트 그대로 움직입니다. 이름표를 누르면 담당 정보가 보입니다.</p>
         </div>
         <div className="flex items-center gap-1.5">
@@ -543,11 +589,11 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
           <button type="button" onClick={replay} disabled={live || !events.length} className="hairline inline-flex min-h-9 items-center gap-1 rounded-md px-2.5 text-xs text-text-2 hover:text-text disabled:opacity-40"><RotateCcw className="h-3.5 w-3.5" aria-hidden />다시 보기</button>
         </div>
       </div>
-      <div className="office-frame relative mt-3 overflow-hidden rounded-xl" style={{ aspectRatio: `${W} / ${H}` }}>
+      <div className="office-frame relative mt-3 overflow-hidden rounded-xl" data-theme={theme} style={{ aspectRatio: `${W} / ${H}` }}>
         <canvas ref={canvas} width={W} height={H} role="img" aria-label={`에이전트 사무실 그림. 지금: ${status}`} className="block h-full w-full" style={{ imageRendering: 'pixelated' }} />
         <div aria-hidden className="office-scan pointer-events-none absolute inset-0" />
         {(Object.keys(ROOMS) as RoomId[]).map((id) => (
-          <span key={id} aria-hidden className="office-room pointer-events-none absolute" style={{ left: `${((ROOMS[id].x + ROOMS[id].sign.length * 4 + 18) / W) * 100}%`, top: `${((ROOMS[id].y + 4) / H) * 100}%` }}>
+          <span key={id} aria-hidden className="office-room pointer-events-none absolute" style={{ left: `${((ROOMS[id].x + ROOMS[id].sign.length * 4 + 17) / W) * 100}%`, top: `${((ROOMS[id].y + 4) / H) * 100}%` }}>
             {ROOMS[id].label}{id !== 'agent' && id !== 'ai' && !present.has(id) ? ' · 연결 안 됨' : ''}
           </span>
         ))}
@@ -567,6 +613,7 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
           </ol>
         )}
       </div>
+      <div aria-hidden className="office-hud-sm mt-2 items-center gap-2"><span className="office-live"><span ref={modeSm}>IDLE</span></span><span ref={hudSm} /></div>
       {picked && (() => { const i = infoOf(picked, events); return (
         <div role="region" aria-label={`${NAME[picked]} 정보`} className="mt-2 rounded-lg bg-surface-2 px-3 py-2 text-[13px]">
           <div className="font-semibold text-text">{i.title}</div>

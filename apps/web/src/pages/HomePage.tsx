@@ -33,11 +33,13 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
   const DEMO_EXAMPLES = demoExamples();
   const who = IS_DEMO_BUILD ? DEMO_PERSONA.short : RECORDING ? '' : (status?.integrations.github.account ?? '');
   const activityHeading = useRef<HTMLHeadingElement>(null);
+  const officeHeading = useRef<HTMLHeadingElement>(null);
   const prev = useRef(state.phase);
   useEffect(() => {
     if (state.phase === 'starting' && prev.current !== 'starting') {
       requestAnimationFrame(() => {
-        const el = activityHeading.current;
+        // The office shows the run as it happens; the step list stays below it.
+        const el = officeHeading.current ?? activityHeading.current;
         if (!el) return;
         el.focus({ preventScroll: true });
         el.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
@@ -101,11 +103,11 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
       )}
 
       {report && <FocusCard report={report} runId={state.runId} />}
+      <AgentOffice events={state.events} live={busy} servers={officeServers} headingRef={officeHeading} />
       {report && <StatStrip report={report} />}
       {report && <CategoryBoard report={report} runId={state.runId} />}
 
       <PromptPanel status={status} busy={busy} onRun={onRun} progress={busy ? progressOf(state) : null} />
-      <AgentOffice events={state.events} live={busy} servers={officeServers} />
       <ActivityTimeline events={state.events} phase={state.phase} recorded={IS_DEMO_BUILD} runId={state.runId} headingRef={activityHeading} />
       {state.error && state.phase === 'error' && <p role="alert" className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">{state.error}</p>}
     </div>

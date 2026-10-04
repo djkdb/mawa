@@ -101,7 +101,7 @@ SESSION_ENCRYPTION_KEY=<위 node 명령이 출력한 64자리>
 npm run build
 npm run doctor
 ```
-모두 ✓ 이고 마지막 줄이 `✓ 실행 준비됨`이면 됩니다. doctor는 값을 출력하지 않고 있음/없음/형식만 봅니다.
+(4단계 `npm run start:real`이 이 둘을 자동으로 먼저 실행합니다.) 모두 ✓ 이고 마지막 줄이 `✓ 실행 준비됨`이면 됩니다. doctor는 값을 출력하지 않고 있음/없음/형식만 봅니다.
 - `claude 로그인 실패` → `claude` 실행 → `/login` → 브라우저 승인 → `/exit` → 다시 doctor
 - `claude를 실행하지 못함` → `.env`에 `CLAUDE_BIN=<where.exe claude 로 나온 claude.exe 경로>`
 - `포트 3001/5173 사용 중` → 켜 둔 `npm run dev` 창을 닫기 (doctor가 알려주는 `netstat`/`taskkill` 사용)
@@ -109,9 +109,11 @@ npm run doctor
 
 ### ☐ 4. 실행
 ```powershell
-npm run dev
+npm run start:real
 ```
-`[api] default mode=real llm=claude-cli/...` 와 `github oauth: disconnected` 줄이 보이면 정상입니다. 이 창은 그대로 두고, 녹화 화면 밖으로 옮깁니다.
+빌드 → `npm run doctor` → API(빌드 결과를 node로 실행) + 웹(:5173)을 한 번에 켭니다. doctor가 ✗를 찾으면 거기서 멈추고 고칠 방법을 보여 줍니다. `[api] listening on http://127.0.0.1:3001`과 `[web] Local: http://localhost:5173/`이 보이면 정상입니다. 이 창은 그대로 두고 녹화 화면 밖으로 옮깁니다. 끌 때는 `Ctrl + C`.
+
+> Windows에서 `npm run dev`로는 API가 뜨지 않는 경우가 있었습니다(`tsx watch`). `start:real`은 그 경로를 쓰지 않습니다. 개발 중 코드 자동 반영이 필요할 때만 `npm run dev`를 쓰세요.
 
 ### ☐ 5. 연결 (녹화 전, 한 번)
 1. 브라우저에서 **`http://localhost:5173/?record=1#/connections`** 를 엽니다.
