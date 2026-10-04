@@ -23,6 +23,12 @@ export class HttpClient implements AgentClient {
   readonly kind = 'http' as const;
   constructor(private readonly base = (import.meta.env['VITE_API_URL'] as string | undefined) ?? '') {}
 
+  async checkLlm(): Promise<{ ok: boolean; provider: string; model: string; error?: string }> {
+    const res = await api(`${this.base}/api/llm/check`, { method: 'POST' });
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    return (await res.json()) as { ok: boolean; provider: string; model: string; error?: string };
+  }
+
   async getStatus(): Promise<Status> {
     const res = await api(`${this.base}/api/status`);
     if (res.status === 401) throw new Error('401: API 접근 토큰이 필요합니다');

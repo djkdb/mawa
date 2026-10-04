@@ -26,6 +26,19 @@ describe('api', () => {
     expect(body.tokenStore.persistent).toBe(false);
   });
 
+  it('checks the model on request (scripted: ready without a model call; missing claude: a clear failure)', async () => {
+    const scripted = await makeApp();
+    expect(await (await scripted.request('/api/llm/check', { method: 'POST' })).json()).toMatchObject({ ok: true, provider: 'scripted' });
+    // The CLI path comes from the process environment (as on a real machine).
+    const before = process.env['CLAUDE_BIN'];
+    process.env['CLAUDE_BIN'] = '/nonexistent/claude';
+    const cli = await makeApp({ LLM_PROVIDER: 'claude-cli' });
+    const r = (await (await cli.request('/api/llm/check', { method: 'POST' })).json()) as { ok: boolean; error?: string };
+    if (before === undefined) delete process.env['CLAUDE_BIN']; else process.env['CLAUDE_BIN'] = before;
+    expect(r.ok).toBe(false);
+    expect(r.error).toMatch(/claude CLI not available/);
+  });
+
   it('refuses real mode when nothing is connected', async () => {
     const app = await makeApp();
     const res = await app.request('/api/agent/run', { method: 'POST', body: JSON.stringify({ prompt: 'hi', mode: 'real' }), headers: { 'content-type': 'application/json' } });

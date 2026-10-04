@@ -32,6 +32,23 @@ export class RunManager {
     this.audit = audit ?? new ChainedAuditLog<AuditRow>(config.auditLogPath);
   }
 
+  /**
+   * One tiny request to the configured model, so the UI can say "AI 준비됨" (or why not) before a run.
+   * For claude-cli this proves the Claude Code login works; for API providers, the key.
+   */
+  async checkLlm(timeoutMs = 90_000): Promise<{ ok: boolean; provider: string; model: string; error?: string }> {
+    if (this.llm.id === 'scripted') return { ok: true, ...this.llmInfo };
+    try {
+      await Promise.race([
+        this.llm.complete({ system: 'Health check. Reply with the single word: ok', messages: [{ role: 'user', content: 'ok?' }] }),
+        new Promise<never>((_, reject) => setTimeout(() => reject(new Error('LLM check timed out')), timeoutMs)),
+      ]);
+      return { ok: true, ...this.llmInfo };
+    } catch (err) {
+      return { ok: false, ...this.llmInfo, error: err instanceof Error ? err.message : String(err) };
+    }
+  }
+
   get llmInfo() {
     return { provider: this.llm.id, model: this.llm.model };
   }

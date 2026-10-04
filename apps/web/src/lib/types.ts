@@ -89,4 +89,6 @@ export interface AgentClient {
   getAudit(): Promise<AuditLog>;
   /** CBNU eCampus (Moodle): exchange id/password for a token on the API server. */
   connectLms?(username: string, password: string): Promise<void>;
+  /** One tiny request to the configured model (API server only). */
+  checkLlm?(): Promise<{ ok: boolean; provider: string; model: string; error?: string }>;
 }

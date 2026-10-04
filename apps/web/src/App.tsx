@@ -4,6 +4,7 @@ import { DataUsePanel } from './components/DataUsePanel.js';
 import { ReportView } from './components/ReportView.js';
 import { PolicyCompare } from './components/PolicyCompare.js';
 import { RealRunBanner } from './components/RealRunBanner.js';
+import { ErrorNotice } from './components/ErrorNotice.js';
 import { AuditPage } from './pages/AuditPage.js';
 import { EvalPanel } from './components/EvalPanel.js';
 import { Shell } from './components/Shell.js';
@@ -116,7 +117,7 @@ export default function App() {
               <ActivityTimeline events={state.events} phase={state.phase} recorded={recorded} runId={state.runId} />
             </>
           ) : state.phase === 'error' ? (
-            <div className="surface p-8 text-center text-sm text-text-2">{state.error} <a href={hrefFor('runs')} className="text-accent hover:underline">실행 기록 보기</a></div>
+            <div className="surface p-6"><ErrorNotice message={state.error ?? ''} /><a href={hrefFor('runs')} className="mt-3 inline-block text-sm text-accent hover:underline">실행 기록 보기</a></div>
           ) : busy ? (
             <div className="surface p-8 text-center text-sm text-text-2">리포트를 만드는 중입니다. <a href={hrefFor('home')} className="text-accent hover:underline">홈에서 진행 상황 보기</a></div>
           ) : (

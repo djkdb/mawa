@@ -3,6 +3,8 @@ import { ArrowRight, CheckCircle2, ChevronDown, Info, Play, Radio, ShieldCheck, 
 import type { AgentMode, McpServerId } from '@mawa/shared';
 import { ActivityTimeline } from '../components/ActivityTimeline.js';
 import { AgentOffice } from '../components/AgentOffice.js';
+import { ErrorNotice } from '../components/ErrorNotice.js';
+import { GettingStarted } from '../components/GettingStarted.js';
 import { CategoryBoard } from '../components/CategoryBoard.js';
 import { FocusCard } from '../components/FocusCard.js';
 import { PromptPanel } from '../components/PromptPanel.js';
@@ -65,7 +67,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
         <div className="flex min-w-0 flex-1 items-start gap-3">
           <Info className="mt-0.5 h-4 w-4 shrink-0 text-accent" aria-hidden />
           <p className="text-sm leading-relaxed text-text-2">
-            <b className="font-semibold text-text">{persona().servers.map((s) => SERVER_NAME[s]).join('·')}를 읽고 출처가 달린 리포트를 써 주는 AI 업무 에이전트입니다.</b>
+            <b className="font-semibold text-text">{persona().servers.map((s) => SERVER_NAME[s]).join('·')}를 대신 읽고, 이번 주 할 일과 마감을 근거와 함께 정리해 주는 AI 비서입니다.</b>
             {IS_DEMO_BUILD && <> 지금은 <span className="font-medium text-warn">데모</span>입니다. {persona().intro}를 가정한 가상 샘플 데이터로 기록된 실행을 재생하고, 실제 계정에는 접속하지 않습니다.</>}
             {LLM_RUN && <> <a href={hrefFor('report', `recorded_${LLM_RUN.id}`)} className="inline-flex items-center gap-1 font-medium text-accent underline-offset-2 hover:underline"><Sparkles className="h-3.5 w-3.5" aria-hidden />실제 LLM({LLM_RUN.llm.model})이 도구를 고른 기록 보기</a></>}
           </p>
@@ -76,6 +78,8 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
           </button>
         )}
       </div>
+
+      <GettingStarted status={status} state={state} busy={busy} onRun={onRun} demoPrompt={DEMO_EXAMPLES[0]?.prompt} realPrompt="이번 주 내 활동이랑 마감, 리뷰 대기 정리해줘." />
 
       {justFinished && (
         <div role="status" className="flex flex-wrap items-center gap-x-3 gap-y-2 rounded-xl bg-ok/10 px-4 py-3 text-sm">
@@ -109,7 +113,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
 
       <PromptPanel status={status} busy={busy} onRun={onRun} progress={busy ? progressOf(state) : null} />
       <ActivityTimeline events={state.events} phase={state.phase} recorded={IS_DEMO_BUILD} runId={state.runId} headingRef={activityHeading} />
-      {state.error && state.phase === 'error' && <p role="alert" className="rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">{state.error}</p>}
+      {state.error && state.phase === 'error' && <ErrorNotice message={state.error} />}
     </div>
   );
 }

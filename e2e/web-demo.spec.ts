@@ -15,7 +15,7 @@ async function collect(page: Page) {
 test('dashboard explains itself, shows risks/actions/deadlines, and replays a run with a visible trace', async ({ page }) => {
   const { errors, api } = await collect(page);
   await page.goto(DEMO);
-  await expect(page.getByText('GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 리포트를 써 주는 AI 업무 에이전트입니다.')).toBeVisible();
+  await expect(page.getByText('GitHub·Gmail·Google Calendar·eCampus를 대신 읽고, 이번 주 할 일과 마감을 근거와 함께 정리해 주는 AI 비서입니다.')).toBeVisible();
   await expect(page.getByRole('heading', { name: /성준님, 이번 주/ })).toBeVisible();
   await expect(page.getByRole('heading', { name: '카테고리별 이번 주' })).toBeVisible();
   // Public demo build: the real-run recording line never renders, even with ?record=1.
@@ -329,4 +329,18 @@ test('agent office: one person per MCP server, replays the run from its events, 
   await expect(office.getByRole('region', { name: 'GitHub 담당 정보' })).toContainText(/mawa-github v\d/);
   await office.getByRole('button', { name: '일시정지' }).click();
   await expect(office.getByRole('button', { name: '재생' })).toBeVisible();
+});
+
+test('first visit: a three-step guide (run → watch → read), plain words, and it can be dismissed', async ({ page }) => {
+  await page.goto(DEMO);
+  const guide = page.getByRole('region', { name: /처음이세요/ });
+  await expect(guide).toBeVisible();
+  await guide.getByText('자주 나오는 말 3개').click();
+  await expect(guide.getByText('MCP 서버', { exact: true })).toBeVisible();
+  await guide.getByRole('button', { name: '실행해 보기' }).click();
+  await expect(guide.getByText('샘플로 실행해 보기 (완료)')).toBeAttached();
+  await guide.getByRole('button', { name: '시작 가이드 닫기' }).click();
+  await expect(page.getByRole('region', { name: /처음이세요/ })).toHaveCount(0);
+  await page.reload();
+  await expect(page.getByRole('region', { name: /처음이세요/ })).toHaveCount(0);
 });

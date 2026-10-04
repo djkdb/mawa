@@ -31,6 +31,12 @@ test('real mode: connect GitHub (App), run, live activity, report with sources, 
   // No recording line before any run.
   await expect(page.getByTestId('real-run-banner')).toHaveCount(0);
 
+  // The readiness guide checks instead of assuming: AI reachable (one tiny request), a source connected.
+  const guide = page.getByRole('region', { name: '내 계정으로 시작하기' });
+  await expect(guide).toContainText('연결됨: github');
+  await guide.getByRole('button', { name: 'AI 연결 확인' }).click();
+  await expect(guide.getByRole('status')).toContainText('준비됨 · claude-cli/fake-claude-e2e', { timeout: 20_000 });
+
   // AGENT_MODE=real: the composer starts in real mode once GitHub is connected.
   await expect(page.getByRole('radio', { name: '실제' })).toHaveAttribute('aria-checked', 'true');
   await page.locator('#prompt').fill('이번 주 내 GitHub 활동이랑 리뷰 대기 정리해줘.');
@@ -86,6 +92,9 @@ test('real mode failure is shown as a failure, with nothing filled in from sampl
   await page.getByRole('button', { name: '에이전트 실행' }).click();
   const banner = page.getByTestId('real-run-banner');
   await expect(banner).toContainText('실패', { timeout: 30_000 });
+  // Said in plain Korean with what to do; the original message is one click away.
+  await expect(page.getByRole('alert')).toContainText('Claude Code 로그인이 필요해요');
+  await expect(page.getByRole('alert')).toContainText('/login');
   await expect(page.getByRole('alert')).toContainText('OAuth session expired (fake)');
   await expect(page.getByRole('link', { name: '리포트 보기' })).toHaveCount(0);
   await page.screenshot({ path: 'test-results/real-run-failed.png' });

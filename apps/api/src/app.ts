@@ -100,6 +100,9 @@ export function createApp(deps: AppDeps) {
     });
   });
 
+  /** Before the first real run: is the model reachable (Claude Code login, API key)? */
+  app.post('/api/llm/check', async (c) => c.json(await runs.checkLlm()));
+
   app.post('/api/agent/run', async (c) => {
     const parsed = RunBody.safeParse(await c.req.json().catch(() => ({})));
     if (!parsed.success) return c.json({ error: 'Invalid body', issues: parsed.error.issues }, 400);
