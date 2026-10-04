@@ -4,7 +4,13 @@
 >
 > GitHub·Gmail·캘린더·eCampus를 MCP로 읽어 이번 주 할 일과 마감을 출처와 함께 정리하고, **AI에 무엇을 보냈고 무엇을 막았는지**를 서명된 기록으로 남깁니다.
 
-**▶ 바로 보기: [mawa-epm.pages.dev](https://mawa-epm.pages.dev/)** — 설치 없이 브라우저에서 열리는 데모(가상의 샘플 데이터). 학생 · 직장인 · 관리자 화면을 위쪽에서 전환합니다. 내 계정으로 돌리는 방법은 [docs/REAL_RUN.md](docs/REAL_RUN.md).
+**▶ 바로 보기: [mawa-epm.pages.dev](https://mawa-epm.pages.dev/)** — 설치 없이 브라우저에서 열리는 데모(가상의 샘플 데이터). 학생 · 직장인 · 관리자 화면을 위쪽에서 전환합니다.
+
+**실제 계정으로도 돕니다.**
+- **터미널** — 2026-10-03, Windows에서 내 GitHub(읽기 전용 토큰) + Claude Code 로그인으로 `npm run ask -- --mode=real` 실행: 모델이 GitHub 도구 4개를 골라 호출, 출처 113건이 붙은 리포트 ([실행 기록 원본](docs/examples/real-run-2026-10-03.txt))
+- **웹 서비스** — GitHub App(읽기 전용)으로 연결 → 질문 → 실시간 활동 → 리포트·출처. 실제 실행 화면에는 실행 이벤트에서 나온 「실제 실행 · 실제 데이터 · 시작 시각 · 모델」 한 줄이 뜨고, 데모 실행에서는 뜨지 않습니다. `?record=1`은 녹화용으로 계정 이름을 가립니다
+- **헤드리스 녹화** — 브라우저 승인을 누를 수 없는 클라우드 세션은 `MAWA_GITHUB_TOKEN`(읽기 전용)으로 `npm run record:web`을 돌려 실제 실행을 영상으로 남깁니다
+- 따라 하기: [docs/REAL_RUN.md](docs/REAL_RUN.md) (터미널 · 웹 · 클라우드 녹화) · 실행 전 점검 `npm run doctor`
 
 **The story in three steps**
 
@@ -27,13 +33,12 @@ REPORT ← source validation ← omission check ← eval
 | Motion graphic | `motion` — 45 s Remotion video |
 | Docs | [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) · [`docs/DECISIONS.md`](docs/DECISIONS.md) · [`docs/IMPLEMENTATION.md`](docs/IMPLEMENTATION.md) · [`docs/SETUP.md`](docs/SETUP.md) |
 
-- 내 GitHub 계정으로 직접 돌려보기: [docs/REAL_RUN.md](docs/REAL_RUN.md)
 
 ## Overview
 
-Type a request such as *"이번 주 공부·개발이랑 팀플 진행 상황 정리해줘."* The agent discovers the tools exposed by three MCP servers, calls the ones it needs, normalizes every commit / PR / issue / email / event into a **Source** with a stable id, asks an LLM for a report constrained to a JSON schema, and then **mechanically rejects any bullet that cites a source id that does not exist**. The UI shows the tool calls as a timeline and the report with per-item source chips.
+Type a request such as *"이번 주 공부·개발이랑 팀플 진행 상황 정리해줘."* The agent discovers the tools exposed by four MCP servers (GitHub, Gmail, Calendar, eCampus), calls the ones it needs, normalizes every commit / PR / issue / email / event into a **Source** with a stable id, asks an LLM for a report constrained to a JSON schema, and then **mechanically rejects any bullet that cites a source id that does not exist**. The UI shows the tool calls as a timeline and the report with per-item source chips.
 
-Everything runs with zero credentials in **Demo Mode**: the same MCP servers serve synthetic fixtures and a scripted provider stands in for the LLM. Demo output is labelled `DEMO MODE` everywhere, driven by a `mode` field that is mandatory on every event and on the report.
+Everything runs with zero credentials in **Demo Mode**: the same MCP servers serve synthetic fixtures and a scripted provider stands in for the LLM. Demo output is labelled `데모 워크스페이스 · 샘플 데이터` everywhere, driven by a `mode` field that is mandatory on every event and on the report.
 
 ## Why I Built This
 
@@ -80,9 +85,12 @@ packages/agent-core LLM provider abstraction, MCP client, agent loop, aggregatio
 mcp-servers/github  MCP server: get_recent_commits, get_pull_requests, get_open_issues, get_repository_activity
 mcp-servers/gmail   MCP server: search_emails, get_email, search_project_emails
 mcp-servers/calendar MCP server: get_events, get_upcoming_events, search_events
+mcp-servers/lms     MCP server: CBNU eCampus (Moodle) assignments, quizzes, deadlines
+mcp-servers/gateway MCP policy gateway in front of the four (stdio or Streamable HTTP, signed audit)
 portfolio           Interactive 3D presentation (separate Vite app)
 motion              Remotion motion graphic
-scripts/            export-portfolio-data.mjs (snapshots real servers into the portfolio)
+scripts/            ask, doctor, record-web-run, record-llm-run, record-gateway-run, eval, verify-audit, export-portfolio-data
+e2e/                Playwright specs; e2e/fakes: fake GitHub (OAuth + REST) and fake claude for real-mode tests
 docs/               architecture, decisions, implementation notes, setup
 ```
 
@@ -120,7 +128,7 @@ React 19 · TypeScript · Vite 8 · Tailwind 4 · Three.js / React Three Fiber /
 
 ## Live Demo
 
-Demo mode runs **for free, with no API key and no server**: `apps/web` has a browser-only build that replays runs recorded from the real agent + MCP pipeline over synthetic fixtures. The UI code path is the same one a live run uses (same events, same report schema, same source-integrity validation), so what you see is the real product UX, labelled as a demo workspace with sample data (`데모 워크스페이스 · 샘플 데이터`, `기록 재생`). In the demo, tool selection comes from a per-question plan (`scripted-heuristics-v1`), and the UI says so; with `LLM_API_KEY` on the API server, the model chooses the tools.
+Demo mode runs **for free, with no API key and no server**: `apps/web` has a browser-only build that replays runs recorded from the real agent + MCP pipeline over synthetic fixtures. The UI code path is the same one a live run uses (same events, same report schema, same source-integrity validation), so what you see is the real product UX, labelled as a demo workspace with sample data (`데모 워크스페이스 · 샘플 데이터`, `기록 재생`). In the demo, tool selection comes from a per-question plan (`scripted-heuristics-v1`), and the UI says so; with `LLM_API_KEY` or `LLM_PROVIDER=claude-cli` (local Claude Code login) on the API server, the model chooses the tools.
 
 ```bash
 npm run build:demo           # → apps/web/dist-demo (static, deploy anywhere)
@@ -133,19 +141,21 @@ The four example requests are exactly the prompts that were recorded with the sc
 
 | | DEMO (browser-only build) | DEMO (API, default `npm run dev`) | REAL |
 | --- | --- | --- | --- |
-| Needs | nothing | Node | Node + OAuth apps (+ LLM key) |
-| Data | synthetic fixtures, recorded | synthetic fixtures, live MCP calls | your GitHub / Gmail / Calendar via OAuth |
+| Needs | nothing | Node | Node + a read-only GitHub App (or Google OAuth, eCampus login) + Claude Code login or an LLM key |
+| Data | synthetic fixtures, recorded | synthetic fixtures, live MCP calls | your GitHub / Gmail / Calendar / eCampus; headless: `MAWA_GITHUB_TOKEN` |
 | MCP servers | recorded `tools/list` + `tools/call` | spawned per run, `--mode=demo` | spawned per run, `--mode=real` |
 | LLM | none (replay) | scripted, or a real model with `LLM_API_KEY` | scripted, or a real model |
 | Network from the page | none | same-origin API only | same-origin API only |
 
 ## Demo Mode
 
-`AGENT_MODE=demo` (the default) spawns all three MCP servers with `--mode=demo`. They serve clearly synthetic fixtures (user `demo-user`, 12 commits, 3 PRs, 4 issues, 9 emails, 5 events) with dates rebased to the current week. Without `LLM_API_KEY`, the `ScriptedProvider` replays a fixed tool plan and builds the report with heuristics; the UI shows `LLM: scripted (no API key)`. With a key, a real model runs over the demo fixtures. The pipeline, transport and UI are identical to Real Mode (ADR-006).
+`AGENT_MODE=demo` (the default) spawns the MCP servers with `--mode=demo`. They serve clearly synthetic fixtures for the chosen persona (student: four servers; worker at the fictional B사: three, no LMS), with dates on a pinned demo clock so recordings stay stable. Without `LLM_API_KEY`, the `ScriptedProvider` replays a fixed tool plan and builds the report with heuristics; the UI shows `LLM: scripted (no API key)`. With a key, a real model runs over the demo fixtures. The pipeline, transport and UI are identical to Real Mode (ADR-006).
 
 ## Real Mode
 
-Real Mode uses only the integrations you have connected through OAuth: the API spawns a server **only** for connected services (GitHub with your token; Gmail and Calendar with your Google token) and skips the rest, so a `real` report never mixes in demo data. `/api/status` reports each integration as `not_configured`, `disconnected` or `connected`, and the UI's Real toggle stays disabled until something is connected. Only read endpoints are ever called. Google scopes are read-only (`gmail.readonly`, `calendar.readonly`). **GitHub is different:** an OAuth App's `repo` scope is read *and* write because GitHub offers no read-only repository scope for OAuth Apps. For least privilege, register a **GitHub App** with read-only permissions and set `GITHUB_OAUTH_SCOPES=""` (see [`docs/SETUP.md`](docs/SETUP.md)). Tokens are exchanged server-side and encrypted at rest with AES-256-GCM.
+Real Mode uses only the integrations you have connected through OAuth: the API spawns a server **only** for connected services (GitHub with your token; Gmail and Calendar with your Google token) and skips the rest, so a `real` report never mixes in demo data. `/api/status` reports each integration as `not_configured`, `disconnected` or `connected`, and the UI's Real toggle stays disabled until something is connected. Only read endpoints are ever called. Google scopes are read-only (`gmail.readonly`, `calendar.readonly`). **GitHub is different:** an OAuth App's `repo` scope is read *and* write because GitHub offers no read-only repository scope for OAuth Apps. For least privilege, register a **GitHub App** with read-only permissions and set `GITHUB_OAUTH_SCOPES=""` (see [`docs/SETUP.md`](docs/SETUP.md)). Tokens are exchanged server-side and encrypted at rest with AES-256-GCM. GitHub App user tokens expire after 8 hours; the API keeps the refresh token and renews the token before a run.
+
+What a real run looks like in the browser: with `AGENT_MODE=real` the composer starts in **실제** once a source is connected; the run streams over SSE; a sticky line shows **실제 실행 · 실제 데이터 · <start> · <provider/model>**, computed from the run's own events (`agent_run_started.mode`, `llm_*`) like the mode badge, never from a UI switch and never in the demo build; a failed run is shown as failed, with nothing filled in from samples. `?record=1` (kept for the tab, survives the OAuth round trip) replaces account names with 「내 계정」 for screen recordings; report content is left as it is. The full path is covered by `e2e/web-real.spec.ts` against a fake GitHub (OAuth + REST) and a fake `claude` binary; the parts that need a real account are a checklist in [docs/REAL_RUN.md](docs/REAL_RUN.md).
 
 ## Environment Variables
 
@@ -157,7 +167,10 @@ See [`.env.example`](.env.example). Nothing is hard-coded; `.env` is git-ignored
 | `LLM_PROVIDER` | `anthropic` (default), `openai`, `openai-compatible`, `claude-cli` (uses the local Claude Code login, no key), `scripted` |
 | `LLM_API_KEY`, `LLM_MODEL`, `LLM_BASE_URL` | provider credentials; `LLM_BASE_URL` for OpenAI-compatible endpoints |
 | `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET` | GitHub OAuth App or GitHub App OAuth credentials |
-| `GITHUB_OAUTH_SCOPES` | scopes for an OAuth App (default `read:user repo`); set to empty for a GitHub App |
+| `GITHUB_OAUTH_SCOPES` | scopes for an OAuth App (default `read:user repo`); keep the line with an empty value (`GITHUB_OAUTH_SCOPES=`) for a GitHub App |
+| `MAWA_GITHUB_TOKEN` | read-only fine-grained token standing in for the GitHub connection on headless machines (`npm run record:web`); deliberately not `GITHUB_TOKEN` |
+| `CLAUDE_BIN` | path to `claude.exe` or `cli.js` when Claude Code is not found automatically (Windows: `where.exe` and npm shims are tried first) |
+| `GITHUB_OAUTH_URL`, `GITHUB_API_URL` | test only (e2e fake GitHub); https or `http://localhost` only, because tokens are sent there |
 | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth client |
 | `SESSION_ENCRYPTION_KEY` | 64 hex chars (`openssl rand -hex 32`); without it tokens are memory-only |
 | `API_PORT`, `WEB_ORIGIN`, `API_PUBLIC_URL`, `TOKEN_STORE_PATH` | server settings |
@@ -165,6 +178,10 @@ See [`.env.example`](.env.example). Nothing is hard-coded; `.env` is git-ignored
 | `API_ACCESS_TOKEN` | optional shared secret (≥16 chars); when set, `/api/*` and disconnect require it and the UI asks for it once |
 | `LMS_BASE_URL` | Moodle LMS for the eCampus MCP server (default `https://lms.chungbuk.ac.kr`); connect in the UI with your own LMS login |
 | `RUN_STORE_PATH` | with `SESSION_ENCRYPTION_KEY`, finished runs are kept encrypted here (last 30) so reports can be compared week to week |
+| `AUDIT_LOG_PATH`, `AUDIT_SIGNING_KEY_PATH` | hash-chained audit log (JSONL) and its Ed25519 signing key, created on first start (default `.tokens/`) |
+| `POLICY_PATH` | server-owned data policy (JSON); a request can only make it stricter |
+
+A `KEY=` line left empty counts as not set (defaults apply); `GITHUB_OAUTH_SCOPES=` is the one exception. `npm run doctor` checks the keys without printing values.
 
 ## Setup
 
@@ -179,14 +196,17 @@ OAuth app and LLM configuration for Real Mode: [`docs/SETUP.md`](docs/SETUP.md).
 ## Running the Project
 
 ```bash
+npm run doctor     # before a real run: .env keys (no values), build, claude lookup + login, free ports
 npm run dev        # builds TS packages, then starts api (:3001), web (:5173), portfolio (:5174)
 npm run build      # builds every workspace (shared, agent-core, mcp servers, api, web, portfolio; motion typechecks)
 npm run test       # vitest: schemas, MCP servers over stdio, agent loop, API, demo client (vitest)
-npm run test:e2e   # Playwright: API-backed UI, portfolio, and the standalone demo build (run npm run build first)
+npm run test:e2e   # Playwright: API-backed UI, portfolio, the demo build, and real mode against a fake GitHub + fake claude
 npm run lint       # eslint
 npm run ask -- "질문"  # ask from the terminal; LLM_PROVIDER=claude-cli lets the model pick the MCP tools (docs/SETUP.md)
 npm run audit:verify -- file.jsonl   # verify a hash-chained audit log (web export or gateway --audit)
 npm run record:gateway-run           # Claude Code → policy gateway → demo servers, saves answer + audit
+npm run record:web -- "질문"          # real mode in a headless browser → recordings/*.mp4 + run metadata (MAWA_GITHUB_TOKEN)
+npm run eval                         # score recorded reports against the hand-written gold items
 npm run typecheck  # tsc -b + Vite apps
 ```
 
@@ -194,9 +214,11 @@ npm run typecheck  # tsc -b + Vite apps
 
 | Server | Tools | Real provider |
 | --- | --- | --- |
-| `mcp-servers/github` | `get_recent_commits`, `get_pull_requests`, `get_open_issues`, `get_repository_activity` | GitHub REST via `@octokit/rest`, `GITHUB_TOKEN` (verified against the real API: commits, PRs, issues of this repository) |
+| `mcp-servers/github` | `get_recent_commits`, `get_pull_requests`, `get_open_issues`, `get_repository_activity` | GitHub REST via `@octokit/rest`, `GITHUB_TOKEN` (+ `GITHUB_API_URL` for tests); verified against the real API |
 | `mcp-servers/gmail` | `search_emails`, `get_email`, `search_project_emails` | Gmail API, `gmail.readonly` |
 | `mcp-servers/calendar` | `get_events`, `get_upcoming_events`, `search_events` | Calendar API, `calendar.readonly` |
+| `mcp-servers/lms` | eCampus assignments, quizzes, deadlines | CBNU Moodle web-service token from the user's own login (password not stored) |
+| `mcp-servers/gateway` | the tools of the servers behind it, filtered by policy | see **Policy Gateway** |
 
 Each server has integration tests that spawn the built binary and drive it with the official MCP client.
 
@@ -217,7 +239,7 @@ Tools outside `allowedTools` are absent from `tools/list` and refused on `tools/
 
 ## Agent
 
-`packages/agent-core` exports `runAgent`, `McpToolExecutor`, the `LLMProvider` interface with `AnthropicProvider`, `OpenAIProvider`, `OpenAICompatibleProvider`, `ScriptedProvider`, `aggregateContext`, `generateReport` and a `RunStore` seam (`MemoryRunStore` in v1).
+`packages/agent-core` exports `runAgent`, `McpToolExecutor`, the `LLMProvider` interface with `AnthropicProvider`, `OpenAIProvider`, `OpenAICompatibleProvider`, `ClaudeCliProvider` (headless `claude -p` with a JSON schema per turn, no tools of its own), `ScriptedProvider`, `aggregateContext`, `generateReport` and a `RunStore` seam (`MemoryRunStore` in v1).
 
 ## Frontend
 
@@ -287,10 +309,11 @@ Both apps depend only on `@mawa/shared` (built first). They are single-page apps
 - **Demo Mode must be a mode, not a mock.** A separate fake path would have drifted from the real one within a week.
 - **`mode` belongs in the data.** Making it mandatory on every event is what makes the DEMO badge impossible to forget.
 - **Tool budgets matter more than prompts.** A hard cap on calls and result size kept both cost and latency predictable.
+- **The first real run finds what tests don't.** Windows npm shims, an expired CLI login, `KEY=` lines read as empty paths — none showed up until the agent ran on my own PC and account. Each became a fix, a test, and a line in `npm run doctor`.
 
 ## Future Improvements
 
-A recorded real-LLM run (`LLM_API_KEY=… npm run record:llm-run` adds one to the demo, labelled with the model); more MCP servers (Slack, Notion, Jira); scheduled weekly runs; write tools gated behind explicit human approval; a fixture-based evaluation suite scoring source grounding and coverage; per-user token isolation and tool-call audit logs for multi-user deployments. See `docs/ARCHITECTURE.md` §8.
+More MCP servers (Slack, Notion, Jira) behind the same gateway; scheduled weekly runs; write tools gated behind explicit human approval; a model-based PII detector next to the regex one; anchoring the audit chain head outside the server (a transparency log); a larger eval set across more weeks. Already done and no longer on this list: recorded real-model runs, the eval set, per-user tokens and signed audit logs (gateway). See `docs/ARCHITECTURE.md` §8 and `docs/ENTERPRISE.md`.
 
 ---
 
