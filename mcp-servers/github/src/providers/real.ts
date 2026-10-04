@@ -9,9 +9,9 @@ import type { Commit, GitHubProvider, Issue, PullRequest, RepositoryActivity } f
 export class RealGitHubProvider implements GitHubProvider {
   private octokit: Octokit;
 
-  constructor(token: string) {
+  constructor(token: string, baseUrl?: string) {
     if (!token) throw new Error('GITHUB_TOKEN is required in real mode');
-    this.octokit = new Octokit({ auth: token, userAgent: 'my-ai-work-agent' });
+    this.octokit = new Octokit({ auth: token, userAgent: 'my-ai-work-agent', ...(baseUrl ? { baseUrl } : {}) });
   }
 
   private async activeRepos(since: string, limit = 10): Promise<Array<{ owner: string; name: string }>> {
@@ -87,7 +87,7 @@ export class RealGitHubProvider implements GitHubProvider {
       ? await this.octokit.issues.listForRepo({ owner: target.owner, repo: target.name, state: 'open', sort: 'updated', per_page: limit })
       : await this.octokit.issues.list({ filter: 'assigned', state: 'open', sort: 'updated', per_page: limit });
     return data.filter((i) => !i.pull_request).map((i) => {
-      const fullRepo = i.repository_url.replace('https://api.github.com/repos/', '');
+      const fullRepo = i.repository_url.replace(/^.*\/repos\//, '');
       return {
         sourceId: `github:issue:${fullRepo}#${i.number}`,
         repo: fullRepo,

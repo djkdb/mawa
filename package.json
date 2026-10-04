@@ -33,7 +33,8 @@
     "ask": "node scripts/ask.mjs",
     "audit:verify": "node scripts/verify-audit.mjs",
     "record:gateway-run": "node scripts/record-gateway-run.mjs",
-    "eval": "node scripts/eval.mjs"
+    "eval": "node scripts/eval.mjs",
+    "doctor": "node scripts/doctor.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.0",

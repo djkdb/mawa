@@ -14,6 +14,8 @@ test('API-backed workspace runs the agent and shows a source-grounded report', a
   await page.getByRole('button', { name: '에이전트 실행' }).click();
   await expect(page.getByText(/도구 \d+회 호출 \((?=.*GitHub)(?=.*Gmail)(?=.*Calendar)[^)]*\)/)).toBeVisible({ timeout: 45_000 });
   await expect(page.getByRole('heading', { name: '카테고리별 이번 주' })).toBeVisible();
+  // The real-run recording line is driven by run events: never on a demo run.
+  await expect(page.getByTestId('real-run-banner')).toHaveCount(0);
   await expect(page.getByRole('region', { name: '팀플', exact: true })).toBeVisible();
 
   await page.getByRole('link', { name: '리포트' }).first().click();

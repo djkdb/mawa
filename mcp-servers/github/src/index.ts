@@ -19,7 +19,7 @@ export function resolveMode(argv = process.argv, env = process.env): 'demo' | 'r
 
 async function main() {
   const mode = resolveMode();
-  const provider = mode === 'demo' ? new DemoGitHubProvider() : new RealGitHubProvider(process.env['GITHUB_TOKEN'] ?? '');
+  const provider = mode === 'demo' ? new DemoGitHubProvider() : new RealGitHubProvider(process.env['GITHUB_TOKEN'] ?? '', process.env['GITHUB_API_URL'] || undefined);
   const server = createGitHubMcpServer(provider, mode);
   await server.connect(new StdioServerTransport());
   console.error(`[mawa-github] MCP server ready (mode=${mode})`);

@@ -18,6 +18,8 @@ test('dashboard explains itself, shows risks/actions/deadlines, and replays a ru
   await expect(page.getByText('GitHub·Gmail·Google Calendar·eCampus를 읽고 출처가 달린 리포트를 써 주는 AI 업무 에이전트입니다.')).toBeVisible();
   await expect(page.getByRole('heading', { name: /성준님, 이번 주/ })).toBeVisible();
   await expect(page.getByRole('heading', { name: '카테고리별 이번 주' })).toBeVisible();
+  // Public demo build: the real-run recording line never renders, even with ?record=1.
+  await expect(page.getByTestId('real-run-banner')).toHaveCount(0);
   for (const c of ['수업·과제', '팀플', '개발', '모임', '취업']) await expect(page.getByRole('region', { name: c, exact: true })).toBeVisible();
   await expect(page.locator('.pri-high').first()).toBeVisible();
   await expect(page.getByText(/^(D-\d+|내일|오늘)$/).first()).toBeVisible();

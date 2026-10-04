@@ -392,3 +392,10 @@ pretending a student needs RBAC.
 **Why.** "Which tool" is not access control without "how much of it". A hash chain without a key
 proves nothing to someone who can rewrite the file. A model's report is only as useful as what it
 does not miss, and that has to be measured, not asserted.
+
+## ADR-023 — 녹화용 실제 실행 표시는 실행 이벤트로, 가짜 GitHub로 real 경로를 e2e
+
+- **결정**: 「실제 실행 · 실제 데이터 · 시작 시각 · provider/model」 한 줄은 UI 스위치가 아니라 그 실행의 `agent_run_started.mode`(모든 이벤트가 real일 때)와 `llm_*` 이벤트 값으로만 그린다. 데모 빌드에서는 컴포넌트가 아무것도 그리지 않는다. 계정 식별자는 `?record=1`일 때 `/api/status`를 받는 한 곳에서 「내 계정」으로 바꾼다.
+- **e2e**: 계정 없이 real 경로를 타도록 GitHub의 OAuth·REST 주소를 바꿀 수 있게 했다(`GITHUB_OAUTH_URL`/`GITHUB_API_URL`, https 또는 localhost http만 허용 — 토큰이 그 주소로 가기 때문). 가짜 GitHub(`e2e/fakes/fake-github.mjs`)와 가짜 `claude`(`CLAUDE_BIN`)로 연결 → 콜백 → 실제 GitHub MCP 서버 → claude-cli 공급자 → 리포트까지 확인한다. 가짜가 만든 문구에는 모두 `[가짜]`가 붙는다.
+- **GitHub App 토큰**: 8시간 만료 + refresh token을 저장하고 실행 전에 갱신한다. scope는 설정(`config.github.scopes`)에서만 읽는다.
+- **한계**: 실제 GitHub App 승인 화면과 실제 Claude 로그인은 e2e로 확인할 수 없다 → `docs/REAL_RUN.md` 체크리스트.

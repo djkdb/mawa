@@ -5,19 +5,7 @@ import type { AppConfig } from '../config.js';
 import type { OAuthProviderId, StoredToken, TokenStore } from './token-store.js';
 
 export const GOOGLE_SCOPES = ['https://www.googleapis.com/auth/gmail.readonly', 'https://www.googleapis.com/auth/calendar.readonly', 'openid', 'email'];
-/**
- * GitHub OAuth Apps have no read-only repository scope: `repo` grants read AND write on repositories.
- * This project only calls read endpoints, but the token itself is not read-only.
- * For least privilege, register a GitHub App with read-only permissions (Contents, Issues,
- * Pull requests, Metadata) and set GITHUB_OAUTH_SCOPES="" — GitHub App user tokens take their
- * permissions from the app, not from a scope parameter.
- */
-export const DEFAULT_GITHUB_SCOPES = ['read:user', 'repo'];
-export function githubScopesFromEnv(env: NodeJS.ProcessEnv = process.env): string[] {
-  const raw = env['GITHUB_OAUTH_SCOPES'];
-  if (raw === undefined) return DEFAULT_GITHUB_SCOPES;
-  return raw.split(/[\s,]+/).filter(Boolean);
-}
+export { DEFAULT_GITHUB_SCOPES, githubScopesFromEnv } from './scopes.js';
 
 export type IntegrationStatus = 'not_configured' | 'disconnected' | 'connected';
 
@@ -55,10 +43,10 @@ export class OAuthService {
     const state = randomBytes(16).toString('hex');
     this.pendingStates.set(state, { provider, createdAt: Date.now() });
     if (provider === 'github') {
-      const u = new URL('https://github.com/login/oauth/authorize');
+      const u = new URL('/login/oauth/authorize', this.config.github.oauthUrl);
       u.searchParams.set('client_id', this.config.github.clientId!);
       u.searchParams.set('redirect_uri', this.redirectUri('github'));
-      const scopes = githubScopesFromEnv();
+      const scopes = this.config.github.scopes;
       if (scopes.length) u.searchParams.set('scope', scopes.join(' '));
       u.searchParams.set('state', state);
       return u.toString();
@@ -84,17 +72,46 @@ export class OAuthService {
     return token;
   }
 
-  private async exchangeGithub(code: string): Promise<StoredToken> {
-    const res = await fetch('https://github.com/login/oauth/access_token', {
+  /**
+   * GitHub App user tokens expire (8h) and come with a refresh token; OAuth App tokens do not.
+   * Both shapes are stored; freshGithubToken() refreshes the former before a run.
+   */
+  private async githubTokenRequest(body: Record<string, string>): Promise<{ access_token: string; refresh_token?: string; expires_in?: number; scope?: string }> {
+    const res = await fetch(new URL('/login/oauth/access_token', this.config.github.oauthUrl), {
       method: 'POST',
       headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify({ client_id: this.config.github.clientId, client_secret: this.config.github.clientSecret, code, redirect_uri: this.redirectUri('github') }),
+      body: JSON.stringify({ client_id: this.config.github.clientId, client_secret: this.config.github.clientSecret, ...body }),
     });
-    const data = (await res.json()) as { access_token?: string; scope?: string; error?: string; error_description?: string };
+    const data = (await res.json()) as { access_token?: string; refresh_token?: string; expires_in?: number; scope?: string; error?: string; error_description?: string };
     if (!data.access_token) throw new Error(data.error_description ?? data.error ?? 'GitHub token exchange failed');
-    const me = await fetch('https://api.github.com/user', { headers: { authorization: `Bearer ${data.access_token}`, 'user-agent': 'my-ai-work-agent' } });
-    const user = (await me.json()) as { login?: string };
-    return { provider: 'github', accessToken: data.access_token, ...(data.scope ? { scope: data.scope } : {}), ...(user.login ? { account: user.login } : {}), connectedAt: new Date().toISOString() };
+    return data as { access_token: string };
+  }
+
+  private githubFields(data: { access_token: string; refresh_token?: string; expires_in?: number; scope?: string }) {
+    return {
+      accessToken: data.access_token,
+      ...(data.refresh_token ? { refreshToken: data.refresh_token } : {}),
+      ...(data.expires_in ? { expiresAt: Date.now() + data.expires_in * 1000 } : {}),
+      ...(data.scope ? { scope: data.scope } : {}),
+    };
+  }
+
+  private async exchangeGithub(code: string): Promise<StoredToken> {
+    const data = await this.githubTokenRequest({ code, redirect_uri: this.redirectUri('github') });
+    const me = await fetch(new URL('/user', this.config.github.apiUrl), { headers: { authorization: `Bearer ${data.access_token}`, 'user-agent': 'my-ai-work-agent', accept: 'application/vnd.github+json' } });
+    const user = (await me.json().catch(() => ({}))) as { login?: string };
+    return { provider: 'github', ...this.githubFields(data), ...(user.login ? { account: user.login } : {}), connectedAt: new Date().toISOString() };
+  }
+
+  /** Returns a GitHub token valid for at least five minutes, refreshing an expiring GitHub App token. */
+  async freshGithubToken(): Promise<StoredToken | null> {
+    const stored = this.store.get('github');
+    if (!stored) return null;
+    if (!stored.expiresAt || stored.expiresAt - Date.now() > 5 * 60_000 || !stored.refreshToken) return stored;
+    const data = await this.githubTokenRequest({ grant_type: 'refresh_token', refresh_token: stored.refreshToken });
+    const updated: StoredToken = { ...stored, ...this.githubFields(data) };
+    await this.store.set(updated);
+    return updated;
   }
 
   private googleClient() {
@@ -165,7 +182,7 @@ export class OAuthService {
           revoked = res.ok;
         } else if (provider === 'github' && this.config.github.clientId && this.config.github.clientSecret) {
           const basic = Buffer.from(`${this.config.github.clientId}:${this.config.github.clientSecret}`).toString('base64');
-          const res = await fetchImpl(`https://api.github.com/applications/${this.config.github.clientId}/grant`, {
+          const res = await fetchImpl(new URL(`/applications/${this.config.github.clientId}/grant`, this.config.github.apiUrl), {
             method: 'DELETE',
             headers: { authorization: `Basic ${basic}`, accept: 'application/vnd.github+json', 'content-type': 'application/json' },
             body: JSON.stringify({ access_token: stored.accessToken }),

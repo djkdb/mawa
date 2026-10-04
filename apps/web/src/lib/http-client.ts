@@ -1,5 +1,6 @@
 import { AgentEventSchema, type AgentMode, type DataPolicy } from '@mawa/shared';
 import { persona } from './persona.js';
+import { accountLabel } from './recording.js';
 import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status, AuditLog } from './types.js';
 
 const TOKEN_KEY = 'mawa.apiToken';
@@ -26,7 +27,10 @@ export class HttpClient implements AgentClient {
     const res = await api(`${this.base}/api/status`);
     if (res.status === 401) throw new Error('401: API 접근 토큰이 필요합니다');
     if (!res.ok) throw new Error(`status ${res.status}`);
-    return (await res.json()) as Status;
+    const status = (await res.json()) as Status;
+    // Recording mode: every account identifier the UI could show passes through here.
+    for (const i of Object.values(status.integrations)) i.account = accountLabel(i.account);
+    return status;
   }
 
   async startRun(prompt: string, mode: AgentMode): Promise<StartRunResult> {

@@ -3,6 +3,7 @@ import { ActivityTimeline } from './components/ActivityTimeline.js';
 import { DataUsePanel } from './components/DataUsePanel.js';
 import { ReportView } from './components/ReportView.js';
 import { PolicyCompare } from './components/PolicyCompare.js';
+import { RealRunBanner } from './components/RealRunBanner.js';
 import { AuditPage } from './pages/AuditPage.js';
 import { EvalPanel } from './components/EvalPanel.js';
 import { Shell } from './components/Shell.js';
@@ -48,7 +49,9 @@ export default function App() {
     if (IS_DEMO_BUILD && !(route === 'report' && param)) showRecorded();
     if (IS_DEMO_BUILD) return;
     const q = new URLSearchParams(window.location.search);
-    if (q.get('connected')) setNotice(`${q.get('connected')} 연결됨`);
+    const NAMES: Record<string, string> = { github: 'GitHub', google: 'Google', lms: 'eCampus' };
+    const connected = q.get('connected');
+    if (connected) setNotice(`${NAMES[connected] ?? connected} 연결됨. 홈에서 질문을 실행하세요.`);
     if (q.get('auth_error')) setNotice(`${q.get('auth_error') === 'google' ? 'Google' : 'GitHub'} 연결에 실패했습니다. 자세한 원인은 API 서버 로그에 남습니다.`);
     if (q.has('connected') || q.has('auth_error')) window.history.replaceState({}, '', `/${window.location.hash}`);
   }, [showRecorded]);
@@ -73,7 +76,7 @@ export default function App() {
     prevPhase.current = state.phase;
   }, [state.phase, state.events, state.error]);
 
-  const startRun: typeof run = (p, m) => { if (route !== 'home') navigate('home'); return run(p, m); };
+  const startRun: typeof run = (p, m) => { setNotice(null); if (route !== 'home') navigate('home'); return run(p, m); };
   const reportHref = hrefFor('report', state.runId);
   const recorded = IS_DEMO_BUILD;
   // Policy demo: the recording this run is compared against (same question, no policy).
@@ -100,6 +103,7 @@ export default function App() {
       )}
       {notice && <p role="status" className="surface mx-auto mb-4 max-w-5xl px-4 py-3 text-sm">{notice} <button type="button" className="ml-2 text-text-2 underline" onClick={() => setNotice(null)}>닫기</button></p>}
 
+      {(route === 'home' || route === 'report') && <RealRunBanner events={state.events} />}
       {route === 'home' && (pid === 'admin' ? <AdminHome key={pid} /> : <HomePage key={pid} status={status} state={state} busy={busy} onRun={startRun} reportHref={reportHref} />)}
       {route === 'report' && (
         <div className="mx-auto flex max-w-5xl flex-col gap-5">

@@ -12,6 +12,7 @@ import { periodKo, DEMO_PERSONA, SERVER_NAME } from '../lib/copy.js';
 import type { AgentRunState } from '../lib/useAgentRun.js';
 import { getRecordedRun } from '../lib/demo-client.js';
 import { hrefFor } from '../lib/useHashRoute.js';
+import { RECORDING } from '../lib/recording.js';
 
 
 
@@ -29,7 +30,7 @@ export function HomePage({ status, state, busy, onRun, reportHref }: { status: S
   const report = state.report;
   const LLM_RUN = IS_DEMO_BUILD ? getRecordedRun(persona().llmRun) : null;
   const DEMO_EXAMPLES = demoExamples();
-  const who = IS_DEMO_BUILD ? DEMO_PERSONA.short : (status?.integrations.github.account ?? '');
+  const who = IS_DEMO_BUILD ? DEMO_PERSONA.short : RECORDING ? '' : (status?.integrations.github.account ?? '');
   const activityHeading = useRef<HTMLHeadingElement>(null);
   const prev = useRef(state.phase);
   useEffect(() => {

@@ -43,9 +43,17 @@ export class RunManager {
 
     const servers: McpServerSpec[] = [];
     const skipped: Array<{ id: McpServerId; reason: string }> = [];
-    const gh = this.oauth.status('github') === 'connected' ? this.oauth.token('github') : null;
-    if (gh) servers.push({ id: 'github', command: process.execPath, args: [SERVER_ENTRY('github')], env: { GITHUB_TOKEN: gh.accessToken } });
-    else skipped.push({ id: 'github', reason: this.oauth.status('github') === 'not_configured' ? 'GitHub OAuth not configured' : 'GitHub not connected' });
+    let gh = null;
+    let ghReason = this.oauth.status('github') === 'not_configured' ? 'GitHub OAuth not configured' : 'GitHub not connected';
+    if (this.oauth.status('github') === 'connected') {
+      try {
+        gh = await this.oauth.freshGithubToken();
+      } catch (err) {
+        ghReason = `GitHub token refresh failed (reconnect GitHub): ${err instanceof Error ? err.message : String(err)}`;
+      }
+    }
+    if (gh) servers.push({ id: 'github', command: process.execPath, args: [SERVER_ENTRY('github')], env: { GITHUB_TOKEN: gh.accessToken, ...(this.config.github.apiUrl !== 'https://api.github.com' ? { GITHUB_API_URL: this.config.github.apiUrl } : {}) } });
+    else skipped.push({ id: 'github', reason: ghReason });
 
     const google = this.oauth.status('google') === 'connected' ? await this.oauth.freshGoogleToken() : null;
     for (const id of ['gmail', 'calendar'] as const) {

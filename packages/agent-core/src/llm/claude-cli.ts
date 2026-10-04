@@ -21,6 +21,7 @@ export interface ClaudeCliOptions {
  */
 export function resolveClaudeCommand(bin: string | undefined, platform = process.platform, env = process.env, where = whereClaude): { command: string; prefix: string[] } {
   const explicit = bin ?? env['CLAUDE_BIN'];
+  if (explicit && /\.(c|m)?js$/i.test(explicit)) return { command: process.execPath, prefix: [explicit] };
   if (platform !== 'win32') return { command: explicit ?? 'claude', prefix: [] };
   const candidates = explicit ? [explicit] : [...where(env), ...searchDirs(env).flatMap((d) => ['claude.exe', 'claude.cmd'].map((f) => join(d, f)))];
   for (const c of candidates) {

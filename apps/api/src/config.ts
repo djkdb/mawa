@@ -3,6 +3,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { z } from 'zod';
 import { llmConfigFromEnv, type LLMConfig } from '@mawa/agent-core';
+import { githubScopesFromEnv } from './auth/scopes.js';
 import { AgentModeSchema, DataPolicySchema, type AgentMode, type DataPolicy } from '@mawa/shared';
 
 /** Load ../../.env (repo root) if present. Secrets never leave process.env. */
@@ -23,6 +24,9 @@ const EnvSchema = z.object({
   API_PUBLIC_URL: z.string().optional(),
   GITHUB_CLIENT_ID: z.string().optional(),
   GITHUB_CLIENT_SECRET: z.string().optional(),
+  /** Test-only overrides (a local fake GitHub). Must be https, or http on localhost. */
+  GITHUB_OAUTH_URL: z.string().optional(),
+  GITHUB_API_URL: z.string().optional(),
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   SESSION_ENCRYPTION_KEY: z.string().optional(),
@@ -45,7 +49,7 @@ export interface AppConfig {
   webOrigin: string;
   publicUrl: string;
   llm: LLMConfig;
-  github: { clientId?: string; clientSecret?: string };
+  github: { clientId?: string; clientSecret?: string; oauthUrl: string; apiUrl: string; /** [] for a GitHub App (permissions come from the app). */ scopes: string[] };
   google: { clientId?: string; clientSecret?: string };
   lms: { baseUrl: string };
   encryptionKey?: string;
@@ -68,7 +72,13 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     webOrigin: e.WEB_ORIGIN,
     publicUrl: e.API_PUBLIC_URL ?? `http://localhost:${e.API_PORT}`,
     llm: llmConfigFromEnv(env),
-    github: { ...(e.GITHUB_CLIENT_ID ? { clientId: e.GITHUB_CLIENT_ID } : {}), ...(e.GITHUB_CLIENT_SECRET ? { clientSecret: e.GITHUB_CLIENT_SECRET } : {}) },
+    github: {
+      ...(e.GITHUB_CLIENT_ID ? { clientId: e.GITHUB_CLIENT_ID } : {}),
+      ...(e.GITHUB_CLIENT_SECRET ? { clientSecret: e.GITHUB_CLIENT_SECRET } : {}),
+      oauthUrl: safeBaseUrl(e.GITHUB_OAUTH_URL, 'https://github.com', 'GITHUB_OAUTH_URL'),
+      apiUrl: safeBaseUrl(e.GITHUB_API_URL, 'https://api.github.com', 'GITHUB_API_URL'),
+      scopes: githubScopesFromEnv(env),
+    },
     lms: { baseUrl: e.LMS_BASE_URL },
     google: { ...(e.GOOGLE_CLIENT_ID ? { clientId: e.GOOGLE_CLIENT_ID } : {}), ...(e.GOOGLE_CLIENT_SECRET ? { clientSecret: e.GOOGLE_CLIENT_SECRET } : {}) },
     ...(e.SESSION_ENCRYPTION_KEY ? { encryptionKey: e.SESSION_ENCRYPTION_KEY } : {}),
@@ -78,6 +88,15 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     auditSigningKeyPath: e.AUDIT_SIGNING_KEY_PATH ?? (e.AUDIT_LOG_PATH ? `${e.AUDIT_LOG_PATH}.key.pem` : resolve(root, '.tokens', 'audit-signing-key.pem')),
     policy: loadPolicy(e.POLICY_PATH),
   };
+}
+
+/** Tokens are sent to these hosts, so an override must be https, or plain http only on this machine. */
+export function safeBaseUrl(raw: string | undefined, fallback: string, name: string): string {
+  if (!raw) return fallback;
+  const u = new URL(raw);
+  const local = u.protocol === 'http:' && ['localhost', '127.0.0.1', '[::1]'].includes(u.hostname);
+  if (u.protocol !== 'https:' && !local) throw new Error(`${name} must be https:// (or http://localhost for tests)`);
+  return u.origin;
 }
 
 /** The server's base policy: POLICY_PATH if given (validated), else masking on, nothing excluded. */

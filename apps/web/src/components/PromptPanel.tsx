@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { AlarmClock, ArrowRight, Briefcase, CalendarDays, CircleAlert, ClipboardList, GraduationCap, GitBranch, Mail, type LucideIcon } from 'lucide-react';
 import type { AgentMode, McpServerId } from '@mawa/shared';
 import { IS_DEMO_BUILD, demoExamples, type Status } from '../lib/client.js';
@@ -23,6 +23,9 @@ export function PromptPanel({ status, busy, onRun, progress = null }: { status: 
   const [custom, setCustom] = useState('');
   const [mode, setMode] = useState<AgentMode>('demo');
   const realAvailable = !IS_DEMO_BUILD && (status?.realMode.available ?? false);
+  // AGENT_MODE=real: start in real mode once a source is connected (the server still decides).
+  const realDefault = realAvailable && status?.defaultMode === 'real';
+  useEffect(() => { if (realDefault) setMode('real'); }, [realDefault]);
   const prompt = selected ? (DEMO_EXAMPLES.find((e) => e.id === selected)?.prompt ?? '') : custom;
   const radios = useRef<Array<HTMLButtonElement | null>>([]);
   // Roving tabindex: one tab stop for the group, arrows move focus and selection (WAI-ARIA radio group).

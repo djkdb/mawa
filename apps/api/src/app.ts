@@ -4,7 +4,7 @@ import { cors } from 'hono/cors';
 import { streamSSE } from 'hono/streaming';
 import { z } from 'zod';
 import { AgentModeSchema, DataPolicySchema, PROJECT, tightenPolicy, type AuditRow } from '@mawa/shared';
-import { GOOGLE_SCOPES, OAuthService, githubScopesFromEnv } from './auth/oauth.js';
+import { GOOGLE_SCOPES, OAuthService } from './auth/oauth.js';
 import { TokenStore } from './auth/token-store.js';
 import type { AppConfig } from './config.js';
 import { ChainedAuditLog, MemoryRunStore, loadOrCreateSigner, type RunStore } from '@mawa/agent-core';
@@ -90,7 +90,7 @@ export function createApp(deps: AppDeps) {
       runStore: { persistent: deps.runs.store instanceof EncryptedRunStore },
       api: { host: config.host, tokenRequired: Boolean(config.accessToken) },
       integrations: {
-        github: { status: oauth.status('github'), account: oauth.account('github') ?? null, connectUrl: '/auth/github/start', scopes: githubScopesFromEnv() },
+        github: { status: oauth.status('github'), account: oauth.account('github') ?? null, connectUrl: '/auth/github/start', scopes: config.github.scopes },
         lms: { status: oauth.status('lms'), account: oauth.account('lms') ?? null, connectUrl: '/auth/lms/connect', baseUrl: config.lms.baseUrl },
         google: { status: oauth.status('google'), account: oauth.account('google') ?? null, connectUrl: '/auth/google/start', services: ['gmail', 'calendar'], scopes: GOOGLE_SCOPES },
       },
