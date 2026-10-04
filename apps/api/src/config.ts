@@ -27,6 +27,12 @@ const EnvSchema = z.object({
   /** Test-only overrides (a local fake GitHub). Must be https, or http on localhost. */
   GITHUB_OAUTH_URL: z.string().optional(),
   GITHUB_API_URL: z.string().optional(),
+  /**
+   * Headless runs (a cloud session recording the web UI) cannot click "Authorize" on github.com.
+   * A read-only fine-grained token here stands in for the OAuth connection. Deliberately not
+   * GITHUB_TOKEN: CI and cloud containers set that one for their own use.
+   */
+  MAWA_GITHUB_TOKEN: z.string().optional(),
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
   SESSION_ENCRYPTION_KEY: z.string().optional(),
@@ -49,7 +55,7 @@ export interface AppConfig {
   webOrigin: string;
   publicUrl: string;
   llm: LLMConfig;
-  github: { clientId?: string; clientSecret?: string; oauthUrl: string; apiUrl: string; /** [] for a GitHub App (permissions come from the app). */ scopes: string[] };
+  github: { clientId?: string; clientSecret?: string; envToken?: string; oauthUrl: string; apiUrl: string; /** [] for a GitHub App (permissions come from the app). */ scopes: string[] };
   google: { clientId?: string; clientSecret?: string };
   lms: { baseUrl: string };
   encryptionKey?: string;
@@ -77,6 +83,7 @@ export function loadConfig(env: NodeJS.ProcessEnv = process.env): AppConfig {
     github: {
       ...(e.GITHUB_CLIENT_ID ? { clientId: e.GITHUB_CLIENT_ID } : {}),
       ...(e.GITHUB_CLIENT_SECRET ? { clientSecret: e.GITHUB_CLIENT_SECRET } : {}),
+      ...(e.MAWA_GITHUB_TOKEN ? { envToken: e.MAWA_GITHUB_TOKEN.trim() } : {}),
       oauthUrl: safeBaseUrl(e.GITHUB_OAUTH_URL, 'https://github.com', 'GITHUB_OAUTH_URL'),
       apiUrl: safeBaseUrl(e.GITHUB_API_URL, 'https://api.github.com', 'GITHUB_API_URL'),
       scopes: githubScopesFromEnv(env),

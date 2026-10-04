@@ -43,6 +43,8 @@ export function McpConnections({ status, events, onDisconnect, onConnectLms }: {
               </div>
               {IS_DEMO_BUILD ? (
                 <span className="text-xs text-text-3">샘플</span>
+              ) : integ === 'connected' && provider === 'github' && status?.integrations.github.source === 'env' ? (
+                <span className="shrink-0 text-xs text-text-3" title="서버의 MAWA_GITHUB_TOKEN(읽기 전용 토큰)으로 연결됨">서버 토큰</span>
               ) : integ === 'connected' ? (
                 <button type="button" onClick={() => onDisconnect(provider)} className="hairline inline-flex shrink-0 items-center gap-1 rounded-md px-2 py-1 text-xs text-text-2 hover:text-text"><Unlink className="h-3 w-3" aria-hidden /> 해제</button>
               ) : integ === 'disconnected' && id === 'lms' ? (

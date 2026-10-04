@@ -61,3 +61,19 @@ describe('.env lines left empty', () => {
     expect(c.github.scopes).toEqual([]);
   });
 });
+
+describe('MAWA_GITHUB_TOKEN (headless runs)', () => {
+  it('counts as a GitHub connection without OAuth, and GITHUB_TOKEN alone does not', async () => {
+    const dir = await mkdtemp(join(tmpdir(), 'mawa-envtok-'));
+    const base = { TOKEN_STORE_PATH: join(dir, 't.json'), AUDIT_LOG_PATH: join(dir, 'a.jsonl') };
+    const store = new TokenStore(join(dir, 't.json'));
+    const plain = new OAuthService(loadConfig({ ...base, GITHUB_TOKEN: 'ci-token' }), store);
+    expect(plain.status('github')).toBe('not_configured');
+    const oauth = new OAuthService(loadConfig({ ...base, MAWA_GITHUB_TOKEN: ' pat-123 ' }), store);
+    expect(oauth.status('github')).toBe('connected');
+    expect(oauth.source('github')).toBe('env');
+    expect((await oauth.freshGithubToken())?.accessToken).toBe('pat-123');
+    await oauth.loadEnvAccount(async () => new Response(JSON.stringify({ login: 'someone' })));
+    expect(oauth.account('github')).toBe('someone');
+  });
+});

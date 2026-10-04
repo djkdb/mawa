@@ -22,6 +22,7 @@ export async function createDeps(config: AppConfig): Promise<AppDeps> {
   const store = new TokenStore(config.tokenStorePath, config.encryptionKey);
   await store.load();
   const oauth = new OAuthService(config, store);
+  await oauth.loadEnvAccount();
   // With an encryption key, run history persists (encrypted) so reports can be compared week to week.
   let runStore: RunStore = new MemoryRunStore();
   if (config.encryptionKey) {
@@ -90,7 +91,7 @@ export function createApp(deps: AppDeps) {
       runStore: { persistent: deps.runs.store instanceof EncryptedRunStore },
       api: { host: config.host, tokenRequired: Boolean(config.accessToken) },
       integrations: {
-        github: { status: oauth.status('github'), account: oauth.account('github') ?? null, connectUrl: '/auth/github/start', scopes: config.github.scopes },
+        github: { status: oauth.status('github'), account: oauth.account('github') ?? null, connectUrl: '/auth/github/start', scopes: config.github.scopes, source: oauth.source('github') },
         lms: { status: oauth.status('lms'), account: oauth.account('lms') ?? null, connectUrl: '/auth/lms/connect', baseUrl: config.lms.baseUrl },
         google: { status: oauth.status('google'), account: oauth.account('google') ?? null, connectUrl: '/auth/google/start', services: ['gmail', 'calendar'], scopes: GOOGLE_SCOPES },
       },

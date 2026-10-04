@@ -35,3 +35,6 @@ test-results/
 
 # remotion
 motion/out/
+
+# Screen recordings of real runs (npm run record:web): real account data, never committed.
+recordings/

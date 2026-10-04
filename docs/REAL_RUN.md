@@ -147,3 +147,28 @@ npm run dev
 | 실패 `OAuth session expired` | Claude Code 로그인 만료 → `claude` → `/login` |
 | 서버를 껐다 켜니 다시 연결하라고 함 | `SESSION_ENCRYPTION_KEY` 없음 → 2단계 |
 | 리포트에 저장소가 하나도 없음 | App을 설치하지 않았거나 저장소를 안 고름 → 1단계 Install App |
+
+---
+
+# 클라우드 세션에서 녹화하기 (`npm run record:web`)
+
+다른 Claude Code 클라우드 세션(예: insta_auto)이 **직접** 실제 모드로 돌리고 브라우저 화면을 영상으로 남기는 방법입니다. 클라우드의 브라우저는 github.com 승인 버튼을 누를 수 없으므로, GitHub는 **환경 변수에 넣은 읽기 전용 토큰**으로 연결합니다. AI는 그 세션의 Claude Code 로그인(`claude -p`)을 씁니다.
+
+## 사람이 할 일 (한 번)
+1. **읽기 전용 토큰 만들기**: GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → Generate new token
+   - Expiration 7일 · Repository access **Only select repositories**(영상에 보여줄 저장소) · Permissions: **Contents / Issues / Pull requests → Read-only**
+2. **녹화할 세션의 환경에 넣기**: 그 세션 제목 줄의 클라우드 환경 메뉴 → **Edit** → 환경 변수에 `MAWA_GITHUB_TOKEN=<토큰>` 추가 → 저장. 새로 시작한 세션부터 적용됩니다.
+   - 채팅에는 절대 붙여넣지 않습니다. `GITHUB_TOKEN`이 아니라 **`MAWA_GITHUB_TOKEN`** 입니다(클라우드가 `GITHUB_TOKEN`을 따로 씀).
+3. 녹화가 끝나면 GitHub에서 토큰을 **Delete**, 환경 변수도 삭제.
+
+## 세션이 할 일
+```sh
+git clone https://github.com/djkdb/mawa.git && cd mawa
+git checkout claude/busy-einstein-a5xqac
+npm install && npm run build
+npm run record:web -- "이번 주 내 GitHub 활동이랑 리뷰 대기 정리해줘."
+```
+- 결과: `recordings/mawa-real-run-<시각>.mp4`(+ `.webm`)와 `.json`(runId · 시작 시각 · 실제 쓰인 모델 · 상태 · 도구 호출 수). `recordings/`는 git에 올라가지 않습니다(실제 계정 데이터).
+- 화면 순서: 홈 → 연결(「연결됨 (내 계정)」, 읽기 전용 권한) → 질문 입력·실행 → 「실제 실행 · 실제 데이터 · 시각 · claude-cli/모델」 줄과 실시간 활동 → 리포트 → 출처 하나 → AI가 본 내 데이터. 마우스 위치는 파란 점으로 보입니다.
+- 꾸미지 않습니다: 실행이 실패하면 영상에 실패 화면이 남고 스크립트는 실패(종료 코드 1)로 끝납니다.
+- 시각은 Asia/Seoul로 표시됩니다. 실제 실행이면 1~2분 걸리고, 기다리는 구간은 편집에서 배속하면 됩니다.

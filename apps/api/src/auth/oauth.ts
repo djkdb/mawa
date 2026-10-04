@@ -12,6 +12,7 @@ export type IntegrationStatus = 'not_configured' | 'disconnected' | 'connected';
 /** OAuth 2.0 authorization-code flow for GitHub and Google. Secrets stay on the server. */
 export class OAuthService {
   private pendingStates = new Map<string, { provider: OAuthProviderId; createdAt: number }>();
+  private envAccount: string | undefined;
 
   constructor(private readonly config: AppConfig, private readonly store: TokenStore) {}
 
@@ -22,16 +23,40 @@ export class OAuthService {
   }
 
   status(provider: OAuthProviderId): IntegrationStatus {
+    if (this.source(provider) === 'env') return 'connected';
     if (!this.isConfigured(provider)) return 'not_configured';
     return this.store.get(provider) ? 'connected' : 'disconnected';
   }
 
+  /** Where the connection comes from: an OAuth sign-in (stored, encrypted) or MAWA_GITHUB_TOKEN. */
+  source(provider: OAuthProviderId): 'oauth' | 'env' | null {
+    if (this.store.get(provider)) return 'oauth';
+    if (provider === 'github' && this.config.github.envToken) return 'env';
+    return null;
+  }
+
+  private envToken(): StoredToken | null {
+    const t = this.config.github.envToken;
+    return t ? { provider: 'github', accessToken: t, ...(this.envAccount ? { account: this.envAccount } : {}), connectedAt: new Date(0).toISOString() } : null;
+  }
+
   token(provider: OAuthProviderId): StoredToken | null {
-    return this.store.get(provider);
+    return this.store.get(provider) ?? (provider === 'github' ? this.envToken() : null);
   }
 
   account(provider: OAuthProviderId): string | undefined {
-    return this.store.get(provider)?.account;
+    return this.token(provider)?.account;
+  }
+
+  /** Best effort: the login behind MAWA_GITHUB_TOKEN, for the connection card. Never throws. */
+  async loadEnvAccount(fetchImpl: typeof fetch = fetch): Promise<void> {
+    if (!this.config.github.envToken) return;
+    try {
+      const res = await fetchImpl(new URL('/user', this.config.github.apiUrl), { headers: { authorization: `Bearer ${this.config.github.envToken}`, 'user-agent': 'my-ai-work-agent', accept: 'application/vnd.github+json' } });
+      if (res.ok) this.envAccount = ((await res.json()) as { login?: string }).login;
+    } catch {
+      /* informational only */
+    }
   }
 
   private redirectUri(provider: OAuthProviderId): string {
@@ -106,7 +131,7 @@ export class OAuthService {
   /** Returns a GitHub token valid for at least five minutes, refreshing an expiring GitHub App token. */
   async freshGithubToken(): Promise<StoredToken | null> {
     const stored = this.store.get('github');
-    if (!stored) return null;
+    if (!stored) return this.envToken();
     if (!stored.expiresAt || stored.expiresAt - Date.now() > 5 * 60_000 || !stored.refreshToken) return stored;
     const data = await this.githubTokenRequest({ grant_type: 'refresh_token', refresh_token: stored.refreshToken });
     const updated: StoredToken = { ...stored, ...this.githubFields(data) };

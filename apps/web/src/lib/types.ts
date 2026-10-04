@@ -9,7 +9,7 @@ export interface Status {
   runStore?: { persistent: boolean };
   api?: { host: string; tokenRequired?: boolean };
   integrations: {
-    github: { status: IntegrationStatus; account: string | null; connectUrl: string; scopes?: string[] };
+    github: { status: IntegrationStatus; account: string | null; connectUrl: string; scopes?: string[]; /** 'env': MAWA_GITHUB_TOKEN on the server, nothing to disconnect here. */ source?: 'oauth' | 'env' | null };
     google: { status: IntegrationStatus; account: string | null; connectUrl: string; services: string[]; scopes?: string[] };
     lms?: { status: IntegrationStatus; account: string | null; connectUrl: string; baseUrl: string };
   };
