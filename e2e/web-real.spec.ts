@@ -40,9 +40,10 @@ test('real mode: connect GitHub (App), run, live activity, report with sources, 
   const banner = page.getByTestId('real-run-banner');
   await expect(banner).toContainText('실제 실행 · 실제 데이터 ·');
   await expect(banner).toContainText('claude-cli/');
-  // Live activity over SSE: the real GitHub MCP server's calls show up.
-  await expect(page.getByText(/get_recent_commits/).first()).toBeVisible({ timeout: 30_000 });
   await expect(banner).toContainText('완료', { timeout: 45_000 });
+  // Activity streamed over SSE from the real GitHub MCP server (4 calls), and the office shows that desk.
+  await expect(page.getByRole('region', { name: '에이전트 활동' })).toContainText(/도구 4회 호출 \(GitHub\)/);
+  await expect(page.getByRole('region', { name: '에이전트 사무실' }).getByRole('button', { name: 'GitHub 담당 정보' })).toBeVisible();
   await expect(banner).toContainText('claude-cli/fake-claude-e2e');
   await page.screenshot({ path: 'test-results/real-run-home.png' });
 

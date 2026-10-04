@@ -4,183 +4,217 @@ import type { AgentEvent, McpServerId } from '@mawa/shared';
 import { summaryKo } from '../lib/copy.js';
 
 /**
- * The agent's run as a pixel office. Every MCP server is a person at a desk (GitHub, 메일, 일정,
- * eCampus), the agent is my assistant walking between them, the model is a robot in the AI room
- * and the data policy is a guard at its door. Nothing here is decorative state: every move comes
- * from one run event (tool_call_started → walk to that desk, llm_request → the guard masks, …),
- * queued with a minimum duration so a fast replay stays readable. All art is drawn in code.
+ * The agent's run as a night-shift ops office, drawn in code (no image assets).
+ * Every MCP server is a person in their own room (GitHub, 메일, 일정, eCampus); the agent walks
+ * between them and carries the results back as glowing data; the model is an AI core behind a
+ * security gate, where the data policy's guard strips what it masks before anything goes in.
+ * Nothing is staged: every move is one run event (tool_call_started → walk to that room and light
+ * it, llm_request → scan at the gate with the masked count, …), queued with a minimum duration so
+ * a fast replay stays readable.
  */
 
-// ---------------------------------------------------------------- geometry (logical pixels)
-const W = 320;
-const H = 184;
-const CORRIDOR = 92;
+// ================================================================ geometry (logical pixels)
+const W = 400;
+const H = 225;
+const CORRIDOR = 115;
 type Spot = { x: number; y: number };
 type RoomId = McpServerId | 'agent' | 'ai';
-const ROOMS: Record<RoomId, { x: number; y: number; w: number; h: number; door: number; label: string; floor: [string, string] }> = {
-  github: { x: 4, y: 16, w: 100, h: 64, door: 54, label: 'GitHub 개발실', floor: ['#c9b8f0', '#bba7ea'] },
-  gmail: { x: 110, y: 16, w: 100, h: 64, door: 160, label: '메일실', floor: ['#f6c9cf', '#f0b8c0'] },
-  calendar: { x: 216, y: 16, w: 100, h: 64, door: 266, label: '일정실', floor: ['#bfe8df', '#ade0d5'] },
-  lms: { x: 4, y: 104, w: 100, h: 76, door: 54, label: 'eCampus 자료실', floor: ['#dbe9b5', '#cfe0a1'] },
-  agent: { x: 110, y: 104, w: 100, h: 76, door: 160, label: '내 자리', floor: ['#e8d9bd', '#dfcda9'] },
-  ai: { x: 216, y: 104, w: 100, h: 76, door: 266, label: 'AI 회의실', floor: ['#cdd6ee', '#bfcae6'] },
+type Room = { x: number; y: number; w: number; h: number; door: number; label: string; neon: string; sign: string };
+const TOP = { y: 22, h: 78 };
+const BOT = { y: 126, h: 95 };
+const COLS = [6, 138, 270];
+const ROOMS: Record<RoomId, Room> = {
+  github: { x: COLS[0]!, ...TOP, w: 124, door: 68, label: 'GitHub 개발실', neon: '#a78bfa', sign: 'GIT' },
+  gmail: { x: COLS[1]!, ...TOP, w: 124, door: 200, label: '메일실', neon: '#fb7185', sign: 'MAIL' },
+  calendar: { x: COLS[2]!, ...TOP, w: 124, door: 332, label: '일정실', neon: '#2dd4bf', sign: 'CAL' },
+  lms: { x: COLS[0]!, ...BOT, w: 124, door: 68, label: 'eCampus 자료실', neon: '#a3e635', sign: 'LMS' },
+  agent: { x: COLS[1]!, ...BOT, w: 124, door: 200, label: '내 자리', neon: '#60a5fa', sign: 'HQ' },
+  ai: { x: COLS[2]!, ...BOT, w: 124, door: 332, label: 'AI 회의실', neon: '#e879f9', sign: 'AI' },
 };
-/** Where the visiting assistant stands in each room, and where the room's person sits. */
-const VISIT: Record<RoomId, Spot> = {
-  github: { x: 70, y: 76 }, gmail: { x: 176, y: 76 }, calendar: { x: 282, y: 76 },
-  lms: { x: 72, y: 166 }, agent: { x: 150, y: 146 }, ai: { x: 252, y: 150 },
-};
-const SEAT: Record<McpServerId, Spot> = { github: { x: 48, y: 36 }, gmail: { x: 154, y: 36 }, calendar: { x: 260, y: 36 }, lms: { x: 48, y: 124 } };
-const GUARD_POST: Spot = { x: 284, y: CORRIDOR + 2 };
-const ROBOT_POST: Spot = { x: 280, y: 132 };
+const SEAT: Record<McpServerId, Spot> = { github: { x: 68, y: 70 }, gmail: { x: 200, y: 70 }, calendar: { x: 332, y: 70 }, lms: { x: 68, y: 178 } };
+const VISIT: Record<RoomId, Spot> = { github: { x: 84, y: 96 }, gmail: { x: 216, y: 96 }, calendar: { x: 348, y: 96 }, lms: { x: 86, y: 212 }, agent: { x: 200, y: 180 }, ai: { x: 312, y: 206 } };
+const DESKS: Array<{ x: number; y: number; w: number }> = [{ x: 46, y: 70, w: 46 }, { x: 178, y: 70, w: 46 }, { x: 310, y: 70, w: 46 }, { x: 46, y: 178, w: 46 }, { x: 168, y: 180, w: 64 }];
+const GUARD: Spot = { x: 352, y: 124 };
+const GATE_X = 332;
+const CORE: Spot = { x: 356, y: 184 };
+const PRINTER: Spot = { x: 246, y: 170 };
 
-// ---------------------------------------------------------------- sprites
-// 12×16. K outline/eyes, S skin, H hair, C shirt, D shirt shade, P trousers, B shoes, W white, A accent.
-const BODY = [
-  '....HHHH....',
-  '...HHHHHH...',
-  '..HHSSSSHH..',
-  '..HSKSSKSH..',
-  '...SSSSSS...',
-  '....SSSS....',
-  '..CCCCCCCC..',
-  '.SCCDCCDCCS.',
-  '.SCCCCCCCCS.',
-  '.S.CCCCCC.S.',
-  '...CCCCCC...',
-  '...PPPPPP...',
-];
-const LEGS = [
-  ['...PP..PP...', '...PP..PP...', '...BB..BB...', '............'],
-  ['...PP...PP..', '..PP....PP..', '..BB.....BB.', '............'],
-  ['..PP...PP...', '..PP....PP..', '.BB.....BB..', '............'],
-];
-const TYPING = ['..CCCCCCCC..', '.SCCDCCDCCS.', 'SSCCCCCCCCSS', '...CCCCCC...'];
-const ROBOT = [
-  '.....AA.....',
-  '.....KK.....',
-  '..MMMMMMMM..',
-  '..MEEMMEEM..',
-  '..MEEMMEEM..',
-  '..MMKKKKMM..',
-  '...MMMMMM...',
-  '..CCCCCCCC..',
-  '.MCCAACCCCM.',
-  '.MCCAACCCCM.',
-  '.M.CCCCCC.M.',
-  '...CCCCCC...',
-  '...MM..MM...',
-  '...MM..MM...',
-  '...KK..KK...',
-  '............',
-];
-type Look = { hair: string; shirt: string; shade: string; trousers: string; cap?: string };
+// ================================================================ palette helpers
+const hex = (h: string) => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)] as const;
+const mix = (a: string, b: string, t: number) => { const A = hex(a), B = hex(b); return `rgb(${A.map((v, i) => Math.round(v + (B[i]! - v) * t)).join(',')})`; };
+const rgba = (h: string, a: number) => { const [r, g, b] = hex(h); return `rgba(${r},${g},${b},${a})`; };
+// Stable per-cell noise for textures and blinking windows.
+const noise = (x: number, y: number, s = 0) => { const n = Math.sin(x * 127.1 + y * 311.7 + s * 74.7) * 43758.5453; return n - Math.floor(n); };
+
+// ================================================================ sprites (14×20)
+// K outline · H hair · h hair light · S skin · E eye · C shirt · c shirt light · D shirt shade · P trousers · B shoes · Q cap · Y badge
+const HEAD = ['.....KKKK.....', '...KKHHHHKK...', '..KHhhHHHHHK..', '..KHHHHHHHHK..', '..KHSSSSSSHK..', '..KSSESSESSK..', '..KSSSSSSSSK..', '...KSSSSSSK...', '....KKSSKK....'];
+const CAP = ['....KKKKKK....', '...KQQQQQQK...', '..KQQQYQQQQK..', '.KKKKKKKKKKKK.', '..KHSSSSSSHK..', '..KSSESSESSK..', '..KSSSSSSSSK..', '...KSSSSSSK...', '....KKSSKK....'];
+const TORSO = ['...KCCCCCCK...', '..KCcCCCCCCK..', '.KSKCCCCCCKSK.', '.KSKCCCCCCKSK.', '.KSKDCCCCDKSK.', '..KKDDDDDDKK..', '....KPPPPK....'];
+const TORSO_TYPE = ['...KCCCCCCK...', '..KCcCCCCCCK..', '.KCCCCCCCCCCK.', 'KSSCCCCCCCCSSK', '.KKDCCCCCCDKK.', '..KKDDDDDDKK..', '....KPPPPK....'];
+const LEGS = {
+  stand: ['....KPKKPK....', '....KPKKPK....', '....KBKKBK....', '.....K..K.....'],
+  walk1: ['...KPK.KPK....', '...KPK..KPK...', '...KBK..KBK...', '....K....K....'],
+  walk2: ['....KPK.KPK...', '....KPK..KPK..', '....KBK..KBK..', '.....K....K...'],
+};
+type Look = { H: string; h: string; C: string; c: string; D: string; P: string; cap?: boolean };
 const LOOK: Record<string, Look> = {
-  agent: { hair: '#3b2a20', shirt: '#2563eb', shade: '#1e40af', trousers: '#334155' },
-  github: { hair: '#1f1f2e', shirt: '#6366f1', shade: '#4338ca', trousers: '#27272a' },
-  gmail: { hair: '#7c2d12', shirt: '#e11d48', shade: '#9f1239', trousers: '#3f3f46' },
-  calendar: { hair: '#111827', shirt: '#0d9488', shade: '#115e59', trousers: '#374151' },
-  lms: { hair: '#a16207', shirt: '#65a30d', shade: '#3f6212', trousers: '#44403c' },
-  guard: { hair: '#111827', shirt: '#1e3a8a', shade: '#172554', trousers: '#1f2937', cap: '#0f172a' },
+  agent: { H: '#2b1d16', h: '#4a3426', C: '#2563eb', c: '#60a5fa', D: '#1e3a8a', P: '#1f2937' },
+  github: { H: '#15151f', h: '#2f2f45', C: '#7c3aed', c: '#a78bfa', D: '#4c1d95', P: '#18181b' },
+  gmail: { H: '#7c2d12', h: '#b45309', C: '#e11d48', c: '#fb7185', D: '#881337', P: '#27272a' },
+  calendar: { H: '#0b1220', h: '#1f2a44', C: '#0d9488', c: '#2dd4bf', D: '#134e4a', P: '#1f2937' },
+  lms: { H: '#a16207', h: '#ca8a04', C: '#4d7c0f', c: '#a3e635', D: '#365314', P: '#292524' },
+  guard: { H: '#0b1220', h: '#1f2a44', C: '#1e3a8a', c: '#3b82f6', D: '#172554', P: '#0f172a', cap: true },
 };
-const SKIN = '#f2c79b';
 
-function drawMap(g: CanvasRenderingContext2D, rows: string[], pal: Record<string, string>, x: number, y: number) {
-  rows.forEach((row, j) => {
-    for (let i = 0; i < row.length; i++) {
-      const c = pal[row[i]!];
-      if (c) { g.fillStyle = c; g.fillRect(x + i, y + j, 1, 1); }
-    }
-  });
-}
-function drawPerson(g: CanvasRenderingContext2D, who: string, x: number, y: number, pose: 'stand' | 'walk1' | 'walk2' | 'type', t: number) {
-  const L = LOOK[who] ?? LOOK['agent']!;
-  const pal: Record<string, string> = { K: '#1b1b24', S: SKIN, H: L.hair, C: L.shirt, D: L.shade, P: L.trousers, B: '#1b1b24', W: '#ffffff' };
-  const bob = pose === 'walk1' || pose === 'walk2' ? (pose === 'walk1' ? 0 : -1) : 0;
-  const ox = Math.round(x - 6);
-  const oy = Math.round(y - 16 + bob);
-  // shadow
-  g.fillStyle = 'rgba(0,0,0,0.18)';
-  g.fillRect(ox + 2, Math.round(y) - 1, 8, 2);
-  const body = pose === 'type' && Math.floor(t / 180) % 2 === 0 ? [...BODY.slice(0, 6), ...TYPING, ...BODY.slice(10)] : BODY;
-  drawMap(g, body, pal, ox, oy);
-  drawMap(g, LEGS[pose === 'walk1' ? 1 : pose === 'walk2' ? 2 : 0]!, pal, ox, oy + 12);
-  if (L.cap) { g.fillStyle = L.cap; g.fillRect(ox + 3, oy, 6, 2); g.fillRect(ox + 2, oy + 2, 9, 1); g.fillStyle = '#facc15'; g.fillRect(ox + 5, oy + 7, 1, 1); }
-}
-function drawRobot(g: CanvasRenderingContext2D, x: number, y: number, t: number, thinking: boolean) {
-  const glow = thinking ? (Math.floor(t / 220) % 2 ? '#a78bfa' : '#f0abfc') : '#7dd3fc';
-  drawMap(g, ROBOT, { K: '#1b1b24', M: '#cbd5e1', E: glow, A: thinking ? '#f472b6' : '#94a3b8', C: '#7c3aed' }, Math.round(x - 6), Math.round(y - 16 + (thinking ? (Math.floor(t / 300) % 2) : 0)));
-}
-
-// ---------------------------------------------------------------- static scene
-function drawScene(g: CanvasRenderingContext2D, active: Set<RoomId>, present: Set<McpServerId>, t: number, printed: number, papers: number) {
-  g.fillStyle = '#5b4636';
-  g.fillRect(0, 0, W, H);
-  // top wall: windows with sky, lamps
-  for (let x = 20; x < W; x += 52) { g.fillStyle = '#3a2c22'; g.fillRect(x, 2, 22, 11); g.fillStyle = '#93c5fd'; g.fillRect(x + 1, 3, 20, 9); g.fillStyle = '#dbeafe'; g.fillRect(x + 3, 4, 6, 2); g.fillStyle = '#3a2c22'; g.fillRect(x + 11, 3, 1, 9); }
-  // corridor: wood planks
-  for (let x = 0; x < W; x += 16) for (let y = CORRIDOR - 12; y < CORRIDOR + 12; y += 6) { g.fillStyle = ((x / 16 + y / 6) | 0) % 2 ? '#b98a5e' : '#ad7f55'; g.fillRect(x, y, 16, 6); }
-  for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, (typeof ROOMS)[RoomId]]>) {
-    const off = id !== 'agent' && id !== 'ai' && !present.has(id);
-    for (let x = r.x; x < r.x + r.w; x += 8) for (let y = r.y; y < r.y + r.h; y += 8) { g.fillStyle = ((x - r.x) / 8 + (y - r.y) / 8) % 2 ? r.floor[0] : r.floor[1]; g.fillRect(x, y, 8, 8); }
-    // back wall
-    g.fillStyle = '#f4ead8'; g.fillRect(r.x, r.y, r.w, 10);
-    g.fillStyle = '#d8c7a8'; g.fillRect(r.x, r.y + 10, r.w, 2);
-    // outline + door gap
-    g.fillStyle = '#3a2c22';
-    g.fillRect(r.x - 1, r.y - 1, r.w + 2, 1); g.fillRect(r.x - 1, r.y, 1, r.h); g.fillRect(r.x + r.w, r.y, 1, r.h);
-    const doorY = r.y < CORRIDOR ? r.y + r.h : r.y - 1;
-    g.fillRect(r.x - 1, doorY, r.door - 9 - (r.x - 1), 1); g.fillRect(r.door + 9, doorY, r.x + r.w + 1 - (r.door + 9), 1);
-    if (active.has(id)) { g.fillStyle = 'rgba(255,240,150,0.18)'; g.fillRect(r.x, r.y, r.w, r.h); }
-    if (off) { g.fillStyle = 'rgba(40,30,25,0.45)'; g.fillRect(r.x, r.y, r.w, r.h); }
+function blit(g: CanvasRenderingContext2D, rows: string[], pal: Record<string, string>, x: number, y: number) {
+  for (let j = 0; j < rows.length; j++) {
+    const row = rows[j]!;
+    for (let i = 0; i < row.length; i++) { const c = pal[row[i]!]; if (c) { g.fillStyle = c; g.fillRect(x + i, y + j, 1, 1); } }
   }
-  const desk = (x: number, y: number, w = 28) => { g.fillStyle = '#7a4e2d'; g.fillRect(x, y, w, 9); g.fillStyle = '#9a6a3f'; g.fillRect(x, y, w, 3); g.fillStyle = '#5c3a21'; g.fillRect(x + 1, y + 9, 2, 4); g.fillRect(x + w - 3, y + 9, 2, 4); };
-  const monitor = (x: number, y: number, on: boolean, tint: string) => { g.fillStyle = '#1f2937'; g.fillRect(x, y, 12, 9); g.fillStyle = on ? tint : '#334155'; g.fillRect(x + 1, y + 1, 10, 6); if (on) { g.fillStyle = 'rgba(255,255,255,0.75)'; for (let i = 0; i < 3; i++) g.fillRect(x + 2, y + 2 + i * 2, 2 + ((Math.floor(t / 160) + i * 3) % 7), 1); } g.fillStyle = '#111827'; g.fillRect(x + 5, y + 9, 2, 2); };
-  const plant = (x: number, y: number) => { g.fillStyle = '#b45309'; g.fillRect(x, y + 6, 6, 5); g.fillStyle = '#16a34a'; g.fillRect(x + 1, y, 4, 6); g.fillRect(x - 1, y + 2, 2, 3); g.fillRect(x + 5, y + 1, 2, 3); g.fillStyle = '#22c55e'; g.fillRect(x + 2, y + 1, 2, 2); };
-  const shelf = (x: number, y: number, w = 22) => { g.fillStyle = '#6b4226'; g.fillRect(x, y, w, 20); g.fillStyle = '#4a2c17'; g.fillRect(x, y + 9, w, 1); const c = ['#ef4444', '#3b82f6', '#eab308', '#10b981', '#a855f7', '#f97316']; for (let i = 0; i < w - 3; i += 3) { g.fillStyle = c[(i / 3) % c.length]!; g.fillRect(x + 1 + i, y + 2, 2, 7); g.fillStyle = c[(i / 3 + 2) % c.length]!; g.fillRect(x + 1 + i, y + 11, 2, 8); } };
-
-  // GitHub room: two monitors, bookshelf, plant
-  shelf(78, 18); plant(10, 20);
-  monitor(44, 38, active.has('github'), '#4f46e5'); monitor(58, 38, active.has('github'), '#0f172a');
-  // Gmail room: pigeonholes + red mailbox + envelopes
-  g.fillStyle = '#8b5a3c'; g.fillRect(184, 18, 22, 16);
-  for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) { g.fillStyle = '#5c3a21'; g.fillRect(185 + i * 5, 19 + j * 5, 4, 4); if ((i + j) % 2 === 0) { g.fillStyle = '#ffffff'; g.fillRect(185 + i * 5, 21 + j * 5, 4, 2); } }
-  g.fillStyle = '#dc2626'; g.fillRect(116, 22, 9, 12); g.fillStyle = '#7f1d1d'; g.fillRect(117, 25, 7, 1);
-  monitor(150, 38, active.has('gmail'), '#e11d48');
-  // Calendar room: wall calendar + clock
-  g.fillStyle = '#ffffff'; g.fillRect(286, 17, 22, 18); g.fillStyle = '#0d9488'; g.fillRect(286, 17, 22, 4);
-  for (let i = 0; i < 5; i++) for (let j = 0; j < 3; j++) { g.fillStyle = i === 2 && j === 1 ? '#ef4444' : '#94a3b8'; g.fillRect(288 + i * 4, 23 + j * 4, 2, 2); }
-  g.fillStyle = '#f8fafc'; g.fillRect(222, 18, 9, 9); g.fillStyle = '#1f2937'; g.fillRect(226, 20, 1, 3); g.fillRect(226, 22, 3, 1);
-  monitor(256, 38, active.has('calendar'), '#0d9488'); plant(300, 60);
-  // eCampus: shelves + lamp
-  shelf(8, 106, 26); shelf(70, 106, 30);
-  g.fillStyle = '#fde68a'; g.fillRect(36, 116, 6, 3); g.fillStyle = '#78716c'; g.fillRect(38, 119, 1, 6);
-  monitor(44, 126, active.has('lms'), '#65a30d');
-  // My desk: monitor, paper tray, printer, rug
-  g.fillStyle = '#c2410c'; g.fillRect(124, 150, 52, 22); g.fillStyle = '#ea580c'; g.fillRect(127, 153, 46, 16);
-  desk(136, 132, 34); monitor(146, 124, true, '#2563eb');
-  g.fillStyle = '#f8fafc'; for (let i = 0; i < Math.min(papers, 8); i++) g.fillRect(162, 130 - i, 7, 1);
-  g.fillStyle = '#cbd5e1'; g.fillRect(186, 126, 18, 12); g.fillStyle = '#64748b'; g.fillRect(186, 126, 18, 3); g.fillStyle = '#1f2937'; g.fillRect(189, 131, 12, 1);
-  if (printed > 0) { g.fillStyle = '#ffffff'; g.fillRect(190, 132 - Math.min(printed, 8), 10, Math.min(printed, 8)); g.fillStyle = '#94a3b8'; g.fillRect(191, 133 - Math.min(printed, 8), 6, 1); }
-  plant(114, 160);
-  // AI room: whiteboard + round table + sofa
-  g.fillStyle = '#f8fafc'; g.fillRect(236, 106, 40, 18); g.fillStyle = '#94a3b8'; g.fillRect(236, 124, 40, 1);
-  if (active.has('ai')) { g.fillStyle = '#7c3aed'; for (let i = 0; i < 4; i++) g.fillRect(239, 109 + i * 4, 6 + ((Math.floor(t / 200) + i * 5) % 26), 1); }
-  g.fillStyle = '#6d28d9'; g.fillRect(222, 160, 22, 8); g.fillStyle = '#7c3aed'; g.fillRect(222, 156, 22, 5);
-  g.fillStyle = '#9a6a3f'; g.beginPath(); g.ellipse(286, 156, 13, 6, 0, 0, Math.PI * 2); g.fill();
-  plant(304, 108);
-  // desks drawn in front of seated people are done in drawFront()
 }
-function drawFront(g: CanvasRenderingContext2D) {
-  const desk = (x: number, y: number, w = 28) => { g.fillStyle = '#7a4e2d'; g.fillRect(x, y, w, 9); g.fillStyle = '#9a6a3f'; g.fillRect(x, y, w, 3); g.fillStyle = '#5c3a21'; g.fillRect(x + 1, y + 9, 2, 4); g.fillRect(x + w - 3, y + 9, 2, 4); };
-  desk(38, 46, 36); desk(142, 46, 28); desk(248, 46, 28); desk(36, 134, 28);
+function person(g: CanvasRenderingContext2D, who: string, x: number, y: number, pose: 'stand' | 'walk1' | 'walk2' | 'type', t: number) {
+  const L = LOOK[who] ?? LOOK['agent']!;
+  const pal: Record<string, string> = { K: '#0b0d16', S: '#f1c39a', E: '#0b0d16', H: L.H, h: L.h, C: L.C, c: L.c, D: L.D, P: L.P, B: '#0b0d16', Q: '#0f172a', Y: '#facc15' };
+  const bob = pose === 'walk2' ? -1 : 0;
+  const ox = Math.round(x - 7);
+  const oy = Math.round(y - 20 + bob);
+  g.fillStyle = 'rgba(0,0,0,0.35)';
+  g.fillRect(ox + 3, Math.round(y) - 1, 8, 2);
+  blit(g, L.cap ? CAP : HEAD, pal, ox, oy);
+  blit(g, pose === 'type' && Math.floor(t / 170) % 2 === 0 ? TORSO_TYPE : TORSO, pal, ox, oy + 9);
+  blit(g, LEGS[pose === 'type' ? 'stand' : pose], pal, ox, oy + 16);
 }
 
-// ---------------------------------------------------------------- director: events → actions
+// ================================================================ neon pixel font (3×5)
+const GLYPH: Record<string, string[]> = {
+  G: ['111', '100', '101', '101', '111'], I: ['111', '010', '010', '010', '111'], T: ['111', '010', '010', '010', '010'],
+  M: ['101', '111', '111', '101', '101'], A: ['010', '101', '111', '101', '101'], L: ['100', '100', '100', '100', '111'],
+  C: ['111', '100', '100', '100', '111'], S: ['111', '100', '111', '001', '111'], H: ['101', '101', '111', '101', '101'], Q: ['111', '101', '101', '111', '011'],
+};
+function neon(g: CanvasRenderingContext2D, text: string, x: number, y: number, color: string, on: number) {
+  let cx = x;
+  for (const ch of text) {
+    const gl = GLYPH[ch];
+    if (gl) gl.forEach((row, j) => { for (let i = 0; i < 3; i++) if (row[i] === '1') { g.fillStyle = on > 0.5 ? mix(color, '#ffffff', 0.35) : rgba(color, 0.35); g.fillRect(cx + i, y + j, 1, 1); } });
+    cx += 4;
+  }
+}
+
+// ================================================================ static layer (rebuilt when the set of rooms changes)
+function buildStatic(present: Set<McpServerId>): HTMLCanvasElement {
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const g = c.getContext('2d')!;
+  // Building shell.
+  g.fillStyle = '#0d1020'; g.fillRect(0, 0, W, H);
+  // Window wall: night sky + skyline (drawn per frame for blinking lights); mullions here.
+  g.fillStyle = '#0a0d1c'; g.fillRect(0, 0, W, 22);
+  // Corridor: dark floor + runner + edge lights.
+  for (let x = 0; x < W; x++) for (let y = 104; y < 126; y++) { const n = noise(x, y); g.fillStyle = n > 0.5 ? '#1a1d2e' : '#181b2b'; g.fillRect(x, y, 1, 1); }
+  g.fillStyle = '#23283f'; g.fillRect(0, 110, W, 10);
+  g.fillStyle = '#2a3050'; g.fillRect(0, 110, W, 1); g.fillRect(0, 119, W, 1);
+  for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, Room]>) {
+    // Back wall: panels, top trim, baseboard.
+    for (let x = r.x; x < r.x + r.w; x++) for (let y = r.y; y < r.y + 18; y++) { g.fillStyle = (x - r.x) % 20 === 0 ? '#1d2138' : noise(x, y, 1) > 0.92 ? '#262b47' : '#222743'; g.fillRect(x, y, 1, 1); }
+    g.fillStyle = '#30365a'; g.fillRect(r.x, r.y, r.w, 1);
+    g.fillStyle = '#141727'; g.fillRect(r.x, r.y + 18, r.w, 2);
+    // Floor: dark wood planks, slight per-room tint.
+    for (let y = r.y + 20; y < r.y + r.h; y++) for (let x = r.x; x < r.x + r.w; x++) {
+      const plank = Math.floor((y - r.y) / 5);
+      const seam = (y - r.y) % 5 === 0 || (x + plank * 17) % 31 === 0;
+      const base = mix('#241e2c', r.neon, 0.06);
+      g.fillStyle = seam ? '#181420' : noise(x, plank, 2) > 0.85 ? mix(base, '#3a3044', 0.5) : base;
+      g.fillRect(x, y, 1, 1);
+    }
+    // Rug in the room colour.
+    const rx = r.x + 22, ry = r.y + r.h - 34, rw = r.w - 44, rh = 22;
+    g.fillStyle = mix('#1b1d2c', r.neon, 0.22); g.fillRect(rx, ry, rw, rh);
+    g.fillStyle = mix('#1b1d2c', r.neon, 0.38); g.fillRect(rx, ry, rw, 1); g.fillRect(rx, ry + rh - 1, rw, 1); g.fillRect(rx + 2, ry + 2, rw - 4, 1); g.fillRect(rx + 2, ry + rh - 3, rw - 4, 1);
+    // Neon sign frame.
+    g.fillStyle = '#10121f'; g.fillRect(r.x + 6, r.y + 4, r.sign.length * 4 + 5, 9);
+    // Unconnected source: the room stays dark (drawn in the light pass) and gets a closed sign.
+    if (id !== 'agent' && id !== 'ai' && !present.has(id)) { g.fillStyle = '#3b3f55'; g.fillRect(r.door - 8, r.y + r.h - 3, 16, 2); }
+  }
+  // Walls between rooms (tops), front walls with door gaps.
+  g.fillStyle = '#0b0d18';
+  for (const x of [0, 130, 262, 394]) { g.fillRect(x, 22, 6, 82); g.fillRect(x, 126, 6, 99); }
+  for (const r of Object.values(ROOMS)) {
+    const fy = r.y < CORRIDOR ? r.y + r.h : r.y - 2;
+    g.fillStyle = '#0b0d18'; g.fillRect(r.x, fy, r.door - 12 - r.x, 4); g.fillRect(r.door + 12, fy, r.x + r.w - r.door - 12, 4);
+    g.fillStyle = '#2a2f4a'; g.fillRect(r.x, fy, r.door - 12 - r.x, 1); g.fillRect(r.door + 12, fy, r.x + r.w - r.door - 12, 1);
+  }
+  g.fillStyle = '#0b0d18'; g.fillRect(0, 221, W, 4);
+  furniture(g);
+  return c;
+}
+
+function furniture(g: CanvasRenderingContext2D) {
+  const rect = (x: number, y: number, w: number, h: number, c: string) => { g.fillStyle = c; g.fillRect(x, y, w, h); };
+  const plant = (x: number, y: number) => { rect(x, y + 8, 7, 6, '#3f2a1e'); rect(x, y + 8, 7, 1, '#5a3d2b'); rect(x + 2, y, 3, 8, '#166534'); rect(x - 1, y + 2, 3, 4, '#15803d'); rect(x + 5, y + 1, 3, 4, '#15803d'); rect(x + 3, y + 1, 1, 2, '#22c55e'); };
+  const shelf = (x: number, y: number, w: number, h: number) => {
+    rect(x, y, w, h, '#2b2032'); rect(x, y, w, 1, '#3d2f47');
+    const books = ['#7c3aed', '#2563eb', '#e11d48', '#0d9488', '#ca8a04', '#64748b'];
+    for (let row = 0; row < Math.floor(h / 8); row++) { rect(x + 1, y + row * 8 + 7, w - 2, 1, '#1a1220'); for (let i = 0; i < w - 3; i += 2 + (i % 3 === 0 ? 1 : 0)) rect(x + 2 + i, y + row * 8 + 2 + ((i * 7) % 3), 2, 5 - ((i * 7) % 3), books[(i + row * 3) % books.length]!); }
+  };
+  // GitHub: server rack, poster, plant.
+  rect(108, 30, 14, 34, '#151827'); rect(108, 30, 14, 1, '#2a2f4a'); for (let i = 0; i < 6; i++) rect(110, 33 + i * 5, 10, 3, '#1f2337');
+  rect(30, 26, 10, 12, '#1b1f33'); rect(31, 27, 8, 10, '#312e81'); rect(33, 29, 4, 1, '#a78bfa'); rect(33, 31, 3, 1, '#a78bfa');
+  plant(12, 84);
+  // Gmail: pigeonhole wall + cart.
+  rect(232, 28, 26, 22, '#2b2032'); for (let i = 0; i < 4; i++) for (let j = 0; j < 3; j++) { rect(233 + i * 6, 29 + j * 7, 5, 6, '#170f1c'); if ((i * 3 + j) % 3 !== 1) rect(233 + i * 6, 32 + j * 7, 5, 2, '#e5e7eb'); }
+  rect(146, 84, 14, 8, '#3b3f55'); rect(146, 84, 14, 1, '#52577a'); rect(148, 82, 10, 3, '#e5e7eb');
+  // Calendar: wall screen frame, clock.
+  rect(366, 26, 26, 18, '#0b0d18'); rect(344, 27, 9, 9, '#1b1f33'); rect(345, 28, 7, 7, '#e2e8f0'); rect(348, 29, 1, 3, '#0f172a'); rect(348, 31, 3, 1, '#0f172a');
+  plant(380, 84);
+  // eCampus: tall shelves + reading lamp.
+  shelf(12, 130, 26, 40); shelf(98, 130, 28, 40);
+  rect(42, 160, 1, 10, '#64748b'); rect(39, 158, 7, 3, '#facc15');
+  // HQ: wall status screen, printer, sofa.
+  rect(176, 128, 48, 15, '#0b0d18');
+  rect(240, 164, 16, 10, '#cbd5e1'); rect(240, 164, 16, 2, '#94a3b8'); rect(242, 168, 12, 1, '#1f2937'); rect(240, 174, 16, 2, '#64748b');
+  rect(146, 200, 18, 9, '#1e3a8a'); rect(146, 196, 18, 5, '#2563eb'); rect(146, 196, 2, 13, '#1e3a8a'); rect(162, 196, 2, 13, '#1e3a8a');
+  // AI core room: pedestal + holo screen frame.
+  rect(346, 196, 20, 6, '#1b1f33'); rect(344, 202, 24, 3, '#10121f'); rect(346, 196, 20, 1, '#3d4470');
+  rect(286, 128, 40, 15, '#0b0d18');
+  plant(380, 140);
+}
+
+// ================================================================ per-frame layers
+function sky(g: CanvasRenderingContext2D, t: number) {
+  const grd = g.createLinearGradient(0, 0, 0, 22); grd.addColorStop(0, '#0a1030'); grd.addColorStop(1, '#1d2250'); g.fillStyle = grd; g.fillRect(0, 0, W, 22);
+  g.fillStyle = '#f8fafc'; g.fillRect(368, 4, 5, 5); g.fillStyle = '#cbd5e1'; g.fillRect(371, 4, 2, 2);
+  for (let i = 0; i < 40; i++) { const x = (i * 53) % W, y = (i * 7) % 9; if (noise(i, 0) > 0.5) { g.fillStyle = 'rgba(255,255,255,0.6)'; g.fillRect(x, y, 1, 1); } }
+  for (let x = 0; x < W; x += 9) {
+    const h = 6 + Math.floor(noise(x, 1) * 13), w = 7 + Math.floor(noise(x, 2) * 3);
+    g.fillStyle = noise(x, 3) > 0.5 ? '#0b0e22' : '#0e1229'; g.fillRect(x, 22 - h, w, h);
+    for (let wy = 22 - h + 2; wy < 21; wy += 3) for (let wx = x + 1; wx < x + w - 1; wx += 2) if (noise(wx, wy, Math.floor(t / 1800 + noise(wx, wy) * 5)) > 0.72) { g.fillStyle = noise(wx, wy, 9) > 0.7 ? '#93c5fd' : '#fcd34d'; g.fillRect(wx, wy, 1, 1); }
+  }
+  g.fillStyle = '#0b0d18'; for (let x = 0; x < W; x += 50) g.fillRect(x, 0, 3, 22); g.fillRect(0, 20, W, 2);
+}
+
+function monitor(g: CanvasRenderingContext2D, x: number, y: number, w: number, on: boolean, tint: string, t: number) {
+  g.fillStyle = '#0b0d16'; g.fillRect(x, y, w, 10); g.fillStyle = on ? mix('#0b1120', tint, 0.35) : '#141827'; g.fillRect(x + 1, y + 1, w - 2, 7);
+  if (on) for (let i = 0; i < 3; i++) { g.fillStyle = mix(tint, '#ffffff', 0.4); g.fillRect(x + 2, y + 2 + i * 2, 2 + ((Math.floor(t / 140) + i * 4) % (w - 5)), 1); }
+  g.fillStyle = '#0b0d16'; g.fillRect(x + Math.floor(w / 2) - 1, y + 10, 2, 2);
+}
+
+function deskFront(g: CanvasRenderingContext2D, d: { x: number; y: number; w: number }) {
+  g.fillStyle = '#3a2a22'; g.fillRect(d.x, d.y - 4, d.w, 4);
+  g.fillStyle = '#4e382c'; g.fillRect(d.x, d.y - 4, d.w, 1);
+  g.fillStyle = '#2a1e18'; g.fillRect(d.x, d.y, d.w, 7);
+  g.fillStyle = '#1c140f'; g.fillRect(d.x + 2, d.y + 7, 2, 3); g.fillRect(d.x + d.w - 4, d.y + 7, 2, 3);
+  g.fillStyle = '#5c4434'; g.fillRect(d.x + 4, d.y + 2, d.w - 8, 1);
+}
+
+type Particle = { x0: number; y0: number; to: Spot | 'agent'; t: number; dur: number; color: string; size: number; fall?: boolean; delay: number };
+
+// ================================================================ director: events → actions
 type Bubble = { text: string; tone?: 'ok' | 'warn' | 'bad' | 'think' };
-type Say = Partial<Record<Actor, Bubble | null>>;
-type Action = { ms: number; walkTo?: RoomId; carry?: number; active?: RoomId[]; say?: Say; print?: number; status?: string };
 type Actor = 'agent' | McpServerId | 'guard' | 'ai';
+type Say = Partial<Record<Actor, Bubble | null>>;
+type Fx = { from: RoomId | 'core' | 'agent'; to: 'agent' | 'core' | 'printer'; n: number; masked?: number };
+type Action = { ms: number; walkTo?: RoomId; carry?: number; active?: RoomId[]; say?: Say; print?: number; status?: string; fx?: Fx; scan?: boolean; count?: { calls?: number; masked?: number; sources?: number } };
 const SHORT: Record<string, string> = {
   get_recent_commits: '커밋 조회', get_pull_requests: 'PR 조회', get_open_issues: '이슈 조회', get_repository_activity: '저장소 활동',
   search_emails: '메일 검색', get_email: '메일 본문', search_project_emails: '프로젝트 메일',
@@ -192,47 +226,52 @@ const cut = (s: string, n = 34) => (s.length > n ? `${s.slice(0, n - 1)}…` : s
 
 export function actionsFor(e: AgentEvent): Action[] {
   switch (e.type) {
-    case 'agent_run_started': return [{ ms: 1400, walkTo: 'agent', say: { agent: { text: `질문 받음 · ${cut(e.prompt, 24)}` } }, status: '질문을 받았습니다' }];
-    case 'mcp_server_connected': return [{ ms: 500, say: { [e.server]: { text: `연결됨 · ${e.serverInfo.name}`, tone: 'ok' } } as Say, status: `${ROOMS[e.server].label} 연결` }];
+    case 'agent_run_started': return [{ ms: 1400, walkTo: 'agent', active: ['agent'], say: { agent: { text: `질문 받음 · ${cut(e.prompt, 24)}` } }, status: '질문을 받았습니다' }];
+    case 'mcp_server_connected': return [{ ms: 450, active: [e.server], say: { [e.server]: { text: `온라인 · ${e.serverInfo.name}`, tone: 'ok' } } as Say, status: `${ROOMS[e.server].label} 연결` }];
     case 'tool_discovered': return [{ ms: 700, say: { agent: { text: `도구 ${e.tools.length}개 확인` } }, status: `도구 ${e.tools.length}개를 확인했습니다` }];
     case 'llm_request': {
       const masked = e.maskedEmails + e.maskedPii;
       return [
-        { ms: 1100, walkTo: 'ai', active: ['ai'], say: { agent: null, guard: { text: masked ? `보내기 전 가림 ${masked}건` : '정책 확인 · 통과', tone: masked ? 'warn' : 'ok' } }, status: e.phase === 'plan' ? 'AI에게 어떤 도구를 쓸지 묻는 중' : '모은 자료를 AI에게 넘기는 중' },
-        { ms: e.phase === 'plan' ? 900 : 1600, active: ['ai'], say: { ai: { text: e.phase === 'plan' ? '어떤 자료가 필요할까…' : '리포트 쓰는 중…', tone: 'think' } } },
+        { ms: 900, walkTo: 'ai', active: ['ai'], say: { agent: null }, status: e.phase === 'plan' ? 'AI에게 어떤 도구를 쓸지 묻는 중' : '모은 자료를 AI에게 넘기는 중' },
+        { ms: 1300, scan: true, active: ['ai'], fx: { from: 'agent', to: 'core', n: e.phase === 'plan' ? 6 : 14, masked }, count: { masked }, say: { guard: { text: masked ? `스캔 · 가림 ${masked}건` : '스캔 · 통과', tone: masked ? 'warn' : 'ok' } } },
+        { ms: e.phase === 'plan' ? 800 : 1500, active: ['ai'], say: { ai: { text: e.phase === 'plan' ? '어떤 자료가 필요할까…' : '리포트 쓰는 중…', tone: 'think' } } },
       ];
     }
     case 'llm_response': return [{ ms: 1300, active: ['ai'], say: { ai: { text: e.toolCalls.length ? `필요: ${cut(e.toolCalls.map((c) => toolOf(c.name)).join(', '), 30)}` : '자료 충분해요', tone: 'ok' }, guard: null }, status: e.toolCalls.length ? `AI가 도구 ${e.toolCalls.length}개를 골랐습니다` : 'AI가 자료가 충분하다고 했습니다' }];
     case 'tool_call_started': {
       const verify = e.call.id.startsWith('verify_');
-      return [{ ms: 1000, walkTo: e.call.server, active: [e.call.server], say: { agent: null, ai: null, [e.call.server]: { text: `${verify ? '누락 검사 · ' : ''}${toolOf(e.call.name)}…` } } as Say, status: `${ROOMS[e.call.server].label}: ${toolOf(e.call.name)}` }];
+      return [{ ms: 900, walkTo: e.call.server, active: [e.call.server], say: { agent: null, ai: null, [e.call.server]: { text: `${verify ? '누락 검사 · ' : ''}${toolOf(e.call.name)}…` } } as Say, status: `${ROOMS[e.call.server].label}: ${toolOf(e.call.name)}` }];
     }
-    case 'tool_call_completed': return [{ ms: 900, carry: 1, active: [e.call.server], say: { [e.call.server]: { text: cut(summaryKo(e.result.output.summary), 26), tone: 'ok' } } as Say }];
+    case 'tool_call_completed': {
+      const rows = Array.isArray(e.result.output.data) ? e.result.output.data.length : 1;
+      return [{ ms: 900, carry: 1, active: [e.call.server], fx: { from: e.call.server, to: 'agent', n: Math.min(10, Math.max(3, rows)) }, count: { calls: 1 }, say: { [e.call.server]: { text: cut(summaryKo(e.result.output.summary), 26), tone: 'ok' } } as Say }];
+    }
     case 'tool_call_failed': return [{ ms: 1200, active: [e.call.server], say: { [e.call.server]: { text: `실패 · ${cut(e.result.error.message, 22)}`, tone: 'bad' } } as Say, status: `${ROOMS[e.call.server].label} 호출 실패` }];
-    case 'tool_call_denied': return [{ ms: 1300, say: { guard: { text: `차단 · ${toolOf(e.call.name)}`, tone: 'bad' } }, status: `정책이 ${toolOf(e.call.name)} 호출을 막았습니다` }];
+    case 'tool_call_denied': return [{ ms: 1300, scan: true, say: { guard: { text: `차단 · ${toolOf(e.call.name)}`, tone: 'bad' } }, status: `정책이 ${toolOf(e.call.name)} 호출을 막았습니다` }];
     case 'tool_call_adjusted': return [{ ms: 1000, say: { guard: { text: `범위 줄임 · ${cut(e.changes.join(', '), 20)}`, tone: 'warn' } } }];
-    case 'policy_applied': return e.excluded.length || e.blockedTools.length ? [{ ms: 1100, say: { guard: { text: `정책 적용 · 제외 ${e.excluded.length}건`, tone: 'warn' } } }] : [];
+    case 'policy_applied': return e.excluded.length || e.blockedTools.length ? [{ ms: 1100, scan: true, say: { guard: { text: `정책 적용 · 제외 ${e.excluded.length}건`, tone: 'warn' } } }] : [];
     case 'context_aggregated': return [{ ms: 1300, walkTo: 'agent', active: ['agent'], say: { agent: { text: `자료 ${e.totalItems}건 정리` } }, status: `자료 ${e.totalItems}건을 정리했습니다` }];
-    case 'report_generated': return [{ ms: 1600, walkTo: 'agent', print: 8, active: ['agent'], say: { ai: { text: '완성!', tone: 'ok' }, agent: { text: `리포트 출력 · 출처 ${e.report.sources.length}건`, tone: 'ok' }, guard: null }, status: '리포트가 나왔습니다' }];
-    case 'coverage_checked': return [{ ms: 1300, walkTo: 'agent', say: { agent: { text: e.missed.length ? `누락 검사 · 빠진 것 ${e.missed.length}건` : '누락 검사 · 빠진 것 없음', tone: e.missed.length ? 'warn' : 'ok' } } }];
-    case 'agent_run_completed': return [{ ms: 1500, walkTo: 'agent', say: { agent: e.status === 'success' ? { text: '끝! 리포트를 확인하세요', tone: 'ok' } : { text: `실패 · ${cut(e.error ?? '', 24)}`, tone: 'bad' } }, status: e.status === 'success' ? '실행 완료' : '실행 실패' }];
+    case 'report_generated': return [{ ms: 1800, walkTo: 'agent', print: 8, active: ['agent', 'ai'], fx: { from: 'core', to: 'printer', n: 12 }, count: { sources: e.report.sources.length }, say: { ai: { text: '완성!', tone: 'ok' }, agent: { text: `리포트 출력 · 출처 ${e.report.sources.length}건`, tone: 'ok' }, guard: null }, status: '리포트가 나왔습니다' }];
+    case 'coverage_checked': return [{ ms: 1300, walkTo: 'agent', active: ['agent'], say: { agent: { text: e.missed.length ? `누락 검사 · 빠진 것 ${e.missed.length}건` : '누락 검사 · 빠진 것 없음', tone: e.missed.length ? 'warn' : 'ok' } } }];
+    case 'agent_run_completed': return [{ ms: 1500, walkTo: 'agent', active: ['agent'], say: { agent: e.status === 'success' ? { text: '끝! 리포트를 확인하세요', tone: 'ok' } : { text: `실패 · ${cut(e.error ?? '', 24)}`, tone: 'bad' } }, status: e.status === 'success' ? '실행 완료' : '실행 실패' }];
     default: return [];
   }
 }
 
-// ---------------------------------------------------------------- component
+// ================================================================ component
 type Mover = { x: number; y: number; path: Spot[] };
+const ACTORS: Actor[] = ['agent', 'github', 'gmail', 'calendar', 'lms', 'guard', 'ai'];
+const NAME: Record<Actor, string> = { agent: '에이전트', github: 'GitHub 담당', gmail: '메일 담당', calendar: '일정 담당', lms: 'eCampus 담당', guard: '보안 담당 · 정책', ai: 'AI 모델' };
 
 /** What a person in the office is, for the info card: their MCP server and what they did this run. */
 function infoOf(a: Actor, events: AgentEvent[]): { title: string; lines: string[] } {
   if (a === 'agent') return { title: '에이전트 · MCP 클라이언트', lines: [`도구 호출 ${events.filter((e) => e.type === 'tool_call_completed').length}회`, '질문을 받아 담당자에게 자료를 받아 오고, AI에게 넘기고, 리포트를 출력합니다.'] };
   if (a === 'ai') {
     const llm = [...events].reverse().find((e) => e.type === 'llm_response' || e.type === 'llm_request');
-    return { title: 'AI 모델', lines: [llm && (llm.type === 'llm_request' || llm.type === 'llm_response') ? `${llm.provider}/${llm.model}` : '아직 요청 없음', `요청 ${events.filter((e) => e.type === 'llm_request').length}회 · 받은 자료는 보안 담당을 거친 것뿐`] };
+    return { title: 'AI 모델', lines: [llm && (llm.type === 'llm_request' || llm.type === 'llm_response') ? `${llm.provider}/${llm.model}` : '아직 요청 없음', `요청 ${events.filter((e) => e.type === 'llm_request').length}회 · 받은 자료는 보안 게이트를 거친 것뿐`] };
   }
   if (a === 'guard') {
-    const reqs = events.filter((e) => e.type === 'llm_request');
-    const masked = reqs.reduce((n, e) => n + (e.type === 'llm_request' ? e.maskedEmails + e.maskedPii : 0), 0);
+    const masked = events.reduce((n, e) => n + (e.type === 'llm_request' ? e.maskedEmails + e.maskedPii : 0), 0);
     const denied = events.filter((e) => e.type === 'tool_call_denied').length;
     const excluded = events.flatMap((e) => (e.type === 'policy_applied' ? e.excluded : [])).length;
     return { title: '보안 담당 · 데이터 정책', lines: [`AI에 보내기 전 가림 ${masked}건(요청마다 합산) · 호출 차단 ${denied}건 · 제외 ${excluded}건`, '허용된 도구만 통과시키고, 메일 주소·개인정보를 가립니다.'] };
@@ -246,11 +285,9 @@ function infoOf(a: Actor, events: AgentEvent[]): { title: string; lines: string[
     lines: [`도구 ${tools.length}개${tools.length ? ` (${tools.map((t) => toolOf(t.name)).join(', ')})` : ''} · 이번 실행 호출 ${done.length}회`, lastDone && lastDone.type === 'tool_call_completed' ? `마지막 결과: ${summaryKo(lastDone.result.output.summary)}` : '이번 실행에서 아직 부르지 않았습니다.'],
   };
 }
-const ACTORS: Actor[] = ['agent', 'github', 'gmail', 'calendar', 'lms', 'guard', 'ai'];
-const NAME: Record<Actor, string> = { agent: '에이전트', github: 'GitHub 담당', gmail: '메일 담당', calendar: '일정 담당', lms: 'eCampus 담당', guard: '보안 담당 · 정책', ai: 'AI 모델' };
 
 function roomAt(p: Spot): RoomId | null {
-  for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, (typeof ROOMS)[RoomId]]>) if (p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h) return id;
+  for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, Room]>) if (p.x >= r.x && p.x <= r.x + r.w && p.y >= r.y && p.y <= r.y + r.h) return id;
   return null;
 }
 function route(from: Spot, to: RoomId): Spot[] {
@@ -259,6 +296,7 @@ function route(from: Spot, to: RoomId): Spot[] {
   if (a === to) return [target];
   const pts: Spot[] = [];
   if (a) pts.push({ x: ROOMS[a].door, y: from.y }, { x: ROOMS[a].door, y: CORRIDOR });
+  else pts.push({ x: from.x, y: CORRIDOR });
   pts.push({ x: ROOMS[to].door, y: CORRIDOR }, { x: ROOMS[to].door, y: target.y }, target);
   return pts;
 }
@@ -267,37 +305,43 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
   const canvas = useRef<HTMLCanvasElement>(null);
   const tags = useRef<Partial<Record<Actor, HTMLElement | null>>>({});
   const bubbles = useRef<Partial<Record<Actor, HTMLDivElement | null>>>({});
+  const hud = useRef<HTMLDivElement>(null);
+  const mode = useRef<HTMLSpanElement>(null);
   const reduced = useMemo(() => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches, []);
   const [status, setStatus] = useState('질문을 기다리는 중');
+  const [log, setLog] = useState<string[]>([]);
   const [playing, setPlaying] = useState(true);
   const [picked, setPicked] = useState<Actor | null>(null);
   const present = useMemo(() => new Set(servers), [servers]);
-  // Mutable scene state, advanced by the animation loop.
-  const sim = useRef({ queue: [] as Action[], fed: 0, current: null as Action | null, left: 0, agent: { ...VISIT.agent, path: [] } as Mover, say: {} as Partial<Record<Actor, Bubble | null>>, active: new Set<RoomId>(), carry: 0, printed: 0, sources: 0, playing: true });
+  const presentKey = [...present].sort().join(',');
+  const fresh = () => ({ queue: [] as Action[], fed: 0, current: null as Action | null, left: 0, agent: { ...VISIT.agent, path: [] } as Mover, say: {} as Say, active: new Set<RoomId>(), carry: 0, printed: 0, playing: true, scan: 0, particles: [] as Particle[], calls: 0, masked: 0, sources: 0, replaying: false });
+  const sim = useRef(fresh());
   const runKey = events.find((e) => e.type === 'agent_run_started')?.runId ?? '';
 
-  // A new run (or none): reset the office.
-  useEffect(() => {
+  const pushLog = (line: string) => setLog((l) => [...l.slice(-2), line]);
+
+  function applyInstant(a: Action) {
     const s = sim.current;
-    s.queue = []; s.fed = 0; s.current = null; s.left = 0; s.say = {}; s.active = new Set(); s.carry = 0; s.printed = 0;
-    s.agent = { ...VISIT.agent, path: [] };
+    if (a.walkTo) s.agent = { ...VISIT[a.walkTo], path: [] };
+    if (a.carry) s.carry += a.carry;
+    if (a.print) { s.printed = a.print; s.carry = 0; }
+    if (a.say) for (const [k, v] of Object.entries(a.say)) s.say[k as Actor] = v ?? null;
+    if (a.count) { s.calls += a.count.calls ?? 0; s.masked += a.count.masked ?? 0; s.sources = a.count.sources ?? s.sources; }
+    s.active = new Set(a.active ?? []);
+  }
+
+  // A new run (or none): reset; a finished run that is only being shown jumps to its end state.
+  useEffect(() => {
+    sim.current = fresh();
+    const s = sim.current;
     s.say.agent = { text: '질문을 기다리는 중' };
-    // A finished run that is only being shown (not live): jump to its end state, offer a replay.
+    setLog([]);
     if (!live && events.length) {
       for (const e of events) for (const a of actionsFor(e)) applyInstant(a);
       s.fed = events.length;
       setStatus('지난 실행 · 다시 보기로 재생');
     }
   }, [runKey]);
-
-  function applyInstant(a: Action) {
-    const s = sim.current;
-    if (a.walkTo) { s.agent = { ...VISIT[a.walkTo], path: [] }; }
-    if (a.carry) s.carry += a.carry;
-    if (a.print) { s.printed = a.print; s.carry = 0; }
-    if (a.say) for (const [k, v] of Object.entries(a.say)) s.say[k as Actor] = v ?? null;
-    s.active = new Set(a.active ?? []);
-  }
 
   // Feed new events into the queue as they arrive.
   useEffect(() => {
@@ -308,25 +352,33 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
   }, [events]);
 
   const replay = () => {
+    const keep = sim.current.fed;
+    sim.current = fresh();
     const s = sim.current;
-    s.queue = events.flatMap(actionsFor); s.current = null; s.left = 0; s.say = {}; s.active = new Set(); s.carry = 0; s.printed = 0;
-    s.agent = { ...VISIT.agent, path: [] };
-    s.playing = true; setPlaying(true);
+    s.fed = keep; s.replaying = true;
+    s.queue = events.flatMap(actionsFor);
+    setLog([]);
+    setPlaying(true);
   };
 
   useEffect(() => {
     const g = canvas.current?.getContext('2d');
     if (!g) return;
     g.imageSmoothingEnabled = false;
+    const base = buildStatic(present);
+    const light = document.createElement('canvas'); light.width = W; light.height = H;
+    const lg = light.getContext('2d')!;
+    const roomLight = new Map<RoomId, number>();
     let raf = 0;
     let last = performance.now();
     let lastStatus = '';
+    const spot = (to: Fx['to'] | Fx['from'], s: typeof sim.current): Spot => (to === 'agent' ? { x: s.agent.x, y: s.agent.y - 10 } : to === 'core' ? { x: CORE.x, y: CORE.y - 14 } : to === 'printer' ? PRINTER : { x: SEAT[to as McpServerId]?.x ?? VISIT[to as RoomId].x, y: (SEAT[to as McpServerId]?.y ?? VISIT[to as RoomId].y) - 12 });
+
     const frame = (now: number) => {
       const s = sim.current;
       const dt = Math.min(100, now - last);
       last = now;
       if (s.playing) {
-        // Next action: catch up when many are waiting (a replay of a finished run), never skip one.
         const speed = s.queue.length > 24 ? 3 : s.queue.length > 10 ? 2 : 1;
         if (!s.current && s.queue.length) {
           const a = s.queue.shift()!;
@@ -336,38 +388,120 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
           if (a.print) { s.printed = 0; s.carry = 0; }
           if (a.say) for (const [k, v] of Object.entries(a.say)) s.say[k as Actor] = v ?? null;
           if (a.active) s.active = new Set(a.active);
-          if (a.status && a.status !== lastStatus) { lastStatus = a.status; setStatus(a.status); }
+          if (a.scan) s.scan = 1;
+          if (a.count) { s.calls += a.count.calls ?? 0; s.masked += a.count.masked ?? 0; s.sources = a.count.sources ?? s.sources; }
+          if (a.fx && !reduced) {
+            const from = spot(a.fx.from, s);
+            for (let i = 0; i < a.fx.n; i++) s.particles.push({ x0: from.x + (i % 3) - 1, y0: from.y + ((i * 5) % 3), to: a.fx.to === 'agent' ? 'agent' : spot(a.fx.to, s), t: 0, dur: 650, color: a.fx.from === 'agent' ? '#e0f2fe' : a.fx.from === 'core' ? ROOMS.ai.neon : ROOMS[a.fx.from].neon, size: 2, delay: i * 55 });
+            // What the gate masks never reaches the core: red bits drop at the gate.
+            for (let i = 0; i < Math.min(12, a.fx.masked ?? 0); i++) s.particles.push({ x0: GATE_X - 6 + ((i * 7) % 13), y0: 112, to: { x: GATE_X - 6 + ((i * 7) % 13), y: 124 }, t: 0, dur: 700, color: '#f43f5e', size: 2, fall: true, delay: 300 + i * 60 });
+          }
+          if (a.status && a.status !== lastStatus) { lastStatus = a.status; setStatus(a.status); pushLog(a.status); }
         }
-        // Walk.
-        const step = (reduced ? 999 : 0.07 * speed) * dt;
-        let remaining = step;
+        let remaining = (reduced ? 9999 : 0.075 * speed) * dt;
         while (remaining > 0 && s.agent.path.length) {
           const p = s.agent.path[0]!;
-          const dx = p.x - s.agent.x, dy = p.y - s.agent.y;
-          const d = Math.hypot(dx, dy);
+          const dx = p.x - s.agent.x, dy = p.y - s.agent.y, d = Math.hypot(dx, dy);
           if (d <= remaining) { s.agent.x = p.x; s.agent.y = p.y; s.agent.path.shift(); remaining -= d; } else { s.agent.x += (dx / d) * remaining; s.agent.y += (dy / d) * remaining; remaining = 0; }
         }
         if (s.current) {
-          if (s.current.print && s.printed < s.current.print) s.printed += dt / 120;
-          // An action ends after its time and once the walk is over.
+          if (s.current.print && s.printed < s.current.print) s.printed += dt / 110;
           s.left -= dt * speed;
           if (s.left <= 0 && !s.agent.path.length) s.current = null;
         }
+        if (s.scan > 0) s.scan = Math.max(0, s.scan - dt / 1400);
+        for (const p of s.particles) { if (p.delay > 0) p.delay -= dt * speed; else p.t += dt * speed; }
+        s.particles = s.particles.filter((p) => p.t < p.dur);
+        if (s.replaying && !s.queue.length && !s.current) s.replaying = false;
+      }
+      // Room lights ease toward on (active), dim (idle) or off (not connected).
+      for (const id of Object.keys(ROOMS) as RoomId[]) {
+        const target = id !== 'agent' && id !== 'ai' && !present.has(id) ? 0 : s.active.has(id) ? 1 : 0.38;
+        const cur = roomLight.get(id) ?? target;
+        roomLight.set(id, cur + (target - cur) * Math.min(1, dt / 220));
       }
 
-      drawScene(g, s.active, present, now, Math.floor(s.printed), s.carry);
-      const busy = (id: McpServerId) => s.active.has(id) && s.say[id]?.text.endsWith('…');
-      const seated = (['github', 'gmail', 'calendar', 'lms'] as const).filter((id) => present.has(id));
-      for (const id of seated) drawPerson(g, id, SEAT[id].x, SEAT[id].y + 12, busy(id) ? 'type' : 'stand', now);
-      drawFront(g);
-      drawRobot(g, ROBOT_POST.x, ROBOT_POST.y, now, s.say.ai?.tone === 'think');
-      drawPerson(g, 'guard', GUARD_POST.x, GUARD_POST.y, 'stand', now);
-      const walking = s.agent.path.length > 0;
-      drawPerson(g, 'agent', s.agent.x, s.agent.y, walking ? (Math.floor(now / 140) % 2 ? 'walk1' : 'walk2') : 'stand', now);
-      if (s.carry > 0) { g.fillStyle = '#ffffff'; g.fillRect(Math.round(s.agent.x) + 4, Math.round(s.agent.y) - 11, 5, Math.min(1 + s.carry, 5)); g.fillStyle = '#94a3b8'; g.fillRect(Math.round(s.agent.x) + 5, Math.round(s.agent.y) - 10, 3, 1); }
+      // ---- draw
+      g.globalCompositeOperation = 'source-over';
+      g.drawImage(base, 0, 0);
+      sky(g, now);
+      const flick = (id: RoomId) => (noise(Math.floor(now / 90), id.length) > 0.97 ? 0 : 1) * (roomLight.get(id) ?? 0);
+      for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, Room]>) neon(g, r.sign, r.x + 9, r.y + 6, r.neon, flick(id) > 0.2 ? 1 : 0.3);
+      // Wall screens: calendar week grid, HQ status, AI holo text.
+      for (let i = 0; i < 7; i++) for (let j = 0; j < 3; j++) { g.fillStyle = i === 3 && j === 1 ? '#f43f5e' : s.active.has('calendar') ? '#5eead4' : '#1f4d4a'; g.fillRect(368 + i * 3, 29 + j * 4, 2, 2); }
+      g.fillStyle = s.printed > 0 ? '#22c55e' : s.active.has('agent') ? '#3b82f6' : '#1e293b'; g.fillRect(178, 130, Math.round(44 * Math.min(1, (s.calls + (s.printed > 0 ? 4 : 0)) / 10)), 2);
+      for (let i = 0; i < 3; i++) { g.fillStyle = s.active.has('agent') ? '#93c5fd' : '#334155'; g.fillRect(178, 134 + i * 3, 10 + ((i * 13 + Math.floor(now / 400)) % 30), 1); }
+      for (let i = 0; i < 3; i++) { g.fillStyle = s.active.has('ai') ? mix(ROOMS.ai.neon, '#ffffff', 0.3) : '#3b2453'; g.fillRect(288, 131 + i * 3, 8 + ((i * 11 + Math.floor(now / 160)) % 28), 1); }
+      // Server rack LEDs.
+      for (let i = 0; i < 6; i++) { g.fillStyle = s.active.has('github') && noise(i, Math.floor(now / 120)) > 0.4 ? '#4ade80' : '#14532d'; g.fillRect(118, 34 + i * 5, 1, 1); g.fillStyle = noise(i, Math.floor(now / 700)) > 0.5 ? '#facc15' : '#3f3f1a'; g.fillRect(116, 34 + i * 5, 1, 1); }
+      // Monitors on desks (behind people).
+      monitor(g, 52, 56, 13, s.active.has('github'), ROOMS.github.neon, now); monitor(g, 72, 56, 13, s.active.has('github'), '#38bdf8', now);
+      monitor(g, 194, 56, 14, s.active.has('gmail'), ROOMS.gmail.neon, now);
+      monitor(g, 326, 56, 14, s.active.has('calendar'), ROOMS.calendar.neon, now);
+      monitor(g, 62, 164, 14, s.active.has('lms'), ROOMS.lms.neon, now);
+      monitor(g, 176, 164, 13, true, '#38bdf8', now); monitor(g, 194, 163, 13, s.active.has('agent'), ROOMS.agent.neon, now); monitor(g, 212, 164, 13, true, '#38bdf8', now);
+      // Printer output.
+      if (s.printed > 0) { const n = Math.min(8, Math.floor(s.printed)); g.fillStyle = '#f8fafc'; g.fillRect(243, 174, 10, n); g.fillStyle = '#94a3b8'; for (let i = 1; i < n; i += 2) g.fillRect(244, 174 + i, 7, 1); }
+      // Security gate: posts, bar, scanning laser.
+      g.fillStyle = '#1e2440'; g.fillRect(GATE_X - 12, 104, 3, 22); g.fillRect(GATE_X + 9, 104, 3, 22); g.fillStyle = '#334075'; g.fillRect(GATE_X - 12, 103, 24, 2);
+      g.fillStyle = s.scan > 0 ? '#f43f5e' : '#22c55e'; g.fillRect(GATE_X - 11, 106, 1, 1); g.fillRect(GATE_X + 10, 106, 1, 1);
+      if (s.scan > 0) { const ly = 106 + Math.floor(((now / 60) % 18)); g.fillStyle = 'rgba(244,63,94,0.85)'; g.fillRect(GATE_X - 9, ly, 18, 1); }
 
-      // HTML overlay: crisp Korean text for names and speech.
-      const pos: Record<Actor, Spot> = { agent: { x: s.agent.x, y: s.agent.y }, github: { x: SEAT.github.x, y: SEAT.github.y + 12 }, gmail: { x: SEAT.gmail.x, y: SEAT.gmail.y + 12 }, calendar: { x: SEAT.calendar.x, y: SEAT.calendar.y + 12 }, lms: { x: SEAT.lms.x, y: SEAT.lms.y + 12 }, guard: GUARD_POST, ai: ROBOT_POST };
+      // People and desks, painter-sorted by feet.
+      const thinking = s.say.ai?.tone === 'think';
+      const draws: Array<{ y: number; f: () => void }> = [];
+      for (const d of DESKS) draws.push({ y: d.y + 6, f: () => deskFront(g, d) });
+      for (const id of ['github', 'gmail', 'calendar', 'lms'] as const) if (present.has(id)) { const busy = s.active.has(id) && (s.say[id]?.text.endsWith('…') ?? false); draws.push({ y: SEAT[id].y, f: () => person(g, id, SEAT[id].x, SEAT[id].y, busy ? 'type' : 'stand', now) }); }
+      draws.push({ y: GUARD.y, f: () => person(g, 'guard', GUARD.x, GUARD.y, 'stand', now) });
+      const walking = s.agent.path.length > 0;
+      draws.push({ y: s.agent.y, f: () => {
+        person(g, 'agent', s.agent.x, s.agent.y, walking ? (Math.floor(now / 130) % 2 ? 'walk1' : 'walk2') : 'stand', now);
+        if (s.carry > 0) { const cx = Math.round(s.agent.x) + 6, cy = Math.round(s.agent.y) - 12; g.fillStyle = '#e0f2fe'; g.fillRect(cx, cy, 4, 4); g.fillStyle = '#38bdf8'; g.fillRect(cx + 1, cy + 1, 2, 2); }
+      } });
+      // AI core: pedestal glow, orb, two orbiting rings.
+      draws.push({ y: CORE.y + 14, f: () => {
+        const pulse = thinking ? 0.5 + 0.5 * Math.sin(now / 140) : 0.5 + 0.2 * Math.sin(now / 700);
+        const oy = CORE.y - 14 + Math.round(Math.sin(now / 500) * 1.5);
+        g.fillStyle = mix('#4c1d95', '#f0abfc', pulse); g.fillRect(CORE.x - 4, oy - 4, 8, 8); g.fillRect(CORE.x - 5, oy - 3, 10, 6); g.fillRect(CORE.x - 3, oy - 5, 6, 10);
+        g.fillStyle = '#fdf4ff'; g.fillRect(CORE.x - 2, oy - 3, 2, 2);
+        const spin = now / (thinking ? 160 : 600);
+        for (let k = 0; k < 2; k++) for (let i = 0; i < 10; i++) { const a = spin * (k ? -1 : 1) + (i / 10) * Math.PI * 2; const x = CORE.x + Math.cos(a) * (10 + k * 3), y = oy + Math.sin(a) * (3 + k * 2); g.fillStyle = Math.sin(a) > 0 ? (k ? '#f0abfc' : '#c4b5fd') : 'rgba(196,181,253,0.4)'; g.fillRect(Math.round(x), Math.round(y), 1, 1); }
+      } });
+      draws.sort((a, b) => a.y - b.y).forEach((d) => d.f());
+
+      // Data in flight.
+      for (const p of s.particles) {
+        if (p.delay > 0) continue;
+        const k = p.t / p.dur, e = p.fall ? k * k : 1 - (1 - k) * (1 - k);
+        const to = p.to === 'agent' ? { x: s.agent.x + 7, y: s.agent.y - 11 } : p.to;
+        const x = p.x0 + (to.x - p.x0) * e, y = p.y0 + (to.y - p.y0) * e - (p.fall ? 0 : Math.sin(k * Math.PI) * 10);
+        g.fillStyle = p.fall ? rgba(p.color, 1 - k) : p.color; g.fillRect(Math.round(x), Math.round(y), p.size, p.size);
+      }
+
+      // ---- lighting: darkness with holes for room lights, monitors, neon, core.
+      lg.globalCompositeOperation = 'source-over';
+      lg.clearRect(0, 0, W, H);
+      lg.fillStyle = 'rgba(3,5,16,0.72)'; lg.fillRect(0, 0, W, H);
+      lg.globalCompositeOperation = 'destination-out';
+      const hole = (x: number, y: number, r: number, a: number) => { if (a <= 0.01) return; const gr = lg.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, `rgba(0,0,0,${a})`); gr.addColorStop(1, 'rgba(0,0,0,0)'); lg.fillStyle = gr; lg.fillRect(x - r, y - r, r * 2, r * 2); };
+      for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, Room]>) { const v = roomLight.get(id) ?? 0; hole(r.x + r.w / 2, r.y + r.h / 2, 70, 0.95 * v); hole(r.x + 14, r.y + 8, 18, 0.9 * flick(id)); }
+      hole(W / 2, 11, 260, 0.75); // window wall
+      hole(s.agent.x, s.agent.y - 8, 22, 0.45); // the agent always readable
+      hole(GATE_X, 114, 26, 0.6); hole(GUARD.x, GUARD.y - 8, 16, 0.4);
+      hole(CORE.x, CORE.y - 14, 34, thinking ? 0.95 : 0.7);
+      for (const x of [40, 120, 200, 280, 360]) hole(x, 115, 14, 0.35); // corridor floor lights
+      g.drawImage(light, 0, 0);
+      // Coloured glow on top (additive).
+      g.globalCompositeOperation = 'lighter';
+      const glow = (x: number, y: number, r: number, c: string, a: number) => { if (a <= 0.01) return; const gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, rgba(c, a)); gr.addColorStop(1, rgba(c, 0)); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); };
+      for (const [id, r] of Object.entries(ROOMS) as Array<[RoomId, Room]>) { glow(r.x + 9 + r.sign.length * 2, r.y + 8, 16, r.neon, 0.35 * flick(id)); if (s.active.has(id)) glow(r.x + r.w / 2, r.y + r.h - 20, 50, r.neon, 0.12); }
+      glow(CORE.x, CORE.y - 14, thinking ? 30 : 20, ROOMS.ai.neon, thinking ? 0.45 : 0.25);
+      if (s.scan > 0) glow(GATE_X, 114, 22, '#f43f5e', 0.35 * s.scan);
+      for (const p of s.particles) if (p.delay <= 0 && !p.fall) { const k = p.t / p.dur, e = 1 - (1 - k) * (1 - k); const to = p.to === 'agent' ? { x: s.agent.x + 7, y: s.agent.y - 11 } : p.to; glow(p.x0 + (to.x - p.x0) * e + 1, p.y0 + (to.y - p.y0) * e - Math.sin(k * Math.PI) * 10 + 1, 5, p.color, 0.5); }
+      g.globalCompositeOperation = 'source-over';
+
+      // ---- HTML overlay
+      const pos: Record<Actor, Spot> = { agent: { x: s.agent.x, y: s.agent.y }, github: { x: SEAT.github.x, y: SEAT.github.y + 10 }, gmail: { x: SEAT.gmail.x, y: SEAT.gmail.y + 10 }, calendar: { x: SEAT.calendar.x, y: SEAT.calendar.y + 10 }, lms: { x: SEAT.lms.x, y: SEAT.lms.y + 10 }, guard: GUARD, ai: { x: CORE.x, y: CORE.y + 8 } };
       for (const a of ACTORS) {
         const p = pos[a];
         const tag = tags.current[a];
@@ -380,16 +514,20 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
           if (msg) {
             if (b.dataset['text'] !== msg.text) { b.dataset['text'] = msg.text; b.textContent = msg.text; }
             b.dataset['tone'] = msg.tone ?? '';
-            b.style.left = `${(Math.min(Math.max(p.x, 40), W - 40) / W) * 100}%`;
-            b.style.top = `${((p.y - 19) / H) * 100}%`;
+            b.style.left = `${(Math.min(Math.max(p.x, 44), W - 44) / W) * 100}%`;
+            // Above the head: seated people's head is 20px above their seat, the core floats higher.
+            const head = a === 'ai' ? CORE.y - 30 : a === 'agent' || a === 'guard' ? p.y - 23 : SEAT[a].y - 22;
+            b.style.top = `${(head / H) * 100}%`;
           }
         }
       }
+      if (hud.current) hud.current.textContent = `도구 ${s.calls} · 가림 ${s.masked} · 출처 ${s.sources}`;
+      if (mode.current) mode.current.textContent = live ? 'LIVE' : s.replaying ? 'REPLAY' : sim.current.fed ? 'DONE' : 'IDLE';
       raf = requestAnimationFrame(frame);
     };
     raf = requestAnimationFrame(frame);
     return () => cancelAnimationFrame(raf);
-  }, [present, reduced]);
+  }, [presentKey, reduced, live]);
 
   const toggle = () => { const s = sim.current; s.playing = !s.playing; setPlaying(s.playing); };
 
@@ -405,19 +543,29 @@ export function AgentOffice({ events, live, servers }: { events: AgentEvent[]; l
           <button type="button" onClick={replay} disabled={live || !events.length} className="hairline inline-flex min-h-9 items-center gap-1 rounded-md px-2.5 text-xs text-text-2 hover:text-text disabled:opacity-40"><RotateCcw className="h-3.5 w-3.5" aria-hidden />다시 보기</button>
         </div>
       </div>
-      <div className="relative mt-3 overflow-hidden rounded-lg border border-line" style={{ aspectRatio: `${W} / ${H}` }}>
+      <div className="office-frame relative mt-3 overflow-hidden rounded-xl" style={{ aspectRatio: `${W} / ${H}` }}>
         <canvas ref={canvas} width={W} height={H} role="img" aria-label={`에이전트 사무실 그림. 지금: ${status}`} className="block h-full w-full" style={{ imageRendering: 'pixelated' }} />
+        <div aria-hidden className="office-scan pointer-events-none absolute inset-0" />
         {(Object.keys(ROOMS) as RoomId[]).map((id) => (
-          <span key={id} className="pointer-events-none absolute rounded-sm bg-black/45 px-1 text-[10px] leading-4 text-white sm:text-[11px]" style={{ left: `${((ROOMS[id].x + 3) / W) * 100}%`, top: `${((ROOMS[id].y + 1) / H) * 100}%` }}>
+          <span key={id} aria-hidden className="office-room pointer-events-none absolute" style={{ left: `${((ROOMS[id].x + ROOMS[id].sign.length * 4 + 18) / W) * 100}%`, top: `${((ROOMS[id].y + 4) / H) * 100}%` }}>
             {ROOMS[id].label}{id !== 'agent' && id !== 'ai' && !present.has(id) ? ' · 연결 안 됨' : ''}
           </span>
         ))}
+        <div aria-hidden className="office-hud pointer-events-none absolute right-2 top-1.5 flex items-center gap-2">
+          <span className="office-live"><span ref={mode}>IDLE</span></span>
+          <span ref={hud} />
+        </div>
         {ACTORS.map((a) => (
           <div key={a}>
-            <button type="button" aria-label={`${NAME[a]} 정보`} aria-pressed={picked === a} onClick={() => setPicked(picked === a ? null : a)} ref={(el) => { tags.current[a] = el; }} className={`absolute -translate-x-1/2 cursor-pointer whitespace-nowrap rounded-sm px-1 text-[9px] font-medium leading-[14px] text-white sm:text-[10px] ${a === 'agent' ? 'bg-blue-700/85' : a === 'ai' ? 'bg-violet-700/85' : a === 'guard' ? 'bg-slate-800/85' : 'bg-black/55'} ${a !== 'agent' && a !== 'guard' && a !== 'ai' && !present.has(a) ? 'hidden' : ''} ${picked === a ? 'ring-2 ring-yellow-300' : ''}`}>{NAME[a]}</button>
+            <button type="button" aria-label={`${NAME[a]} 정보`} aria-pressed={picked === a} onClick={() => setPicked(picked === a ? null : a)} ref={(el) => { tags.current[a] = el; }} className={`office-tag absolute -translate-x-1/2 cursor-pointer whitespace-nowrap ${a !== 'agent' && a !== 'guard' && a !== 'ai' && !present.has(a) ? 'hidden' : ''}`} data-who={a} data-picked={picked === a || undefined}>{NAME[a]}</button>
             <div aria-hidden ref={(el) => { bubbles.current[a] = el; }} style={{ display: 'none' }} className="office-bubble pointer-events-none absolute -translate-x-1/2 -translate-y-full whitespace-nowrap" />
           </div>
         ))}
+        {log.length > 0 && (
+          <ol aria-hidden className="office-log pointer-events-none absolute bottom-1.5 left-2">
+            {log.map((l, i) => <li key={`${i}-${l}`} style={{ opacity: 0.45 + (i / Math.max(1, log.length - 1)) * 0.55 }}>› {l}</li>)}
+          </ol>
+        )}
       </div>
       {picked && (() => { const i = infoOf(picked, events); return (
         <div role="region" aria-label={`${NAME[picked]} 정보`} className="mt-2 rounded-lg bg-surface-2 px-3 py-2 text-[13px]">

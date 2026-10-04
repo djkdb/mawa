@@ -129,11 +129,30 @@ a { text-underline-offset: 3px; }
 button, a, [role="radio"] { transition-property: color, background-color, box-shadow, opacity, transform; transition-duration: 160ms; transition-timing-function: var(--ease-out); }
 button:not(:disabled):active, [role="radio"]:not(:disabled):active { transform: scale(0.97); }
 
-/* Agent office speech bubbles: pixel-style, readable in both themes (the scene itself is fixed-palette). */
-.office-bubble { max-width: 46%; overflow: hidden; text-overflow: ellipsis; padding: 2px 6px; font-size: 11px; line-height: 16px; font-weight: 600; color: #1b1b24; background: #fffdf5; border: 2px solid #1b1b24; border-radius: 3px; box-shadow: 2px 2px 0 rgba(0,0,0,.25); }
-.office-bubble::after { content: ''; position: absolute; left: 50%; bottom: -6px; margin-left: -3px; border: 3px solid transparent; border-top-color: #1b1b24; }
-.office-bubble[data-tone='ok'] { background: #ecfdf5; }
-.office-bubble[data-tone='warn'] { background: #fffbeb; }
-.office-bubble[data-tone='bad'] { background: #fef2f2; color: #991b1b; }
-.office-bubble[data-tone='think'] { background: #f5f3ff; }
-@media (max-width: 639px) { .office-bubble { font-size: 9px; line-height: 13px; padding: 1px 4px; } }
+/* Agent office: a night-shift ops room. Fixed dark palette in both themes (it is a scene, not chrome). */
+.office-frame { background: #05070f; border: 1px solid #1c2240; }
+.office-scan { background: repeating-linear-gradient(to bottom, rgba(255,255,255,0.025) 0 1px, transparent 1px 3px); box-shadow: inset 0 0 60px rgba(0,0,0,0.55); }
+.office-room { font: 500 10px/12px ui-sans-serif, system-ui, sans-serif; color: #94a3b8; white-space: nowrap; }
+.office-hud { font: 600 10px/14px ui-monospace, SFMono-Regular, Menlo, monospace; color: #cbd5e1; background: rgba(5,7,15,.72); border: 1px solid #1f2747; border-radius: 4px; padding: 2px 6px; }
+.office-live { display: inline-flex; align-items: center; gap: 4px; color: #f43f5e; letter-spacing: .1em; }
+.office-live::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; animation: office-blink 1.2s steps(2, start) infinite; }
+@keyframes office-blink { to { visibility: hidden; } }
+.office-tag { font: 600 9px/13px ui-monospace, SFMono-Regular, Menlo, monospace; color: #e2e8f0; background: rgba(8,11,24,.78); border: 1px solid #27304f; border-radius: 3px; padding: 0 4px; transition: border-color 160ms cubic-bezier(0.23,1,0.32,1); }
+.office-tag:hover, .office-tag[data-picked] { border-color: #facc15; color: #fef9c3; }
+.office-tag[data-who='agent'] { border-color: #2563eb; }
+.office-tag[data-who='ai'] { border-color: #a21caf; }
+.office-tag[data-who='guard'] { border-color: #475569; }
+.office-tag:focus-visible { outline: 2px solid #facc15; outline-offset: 1px; }
+.office-bubble { max-width: 44%; overflow: hidden; text-overflow: ellipsis; padding: 2px 7px; font-size: 11px; line-height: 16px; font-weight: 600; color: #e2e8f0; background: rgba(10,14,30,.92); border: 1px solid #334075; border-radius: 4px; }
+.office-bubble::after { content: ''; position: absolute; left: 50%; bottom: -5px; margin-left: -4px; border: 4px solid transparent; border-bottom: 0; border-top-color: #334075; }
+.office-bubble[data-tone='ok'] { border-color: #15803d; color: #bbf7d0; }
+.office-bubble[data-tone='ok']::after { border-top-color: #15803d; }
+.office-bubble[data-tone='warn'] { border-color: #b45309; color: #fde68a; }
+.office-bubble[data-tone='warn']::after { border-top-color: #b45309; }
+.office-bubble[data-tone='bad'] { border-color: #be123c; color: #fecdd3; }
+.office-bubble[data-tone='bad']::after { border-top-color: #be123c; }
+.office-bubble[data-tone='think'] { border-color: #a21caf; color: #f5d0fe; }
+.office-bubble[data-tone='think']::after { border-top-color: #a21caf; }
+.office-log { font: 500 10px/14px ui-monospace, SFMono-Regular, Menlo, monospace; color: #7dd3fc; text-shadow: 0 0 4px rgba(56,189,248,.5); }
+@media (max-width: 639px) { .office-bubble { font-size: 9px; line-height: 13px; padding: 1px 4px; } .office-room, .office-log { display: none; } .office-tag { font-size: 8px; line-height: 11px; } }
+@media (prefers-reduced-motion: reduce) { .office-live::before { animation: none; } }
