@@ -140,6 +140,37 @@ npm run start:real
 - `npm run dev` 창은 `Ctrl + C`
 - `.env`는 내 PC에만 있습니다. 커밋하지 마세요 (`.gitignore`에 들어 있음)
 
+## Gmail·Google Calendar 연결 (선택, 10분, 무료)
+
+내 계정 하나만 쓰는 용도라 Google 심사는 필요 없습니다(「테스트」 상태 + 테스트 사용자에 나 추가). 권한은 **읽기 전용**(`gmail.readonly`, `calendar.readonly`)만 요청합니다.
+
+1. **프로젝트**: https://console.cloud.google.com → 위쪽 프로젝트 선택 → **새 프로젝트** → 이름 `mawa-local` → 만들기
+2. **API 켜기**: 왼쪽 메뉴 **API 및 서비스 → 라이브러리** → `Gmail API` 검색 → **사용** / 다시 라이브러리 → `Google Calendar API` → **사용**
+3. **동의 화면**: **API 및 서비스 → OAuth 동의 화면**(또는 **Google 인증 플랫폼**) → 시작하기
+   - 앱 이름 `mawa-local`, 사용자 지원 이메일·개발자 연락처 = 내 Gmail
+   - 대상(User type): **외부(External)** → 만들기
+   - **대상 → 테스트 사용자 → 사용자 추가** → **내 Gmail 주소** 추가 (이게 없으면 로그인 때 "액세스 차단됨")
+   - 게시 상태는 **테스트** 그대로 둡니다
+4. **클라이언트 만들기**: **사용자 인증 정보(또는 클라이언트) → 만들기 → OAuth 클라이언트 ID**
+   - 애플리케이션 유형: **웹 애플리케이션**, 이름 `mawa-local-web`
+   - **승인된 리디렉션 URI** → URI 추가: `http://localhost:3001/auth/google/callback` (doctor가 출력하는 값과 같아야 함)
+   - 만들기 → **클라이언트 ID**와 **클라이언트 보안 비밀번호**를 복사 (채팅에 붙여넣지 않기)
+5. **`.env`에 추가** (`notepad .env`):
+   ```
+   GOOGLE_CLIENT_ID=<클라이언트 ID>
+   GOOGLE_CLIENT_SECRET=<클라이언트 보안 비밀번호>
+   ```
+6. 서버를 껐다 켜기: `Ctrl + C` → `npm run start:real` (doctor에 `✓ Google OAuth 있음`)
+7. 웹 **연결** 화면 → Gmail(또는 Calendar) 줄의 **연결** → Google 로그인
+   - "Google에서 확인하지 않은 앱" 화면이 나오면 **고급 → mawa-local(으)로 이동(안전하지 않음)** — 내가 만든 앱이라 정상입니다
+   - 권한 화면에서 **Gmail 읽기**와 **캘린더 읽기**에 체크 → 계속
+8. 연결 화면에 Gmail·Google Calendar가 「연결됨」이면 끝. 홈에서 "마감 순서"나 "이번 주 정리"를 실행하면 메일·일정까지 읽습니다.
+
+알아 둘 것
+- 테스트 상태의 Google 앱은 **7일마다** 다시 연결해야 합니다(refresh token 만료). 만료되면 연결 화면에서 해제 → 연결.
+- 메일 본문은 AI에 보내기 전에 메일 주소·전화번호·학번 등이 가려집니다(「AI가 본 내 데이터」에서 확인). 녹화할 때는 `?record=1`로 계정 이름을 가리고, 메일 제목이 공개돼도 괜찮은지 미리 보세요.
+- 그만 쓰려면 연결 화면의 **해제**(Google 쪽 권한도 취소) → 필요 없으면 Cloud Console에서 프로젝트 삭제.
+
 ## 자주 막히는 곳
 | 증상 | 원인 → 해결 |
 |---|---|

@@ -39,6 +39,10 @@ else if (has('GITHUB_OAUTH_SCOPES')) warn('GITHUB_OAUTH_SCOPES에 값이 있음 
 else ok('GITHUB_OAUTH_SCOPES= (빈 값 · GitHub App 권한 사용)');
 if (!has('SESSION_ENCRYPTION_KEY')) warn('SESSION_ENCRYPTION_KEY 없음 → 연결이 메모리에만 남아 서버를 껐다 켜면 다시 연결해야 함', `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" 출력값을 넣기`);
 else if (/^[0-9a-fA-F]{64}$/.test(env.SESSION_ENCRYPTION_KEY.trim())) ok('SESSION_ENCRYPTION_KEY 형식 맞음 (64자리 hex)'); else fail('SESSION_ENCRYPTION_KEY 형식 오류 (64자리 hex가 아님)', `node -e "console.log(require('crypto').randomBytes(32).toString('hex'))" 출력값으로 바꾸기`);
+// Google (Gmail + Calendar) is optional; both values or neither.
+if (has('GOOGLE_CLIENT_ID') && has('GOOGLE_CLIENT_SECRET')) ok(`Google OAuth 있음 (Gmail·Calendar) · 승인된 리디렉션 URI: ${env.API_PUBLIC_URL || `http://localhost:${Number(env.API_PORT || 3001)}`}/auth/google/callback`);
+else if (has('GOOGLE_CLIENT_ID') || has('GOOGLE_CLIENT_SECRET')) fail('Google OAuth 값이 하나만 있음', 'GOOGLE_CLIENT_ID와 GOOGLE_CLIENT_SECRET을 둘 다 넣기 (docs/REAL_RUN.md 「Gmail·Google Calendar 연결」)');
+else warn('Google OAuth 없음 → Gmail·Calendar는 "OAuth 미설정" (선택)', 'docs/REAL_RUN.md 「Gmail·Google Calendar 연결」');
 for (const k of ['GITHUB_OAUTH_URL', 'GITHUB_API_URL']) if (has(k)) warn(`${k}가 설정됨 (테스트용 가짜 GitHub 주소)`, `실제 실행이면 .env에서 ${k} 줄 삭제`);
 const apiPort = Number(env.API_PORT || 3001);
 const publicUrl = env.API_PUBLIC_URL || `http://localhost:${apiPort}`;
