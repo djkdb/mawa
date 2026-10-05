@@ -100,7 +100,7 @@ export default function App() {
         </form>
       )}
       {statusError && !statusError.startsWith('401') && !IS_DEMO_BUILD && (
-        <p role="alert" className="mx-auto mb-4 max-w-5xl rounded-lg bg-danger/10 px-4 py-3 text-sm text-danger">API 서버에 연결할 수 없습니다 ({statusError}). <code className="font-mono">npm run dev</code>로 실행하거나 데모 빌드를 여세요.</p>
+        <div className="mx-auto mb-4 max-w-5xl"><ErrorNotice message={`API server unreachable: ${statusError}`} /></div>
       )}
       {notice && <p role="status" className="surface mx-auto mb-4 max-w-5xl px-4 py-3 text-sm">{notice} <button type="button" className="ml-2 text-text-2 underline" onClick={() => setNotice(null)}>닫기</button></p>}
 

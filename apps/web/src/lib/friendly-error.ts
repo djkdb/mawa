@@ -13,7 +13,7 @@ const RULES: Array<[RegExp, FriendlyError]> = [
   [/Bad credentials|401|token refresh failed|reconnect GitHub/i, { title: 'GitHub 연결이 만료됐어요', fix: '연결 화면에서 GitHub를 해제했다가 다시 연결하세요.', action: { label: '연결 화면', href: hrefFor('connections') } }],
   [/rate limit/i, { title: 'GitHub 요청 한도에 걸렸어요', fix: '잠시(보통 몇 분) 뒤에 다시 실행하세요.' }],
   [/timed out|timeout/i, { title: 'AI 응답이 너무 오래 걸렸어요', fix: '네트워크 상태를 확인하고 다시 실행하세요. 계속되면 질문을 짧게 하거나 범위를 줄여 보세요.' }],
-  [/ECONNREFUSED|Failed to fetch|NetworkError|status 50\d/i, { title: 'API 서버에 연결할 수 없어요', fix: '터미널에서 npm run start:real (또는 npm run dev)로 서버를 켠 뒤 새로고침하세요.' }],
+  [/API server unreachable|ECONNREFUSED|Failed to fetch|NetworkError|status 50\d/i, { title: 'API 서버가 꺼져 있어요', fix: '웹 화면만 켜지고 API(포트 3001)가 안 떠 있습니다. 켜 둔 npm run dev 창을 Ctrl+C로 끄고, npm run start:real 로 다시 켠 뒤 새로고침하세요. 터미널에 [api] listening on http://127.0.0.1:3001 줄이 보여야 합니다.' }],
   [/data policy can only be made stricter/i, { title: '서버 정책보다 느슨한 설정은 쓸 수 없어요', fix: '설정 화면의 데이터 정책을 서버 기본값보다 엄격하게만 바꿀 수 있습니다.', action: { label: '설정', href: hrefFor('settings') } }],
 ];
 
