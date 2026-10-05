@@ -339,6 +339,17 @@ export function AgentOffice({ events, live, servers, headingRef }: { events: Age
   const tags = useRef<Partial<Record<Actor, HTMLElement | null>>>({});
   const bubbles = useRef<Partial<Record<Actor, HTMLDivElement | null>>>({});
   const hud = useRef<HTMLDivElement>(null);
+  const frameEl = useRef<HTMLDivElement>(null);
+  // Overlay text is placed on whole CSS pixels (no translate(-50%)), so it stays sharp at any size.
+  const scale = useRef(1);
+  useEffect(() => {
+    const el = frameEl.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => { scale.current = el.clientWidth / W; });
+    ro.observe(el);
+    scale.current = el.clientWidth / W;
+    return () => ro.disconnect();
+  }, []);
   const mode = useRef<HTMLSpanElement>(null);
   const hudSm = useRef<HTMLSpanElement>(null);
   const modeSm = useRef<HTMLSpanElement>(null);
@@ -546,22 +557,31 @@ export function AgentOffice({ events, live, servers, headingRef }: { events: Age
 
       // ---- HTML overlay
       const pos: Record<Actor, Spot> = { agent: { x: s.agent.x, y: s.agent.y }, github: { x: SEAT.github.x, y: SEAT.github.y + 10 }, gmail: { x: SEAT.gmail.x, y: SEAT.gmail.y + 10 }, calendar: { x: SEAT.calendar.x, y: SEAT.calendar.y + 10 }, lms: { x: SEAT.lms.x, y: SEAT.lms.y + 10 }, guard: GUARD, ai: { x: CORE.x, y: CORE.y + 8 } };
+      const k = scale.current, fw = W * k;
       for (const a of ACTORS) {
         const p = pos[a];
         const tag = tags.current[a];
-        if (tag) { tag.style.left = `${(p.x / W) * 100}%`; tag.style.top = `${((p.y + 1) / H) * 100}%`; }
+        if (tag && tag.offsetParent) {
+          const w = tag.offsetWidth;
+          tag.style.left = `${Math.round(Math.min(Math.max(p.x * k - w / 2, 2), fw - w - 2))}px`;
+          tag.style.top = `${Math.round((p.y + 1) * k)}px`;
+        }
         const b = bubbles.current[a];
         if (b) {
           const msg = s.say[a];
           const off = a !== 'agent' && a !== 'guard' && a !== 'ai' && !present.has(a);
           b.style.display = msg && !off ? '' : 'none';
-          if (msg) {
+          if (msg && !off) {
             if (b.dataset['text'] !== msg.text) { b.dataset['text'] = msg.text; b.textContent = msg.text; }
             b.dataset['tone'] = msg.tone ?? '';
-            b.style.left = `${(Math.min(Math.max(p.x, 44), W - 44) / W) * 100}%`;
             // Above the head: seated people's head is 20px above their seat, the core floats higher.
             const head = a === 'ai' ? CORE.y - 30 : a === 'agent' || a === 'guard' ? p.y - 23 : SEAT[a].y - 22;
-            b.style.top = `${(head / H) * 100}%`;
+            const bw = b.offsetWidth, bh = b.offsetHeight;
+            const left = Math.round(Math.min(Math.max(p.x * k - bw / 2, 4), fw - bw - 4));
+            b.style.left = `${left}px`;
+            b.style.top = `${Math.round(head * k - bh)}px`;
+            // Keep the tail pointing at the speaker even when the bubble is pushed in from an edge.
+            b.style.setProperty('--tail', `${Math.round(Math.min(Math.max(p.x * k - left, 8), bw - 8))}px`);
           }
         }
       }
@@ -589,7 +609,7 @@ export function AgentOffice({ events, live, servers, headingRef }: { events: Age
           <button type="button" onClick={replay} disabled={live || !events.length} className="hairline inline-flex min-h-9 items-center gap-1 rounded-md px-2.5 text-xs text-text-2 hover:text-text disabled:opacity-40"><RotateCcw className="h-3.5 w-3.5" aria-hidden />다시 보기</button>
         </div>
       </div>
-      <div className="office-frame relative mt-3 overflow-hidden rounded-xl" data-theme={theme} style={{ aspectRatio: `${W} / ${H}` }}>
+      <div ref={frameEl} className="office-frame relative mt-3 overflow-hidden rounded-xl" data-theme={theme} style={{ aspectRatio: `${W} / ${H}` }}>
         <canvas ref={canvas} width={W} height={H} role="img" aria-label={`에이전트 사무실 그림. 지금: ${status}`} className="block h-full w-full" style={{ imageRendering: 'pixelated' }} />
         <div aria-hidden className="office-scan pointer-events-none absolute inset-0" />
         {(Object.keys(ROOMS) as RoomId[]).map((id) => (
@@ -603,8 +623,8 @@ export function AgentOffice({ events, live, servers, headingRef }: { events: Age
         </div>
         {ACTORS.map((a) => (
           <div key={a}>
-            <button type="button" aria-label={`${NAME[a]} 정보`} aria-pressed={picked === a} onClick={() => setPicked(picked === a ? null : a)} ref={(el) => { tags.current[a] = el; }} className={`office-tag absolute -translate-x-1/2 cursor-pointer whitespace-nowrap ${a !== 'agent' && a !== 'guard' && a !== 'ai' && !present.has(a) ? 'hidden' : ''}`} data-who={a} data-picked={picked === a || undefined}>{NAME[a]}</button>
-            <div aria-hidden ref={(el) => { bubbles.current[a] = el; }} style={{ display: 'none' }} className="office-bubble pointer-events-none absolute -translate-x-1/2 -translate-y-full whitespace-nowrap" />
+            <button type="button" aria-label={`${NAME[a]} 정보`} aria-pressed={picked === a} onClick={() => setPicked(picked === a ? null : a)} ref={(el) => { tags.current[a] = el; }} className={`office-tag absolute cursor-pointer whitespace-nowrap ${a !== 'agent' && a !== 'guard' && a !== 'ai' && !present.has(a) ? 'hidden' : ''}`} data-who={a} data-picked={picked === a || undefined}>{NAME[a]}</button>
+            <div aria-hidden ref={(el) => { bubbles.current[a] = el; }} style={{ display: 'none' }} className="office-bubble pointer-events-none absolute whitespace-nowrap" />
           </div>
         ))}
         {log.length > 0 && (
