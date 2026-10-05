@@ -1,7 +1,7 @@
-import { AgentEventSchema, type AgentMode, type DataPolicy } from '@mawa/shared';
+import { AgentEventSchema, type AgentMode, type DataPolicy, type McpServerId } from '@mawa/shared';
 import { persona } from './persona.js';
 import { accountLabel } from './recording.js';
-import type { AgentClient, RunRecord, RunSubscription, RunSummary, StartRunResult, Status, AuditLog } from './types.js';
+import type { AgentClient, RunRecord, RunSubscription, RunSummary, SourceTest, StartRunResult, Status, AuditLog } from './types.js';
 
 const TOKEN_KEY = 'mawa.apiToken';
 /** The API access token the user entered (only needed when the API sets API_ACCESS_TOKEN). */
@@ -22,6 +22,12 @@ function api(url: string, init: RequestInit = {}): Promise<Response> {
 export class HttpClient implements AgentClient {
   readonly kind = 'http' as const;
   constructor(private readonly base = (import.meta.env['VITE_API_URL'] as string | undefined) ?? '') {}
+
+  async testSource(id: McpServerId): Promise<SourceTest> {
+    const res = await api(`${this.base}/api/integrations/${id}/test`, { method: 'POST' });
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    return (await res.json()) as SourceTest;
+  }
 
   async checkLlm(): Promise<{ ok: boolean; provider: string; model: string; error?: string }> {
     const res = await api(`${this.base}/api/llm/check`, { method: 'POST' });

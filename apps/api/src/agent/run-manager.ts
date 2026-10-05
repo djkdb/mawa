@@ -93,6 +93,36 @@ export class RunManager {
     return { servers, skipped };
   }
 
+  /**
+   * "Why is nothing coming from X?": start that one MCP server in real mode and make a few read calls,
+   * so the UI can show what it returns (or the error) without running the whole agent or a model.
+   */
+  async testSource(id: McpServerId): Promise<{ id: McpServerId; ok: boolean; reason?: string; calls: Array<{ tool: string; ok: boolean; summary?: string; count?: number; error?: string }> }> {
+    const { servers, skipped } = await this.availableServers('real');
+    const spec = servers.find((s) => s.id === id);
+    if (!spec) return { id, ok: false, reason: skipped.find((s) => s.id === id)?.reason ?? 'not connected', calls: [] };
+    const PROBES: Record<McpServerId, Array<[string, Record<string, unknown>]>> = {
+      github: [['get_repository_activity', {}], ['get_open_issues', { limit: 5 }]],
+      gmail: [['search_emails', { query: 'in:inbox', limit: 5 }]],
+      calendar: [['get_upcoming_events', { days: 14, limit: 10 }]],
+      lms: [['get_courses', {}], ['get_upcoming_deadlines', { days: 30 }], ['get_assignments', { days: 30 }]],
+    };
+    const executor = new McpToolExecutor({ servers: [spec], mode: 'real', clientName: 'mawa-api-test' });
+    const calls: Array<{ tool: string; ok: boolean; summary?: string; count?: number; error?: string }> = [];
+    try {
+      for (const [name, input] of PROBES[id]) {
+        const r = await executor.callTool({ id: `test_${name}`, server: id, name, input });
+        if (r.status === 'ok') calls.push({ tool: name, ok: true, summary: r.output.summary, ...(Array.isArray(r.output.data) ? { count: r.output.data.length } : {}) });
+        else calls.push({ tool: name, ok: false, error: r.error.message.slice(0, 300) });
+      }
+    } catch (err) {
+      calls.push({ tool: 'connect', ok: false, error: err instanceof Error ? err.message : String(err) });
+    } finally {
+      await executor.close().catch(() => {});
+    }
+    return { id, ok: calls.length > 0 && calls.every((c) => c.ok), calls };
+  }
+
   async start(input: StartRunInput): Promise<RunRecord> {
     const { servers, skipped } = await this.availableServers(input.mode, input.persona);
     if (input.mode === 'real' && servers.length === 0) {

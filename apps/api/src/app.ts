@@ -100,6 +100,13 @@ export function createApp(deps: AppDeps) {
     });
   });
 
+  /** One source, real mode, a few read calls: what does it return right now? */
+  app.post('/api/integrations/:id/test', async (c) => {
+    const id = z.enum(['github', 'gmail', 'calendar', 'lms']).safeParse(c.req.param('id'));
+    if (!id.success) return c.json({ error: 'Unknown source' }, 404);
+    return c.json(await runs.testSource(id.data));
+  });
+
   /** Before the first real run: is the model reachable (Claude Code login, API key)? */
   app.post('/api/llm/check', async (c) => c.json(await runs.checkLlm()));
 

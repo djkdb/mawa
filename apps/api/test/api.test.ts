@@ -39,6 +39,12 @@ describe('api', () => {
     expect(r.error).toMatch(/claude CLI not available/);
   });
 
+  it('source test says why when the source is not connected', async () => {
+    const app = await makeApp();
+    expect(await (await app.request('/api/integrations/lms/test', { method: 'POST' })).json()).toMatchObject({ id: 'lms', ok: false, reason: 'eCampus not connected', calls: [] });
+    expect((await app.request('/api/integrations/slack/test', { method: 'POST' })).status).toBe(404);
+  });
+
   it('refuses real mode when nothing is connected', async () => {
     const app = await makeApp();
     const res = await app.request('/api/agent/run', { method: 'POST', body: JSON.stringify({ prompt: 'hi', mode: 'real' }), headers: { 'content-type': 'application/json' } });

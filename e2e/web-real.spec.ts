@@ -68,6 +68,9 @@ test('real mode: connect GitHub (App), run, live activity, report with sources, 
   // Recording mode hid the account everywhere; report content stays.
   await page.getByRole('link', { name: '연결' }).first().click();
   await expect(page.locator('#connections li').filter({ hasText: 'GitHub' })).toContainText('연결됨 (내 계정)');
+  // "Why is nothing coming from X?": a per-source test reads it now and says what came back.
+  await page.getByRole('button', { name: 'GitHub 연결 테스트' }).click();
+  await expect(page.locator('#connections li').filter({ hasText: 'GitHub' }).getByRole('status')).toContainText('✓ 저장소 활동: 활동 중인 저장소 1개', { timeout: 20_000 });
   expect(await page.locator('body').innerText()).not.toContain('fake-dev@');
   await expect(page.locator('aside')).not.toContainText('fake-dev');
 

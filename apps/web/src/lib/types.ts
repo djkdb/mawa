@@ -76,6 +76,8 @@ export interface RunSubscription {
  *  - HttpClient: talks to apps/api (SSE, OAuth, real or demo runs on the server)
  *  - DemoClient: browser-only replay of recorded runs; no network at all
  */
+export interface SourceTest { id: McpServerId; ok: boolean; reason?: string; calls: Array<{ tool: string; ok: boolean; summary?: string; count?: number; error?: string }> }
+
 export interface AgentClient {
   readonly kind: 'http' | 'demo';
   getStatus(): Promise<Status>;
@@ -91,4 +93,6 @@ export interface AgentClient {
   connectLms?(username: string, password: string): Promise<void>;
   /** One tiny request to the configured model (API server only). */
   checkLlm?(): Promise<{ ok: boolean; provider: string; model: string; error?: string }>;
+  /** Real mode: a few read calls to one source, to see what it returns right now (API server only). */
+  testSource?(id: McpServerId): Promise<SourceTest>;
 }
