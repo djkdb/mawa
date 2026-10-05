@@ -15,7 +15,7 @@ const pass = process.argv.slice(2);
 const step = (title) => console.log(`\n▶ ${title}`);
 
 step('빌드 (npm run build)');
-if (spawnSync('npm', ['run', 'build'], { cwd: root, stdio: 'inherit', shell: true }).status !== 0) process.exit(1);
+if (spawnSync('npm run build', { cwd: root, stdio: 'inherit', shell: true }).status !== 0) process.exit(1);
 
 step('점검 (npm run doctor)');
 if (spawnSync(process.execPath, [resolve(root, 'scripts/doctor.mjs'), ...pass], { cwd: root, stdio: 'inherit' }).status !== 0) {
@@ -30,7 +30,20 @@ function run(name, cmd, args, cwd) {
   const tag = (d) => String(d).split(/\r?\n/).filter(Boolean).map((l) => `[${name}] ${l}`).join('\n') + '\n';
   c.stdout.on('data', (d) => process.stdout.write(tag(d)));
   c.stderr.on('data', (d) => process.stderr.write(tag(d)));
-  c.on('exit', (code) => { if (code && code !== 0) { console.error(`[${name}] 종료 (코드 ${code}) — 위 로그를 확인하세요.`); stop(); } });
+  let log = '';
+  c.stderr.on('data', (d) => { log += String(d); });
+  c.stdout.on('data', (d) => { log += String(d); });
+  c.on('exit', (code) => {
+    if (!code) return;
+    const port = log.match(/Port (\d+) is already in use|EADDRINUSE.*?:(\d+)|포트 (\d+)/);
+    if (port) {
+      const n = port[1] ?? port[2] ?? port[3];
+      console.error(`\n✗ [${name}] 포트 ${n}을(를) 이미 다른 프로그램이 쓰고 있습니다. 예전에 켠 npm run dev 창을 닫거나:`);
+      console.error(process.platform === 'win32' ? `    netstat -ano | findstr :${n}      (맨 끝 숫자가 PID)\n    taskkill /PID <PID> /F` : `    lsof -i :${n}   →   kill <PID>`);
+      console.error('  그다음 npm run start:real 을 다시 실행하세요.');
+    } else console.error(`[${name}] 종료 (코드 ${code}) — 위 로그를 확인하세요.`);
+    stop();
+  });
   kids.push(c);
 }
 function stop() { for (const c of kids) c.kill(); process.exit(0); }

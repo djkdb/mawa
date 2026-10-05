@@ -75,7 +75,9 @@ if (env.LLM_PROVIDER === 'claude-cli') {
 }
 
 // 5. Ports
-const free = (port) => new Promise((r) => { const s = createServer().once('error', () => r(false)).once('listening', () => s.close(() => r(true))); s.listen(port, '127.0.0.1'); });
+// Both stacks: on Windows a dev server can hold the port on ::1 only, and "localhost" reaches it first.
+const freeOn = (port, host) => new Promise((r) => { const s = createServer().once('error', (e) => r(e.code === 'EADDRNOTAVAIL' || e.code === 'EAFNOSUPPORT')).once('listening', () => s.close(() => r(true))); s.listen(port, host); });
+const free = async (port) => (await freeOn(port, '127.0.0.1')) && (await freeOn(port, '::1'));
 for (const [port, who] of [[apiPort, 'API'], [5173, '웹']]) {
   if ((await free(port))) ok(`포트 ${port} 비어 있음 (${who})`); else fail(`포트 ${port} 사용 중 (${who})`, `이미 켜 둔 npm run dev를 끄거나, Windows: netstat -ano | findstr :${port} 로 PID 확인 후 taskkill /PID <PID> /F`);
 }
