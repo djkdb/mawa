@@ -4,13 +4,16 @@
 >
 > GitHub·Gmail·캘린더·eCampus를 MCP로 읽어 이번 주 할 일과 마감을 출처와 함께 정리하고, **AI에 무엇을 보냈고 무엇을 막았는지**를 서명된 기록으로 남깁니다.
 
-**▶ 바로 보기: [mawa-epm.pages.dev](https://mawa-epm.pages.dev/)** — 설치 없이 브라우저에서 열리는 데모(가상의 샘플 데이터). 학생 · 직장인 · 관리자 화면을 위쪽에서 전환합니다.
+**▶ 바로 보기: [mawa-epm.pages.dev](https://mawa-epm.pages.dev/)** — 설치 없이 브라우저에서 열리는 데모(가상의 샘플 데이터). 처음 열면 1분짜리 시작 가이드(실행 → 사무실에서 지켜보기 → 근거와 함께 읽기)가 뜹니다. 학생 · 직장인 · 관리자 화면을 위쪽에서 전환하고, 라이트/다크 테마를 고를 수 있습니다.
+
+**에이전트 사무실** — 실행을 도트 사무실로 보여 줍니다. MCP 서버마다 담당자 한 명(GitHub·메일·일정·eCampus), 방 사이를 오가며 자료를 받아 오는 에이전트, 보안 게이트 뒤의 AI 코어. 게이트에서 정책이 가린 개인정보가 떨어져 나가는 장면까지 모든 움직임이 실제 실행 이벤트 하나하나에서 나옵니다(다크 모드는 야간 관제실, 라이트 모드는 낮 사무실).
 
 **실제 계정으로도 돕니다.**
 - **터미널** — 2026-10-03, Windows에서 내 GitHub(읽기 전용 토큰) + Claude Code 로그인으로 `npm run ask -- --mode=real` 실행: 모델이 GitHub 도구 4개를 골라 호출, 출처 113건이 붙은 리포트 ([실행 기록 원본](docs/examples/real-run-2026-10-03.txt))
-- **웹 서비스** — GitHub App(읽기 전용)으로 연결 → 질문 → 실시간 활동 → 리포트·출처. 실제 실행 화면에는 실행 이벤트에서 나온 「실제 실행 · 실제 데이터 · 시작 시각 · 모델」 한 줄이 뜨고, 데모 실행에서는 뜨지 않습니다. `?record=1`은 녹화용으로 계정 이름을 가립니다
+- **웹 서비스** — 2026-10-05, 같은 Windows PC에서 `npm run start:real`로 실행: GitHub App(읽기 전용)과 eCampus를 연결하고 실제 모드 실행이 사무실 화면에 실시간(LIVE)으로 표시됨. 연결 → 질문 → 실시간 활동 → 리포트·출처. 실제 실행 화면에는 실행 이벤트에서 나온 「실제 실행 · 실제 데이터 · 시작 시각 · 모델」 한 줄이 뜨고, 데모 실행에서는 뜨지 않습니다. `?record=1`은 녹화용으로 계정 이름을 가립니다
 - **헤드리스 녹화** — 브라우저 승인을 누를 수 없는 클라우드 세션은 `MAWA_GITHUB_TOKEN`(읽기 전용)으로 `npm run record:web`을 돌려 실제 실행을 영상으로 남깁니다
-- 따라 하기: [docs/REAL_RUN.md](docs/REAL_RUN.md) (터미널 · 웹 · 클라우드 녹화) · 실행 전 점검 `npm run doctor`
+- **처음 쓰는 사람용** — 실제 모드 홈에는 준비 점검표가 뜹니다: AI 연결 확인(모델에 아주 짧은 요청 1회, `POST /api/llm/check`) → 서비스 연결 → 첫 정리 실행. 실패는 한국어로 원인과 할 일을 보여 주고(로그인 만료, CLI 못 찾음, 연결 없음, 토큰 만료, API 꺼짐 …) 원문은 접어 둡니다
+- 따라 하기: [docs/REAL_RUN.md](docs/REAL_RUN.md) — 터미널 · 웹(`npm run start:real` 한 줄: 빌드 → `npm run doctor` 점검 → API + 웹) · **Gmail·Google Calendar 연결**(Google Cloud OAuth, 테스트 사용자, 읽기 전용) · 클라우드 녹화
 
 **The story in three steps**
 
@@ -124,7 +127,7 @@ Only these events reach the UI. Model reasoning is never emitted.
 
 ## Tech Stack
 
-React 19 · TypeScript · Vite 8 · Tailwind 4 · Three.js / React Three Fiber / drei · Framer Motion · GSAP (available) · Node 22 · Hono · `@modelcontextprotocol/sdk` · zod 4 · Anthropic SDK · OpenAI SDK · `@octokit/rest` · `googleapis` · Remotion · Vitest · Playwright · ESLint 10.
+React 19 · TypeScript · Vite 8 · Tailwind 4 · Three.js / React Three Fiber / drei · Framer Motion · GSAP (available) · Node 22+ (Windows: Node 24 tested) · Hono · `@modelcontextprotocol/sdk` · zod 4 · Anthropic SDK · OpenAI SDK · `@octokit/rest` · `googleapis` · Remotion · Vitest · Playwright · ESLint 10.
 
 ## Live Demo
 
@@ -171,7 +174,7 @@ See [`.env.example`](.env.example). Nothing is hard-coded; `.env` is git-ignored
 | `MAWA_GITHUB_TOKEN` | read-only fine-grained token standing in for the GitHub connection on headless machines (`npm run record:web`); deliberately not `GITHUB_TOKEN` |
 | `CLAUDE_BIN` | path to `claude.exe` or `cli.js` when Claude Code is not found automatically (Windows: `where.exe` and npm shims are tried first) |
 | `GITHUB_OAUTH_URL`, `GITHUB_API_URL` | test only (e2e fake GitHub); https or `http://localhost` only, because tokens are sent there |
-| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth client |
+| `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` | Google OAuth client (Web application, redirect `http://localhost:3001/auth/google/callback`); consent screen External in Testing with yourself as test user — see docs/REAL_RUN.md |
 | `SESSION_ENCRYPTION_KEY` | 64 hex chars (`openssl rand -hex 32`); without it tokens are memory-only |
 | `API_PORT`, `WEB_ORIGIN`, `API_PUBLIC_URL`, `TOKEN_STORE_PATH` | server settings |
 | `API_HOST` | interface to bind; `127.0.0.1` by default (run records contain mail and calendar data) |
@@ -310,7 +313,7 @@ Both apps depend only on `@mawa/shared` (built first). They are single-page apps
 - **Demo Mode must be a mode, not a mock.** A separate fake path would have drifted from the real one within a week.
 - **`mode` belongs in the data.** Making it mandatory on every event is what makes the DEMO badge impossible to forget.
 - **Tool budgets matter more than prompts.** A hard cap on calls and result size kept both cost and latency predictable.
-- **The first real run finds what tests don't.** Windows npm shims, an expired CLI login, `KEY=` lines read as empty paths — none showed up until the agent ran on my own PC and account. Each became a fix, a test, and a line in `npm run doctor`.
+- **The first real run finds what tests don't.** Windows npm shims, an expired CLI login, `KEY=` lines read as empty paths, `tsx watch` not starting the API, a stale dev server holding port 5173 on `::1` only, Hangul smeared by a monospace font with no Korean glyphs, Google's "test users only" block — none showed up until the agent ran on my own PC and account. Each became a fix, a test, a line in `npm run doctor`, or a step in docs/REAL_RUN.md.
 
 ## Future Improvements
 
